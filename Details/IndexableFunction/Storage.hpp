@@ -18,7 +18,7 @@ namespace fcf {
 
         Storage& getStorage();
 
-        #ifdef FCF_MATH_IMPLEMENTATION
+        #ifdef FCF_BASIS_IMPLEMENTATION
         Storage& getStorage(){
           if (!g_storage) {
             g_storage = new Storage();
