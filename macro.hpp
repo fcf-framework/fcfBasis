@@ -96,7 +96,7 @@
             }\
           }\
         };\
-        FCF_MATH_DELC_EXTERN FCF_MATH_DECL_EXPORT FCF_INITIAZE_GLOBAL_PTR__CONCAT(FCFInitializer_, a_variable, __LINE__) \
+        FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT FCF_INITIAZE_GLOBAL_PTR__CONCAT(FCFInitializer_, a_variable, __LINE__) \
           FCF_INITIAZE_GLOBAL_PTR__CONCAT(_fcfinitializer_, a_variable, __LINE__);\
       }
   #endif // #ifndef FCF_INITIAZE_GLOBAL_PTR

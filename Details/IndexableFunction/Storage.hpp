@@ -14,7 +14,7 @@ namespace fcf {
           std::vector<IndexableFunctionInfo>   functions;
         };
 
-        FCF_MATH_DELC_EXTERN FCF_MATH_DECL_EXPORT Storage* g_storage;
+        FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT Storage* g_storage;
 
         Storage& getStorage();
 
