@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_INFO_HPP___
-#define ___FCF_BASIS__INDEXABLE_FUNCTION_INFO_HPP___
+#ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_INFO_HPP___
+#define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_INFO_HPP___
 
 #include <vector>
 #include "../FunctionSignature.hpp"
@@ -39,4 +39,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_INFO_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_INFO_HPP___

@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_SPACE_HPP___
-#define ___FCF_BASIS__INDEXABLE_FUNCTION_SPACE_HPP___
+#ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_SPACE_HPP___
+#define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_SPACE_HPP___
 
 #include <string>
 #include <set>
@@ -15,4 +15,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_SPACE_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_SPACE_HPP___

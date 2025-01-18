@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BASE_INDEX_ITERATOR_HPP___
-#define ___FCF_BASIS__BASE_INDEX_ITERATOR_HPP___
+#ifndef ___FCF_BASIS__BITS__BASE_INDEX_ITERATOR_HPP___
+#define ___FCF_BASIS__BITS__BASE_INDEX_ITERATOR_HPP___
 
 #include "../Type.hpp"
 
@@ -37,4 +37,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BASE_INDEX_ITERATOR_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__BASE_INDEX_ITERATOR_HPP___

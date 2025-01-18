@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BASE_CONTAINER_TYPE_HPP___
-#define ___FCF_BASIS__BASE_CONTAINER_TYPE_HPP___
+#ifndef ___FCF_BASIS__BITS__BASE_CONTAINER_TYPE_HPP___
+#define ___FCF_BASIS__BITS__BASE_CONTAINER_TYPE_HPP___
 
 #include "BaseType.hpp"
 
@@ -15,4 +15,4 @@ namespace fcf {
   
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BASE_CONTAINER_TYPE_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__BASE_CONTAINER_TYPE_HPP___

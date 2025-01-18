@@ -13,6 +13,8 @@
 
 #include "./IndexableFunction.hpp"
 
+#include "functions.hpp"
+
 #include "specificators.hpp"
 
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___

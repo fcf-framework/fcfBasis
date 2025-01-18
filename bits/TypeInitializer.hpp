@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__TYPE_INITIALIZER_HPP___
-#define ___FCF_BASIS__TYPE_INITIALIZER_HPP___
+#ifndef ___FCF_BASIS__BITS__TYPE_INITIALIZER_HPP___
+#define ___FCF_BASIS__BITS__TYPE_INITIALIZER_HPP___
 
 #include "../macro.hpp"
 #include "../Type.hpp"
@@ -15,5 +15,5 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__TYPE_INITIALIZER_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__TYPE_INITIALIZER_HPP___
 

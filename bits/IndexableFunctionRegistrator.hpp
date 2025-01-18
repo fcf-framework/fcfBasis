@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
-#define ___FCF_BASIS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
+#ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
+#define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
 
 #include "./IndexableFunctionSpace.hpp"
 #include "./IndexableFunctionInfo.hpp"
@@ -109,4 +109,4 @@ namespace fcf {
   
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___

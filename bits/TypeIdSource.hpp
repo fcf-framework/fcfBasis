@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__TYPE_ID_SOURCE_HPP___
-#define ___FCF_BASIS__TYPE_ID_SOURCE_HPP___
+#ifndef ___FCF_BASIS__BITS__TYPE_ID_SOURCE_HPP___
+#define ___FCF_BASIS__BITS__TYPE_ID_SOURCE_HPP___
 
 #include <string>
 
@@ -27,4 +27,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__TYPE_ID_SOURCE_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__TYPE_ID_SOURCE_HPP___

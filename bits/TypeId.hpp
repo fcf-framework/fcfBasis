@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__TYPE_ID_HPP___
-#define ___FCF_BASIS__TYPE_ID_HPP___
+#ifndef ___FCF_BASIS__BITS__TYPE_ID_HPP___
+#define ___FCF_BASIS__BITS__TYPE_ID_HPP___
 
 #include <stdexcept>
 #include "../Details/typeStorage.hpp"
@@ -44,4 +44,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__TYPE_ID_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__TYPE_ID_HPP___

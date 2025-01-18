@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BASIC_ITERATOR_HPP___
-#define ___FCF_BASIS__BASIC_ITERATOR_HPP___
+#ifndef ___FCF_BASIS__BITS__BASIC_ITERATOR_HPP___
+#define ___FCF_BASIS__BITS__BASIC_ITERATOR_HPP___
 
 namespace fcf {
     template <typename TBaseIterator>
@@ -23,4 +23,4 @@ namespace fcf {
     };
 } // fcf namespace
 
-#endif // #ifndef ___FCF_MATH__BASIC_ITERATOR_HPP___
+#endif // #ifndef ___FCF_MATH__BITS__BASIC_ITERATOR_HPP___

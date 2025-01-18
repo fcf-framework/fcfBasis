@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__REGISTRY_HPP___
-#define ___FCF_BASIS__REGISTRY_HPP___
+#ifndef ___FCF_BASIS__BITS__REGISTRY_HPP___
+#define ___FCF_BASIS__BITS__REGISTRY_HPP___
 
 #include <string>
 #include <vector>
@@ -31,4 +31,4 @@ FCF_TYPEID_TEMPLATE1_REGISTRY(std::list, (std::string() +"std::list<" + fcf::Typ
 FCF_TYPEID_TEMPLATE1_REGISTRY(std::set, (std::string() +"std::set<" + fcf::Type<T1>::name() + ">"));
 FCF_TYPEID_TEMPLATE2_REGISTRY(std::map, (std::string() +"std::map<" + fcf::Type<T1>::name() + "," + fcf::Type<T2>::name() + ">"));
 
-#endif // #ifndef ___FCF_BASIS__REGISTRY_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__REGISTRY_HPP___
