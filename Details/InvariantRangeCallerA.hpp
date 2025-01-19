@@ -19,7 +19,7 @@ namespace fcf {
     struct InvariantRangeCallerA<TSpecificator, TExecutor, TItem, true, false> {
       template <typename TContainer, typename TIterator, typename... TArgPack>
       void operator()(TContainer& a_container, TIterator a_begin, TIterator a_end, TArgPack... a_argPack) {
-        typedef typename Type<TIterator, IterativeSpecificator>::value_type value_type;
+        typedef typename Type<TIterator, IteratorSpecificator>::value_type value_type;
         typedef typename Type<value_type>::value_type item_value_type;
         for(; a_begin != a_end; ++a_begin) {
           Details::InvariantRangeCallerA<

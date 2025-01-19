@@ -27,12 +27,12 @@ namespace fcf {
     }
     template <typename TIterator, typename... TArgPack>
     void rangeCall(TIterator a_begin, TIterator a_end, TArgPack... a_argPack){
-      typedef typename Type<TIterator, IterativeSpecificator>::value_type item_value_type;
+      typedef typename Type<TIterator, IteratorSpecificator>::value_type item_value_type;
       Details::InvariantRangeCaller<TExecutor, item_value_type, Type<item_value_type>::container>()(a_begin, a_end, a_argPack...);
     }
     template <typename TSpecificator, typename TIterator, typename... TArgPack>
     void rangeCallA(TIterator a_begin, TIterator a_end, TArgPack... a_argPack){
-      typedef typename Type<TIterator, IterativeSpecificator>::value_type item_value_type;
+      typedef typename Type<TIterator, IteratorSpecificator>::value_type item_value_type;
       Nop nop;
       Details::InvariantRangeCallerA<
         TSpecificator, 

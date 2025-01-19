@@ -17,10 +17,13 @@ namespace fcf {
     struct InvariantRangeCaller<TExecutor, TItem, true> {
       template <typename TIterator, typename... TArgPack>
       void operator()(TIterator a_begin, TIterator a_end, TArgPack... a_argPack) {
-        typedef typename Type<TIterator, IterativeSpecificator>::value_type value_type;
+        typedef typename Type<TIterator, IteratorSpecificator>::value_type value_type;
         typedef typename Type<value_type>::value_type item_value_type;
         for(; a_begin != a_end; ++a_begin) {
-          Details::InvariantRangeCaller<TExecutor, item_value_type, Type<item_value_type>::container >()(std::begin(*a_begin), std::end(*a_begin), a_argPack...);
+          Details::InvariantRangeCaller<TExecutor, item_value_type, Type<item_value_type>::container >()(
+              Type<TIterator, IteratorContainerSpecificator>().begin(a_begin),
+              Type<TIterator, IteratorContainerSpecificator>().end(a_begin),
+              a_argPack...);
         }
       }
     };

@@ -18,14 +18,23 @@ namespace fcf {
     typedef Ty data_type;
   };
 
+  template <typename Ty>
+  struct Type<Ty, IteratorContainerSpecificator> {
+    auto begin(Ty a_iterator) -> decltype(std::begin(*a_iterator)){
+      return std::begin(*a_iterator);
+    }
+    auto end(Ty a_iterator) -> decltype(std::end(*a_iterator)) {
+      return std::end(*a_iterator);
+    }
+  };
 
   template <typename Ty>
-  struct Type<Ty, IterativeSpecificator> {
+  struct Type<Ty, IteratorSpecificator> {
     typedef typename Ty::value_type value_type;
   };
 
   template <typename Ty>
-  struct Type<Ty*, IterativeSpecificator> {
+  struct Type<Ty*, IteratorSpecificator> {
     typedef Ty value_type;
   };
 
@@ -34,6 +43,10 @@ namespace fcf {
     enum { enable = false };
   };
 
+  template <typename Ty>
+  struct Type<Ty, MinMaxSpecificator> {
+    enum { enable = false };
+  };
 
   template <typename Ty>
   struct Type< Ty* > : public BaseContainerType< Ty* > {
