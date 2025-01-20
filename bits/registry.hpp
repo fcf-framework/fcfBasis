@@ -8,6 +8,7 @@
 #include <map>
 
 #include "../macro.hpp"
+#include "../Nop.hpp"
 #include "../nativeType.hpp"
 #include "./TypeIdSource.hpp"
 #include "./TypeInitializer.hpp"
@@ -21,9 +22,11 @@ FCF_TYPEID_REGISTRY(unsigned int,       "unsigned int",       FCF_UINT32_TYPE_IN
 FCF_TYPEID_REGISTRY(long long,          "long long",          FCF_INT64_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(unsigned long long, "unsigned long long", FCF_UINT64_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(float,              "float",              FCF_FLOAT32_TYPE_INDEX);
+FCF_TYPEID_REGISTRY(float*,             "float*",             FCF_FLOAT32_TYPE_INDEX+0x0100);
 FCF_TYPEID_REGISTRY(double,             "double",             FCF_FLOAT64_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(long double,        "long double",        FCF_FLOAT128_TYPE_INDEX);
-FCF_TYPEID_REGISTRY(bool,               "bool",               20);
+FCF_TYPEID_REGISTRY(void,               "void",               20);
+FCF_TYPEID_REGISTRY(bool,               "bool",               21);
 FCF_TYPEID_REGISTRY(std::string,        "std::string",        30);
 
 FCF_TYPEID_TEMPLATE1_REGISTRY(std::vector, (std::string() + "std::vector<" + fcf::Type<T1>::name() + ">"));

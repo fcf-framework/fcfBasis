@@ -9,7 +9,11 @@ namespace fcf {
 
     struct IndexableFunctionRegistrator {
       template <typename TFunctionResult, typename... TArgPack>
-      IndexableFunctionRegistrator(const std::string& a_name, const std::string& a_space, const std::string& a_sourceName, TFunctionResult (*a_function)(TArgPack...), std::string a_sourceCode = std::string()){
+      IndexableFunctionRegistrator(const std::string& a_name,
+                                   const std::string& a_space,
+                                   const std::string& a_sourceName,
+                                   TFunctionResult (*a_function)(TArgPack...),
+                                   std::string a_sourceCode = std::string()){
         FunctionSignature<TFunctionResult (TArgPack...)> fs;
         Details::IndexableFunction::Indexes::iterator it = Details::IndexableFunction::getStorage().indexes.find(fs);
         if (it == Details::IndexableFunction::getStorage().indexes.end()) {
@@ -34,7 +38,7 @@ namespace fcf {
                       );
           if (bspace != cspace && !isCh) {
             std::string str(&a_space[bspace], &a_space[cspace]);
-            if (str == "*") {
+            if (str == "*" || str == "engine_cpu") {
               weight = 1;
             }
             spaces.insert(str);
@@ -106,7 +110,7 @@ namespace fcf {
         return Details::IndexableFunction::getStorage().functions[a_index];
       }
     };
-  
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___

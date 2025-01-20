@@ -18,6 +18,13 @@ namespace fcf {
     typedef Ty data_type;
   };
 
+  template <>
+  struct Type<void> : public BaseType<void> {
+    enum { container = false };
+
+    typedef void data_type;
+  };
+
   template <typename Ty>
   struct Type<Ty, IteratorContainerSpecificator> {
     auto begin(Ty a_iterator) -> decltype(std::begin(*a_iterator)){

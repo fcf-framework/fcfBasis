@@ -132,5 +132,15 @@
           );
   #endif // #ifndef FCF_EXTEND_FUNCTION
 
+  #ifndef FCF_GET_FUNCTION_INDEX
+    #define FCF_GET_FUNCTION_INDEX(a_name, a_signature) \
+      ::fcf::IndexableFunctionRegistrator::getIndex<a_signature>(a_name)
+  #endif // #ifndef FCF_GET_FUNCTION_INDEX
+
+  #ifndef FCF_GET_FUNCTION
+    #define FCF_GET_FUNCTION(a_index) \
+      ::fcf::Details::IndexableFunction::getStorage().functions[a_index].function
+  #endif // #ifndef FCF_GET_FUNCTION
+
 #endif // #ifndef ___FCF_BASIS__MACRO_HPP___
 
