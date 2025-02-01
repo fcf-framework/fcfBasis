@@ -41,9 +41,22 @@
     #endif // #ifdef WIN32
   #endif
 
+  #ifndef FCF_SPECIFICATOR_REGISTRY
+    #define FCF_SPECIFICATOR_REGISTRY__L2(a_itemName, a_counter) a_itemName##_##a_counter
+    #define FCF_SPECIFICATOR_REGISTRY__L1(a_itemName, a_counter) FCF_SPECIFICATOR_REGISTRY__L2(a_itemName, a_counter)
+    #ifdef FCF_BASIS_IMPLEMENTATION
+      #define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator) \
+        namespace { \
+          ::fcf::SpecificatorTypeRegistrator<a_type, a_specificator> FCF_SPECIFICATOR_REGISTRY__L1(specificatorReg, __COUNTER__);\
+        }
+    #else
+      #define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator)
+    #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+  #endif // #ifndef FCF_SPECIFICATOR_REGISTRY
+
   #ifndef FCF_TYPEID_REGISTRY
-    #define FCF_TYPEID_REGISTRY__VARNAME2(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-    #define FCF_TYPEID_REGISTRY__VARNAME(a_varName, a_funcName, a_line) FCF_TYPEID_REGISTRY__VARNAME2(a_varName, a_funcName, a_line)
+    #define FCF_TYPEID_REGISTRY__VARNAME2(a_varName, a_funcName, a_counter) a_varName##_##a_funcName##_##a_counter
+    #define FCF_TYPEID_REGISTRY__VARNAME(a_varName, a_funcName, a_counter) FCF_TYPEID_REGISTRY__VARNAME2(a_varName, a_funcName, a_counter)
     #ifdef FCF_BASIS_IMPLEMENTATION
       #define FCF_TYPEID_REGISTRY(a_type, a_name, a_index) \
         template <>\
@@ -53,7 +66,7 @@
         };\
         namespace { \
           fcf::TypeInitializer<a_type> \
-            FCF_TYPEID_REGISTRY__VARNAME(typeInfoRegistry, type , __LINE__);\
+            FCF_TYPEID_REGISTRY__VARNAME(typeInfoRegistry, type , __COUNTER__);\
         }
     #else
       #define FCF_TYPEID_REGISTRY(a_type, a_name, a_index) \
@@ -66,9 +79,18 @@
   #endif // #ifndef FCF_TYPEID_REGISTRY
 
   #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
-    #define FCF_TYPEID_TEMPLATE1_REGISTRY(a_type, a_name) \
+    #define FCF_TYPEID_TEMPLATE1_REGISTRY(a_type,  a_name) \
       template <typename T1>\
       struct fcf::TypeIdSource< a_type<T1> > {\
+        unsigned int index() { return 0; }\
+        std::string name()   { return std::string() + a_name; }\
+      };
+  #endif // #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
+
+  #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY_PTR
+    #define FCF_TYPEID_TEMPLATE1_REGISTRY_PTR(a_type, a_name) \
+      template <typename T1>\
+      struct fcf::TypeIdSource< a_type<T1>* > {\
         unsigned int index() { return 0; }\
         std::string name()   { return std::string() + a_name; }\
       };
@@ -104,7 +126,7 @@
   #ifndef FCF_DECLARE_FUNCTION
     #define FCF_DECLARE_FUNCTION__VARNAME2(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
     #define FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) FCF_DECLARE_FUNCTION__VARNAME2(a_varName, a_funcName, a_line)
-    #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_sourceCode) \
+    #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_specificator, a_sourceCode) \
       a_sourceCode; \
       ::fcf::IndexableFunctionRegistrator \
         FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __LINE__) \
@@ -113,6 +135,7 @@
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>(a_sourceName),\
+            ::fcf::Details::TypeIndex<a_specificator>::index(),\
             #a_sourceCode\
           );
   #endif // #ifndef FCF_DECLARE_FUNCTION
@@ -128,6 +151,7 @@
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>((a_signature)(void*)0),\
+            0,\
             #a_sourceCode\
           );
   #endif // #ifndef FCF_EXTEND_FUNCTION

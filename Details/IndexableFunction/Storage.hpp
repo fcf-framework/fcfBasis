@@ -1,17 +1,24 @@
 #ifndef ___FCF_BASIS__DETAILS__INDEXABLE_FUNCTION__STORAGE_HPP___
 #define ___FCF_BASIS__DETAILS__INDEXABLE_FUNCTION__STORAGE_HPP___
 
+#include <set>
 #include "../../macro.hpp"
-
+#include "../../bits/IndexableFunctionInfo.hpp"
 namespace fcf {
   namespace Details {
     namespace IndexableFunction {
 
         typedef std::map< BaseFunctionSignature, std::map<std::string, unsigned int>  > Indexes;
 
+        struct FunctionGroup {
+          std::set<unsigned int> specificators;
+        };
+        typedef std::map< std::string, FunctionGroup > Groups;
+
         struct Storage {
-          Indexes                           indexes;
+          Indexes                              indexes;
           std::vector<IndexableFunctionInfo>   functions;
+          Groups                               groups;
         };
 
         FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT Storage* g_storage;

@@ -21,6 +21,17 @@ namespace fcf {
       }
       return typeId->index();
     }
+    static const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
+      if (!typeId) {
+        typeId = new TypeId<Ty>();
+      }
+      return typeId->specificators();
+    }
+    static void tryInit() {
+      if (!typeId) {
+        typeId = new TypeId<Ty>();
+      }
+    }
   };
 
   template <typename Ty> TypeId<Ty>* BaseType<Ty>::typeId;

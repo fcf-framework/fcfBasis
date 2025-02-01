@@ -4,42 +4,58 @@
 #include <stdexcept>
 #include "../Details/typeStorage.hpp"
 #include "TypeIdSource.hpp"
+#include "SpecificatorTypeInfo.hpp"
 
 namespace fcf {
 
+    template <typename TContainer, typename TSpecificator>
+    class SpecificatorTypeRegistrator;
+
     template <typename Ty>
-    struct TypeId {
-      TypeId()
-        : typeName(TypeIdSource<Ty>().name()) {
-        Details::TypeStorage::iterator it = Details::typeStorage.find(name());
-        if (it == Details::typeStorage.end()){
-          typeIndex = TypeIdSource<Ty>().index();
-          if (!typeIndex) {
-            typeIndex = Details::typeStorage.size() + 1 + (1 << 30);
+    class TypeId {
+      public:
+
+        template <typename TContainer, typename TSpecificator>
+        friend class SpecificatorTypeRegistrator;
+
+        TypeId()
+          : _typeName(TypeIdSource<Ty>().name()) {
+          Details::TypeStorage::iterator it = Details::typeStorage.find(name());
+          if (it == Details::typeStorage.end()){
+            _typeIndex = TypeIdSource<Ty>().index();
+            if (!_typeIndex) {
+              _typeIndex = Details::typeStorage.size() + 1 + (1 << 30);
+            }
+            Details::typeStorage[name()] = _typeIndex;
+          } else {
+            if (name() != it->first){
+              throw std::runtime_error(
+                std::string() +
+                "Re-registration of the data type. "
+                "The structure of fcf::TypeIdSource is announced once with different names like " + name() + "."
+                );
+            }
+            _typeIndex = it->second;
           }
-          Details::typeStorage[name()] = typeIndex;
-        } else {
-          if (name() != it->first){
-            throw std::runtime_error(
-              std::string() +
-              "Re-registration of the data type. "
-              "The structure of fcf::TypeIdSource is announced once with different names like " + name() + "."
-              );
-          }
-          typeIndex = it->second;
         }
-      }
 
-      const char* name() {
-        return typeName.c_str();
-      }
+        const char* name() {
+          return _typeName.c_str();
+        }
 
-      unsigned int index() {
-        return typeIndex;
-      }
+        unsigned int index() {
+          return _typeIndex;
+        }
 
-      unsigned int typeIndex;
-      std::string  typeName;
+        const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
+          return _typeSpecificators;
+        }
+
+      private:
+
+        unsigned int                                  _typeIndex;
+        std::string                                   _typeName;
+        std::map<unsigned int, SpecificatorTypeInfo>  _typeSpecificators;
     };
 
 } // fcf namespace

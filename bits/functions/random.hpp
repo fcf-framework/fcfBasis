@@ -12,6 +12,14 @@ namespace fcf {
       return a_min + (((Ty1)a_max - a_min) * r);
     }
 
+    template <typename Ty>
+    void random(Ty* a_begin, Ty* a_end, Ty a_min, Ty a_max) {
+      for (; a_begin != a_end; ++a_begin) {
+        double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
+        *a_begin = a_min + ((a_max - a_min) * r);
+      }
+    }
+
     namespace Details {
       struct RandomExecutor {
         template <typename TIterator, typename TyMin, typename TyMax>
@@ -48,6 +56,15 @@ namespace fcf {
     }
 
 } // fcf namespace
+
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (float*, float*, float, float), ,);
+#endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (int*, int*, int, int), ::fcf::Nop, );
+#endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #endif // #ifndef ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
 

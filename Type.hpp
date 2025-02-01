@@ -5,7 +5,6 @@
 #include <set>
 #include <vector>
 #include "Nop.hpp"
-#include "specificators.hpp"
 #include "./bits/BaseType.hpp"
 #include "./bits/BaseContainerType.hpp"
 
@@ -24,6 +23,78 @@ namespace fcf {
 
     typedef void data_type;
   };
+
+  template <typename Ty>
+  struct Type< Ty* > : public BaseContainerType< Ty*, true > {
+
+    typedef Ty* owner_type;
+
+    typedef typename Type<Ty>::data_type data_type;
+
+    typedef Ty value_type;
+
+  };
+
+
+  template <typename Ty>
+  struct Type< Ty** > : public BaseContainerType< Ty**, true > {
+
+    typedef Ty** owner_type;
+
+    typedef typename Type<Ty>::data_type data_type;
+
+    typedef Ty* value_type;
+  };
+
+
+  template <typename Ty>
+  struct Type< std::vector<Ty> > : public BaseContainerType< std::vector<Ty>, true > {
+
+    typedef std::vector<Ty> owner_type;
+
+    typedef typename Type<Ty>::data_type data_type;
+
+    typedef Ty value_type;
+
+  };
+
+
+  template <typename Ty, size_t Size>
+  struct Type< Ty[Size] > : public BaseContainerType< Ty[Size], true > {
+
+    typedef Ty owner_type[Size];
+
+    typedef typename Type<Ty>::data_type data_type;
+
+    typedef Ty value_type;
+  };
+
+  template <typename Ty>
+  struct Type< std::list<Ty> > : public BaseContainerType< std::list<Ty>, false > {
+
+    typedef std::list<Ty> owner_type;
+
+    typedef typename Type<Ty>::data_type data_type;
+
+    typedef Ty value_type;
+  };
+
+  template <typename Ty>
+  struct Type< std::set<Ty> > : public BaseContainerType< std::set<Ty>, false > {
+
+    typedef std::set<Ty> owner_type;
+
+    typedef typename Type<Ty>::data_type data_type;
+
+    typedef Ty value_type;
+  };
+
+} // fcf namespace
+
+#include "bits/SpecificatorTypeRegistrator.hpp"
+#include "specificators.hpp"
+
+namespace fcf {
 
   template <typename Ty>
   struct Type<Ty, IteratorContainerSpecificator> {
@@ -56,68 +127,28 @@ namespace fcf {
   };
 
   template <typename Ty>
-  struct Type< Ty* > : public BaseContainerType< Ty* > {
-
-    typedef Ty* owner_type;
-
-    typedef typename Type<Ty>::data_type data_type;
-
-    typedef Ty value_type;
-
+  struct Type<Ty, MemoryTypeSpecificator> {
+    typedef Ty type;
   };
 
-
-  template <typename Ty>
-  struct Type< Ty** > : public BaseContainerType< Ty** > {
-
-    typedef Ty** owner_type;
-
-    typedef typename Type<Ty>::data_type data_type;
-
-    typedef Ty* value_type;
+  template <>
+  struct Type<const char*, MemoryTypeSpecificator> {
+    typedef std::string type;
   };
 
-
-  template <typename Ty>
-  struct Type< std::vector<Ty> > : public BaseContainerType< std::vector<Ty> > {
-
-    typedef std::vector<Ty> owner_type;
-
-    typedef typename Type<Ty>::data_type data_type;
-
-    typedef Ty value_type;
-
+  template <>
+  struct Type<char*, MemoryTypeSpecificator> {
+    typedef std::string type;
   };
 
-
-  template <typename Ty, size_t Size>
-  struct Type< Ty[Size] > : public BaseContainerType< Ty[Size] > {
-
-    typedef Ty owner_type[Size];
-
-    typedef typename Type<Ty>::data_type data_type;
-
-    typedef Ty value_type;
+  template <size_t Size>
+  struct Type<char[Size], MemoryTypeSpecificator> {
+    typedef std::string type;
   };
 
-  template <typename Ty>
-  struct Type< std::list<Ty> > : public BaseContainerType< std::list<Ty> > {
-
-    typedef std::list<Ty> owner_type;
-
-    typedef typename Type<Ty>::data_type data_type;
-
-    typedef Ty value_type;
-  };
-
-  template <typename Ty>
-  struct Type< std::set<Ty> > : public BaseContainerType< std::set<Ty> > {
-
-    typedef std::set<Ty> owner_type;
-
-    typedef typename Type<Ty>::data_type data_type;
-
-    typedef Ty value_type;
+  template <size_t Size>
+  struct Type<const char[Size], MemoryTypeSpecificator> {
+    typedef std::string type;
   };
 
 } // fcf namespace

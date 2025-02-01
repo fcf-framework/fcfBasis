@@ -4,6 +4,7 @@
 #include "./IndexableFunctionSpace.hpp"
 #include "./IndexableFunctionInfo.hpp"
 #include "../Details/IndexableFunction/Storage.hpp"
+#include "../Details/TypeIndex.hpp"
 
 namespace fcf {
 
@@ -13,6 +14,7 @@ namespace fcf {
                                    const std::string& a_space,
                                    const std::string& a_sourceName,
                                    TFunctionResult (*a_function)(TArgPack...),
+                                   unsigned int a_specificatorIndex,
                                    std::string a_sourceCode = std::string()){
         FunctionSignature<TFunctionResult (TArgPack...)> fs;
         Details::IndexableFunction::Indexes::iterator it = Details::IndexableFunction::getStorage().indexes.find(fs);
@@ -70,6 +72,16 @@ namespace fcf {
 
           Details::IndexableFunction::getStorage().functions.push_back(sfi);
 
+          if (a_specificatorIndex) {
+            fcf::Details::IndexableFunction::Groups::iterator groupIt = Details::IndexableFunction::getStorage().groups.find(a_name);
+            if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
+              std::pair<std::string, fcf::Details::IndexableFunction::FunctionGroup> item;
+              item.first = a_name;
+              groupIt = Details::IndexableFunction::getStorage().groups.insert(item).first;
+            }
+            groupIt->second.specificators.insert(a_specificatorIndex);
+          }
+
           it->second[a_name] = index;
         } else {
           IndexableFunctionInfo& sfi = Details::IndexableFunction::getStorage().functions[indexIt->second];
@@ -85,6 +97,10 @@ namespace fcf {
           sfs.spaces     = spaces;
           sfs.code       = a_sourceCode;
           sfi.spaces.push_back(sfs);
+
+          if (a_specificatorIndex) {
+            Details::IndexableFunction::getStorage().groups[a_name].specificators.insert(a_specificatorIndex);
+          }
         }
       }
 

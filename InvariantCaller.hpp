@@ -6,7 +6,7 @@
 #include "./Details/InvariantRangeCaller.hpp"
 #include "./Details/InvariantRangeCallerA.hpp"
 
-namespace fcf {  
+namespace fcf {
 
   template <typename TExecutor>
   struct InvariantCaller {
@@ -43,7 +43,7 @@ namespace fcf {
         >()(nop, a_begin, a_end, a_argPack...);
     }
   };
-  
+
 } // fcf namespace
 
 

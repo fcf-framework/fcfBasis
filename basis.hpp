@@ -17,6 +17,10 @@
 
 #include "specificators.hpp"
 
+#include "Details/Convert/Storage.hpp"
+
+#include "convert.hpp"
+
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___
 
 
