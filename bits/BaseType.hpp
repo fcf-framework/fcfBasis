@@ -9,28 +9,19 @@ namespace fcf {
   struct BaseType {
     typedef Ty owner_type;
     static TypeId<Ty>* typeId;
-    static const char* name() {
+    BaseType(){
       if (!typeId) {
         typeId = new TypeId<Ty>();
       }
+    }
+    const std::string& name() {
       return typeId->name();
     }
-    static unsigned int index() {
-      if (!typeId) {
-        typeId = new TypeId<Ty>();
-      }
+    unsigned int index() {
       return typeId->index();
     }
-    static const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
-      if (!typeId) {
-        typeId = new TypeId<Ty>();
-      }
+    const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
       return typeId->specificators();
-    }
-    static void tryInit() {
-      if (!typeId) {
-        typeId = new TypeId<Ty>();
-      }
     }
   };
 

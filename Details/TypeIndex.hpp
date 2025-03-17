@@ -8,7 +8,7 @@ namespace fcf {
     class TypeIndex {
       public:
         static unsigned int index(){
-          return Type<Ty>::index();
+          return Type<Ty>().index();
         }
     };
 

@@ -1,6 +1,6 @@
 #ifndef ___FCF_BASIS__BITS__SPECIFICATOR_TYPE_REGISTRATOR_HPP___
 #define ___FCF_BASIS__BITS__SPECIFICATOR_TYPE_REGISTRATOR_HPP___
-
+#include <iostream>
 #include "../Type.hpp"
 namespace fcf {
 
@@ -19,12 +19,12 @@ namespace fcf {
   class SpecificatorTypeRegistrator {
     public:
       SpecificatorTypeRegistrator() {
-        unsigned int specificatorIndex = Type<TSpecificator>::index();
+        unsigned int specificatorIndex = Type<TSpecificator>().index();
         fcf::SpecificatorTypeInfo sti;
         sti.argc = Details::SpecificatorTypeRegistrator::getArgCount(
                               Type<TContainer, TSpecificator>::resolve) - 1;
-        Type<TContainer>::tryInit();
-        Type<TContainer>::typeId->_typeSpecificators[specificatorIndex] = sti;
+        sti.resolve = (void*)Type<TContainer, TSpecificator>::resolve;
+        Type<TContainer>().typeId->_typeSpecificators[specificatorIndex] = sti;
       }
   };
 

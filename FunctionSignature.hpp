@@ -21,7 +21,7 @@ namespace fcf {
           template <size_t Index, size_t IndexEnd, typename Ty, typename... TPack>
           struct TypeInitializer<Index, IndexEnd, Ty, TPack...> {
             void operator()(unsigned int* a_codes){
-              a_codes[Index] = Type<Ty>::index();
+              a_codes[Index] = Type<Ty>().index();
               TypeInitializer<Index+1, IndexEnd, TPack...>()(a_codes);
             }
           };
@@ -29,13 +29,13 @@ namespace fcf {
           template <size_t IndexEnd, typename Ty>
           struct TypeInitializer<IndexEnd-1, IndexEnd, Ty> {
             void operator()(unsigned int* a_codes){
-              a_codes[IndexEnd-1] = Type<Ty>::index();
+              a_codes[IndexEnd-1] = Type<Ty>().index();
             }
           };
         }
       }
 
-      struct BaseFunctionSignature{
+      struct BaseFunctionSignature {
 
         BaseFunctionSignature() 
           : asize(0)
@@ -100,20 +100,22 @@ namespace fcf {
 
       template <typename TResult, typename... TArgs>
       struct FunctionSignature<TResult (TArgs...)> : public BaseFunctionSignature{
+        typedef TResult result_type;
         typedef TResult(*value_type)(TArgs...);
         FunctionSignature()
           : BaseFunctionSignature(sizeof...( TArgs) ) {
-          rcode = Type<TResult>::index();
+          rcode = Type<TResult>().index();
           Details::FunctionSignature::TypeInitializer<0, sizeof...(TArgs), TArgs...>()(pacodes);
         }
       };
 
       template <typename TResult, typename... TArgs>
       struct FunctionSignature<TResult (*)(TArgs...)> : public BaseFunctionSignature{
+        typedef TResult result_type;
         typedef TResult(*value_type)(TArgs...);
         FunctionSignature()
           : BaseFunctionSignature(sizeof...( TArgs) ) {
-          rcode = Type<TResult>::index();
+          rcode = Type<TResult>().index();
           Details::FunctionSignature::TypeInitializer<0, sizeof...(TArgs), TArgs...>()(pacodes);
         }
       };

@@ -18,8 +18,8 @@ namespace fcf {
     void callA(TContainer& a_container, TArgPack... a_argPack){
       typedef typename Type<TContainer>::value_type item_value_type;
       Details::InvariantRangeCallerA<
-        TSpecificator, 
-        TExecutor, 
+        TSpecificator,
+        TExecutor,
         item_value_type,
         Type<TContainer>::container,
         Type<TContainer, TSpecificator>::enable

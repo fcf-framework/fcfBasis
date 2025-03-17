@@ -10,6 +10,7 @@
 #include "Details/Convert/Storage.hpp"
 #include "Type.hpp"
 #include "specificators.hpp"
+#include "bits/registry.hpp"
 
 namespace fcf {
 
@@ -44,6 +45,9 @@ namespace fcf {
       void* ptr();
 
       const void* ptr() const;
+
+      template <typename TResult>
+      typename std::remove_const< typename std::remove_reference<TResult>::type >::type& convert();
 
       template <typename TResult>
       TResult as() const;
@@ -134,6 +138,24 @@ namespace fcf {
       return &((Details::Basis::Variant::Wrapper<int>*)_ptr)->data;
     }
   #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
+  template <typename TResult>
+  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& Variant::convert() {
+    typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
+    if (typeIndex() == Type<TResult>().index()){
+      return *(result_type*)ptr();
+    } else {
+      Details::Basis::Convert::ConvertIndex ci{ typeIndex(), Type<result_type>().index()};
+      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
+      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
+        throw std::runtime_error(std::string() + "Can't find conver function");
+      }
+      result_type result;
+      it->second(&result, ptr());
+      *this = result;
+      return *(result_type*)ptr();
+    }
+  }
 
   template <typename TResult>
   TResult Variant::as() const{

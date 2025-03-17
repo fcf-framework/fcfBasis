@@ -10,8 +10,15 @@ namespace fcf {
 
         typedef std::map< BaseFunctionSignature, std::map<std::string, unsigned int>  > Indexes;
 
+        struct ShortSignature {
+          BaseFunctionSignature fullSignature;
+          unsigned int          index;
+          void*                 caller;
+        };
+        typedef std::map<BaseFunctionSignature, ShortSignature> ShortSignatures;
+
         struct FunctionGroup {
-          std::set<unsigned int> specificators;
+          std::map<unsigned int, ShortSignatures > specificators;
         };
         typedef std::map< std::string, FunctionGroup > Groups;
 

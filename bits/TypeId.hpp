@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__TYPE_ID_HPP___
 #define ___FCF_BASIS__BITS__TYPE_ID_HPP___
 
+#include <iostream>
 #include <stdexcept>
 #include "../Details/typeStorage.hpp"
 #include "TypeIdSource.hpp"
@@ -23,8 +24,8 @@ namespace fcf {
           Details::TypeStorage::iterator it = Details::typeStorage.find(name());
           if (it == Details::typeStorage.end()){
             _typeIndex = TypeIdSource<Ty>().index();
-            if (!_typeIndex) {
-              _typeIndex = Details::typeStorage.size() + 1 + (1 << 30);
+            if (TypeIdSource<Ty>().autoIndex()) {
+              _typeIndex += (Details::typeStorage.size() + 1) | 0x01000000;
             }
             Details::typeStorage[name()] = _typeIndex;
           } else {
@@ -39,8 +40,8 @@ namespace fcf {
           }
         }
 
-        const char* name() {
-          return _typeName.c_str();
+        const std::string& name() {
+          return _typeName;
         }
 
         unsigned int index() {
@@ -52,7 +53,6 @@ namespace fcf {
         }
 
       private:
-
         unsigned int                                  _typeIndex;
         std::string                                   _typeName;
         std::map<unsigned int, SpecificatorTypeInfo>  _typeSpecificators;

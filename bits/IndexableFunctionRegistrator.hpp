@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
 #define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
 
+#include "../bits/ArgPlaceHolder/Caller.hpp"
 #include "./IndexableFunctionSpace.hpp"
 #include "./IndexableFunctionInfo.hpp"
 #include "../Details/IndexableFunction/Storage.hpp"
@@ -9,12 +10,12 @@
 namespace fcf {
 
     struct IndexableFunctionRegistrator {
-      template <typename TFunctionResult, typename... TArgPack>
+      template <typename TPlaceHolderSignature, typename TFunctionResult, typename... TArgPack>
       IndexableFunctionRegistrator(const std::string& a_name,
                                    const std::string& a_space,
                                    const std::string& a_sourceName,
                                    TFunctionResult (*a_function)(TArgPack...),
-                                   unsigned int a_specificatorIndex,
+                                   TPlaceHolderSignature a_phs,
                                    std::string a_sourceCode = std::string()){
         FunctionSignature<TFunctionResult (TArgPack...)> fs;
         Details::IndexableFunction::Indexes::iterator it = Details::IndexableFunction::getStorage().indexes.find(fs);
@@ -54,8 +55,9 @@ namespace fcf {
           }
         }
 
+        unsigned int index;
         if (indexIt == it->second.end()) {
-          unsigned int index = Details::IndexableFunction::getStorage().functions.size();
+          index = Details::IndexableFunction::getStorage().functions.size();
 
           IndexableFunctionInfo sfi;
           sfi.name       = a_name;
@@ -72,18 +74,10 @@ namespace fcf {
 
           Details::IndexableFunction::getStorage().functions.push_back(sfi);
 
-          if (a_specificatorIndex) {
-            fcf::Details::IndexableFunction::Groups::iterator groupIt = Details::IndexableFunction::getStorage().groups.find(a_name);
-            if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
-              std::pair<std::string, fcf::Details::IndexableFunction::FunctionGroup> item;
-              item.first = a_name;
-              groupIt = Details::IndexableFunction::getStorage().groups.insert(item).first;
-            }
-            groupIt->second.specificators.insert(a_specificatorIndex);
-          }
-
           it->second[a_name] = index;
         } else {
+          index = indexIt->second;
+
           IndexableFunctionInfo& sfi = Details::IndexableFunction::getStorage().functions[indexIt->second];
 
           if (!sfi.function && a_function && weight){
@@ -97,10 +91,30 @@ namespace fcf {
           sfs.spaces     = spaces;
           sfs.code       = a_sourceCode;
           sfi.spaces.push_back(sfs);
-
-          if (a_specificatorIndex) {
-            Details::IndexableFunction::getStorage().groups[a_name].specificators.insert(a_specificatorIndex);
+        }
+        if (TPlaceHolderSignature::enable) {
+          unsigned int specificatorIndex = 
+            ::fcf::Details::TypeIndex< typename TPlaceHolderSignature::specificator_type >::index();
+          fcf::Details::IndexableFunction::Groups::iterator groupIt = Details::IndexableFunction::getStorage().groups.find(a_name);
+          if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
+            std::pair<std::string, fcf::Details::IndexableFunction::FunctionGroup> item;
+            item.first = a_name;
+            groupIt = Details::IndexableFunction::getStorage().groups.insert(item).first;
           }
+          std::map<unsigned int, Details::IndexableFunction::ShortSignatures>::iterator itGrpSpec =
+            groupIt->second.specificators.find(specificatorIndex);
+          if (itGrpSpec == groupIt->second.specificators.end()) {
+            std::pair<unsigned int, Details::IndexableFunction::ShortSignatures> item;
+            item.first = specificatorIndex;
+            itGrpSpec = groupIt->second.specificators.insert(item).first;
+          }
+          typename TPlaceHolderSignature::short_function_signature_type sfs;
+          fcf::Details::IndexableFunction::ShortSignature ss;
+          ss.fullSignature = fs;
+          ss.index = index;
+          typedef ::fcf::ArgPlaceHolder::Caller<typename TPlaceHolderSignature::arguments_type, TFunctionResult (TArgPack...)> caller_type;
+          ss.caller = (void*)static_cast<typename caller_type::caller_type>(caller_type::call);
+          itGrpSpec->second[sfs] = ss;
         }
       }
 

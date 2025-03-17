@@ -3,6 +3,7 @@
 #include "../macro.hpp"
 #include "../../../convert.hpp"
 #include "../../../Variant.hpp"
+
 void variantTest(){
   std::cout << "Start variantTest..." << std::endl;
   {

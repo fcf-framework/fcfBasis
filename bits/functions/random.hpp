@@ -1,7 +1,9 @@
 #ifndef ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
 #define ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
 
+#include "../../Variant.hpp"
 #include "../../InvariantCaller.hpp"
+#include "../../ArgPlaceHolder.hpp"
 #include "../../Details/randomGenerator.hpp"
 
 namespace fcf {
@@ -13,10 +15,20 @@ namespace fcf {
     }
 
     template <typename Ty>
-    void random(Ty* a_begin, Ty* a_end, Ty a_min, Ty a_max) {
+    void random(Ty* a_begin, Ty* a_end, const Ty& a_min, const Ty& a_max) {
       for (; a_begin != a_end; ++a_begin) {
         double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
         *a_begin = a_min + ((a_max - a_min) * r);
+      }
+    }
+
+    template <typename Ty>
+    void random(Ty* a_begin, Ty* a_end, const Variant& a_min, const Variant& a_max) {
+      Ty min =  a_min.get<Ty>();
+      Ty max =  a_max.get<Ty>();
+      for (; a_begin != a_end; ++a_begin) {
+        double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
+        *a_begin = min + ((max - min) * r);
       }
     }
 
@@ -59,11 +71,16 @@ namespace fcf {
 
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (float*, float*, float, float), ,);
+  FCF_DECLARE_FUNCTION(random, 
+                       "engine_cpu", 
+                       fcf::random, 
+                       void(*) (float*, float*, const float&, const float&),
+                       (fcf::MinMaxSpecificator, float*, float*, fcf::Arg1, fcf::Arg2),
+                      );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (int*, int*, int, int), ::fcf::Nop, );
+  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (int*, int*, const int&, const int&), , );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #endif // #ifndef ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___

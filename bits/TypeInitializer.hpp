@@ -9,7 +9,7 @@ namespace fcf {
   template <typename Ty>
   struct TypeInitializer {
     TypeInitializer() {
-      fcf::Type<Ty>::index();
+      fcf::Type<Ty>().index();
     }
   };
 

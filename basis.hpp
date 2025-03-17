@@ -21,6 +21,8 @@
 
 #include "convert.hpp"
 
+#include "ArgPlaceHolder.hpp"
+
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___
 
 

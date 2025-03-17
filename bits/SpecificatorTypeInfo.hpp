@@ -5,6 +5,7 @@ namespace fcf {
 
   struct SpecificatorTypeInfo {
     unsigned int argc;
+    void*        resolve;
   };
 
 } // fcf namespace
