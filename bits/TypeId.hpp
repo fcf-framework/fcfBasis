@@ -19,13 +19,16 @@ namespace fcf {
         template <typename TContainer, typename TSpecificator>
         friend class SpecificatorTypeRegistrator;
 
-        TypeId()
+        TypeId(unsigned int a_baseIndex = 0)
           : _typeName(TypeIdSource<Ty>().name()) {
           Details::TypeStorage::iterator it = Details::typeStorage.find(name());
           if (it == Details::typeStorage.end()){
             _typeIndex = TypeIdSource<Ty>().index();
             if (TypeIdSource<Ty>().autoIndex()) {
-              _typeIndex += (Details::typeStorage.size() + 1) | 0x01000000;
+              unsigned int typeCounter = a_baseIndex
+                                            ? (a_baseIndex & 0x00ffffff)
+                                            : Details::typeStorage.size() + 1;
+              _typeIndex += typeCounter | 0x01000000;
             }
             Details::typeStorage[name()] = _typeIndex;
           } else {

@@ -107,9 +107,11 @@ namespace fcf {
                 ++itGrpSpec
                 ) {
               std::map<unsigned int, SpecificatorTypeInfo>::const_iterator itSpec = typeSpecs.find(itGrpSpec->first);
+              /*
               for(std::map<unsigned int, SpecificatorTypeInfo>::const_iterator ittest = typeSpecs.begin(); ittest != typeSpecs.end(); ++ittest ){
                 std::cout << ittest->first << std::endl;
               }
+              */
               if (itSpec == typeSpecs.end()) {
                 continue;
               }
@@ -315,8 +317,9 @@ namespace fcf {
           if (Type<container_type>::flat) {
             
         std::tuple<TPack...> t = {a_pack...};
-        std::cout << std::get<0>(t) << std::endl;
-        std::cout << std::get<1>(t) << std::endl;
+        //std::cout << std::get<0>(t) << std::endl;
+        //std::cout << std::get<1>(t) << std::endl;
+        
             
             typedef void (*function_type)(pointer_type, pointer_type, TPack...);
             function_type func = (function_type)a_function;
@@ -888,7 +891,7 @@ struct ValueSetter{
 template <typename... TPack>
 void testFunction(TPack&&... a_args){
   std::tuple<TPack...> t = {a_args...};
-  std::cout << std::get<0>(t) << std::endl;
+  //std::cout << std::get<0>(t) << std::endl;
   ValueSetter()(a_args...);
   
 }
@@ -899,7 +902,7 @@ void deepIndexCall(){
   {
     int v = 1;
     testFunction(v);
-    std::cout << v << std::endl;
+    //std::cout << v << std::endl;
   }
   {
     DeepIndexCallTest::Array array(10, 1, 10);

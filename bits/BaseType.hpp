@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__BASE_TYPE_HPP___
 #define ___FCF_BASIS__BITS__BASE_TYPE_HPP___
 
+#include <type_traits>
 #include "TypeId.hpp"
 
 namespace fcf {
@@ -11,7 +12,12 @@ namespace fcf {
     static TypeId<Ty>* typeId;
     BaseType(){
       if (!typeId) {
-        typeId = new TypeId<Ty>();
+        typedef typename TypeIdSource<Ty>::basic_type basic_type;
+        unsigned int baseTypeIndex = 0;
+        if(!std::is_same<Ty, basic_type>::value){
+          baseTypeIndex = BaseType<basic_type>().index();
+        }
+        typeId = new TypeId<Ty>(baseTypeIndex);
       }
     }
     const std::string& name() {
