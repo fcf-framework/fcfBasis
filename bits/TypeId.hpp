@@ -29,6 +29,7 @@ namespace fcf {
                                             ? (a_baseIndex & 0x00ffffff)
                                             : Details::typeStorage.size() + 1;
               _typeIndex += typeCounter | 0x01000000;
+            } else {
             }
             Details::typeStorage[name()] = _typeIndex;
           } else {

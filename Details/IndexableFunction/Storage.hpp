@@ -2,6 +2,8 @@
 #define ___FCF_BASIS__DETAILS__INDEXABLE_FUNCTION__STORAGE_HPP___
 
 #include <set>
+#include <unordered_map>
+#include <map>
 #include "../../macro.hpp"
 #include "../../bits/IndexableFunctionInfo.hpp"
 namespace fcf {
@@ -17,10 +19,23 @@ namespace fcf {
         };
         typedef std::map<BaseFunctionSignature, ShortSignature> ShortSignatures;
 
-        struct FunctionGroup {
-          std::map<unsigned int, ShortSignatures > specificators;
+        struct CallerInfo {
+          BaseFunctionSignature callerSignature;
+          unsigned int          index;
+          unsigned int          adaptSpecificator;
+          void*                 caller;
         };
-        typedef std::map< std::string, FunctionGroup > Groups;
+
+        typedef std::unordered_map<BaseFunctionSignature, CallerInfo> Callers;
+        //typedef std::map<BaseFunctionSignature, CallerInfo> Callers;
+
+        struct FunctionGroup {
+          std::map<unsigned int, ShortSignatures>   specificators;
+          Callers                                   callers;
+        };
+
+        typedef std::unordered_map<std::string, FunctionGroup > Groups;
+        //typedef std::map<std::string, FunctionGroup > Groups;
 
         struct Storage {
           Indexes                              indexes;

@@ -5,6 +5,7 @@
 #include "./IndexableFunctionSpace.hpp"
 #include "./IndexableFunctionInfo.hpp"
 #include "../Details/IndexableFunction/Storage.hpp"
+#include "../Details/IndexableFunction/SimpleCaller.hpp"
 #include "../Details/TypeIndex.hpp"
 
 namespace fcf {
@@ -92,15 +93,19 @@ namespace fcf {
           sfs.code       = a_sourceCode;
           sfi.spaces.push_back(sfs);
         }
+        fcf::Details::IndexableFunction::Groups::iterator groupIt = Details::IndexableFunction::getStorage().groups.find(a_name);
+        if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
+          std::pair<std::string, fcf::Details::IndexableFunction::FunctionGroup> item;
+          item.first = a_name;
+          groupIt = Details::IndexableFunction::getStorage().groups.insert(item).first;
+        }
+
+        BaseFunctionSignature scs = fs.getSimpleCallSignature();
+        groupIt->second.callers[scs] = Details::IndexableFunction::CallerInfo{scs, index, 0, (void*)Details::IndexableFunction::getSimpleCaller(a_function)};
+
         if (TPlaceHolderSignature::enable) {
-          unsigned int specificatorIndex = 
+          unsigned int specificatorIndex =
             ::fcf::Details::TypeIndex< typename TPlaceHolderSignature::specificator_type >::index();
-          fcf::Details::IndexableFunction::Groups::iterator groupIt = Details::IndexableFunction::getStorage().groups.find(a_name);
-          if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
-            std::pair<std::string, fcf::Details::IndexableFunction::FunctionGroup> item;
-            item.first = a_name;
-            groupIt = Details::IndexableFunction::getStorage().groups.insert(item).first;
-          }
           std::map<unsigned int, Details::IndexableFunction::ShortSignatures>::iterator itGrpSpec =
             groupIt->second.specificators.find(specificatorIndex);
           if (itGrpSpec == groupIt->second.specificators.end()) {

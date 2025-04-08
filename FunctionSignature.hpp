@@ -2,6 +2,7 @@
 #define ___FCF_BASIS__FUNCTION_SIGNATURE_HPP___
 #include <cstring>
 #include <vector>
+#include <functional>
 #include "Type.hpp"
 
 #ifndef FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE
@@ -55,6 +56,24 @@ namespace fcf {
           operator=(a_value);
         }
 
+        static unsigned int getSimpleCallType(unsigned int a_type) {
+          a_type &= ~0x0e000000; // remove const flag; remove lvalue ref; remove rvalue ref;
+          a_type |= 0x0a000000;  // add const lvalue ref
+          return a_type;
+        }
+
+        BaseFunctionSignature& applySimpleCallSignature(){
+          for(unsigned int i = 0; i < this->asize; ++i){
+            this->pacodes[i] = getSimpleCallType(this->pacodes[i]);
+          }
+          return *this;
+        }
+
+        BaseFunctionSignature getSimpleCallSignature(){
+          BaseFunctionSignature result(*this);
+          return result.applySimpleCallSignature();
+        }
+
         BaseFunctionSignature& operator=(const BaseFunctionSignature& a_value) {
           asize = a_value.asize;
           rcode = a_value.rcode;
@@ -72,10 +91,12 @@ namespace fcf {
           if (rcode != a_value.rcode) {
             return rcode < a_value.rcode;
           }
-          if (asize != a_value.asize){
+          const unsigned int size = asize < a_value.asize ? asize : a_value.asize;
+          const int res = memcmp(pacodes, a_value.pacodes, size * sizeof(unsigned int));
+          if (res == 0){
             return asize < a_value.asize;
           }
-          return memcmp(pacodes, a_value.pacodes, asize * sizeof(unsigned int) ) < 0;
+          return res < 0;
         }
 
         bool operator==(const BaseFunctionSignature& a_value) const{
@@ -121,5 +142,20 @@ namespace fcf {
       };
 
 } // fcf namespace
+
+  template <>
+  struct std::hash<fcf::BaseFunctionSignature>
+  {
+    std::size_t operator()(const fcf::BaseFunctionSignature& a_signature) const
+    {
+      size_t res = 17;
+      res = res * 31 + a_signature.rcode;
+      for(int i = 0; i < a_signature.asize; ++i){
+        res = res * 31 + a_signature.pacodes[i];
+      }
+      return res;
+    }
+  };
+
 
 #endif // #ifndef ___FCF_SIGNATURE__FUNCTION_SIGNATURE_HPP___

@@ -33,6 +33,13 @@
   #endif //#ifndef FCF_DEFAULT_CONVERT_SPECIFICATOR
 
 
+  #ifndef FCF_RAW_DATA_SPECIFICATOR
+    #define FCF_RAW_DATA_SPECIFICATOR
+    namespace fcf {
+      struct RawDataSpecificator { };
+    } // fcf namespace
+  #endif //#ifndef FCF_RAW_DATA_SPECIFICATOR
+
   #ifndef FCF_MIN_MAX_SPECIFICATOR
     #define FCF_MIN_MAX_SPECIFICATOR
     namespace fcf {

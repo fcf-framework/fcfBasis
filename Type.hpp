@@ -122,6 +122,35 @@ namespace fcf {
   };
 
   template <typename Ty>
+  struct Type<Ty, RawDataSpecificator> {
+    enum { enable = false };
+    unsigned int type(const Ty* a_source){
+      return 0;
+    }
+    void* resolve(Ty& a_source){
+      return 0;
+    }
+  };
+
+ 
+
+  /// Example for Type<Ty, RawDataSpecificator>
+  ///
+  /// template <>
+  /// struct Type<SomeType, RawDataSpecificator> {
+  ///   enum { enable = true };
+  ///
+  ///   unsigned int type(const SomeType* a_source){
+  ///     return a_source ? a_source->type : Type<int>().index();
+  ///   }
+  ///
+  ///   void* resolve(SomeType& a_source){
+  ///     return &a_source.value;
+  ///   }
+  /// };
+  ///
+
+  template <typename Ty>
   struct Type<Ty, MinMaxSpecificator> {
     enum { enable = false };
   };

@@ -215,6 +215,17 @@ namespace fcf {
     _index = Type< typename Type<Ty, MemoryTypeSpecificator>::type >().index();
   }
 
+  template <>
+  struct Type<Variant, RawDataSpecificator> {
+    enum { enable = true };
+    unsigned int type(const Variant* a_source){
+      return a_source ? a_source->typeIndex() : 0;
+    }
+    void* resolve(Variant& a_source){
+      return a_source.ptr();
+    }
+  };
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__VARIANT_HPP___

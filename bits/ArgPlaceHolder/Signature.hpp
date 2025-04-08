@@ -28,9 +28,6 @@ namespace fcf {
 }
 namespace fcf {
   namespace ArgPlaceHolder {
-    
-    
-    
 
     template <typename TSpecificator = Nop, typename TFullFunctionType = Nop, typename TResult = Nop, typename... TArgPack>
     struct Signature {
