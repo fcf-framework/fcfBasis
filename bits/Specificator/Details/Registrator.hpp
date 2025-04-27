@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__DETAILS__SPECIFICATOR__REGISTRATOR_HPP___
-#define ___FCF_BASIS__DETAILS__SPECIFICATOR__REGISTRATOR_HPP___
+#ifndef ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__REGISTRATOR_HPP___
+#define ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__REGISTRATOR_HPP___
 
 #include "../../Type.hpp"
 #include "Storage.hpp"
@@ -23,4 +23,5 @@ namespace fcf {
 } // fcf namespace
 
 
-#endif // #ifndef ___FCF_BASIS__DETAILS__SPECIFICATOR__REGISTRATOR_HPP___
+#endif // #ifndef ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__REGISTRATOR_HPP___
+

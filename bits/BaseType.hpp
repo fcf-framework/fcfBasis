@@ -29,6 +29,23 @@ namespace fcf {
     const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
       return typeId->specificators();
     }
+
+    void* toConverter(){
+      return typeId->toConverter();
+    }
+
+    void* fromConverter(){
+      return typeId->fromConverter();
+    }
+
+    const Details::TypeInfo::Converters& converters(){
+      return typeId->converters();
+    }
+
+    const Details::TypeInfo::Converters& backConverters(){
+      return typeId->backConverters();
+    }
+
   };
 
   template <typename Ty> TypeId<Ty>* BaseType<Ty>::typeId;

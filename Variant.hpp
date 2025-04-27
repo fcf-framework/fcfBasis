@@ -7,7 +7,8 @@
 #include "macro.hpp"
 #include "Details/MaxTypesSize.hpp"
 #include "Details/Variant/Wrapper.hpp"
-#include "Details/Convert/Storage.hpp"
+#include "Details/Variant/NobodyWrapper.hpp"
+#include "bits/Convert/convertRuntime.hpp"
 #include "Type.hpp"
 #include "specificators.hpp"
 #include "bits/registry.hpp"
@@ -16,6 +17,8 @@ namespace fcf {
 
   class FCF_BASIS_DECL_EXPORT Variant {
     public:
+      typedef void (*convert_function_type)(void*, const void*);
+
       enum { 
         innerBufferSize = fcf::Details::Basis::MaxTypesSize<
                           typename Details::Basis::Variant::Wrapper<std::string>,
@@ -31,12 +34,26 @@ namespace fcf {
 
       Variant(const Variant& a_variant);
 
-      ~Variant();
+      Variant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
+      ~Variant();
+/*
+      template <typename TDestinationType, typename TSourceType>
+      static convert_function_type getConverter();
+
+      static convert_function_type getConverter(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex);
+*/
       Variant& operator=(const Variant& a_variant);
 
       template <typename Ty>
       Variant& operator=(const Ty& a_value);
+
+      void set(const Variant& a_variant);
+
+      template <typename Ty>
+      void set(const Ty& a_value);
+
+      void set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       void clear();
 
@@ -63,6 +80,8 @@ namespace fcf {
       template <typename Ty>
       void _set(const Ty& a_value);
 
+      void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+
       char         _mem[innerBufferSize];
       unsigned int _index;
       void*        _ptr;
@@ -72,6 +91,12 @@ namespace fcf {
     Variant::Variant()
       : _index(0)
       , _ptr(0) {
+    }
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    Variant::Variant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
+      _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
     }
   #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
@@ -91,7 +116,29 @@ namespace fcf {
       _destroy();
     }
   #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+/*
+  template <typename TDestinationType, typename TSourceType>
+  Variant::convert_function_type Variant::getConverter(){
+    return static_cast<ConvertFunction>(::fcf::convert<TDestinationType, TSourceType>);
+      Details::Basis::Convert::ConvertIndex ci{ Type<TSourceType>().index(), Type<TDestinationType>().index()};
+      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
+      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
+        return 0;
+      }
+      return (convert_function_type)it->second;
+  }
 
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    Variant::convert_function_type Variant::getConverter(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex){
+      Details::Basis::Convert::ConvertIndex ci{ a_sourceTypeIndex, a_destinationTypeIndex};
+      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
+      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
+        return 0;
+      }
+      return (convert_function_type)it->second;
+    }
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+*/
   #ifdef FCF_BASIS_IMPLEMENTATION
     Variant& Variant::operator=(const Variant& a_variant) 
     {
@@ -112,6 +159,34 @@ namespace fcf {
     _set(a_value);
     return *this;
   }
+
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    void Variant::set(const Variant& a_variant) 
+    {
+      _destroy();
+      _ptr = 0;
+      _index = 0;
+      _clone(a_variant);
+    }
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
+  template <typename Ty>
+  void Variant::set(const Ty& a_value)
+  {
+    _destroy();
+    _ptr = 0;
+    _index = 0;
+    _set(a_value);
+  }
+
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    void Variant::set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
+      _destroy();
+      _ptr = 0;
+      _index = 0;
+      _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
+    }
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     void Variant::clear() {
@@ -145,13 +220,8 @@ namespace fcf {
     if (typeIndex() == Type<TResult>().index()){
       return *(result_type*)ptr();
     } else {
-      Details::Basis::Convert::ConvertIndex ci{ typeIndex(), Type<result_type>().index()};
-      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
-      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
-        throw std::runtime_error(std::string() + "Can't find conver function");
-      }
       result_type result;
-      it->second(&result, ptr());
+      convertRuntimeByDestination(&result, ptr(), typeIndex());
       *this = result;
       return *(result_type*)ptr();
     }
@@ -162,13 +232,8 @@ namespace fcf {
     if (typeIndex() == Type<TResult>().index()){
       return *(TResult*)ptr();
     } else {
-      Details::Basis::Convert::ConvertIndex ci{ typeIndex(), Type<TResult>().index()};
-      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
-      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
-        throw std::runtime_error(std::string() + "Can't find conver function");
-      }
       TResult result;
-      it->second(&result, ptr());
+      convertRuntimeByDestination(&result, ptr(), typeIndex());
       return result;
     }
   }
@@ -215,14 +280,59 @@ namespace fcf {
     _index = Type< typename Type<Ty, MemoryTypeSpecificator>::type >().index();
   }
 
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    void Variant::_set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
+      a_typeIndex = a_typeIndex & ~0x0e000000;
+      a_sourceTypeIndex = a_sourceTypeIndex & ~0x0e000000;
+      if (a_sourceTypeIndex == a_typeIndex){
+        a_sourceTypeIndex = 0;
+      }
+      ::fcf::Details::Basis::Variant::NobodyWrapperStorage::iterator wrapperIt = ::fcf::Details::Basis::Variant::getStorage().find(a_typeIndex);
+      if (wrapperIt == ::fcf::Details::Basis::Variant::getStorage().end()) {
+        throw std::runtime_error("The specified type index is not registered for the object variant");
+      }
+      size_t wsize = wrapperIt->second->size();
+      if (wsize > innerBufferSize) {
+        if (a_sourceData && !(!!a_sourceTypeIndex || !!a_convertFunction)) {
+          _ptr = wrapperIt->second->clone(a_sourceData);
+        } else {
+          _ptr = wrapperIt->second->create();
+        }
+      } else {
+        if (a_sourceData && !(!!a_sourceTypeIndex || !!a_convertFunction)) {
+          _ptr = wrapperIt->second->clone(&_mem[0], a_sourceData);
+        } else {
+          _ptr = wrapperIt->second->create(&_mem[0]);
+        }
+      }
+      _index = a_typeIndex;
+
+      if (a_sourceTypeIndex || !a_convertFunction){
+        convertRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions);
+      } else if (a_convertFunction){
+        a_convertFunction(ptr(), a_sourceData, a_convertOptions);
+      }
+    }
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
   template <>
   struct Type<Variant, RawDataSpecificator> {
     enum { enable = true };
-    unsigned int type(const Variant* a_source){
-      return a_source ? a_source->typeIndex() : 0;
-    }
-    void* resolve(Variant& a_source){
-      return a_source.ptr();
+    const void* operator()(const Variant* a_value = 0, unsigned int* a_type = 0, bool* a_invariantType = 0, bool* a_mayBeUnintialized = 0){
+      if (a_invariantType){
+        *a_invariantType = true;
+      }
+      if (a_mayBeUnintialized){
+        *a_mayBeUnintialized = true;
+      }
+      if (a_value) {
+        if (a_type) {
+          *a_type = a_value->typeIndex();
+        }
+        return a_value->ptr();
+      } else {
+        return 0;
+      }
     }
   };
 

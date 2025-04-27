@@ -8,6 +8,18 @@
 #include "SpecificatorTypeInfo.hpp"
 
 namespace fcf {
+  namespace Details {
+    namespace Basis {
+      namespace Convert {
+        struct ConvertStorage;
+        template <typename TSource, typename TDestination>
+        void setConverter(Details::Basis::Convert::ConvertStorage* a_storage);
+      }
+    }
+  }
+}
+
+namespace fcf {
 
     template <typename TContainer, typename TSpecificator>
     class SpecificatorTypeRegistrator;
@@ -19,47 +31,48 @@ namespace fcf {
         template <typename TContainer, typename TSpecificator>
         friend class SpecificatorTypeRegistrator;
 
-        TypeId(unsigned int a_baseIndex = 0)
-          : _typeName(TypeIdSource<Ty>().name()) {
-          Details::TypeStorage::iterator it = Details::typeStorage.find(name());
-          if (it == Details::typeStorage.end()){
-            _typeIndex = TypeIdSource<Ty>().index();
-            if (TypeIdSource<Ty>().autoIndex()) {
-              unsigned int typeCounter = a_baseIndex
-                                            ? (a_baseIndex & 0x00ffffff)
-                                            : Details::typeStorage.size() + 1;
-              _typeIndex += typeCounter | 0x01000000;
-            } else {
-            }
-            Details::typeStorage[name()] = _typeIndex;
-          } else {
-            if (name() != it->first){
-              throw std::runtime_error(
-                std::string() +
-                "Re-registration of the data type. "
-                "The structure of fcf::TypeIdSource is announced once with different names like " + name() + "."
-                );
-            }
-            _typeIndex = it->second;
-          }
+        template <typename TSource, typename TDestination>
+        friend void ::fcf::Details::Basis::Convert::setConverter();
+
+        TypeId(unsigned int a_baseIndex = 0) {
+          Details::TypeInfo initTypeInfo = { TypeIdSource<Ty>().index(), TypeIdSource<Ty>().name()};
+          _ti = Details::typeStorage.insert(initTypeInfo, TypeIdSource<Ty>().autoIndex(), a_baseIndex);
         }
 
         const std::string& name() {
-          return _typeName;
+          return _ti->name;
         }
 
         unsigned int index() {
-          return _typeIndex;
+          return _ti->index;
         }
 
         const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
-          return _typeSpecificators;
+          return _ti->specificators;
+        }
+
+        void* toConverter(){
+          return _ti->toConverter;
+        }
+
+        void* fromConverter(){
+          return _ti->fromConverter;
+        }
+
+        const Details::TypeInfo::Converters& converters(){
+          return _ti->converters;
+        }
+
+        const Details::TypeInfo::Converters& backConverters(){
+          return _ti->backConverters;
         }
 
       private:
-        unsigned int                                  _typeIndex;
-        std::string                                   _typeName;
-        std::map<unsigned int, SpecificatorTypeInfo>  _typeSpecificators;
+
+        void addSpecificator(unsigned int a_specificatorIndex, const fcf::SpecificatorTypeInfo& a_sti) {
+          _ti->specificators[a_specificatorIndex] = a_sti;
+        }
+        Details::TypeInfo* _ti;
     };
 
 } // fcf namespace

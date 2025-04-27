@@ -1,3 +1,4 @@
+/*
 #ifndef ___FCF_BASIS__DETAILS__CONVERT__STORAGE_HPP___
 #define ___FCF_BASIS__DETAILS__CONVERT__STORAGE_HPP___
 
@@ -46,3 +47,4 @@ namespace fcf {
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__DETAILS__CONVERT__STORAGE_HPP___
+*/

@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__DETAILS__SPECIFICATOR__STORAGE_HPP___
-#define ___FCF_BASIS__DETAILS__SPECIFICATOR__STORAGE_HPP___
+#ifndef ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__STORAGE_HPP___
+#define ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__STORAGE_HPP___
 
 #include <map>
 #include <memory>
@@ -41,5 +41,5 @@ namespace fcf {
   } // Details namesace
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__DETAILS__SPECIFICATOR__STORAGE_HPP___
+#endif // #ifndef ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__STORAGE_HPP___
 

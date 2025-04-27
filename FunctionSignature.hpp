@@ -56,6 +56,10 @@ namespace fcf {
           operator=(a_value);
         }
 
+        static unsigned int getSimpleType(unsigned int a_type) {
+          return a_type & (~0x0e000000); // remove const flag; remove lvalue ref; remove rvalue ref;
+        }
+
         static unsigned int getSimpleCallType(unsigned int a_type) {
           a_type &= ~0x0e000000; // remove const flag; remove lvalue ref; remove rvalue ref;
           a_type |= 0x0a000000;  // add const lvalue ref
@@ -100,10 +104,7 @@ namespace fcf {
         }
 
         bool operator==(const BaseFunctionSignature& a_value) const{
-          if (rcode != a_value.rcode) {
-            return false;
-          }
-          if (asize != a_value.asize){
+          if (rcode != a_value.rcode || asize != a_value.asize) {
             return false;
           }
           return memcmp(pacodes, a_value.pacodes, asize * sizeof(unsigned int)) == 0;

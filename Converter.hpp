@@ -1,3 +1,4 @@
+/*
 #ifndef ___FCF_BASIS__CONVERTER_HPP___
 #define ___FCF_BASIS__CONVERTER_HPP___
 
@@ -66,4 +67,4 @@ namespace fcf {
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__CONVERTER_HPP___
-
+*/

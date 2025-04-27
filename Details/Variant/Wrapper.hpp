@@ -11,14 +11,16 @@ namespace fcf {
         template <typename Ty>
         class Wrapper : public BaseWrapper {
           public:
+            Wrapper() {
+            }
             Wrapper(const Ty& a_value) 
               : data(a_value) {
             }
             virtual BaseWrapper* clone() {
               return new Wrapper(data);
             };
-            virtual void clone(char* a_mem) {
-              new (a_mem) Wrapper(data);
+            virtual BaseWrapper* clone(char* a_mem) {
+              return new (a_mem) Wrapper(data);
             };
             Ty data;
         };

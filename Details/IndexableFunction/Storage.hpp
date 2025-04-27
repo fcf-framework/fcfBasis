@@ -26,12 +26,14 @@ namespace fcf {
           void*                 caller;
         };
 
+        typedef std::map<BaseFunctionSignature, CallerInfo>           CallersMap;
+        typedef std::unordered_map<unsigned int, CallersMap>          CallersTree;
         typedef std::unordered_map<BaseFunctionSignature, CallerInfo> Callers;
-        //typedef std::map<BaseFunctionSignature, CallerInfo> Callers;
 
         struct FunctionGroup {
           std::map<unsigned int, ShortSignatures>   specificators;
           Callers                                   callers;
+          CallersTree                               callersTree;
         };
 
         typedef std::unordered_map<std::string, FunctionGroup > Groups;

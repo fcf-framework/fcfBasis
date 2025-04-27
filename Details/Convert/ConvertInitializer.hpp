@@ -1,3 +1,4 @@
+/*
 #ifndef ___FCF_BASIS__DETAILS__CONVERT__CONVERT_INITIALIZER_HPP___
 #define ___FCF_BASIS__DETAILS__CONVERT__CONVERT_INITIALIZER_HPP___
 
@@ -7,7 +8,7 @@
 
 namespace fcf {
   template <typename TResult, typename TSource>
-  TResult convert(const TSource& a_source);
+  TResult convert(const TSource& a_source, void* a_options = 0);
 } // fcf namespace
 
 namespace fcf {
@@ -31,6 +32,7 @@ namespace fcf {
           ci.source = ::fcf::Type<TSource>().index();
           ci.destination = ::fcf::Type<TDestination>().index();
           a_storage->functions[ci] = (ConverFunction)convertType<TDestination, TSource>;
+          Type<TSource>().typeId->_ti->converters[ci.destination] = (void*)convertType<TDestination, TSource>;
         }
 
         template <typename TType=Nop, typename... TTypesPack>
@@ -82,3 +84,4 @@ namespace fcf {
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__DETAILS__CONVERT__CONVERT_INITIALIZER_HPP___
+*/

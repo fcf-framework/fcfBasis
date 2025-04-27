@@ -24,7 +24,19 @@ namespace fcf {
         sti.argc = Details::SpecificatorTypeRegistrator::getArgCount(
                               Type<TContainer, TSpecificator>::resolve) - 1;
         sti.resolve = (void*)Type<TContainer, TSpecificator>::resolve;
-        Type<TContainer>().typeId->_typeSpecificators[specificatorIndex] = sti;
+        Type<TContainer>().typeId->addSpecificator(specificatorIndex, sti);
+      }
+  };
+
+  template <typename TContainer>
+  class SpecificatorTypeRegistrator<TContainer, RawDataSpecificator> {
+    public:
+      SpecificatorTypeRegistrator() {
+        Type<TContainer>().typeId->_ti->rawDataResolver = (RawDataSpecificator::function_type)resolver;
+      }
+
+      static const void* resolver(const void* a_value = 0, unsigned int* a_type = 0, bool* a_invariantType = 0, bool* a_mayBeUnintialized = 0){
+        return Type<TContainer, RawDataSpecificator>()((TContainer*)a_value, a_type, a_invariantType, a_mayBeUnintialized);
       }
   };
 

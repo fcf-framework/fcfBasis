@@ -88,10 +88,12 @@
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type &&), (FCF_BASIS_EXPAND a_templateArgs), a_name + "&&", a_index | (2 << (24 + 1) ), a_type) \
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type *), (FCF_BASIS_EXPAND a_templateArgs),  a_name + "*", a_index | (8 << (24 + 1) ), a_type) \
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type **), (FCF_BASIS_EXPAND a_templateArgs), a_name + "**", a_index | (16 << (24 + 1) ), a_type) \
-      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type &), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "&", a_index | (1 << (24 + 1) ) | (4 << (24 + 1)), a_type) \
-      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type &&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "&&", a_index | (2 << (24 + 1) ) | (4 << (24 + 1)), a_type)\
-      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type *), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "*", a_index | (8 << (24 + 1)) | (4 << (24 + 1)), a_type) \
-      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type **), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**", a_index | (16 << (24 + 1) ) | (4 << (24 + 1)), a_type)
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type &), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "&", a_index | ((1 | 4) << (24 + 1) ), a_type) \
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type &&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "&&", a_index | ((2 | 4) << (24 + 1)), a_type)\
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type *), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "*", a_index | ((8 | 4) << (24 + 1)), a_type) \
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type **), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**", a_index | (16 << (24 + 1) ) | (4 << (24 + 1)), a_type)\
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type *&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "*&", a_index | ((1 | 4 | 8) << (24 + 1)), a_type)\
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type **&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**&", a_index | ((1 | 4 | 16) << (24 + 1)), a_type)
   #endif // #ifndef FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES
 
   #ifndef FCF_TYPEID_REGISTRY_IMPL_DECL_INITVAR
@@ -103,7 +105,9 @@
         fcf::TypeInitializer<a_type&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
         fcf::TypeInitializer<a_type&&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
         fcf::TypeInitializer<const a_type*> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type*&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
         fcf::TypeInitializer<const a_type**> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type**&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
         fcf::TypeInitializer<const a_type&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
         fcf::TypeInitializer<const a_type&&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
       }

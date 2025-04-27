@@ -1,18 +1,14 @@
 #ifndef ___FCF_BASIS__CONVERT_HPP___
 #define ___FCF_BASIS__CONVERT_HPP___
 
-#include "Converter.hpp"
-
-namespace fcf {
-
-  template <typename TResult, typename TSource>
-  TResult convert(const TSource& a_source){
-    TResult result;
-    Converter<TResult, TSource>()(result, a_source);
-    return result;
-  }
-
-} // fcf namespace
+#include "bits/Convert/ConvertOptions.hpp"
+#include "bits/Convert/ConvertFunction.hpp"
+#include "bits/Convert/Converter.hpp"
+#include "bits/Convert/ConvertInitializer.hpp"
+#include "bits/Convert/convert.hpp"
+#include "bits/Convert/convertRuntime.hpp"
+#include "bits/Convert/getConvertFunction.hpp"
+#include "bits/Convert/Details/registry.hpp"
 
 #endif // #ifndef ___FCF_BASIS__CONVERT_HPP___
 
