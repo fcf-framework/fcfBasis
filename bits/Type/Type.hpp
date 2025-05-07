@@ -6,8 +6,9 @@
 #include <vector>
 #include "../../Nop.hpp"
 #include "../Specificator/specificators.hpp"
-#include "../BaseType.hpp"
-#include "../BaseContainerType.hpp"
+#include "../../Details/typeStorage.hpp"
+#include "BaseType.hpp"
+#include "BaseContainerType.hpp"
 
 namespace fcf {
 
@@ -167,5 +168,6 @@ namespace fcf {
   };
 
 } // fcf namespace
+
 
 #endif // #ifndef ___FCF__BASIS__BITS__TYPE__TYPE_HPP___

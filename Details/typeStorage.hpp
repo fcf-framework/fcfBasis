@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__DETAILS__TYPE_STORAGE_HPP___
 #define ___FCF_BASIS__DETAILS__TYPE_STORAGE_HPP___
 
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <memory>
@@ -17,11 +18,10 @@ namespace fcf {
 
       unsigned int                                      index;
       std::string                                       name;
-      void*                                             toConverter;
-      void*                                             fromConverter;
       RawDataSpecificator::function_type                rawDataResolver;
-      std::unordered_map<unsigned int, ConvertFunction> converters;
-      std::unordered_map<unsigned int, ConvertFunction> backConverters;
+      DynamicIteratorSpecificator::function_type        dynamicIteratorResolver;
+      Converters                                        converters;
+      Converters                                        backConverters;
       std::map<unsigned int, SpecificatorTypeInfo>      specificators;
     };
 
@@ -61,7 +61,7 @@ namespace fcf {
               typeIndex &= 0xff000000;
               typeIndex |= typeCounter | 0x01000000;
             };
-            SPTypeInfo spti(new TypeInfo({typeIndex, a_ti.name, 0, 0, 0}));
+            SPTypeInfo spti(new TypeInfo({typeIndex, a_ti.name, 0, 0}));
             nit = _ns.insert({spti->name, spti}).first;
             _is.insert({spti->index, spti});
           }

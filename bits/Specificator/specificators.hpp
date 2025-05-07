@@ -1,6 +1,8 @@
 #ifndef ___FCF__BASIS__BITS__SPECIFICATOR__SPECIFICATORS_HPP___
 #define ___FCF__BASIS__BITS__SPECIFICATOR__SPECIFICATORS_HPP___
 
+#include "DynamicIteratorInfoDecl.hpp"
+
 namespace fcf {
 
   #ifndef FCF_ITERATOR_SPECIFICATOR
@@ -40,6 +42,20 @@ namespace fcf {
     #define FCF_VALUE_SPECIFICATOR
     struct ValueSpecificator { };
   #endif //#ifndef FCF_VALUE_SPECIFICATOR
+
+  #ifndef FCF_DYNAMIC_ITERATOR_SPECIFICATOR
+    #define FCF_DYNAMIC_ITERATOR_SPECIFICATOR
+
+    struct DynamicIteratorSpecificator {
+      enum { enable = false };
+      typedef bool (*function_type)(void* a_container, DynamicIteratorInfo* a_info);
+    };
+
+  #endif //#ifndef FCF_DYNAMIC_ITERATOR_SPECIFICATOR
+  
+  
+  
+
 
 } // fcf namespace
 

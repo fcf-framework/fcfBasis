@@ -23,6 +23,10 @@
 
 #include "ArgPlaceHolder.hpp"
 
+#include "bits/Type/DynamicIteratorSpecificator/registry.hpp"
+
+#include "DynamicIterator.hpp"
+
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___
 
 

@@ -1,7 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__CONVERT__DETAILS__CONVERT_INITIALIZER_HPP___
 #define ___FCF_BASIS__BITS__CONVERT__DETAILS__CONVERT_INITIALIZER_HPP___
 
-#include "convertWrapper.hpp"
+#include "setConverter.hpp"
 #include "../Converter.hpp"
 #include "../../../bits/Type/Type.hpp"
 
@@ -9,12 +9,6 @@ namespace fcf {
   namespace Details {
     namespace Basis {
       namespace Convert {
-
-        template <typename TSource, typename TDestination>
-        inline void setConverter() {
-          Type<TSource>().typeId->_ti->converters[::fcf::Type<TDestination>().index()] = (ConvertFunction)Details::Basis::Convert::convertWrapper<TDestination, TSource>;
-          Type<TDestination>().typeId->_ti->backConverters[::fcf::Type<TSource>().index()] = (ConvertFunction)Details::Basis::Convert::convertWrapper<TDestination, TSource>;
-        }
 
         template <typename TType=Nop, typename... TTypesPack>
         struct ConvertInitializerHandlerL1 {

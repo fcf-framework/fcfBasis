@@ -9,6 +9,8 @@ void indexTypesTest();
 void deepIndexCallCaller();
 void deepIndexSimpleCaller();
 void deepIndexNearestCaller();
+void iteratorTest();
+void dynamicIteratorTest();
 
 int main(int a_argc, char* a_argv[]){
   deepIndexCallCaller();
@@ -18,5 +20,7 @@ int main(int a_argc, char* a_argv[]){
   deepIndexNearestCaller();
   variantTest();
   indexTypesTest();
+  iteratorTest();
+  dynamicIteratorTest();
   return 0;
 }

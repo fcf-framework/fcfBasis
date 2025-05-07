@@ -1,0 +1,6 @@
+#ifndef ___FCF__BASIS__TEMPLATE_SPECIALIZATION_INITIALIZER_HPP___
+#define ___FCF__BASIS__TEMPLATE_SPECIALIZATION_INITIALIZER_HPP___
+
+#include "bits/TemplateSpecializationInitializer.hpp"
+
+#endif // #ifndef ___FCF__BASIS__TEMPLATE_SPECIALIZATION_INITIALIZER_HPP___

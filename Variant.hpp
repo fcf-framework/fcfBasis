@@ -72,6 +72,9 @@ namespace fcf {
       template <typename TResult>
       TResult get() const;
 
+      template <typename TType>
+      bool is() const;
+
     private:
       void _destroy();
 
@@ -244,6 +247,11 @@ namespace fcf {
       throw std::runtime_error(std::string() + "The type saved in the variant is not '" + Type<TResult>().name() + "' type");
     }
     return *(TResult*)ptr();
+  }
+
+  template <typename TType>
+  bool Variant::is() const{
+    return typeIndex() == Type<TType>().index();
   }
 
   #ifdef FCF_BASIS_IMPLEMENTATION

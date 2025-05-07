@@ -6,7 +6,7 @@
 #include "./IndexableFunctionInfo.hpp"
 #include "../Details/IndexableFunction/Storage.hpp"
 #include "../Details/IndexableFunction/SimpleCaller.hpp"
-#include "../Details/TypeIndex.hpp"
+#include "Type/Details/TypeIndex.hpp"
 
 namespace fcf {
 
@@ -110,7 +110,7 @@ namespace fcf {
 
         if (TPlaceHolderSignature::enable) {
           unsigned int specificatorIndex =
-            ::fcf::Details::TypeIndex< typename TPlaceHolderSignature::specificator_type >::index();
+            ::fcf::Details::Basis::Type::TypeIndex< typename TPlaceHolderSignature::specificator_type >::index();
           std::map<unsigned int, Details::IndexableFunction::ShortSignatures>::iterator itGrpSpec =
             groupIt->second.specificators.find(specificatorIndex);
           if (itGrpSpec == groupIt->second.specificators.end()) {
