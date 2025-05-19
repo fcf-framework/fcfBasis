@@ -34,6 +34,7 @@ namespace fcf {
   class Variant;
 } // fcf namespace
 FCF_TYPEID_REGISTRY(fcf::Variant,        "fcf::Variant",         31);
+FCF_SPECIFICATOR_REGISTRY(fcf::Variant, fcf::RawDataSpecificator);
 
 FCF_TYPEID_REGISTRY(fcf::Nop, "fcf::Nop", 0);
 

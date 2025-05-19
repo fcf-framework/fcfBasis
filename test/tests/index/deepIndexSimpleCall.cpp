@@ -325,41 +325,60 @@ namespace fcf {
       };
 
 
-      template <int ArgIndex, int ArgSize, typename ... TArgPack>
+      template <int ArgIndex, int ArgSize, int MaxSize>
       struct IndexableDynamicCallProcessor{
         template <typename TDynamicCallInfo, typename TArgs>
         void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args){
-          typedef typename std::remove_cv<
-                    typename std::remove_pointer<
-                      typename std::remove_cv<
-                        typename std::remove_reference<
-                          decltype(std::get<ArgIndex>( std::tuple<TArgPack*...>() ))
-                        >::type
-                      >::type
-                    >::type
-                  >::type arg_type;
-          unsigned int currentType = BaseFunctionSignature::getSimpleType(Type<arg_type>().index());
+          typedef std::pair<void*, unsigned int> arg_type;
           while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions.get()[a_stateOffset].index == ArgIndex){
             if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_RESOLVE) {
-              arg_type& ref = *(arg_type*)a_args[ArgIndex];
-              void* rawptr = (void*)Type<arg_type, RawDataSpecificator>()(&ref);
-              currentType = a_procInfo.conversions.get()[a_stateOffset].type;
-              a_args[ArgIndex] = (arg_type*)rawptr;
+              int& ref = *(int*)a_args[ArgIndex].first;
+              RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+              void* rawptr = (void*)converter(&ref, 0, 0, 0);
+              a_args[ArgIndex].first = (arg_type*)rawptr;
+              a_args[ArgIndex].second = a_procInfo.conversions.get()[a_stateOffset].type;
             } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_CONVERT) {
-              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type, (const void*)a_args[ArgIndex], currentType, (ConvertOptions*)0, (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
-              currentType = a_procInfo.conversions.get()[a_stateOffset].type;
-              a_args[ArgIndex] = (arg_type*)arg.ptr();
-              IndexableDynamicCallProcessor<ArgIndex, ArgSize, TArgPack...>()(a_procInfo, a_stateOffset + 1, a_args);
+              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type,
+                          (const void*)a_args[ArgIndex].first, 
+                          a_args[ArgIndex].second, 
+                          (ConvertOptions*)0, 
+                          (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
+              a_args[ArgIndex].first = (arg_type*)arg.ptr();
+              a_args[ArgIndex].second = a_procInfo.conversions.get()[a_stateOffset].type;
+              IndexableDynamicCallProcessor<ArgIndex, ArgSize, MaxSize>()(a_procInfo, a_stateOffset + 1, a_args);
+              return;
+            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_FLAT_ITERATOR) {
+              typedef bool (*converter_type)(void*, DynamicIteratorInfo*);
+              converter_type converter = (converter_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+              DynamicIteratorInfo dii;
+              dii.flags = DIF_BEGIN | DIF_GET_VALUE | DIF_GET_TYPE;
+              if (!converter(a_args[ArgIndex].first, &dii)){
+                throw std::runtime_error("Failed to get left bound of argument");
+              }
+              unsigned int subtype = dii.type;
+              void* left = dii.value;
+              dii.flags = DIF_END | DIF_GET_VALUE;
+              if (!converter(a_args[ArgIndex].first, &dii)){
+                throw std::runtime_error("Failed to get left bound of argument");
+              }
+              void* right = dii.value;
+              a_args.resize(ArgSize+1);
+              std::memmove((void*)&a_args[ArgIndex+2], (void*)&a_args[ArgIndex+1], (ArgSize-(ArgIndex+1)) * sizeof(arg_type));
+              a_args[ArgIndex].first = &left;
+              a_args[ArgIndex].second = subtype;
+              a_args[ArgIndex+1].first = &right;
+              a_args[ArgIndex+1].second = subtype;
+              IndexableDynamicCallProcessor<ArgIndex, ArgSize+1, MaxSize>()(a_procInfo, a_stateOffset + 1, a_args);
               return;
             }
             ++a_stateOffset;
           }
-          IndexableDynamicCallProcessor<ArgIndex + 1, ArgSize, TArgPack...>()(a_procInfo, a_stateOffset, a_args);
+          IndexableDynamicCallProcessor<ArgIndex + 1, ArgSize, MaxSize>()(a_procInfo, a_stateOffset, a_args);
         }
       };
 
-      template <int ArgSize, typename ... TArgPack>
-      struct IndexableDynamicCallProcessor<ArgSize, ArgSize, TArgPack...>{
+      template <int ArgSize, int MaxSize>
+      struct IndexableDynamicCallProcessor<ArgSize, ArgSize, MaxSize>{
         template <typename TDynamicCallInfo, typename TArgs>
         void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args){
           typedef typename Sequence<0, ArgSize-1>::type sequence_type;
@@ -369,10 +388,18 @@ namespace fcf {
         private:
           template <typename TDynamicCallInfo, typename TArgs, int... SequencePack>
           void _call(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args, Sequence<0, SequencePack...> a_sequence){
-            typedef void (*simple_function_type)(void*, const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type& ...);
+            typedef void (*simple_function_type)(void*, decltype(SequencePack)& ...);
             simple_function_type caller = (simple_function_type)a_procInfo.caller;
-            caller(a_procInfo.function, *(const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type*)a_args[SequencePack]...);
+            caller(a_procInfo.function, *(int*)a_args[SequencePack].first...);
           }
+      };
+
+      template <int ArgIndex, int MaxSize>
+      struct IndexableDynamicCallProcessor<ArgIndex, MaxSize, MaxSize>{
+        template <typename TDynamicCallInfo, typename TArgs>
+        void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args){
+          throw std::runtime_error("Argument expansion limit exceeded");
+        }
       };
 
       template <size_t ArgSize, size_t BufferIndex, size_t SourceIndex, bool InitArg = true, bool InitNextArg = true>
@@ -397,8 +424,9 @@ namespace fcf {
           }
           while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions.get()[a_stateOffset].index == BufferIndex) {
             if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_RESOLVE) {
+              RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)a_procInfo.conversions.get()[a_stateOffset].converter;
               arg_type& ref = *(arg_type*)a_args[BufferIndex];
-              void* rawptr = (void*)Type<arg_type, RawDataSpecificator>()(&ref);
+              void* rawptr = (void*)converter(&ref,0,0,0);
               currentType = a_procInfo.conversions.get()[a_stateOffset].type;
               a_args[BufferIndex] = (arg_type*)rawptr;
             } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_CONVERT) {
@@ -463,8 +491,10 @@ namespace fcf {
         void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, const TArgPack&... a_argPack){
           StaticVector<sizeof...(TArgPack)*2, void*> args(sizeof...(TArgPack));
           IndexableDynamicCallProcessor2<sizeof...(TArgPack), 0, 0>()(a_procInfo, args, 0, 0, a_argPack...);
-          //StaticVector<sizeof...(TArgPack)*2, void*> args{ (void*)&a_argPack... };
-          //IndexableDynamicCallProcessor<0, sizeof...(TArgPack), TArgPack...>()(a_procInfo, 0, args);
+
+          //typedef std::pair<void*, unsigned int> arg_type;
+          //StaticVector<sizeof...(TArgPack)*2, arg_type> args{ arg_type((void*)&a_argPack, Type<TArgPack>().index())... };
+          //IndexableDynamicCallProcessor<0, sizeof...(TArgPack), (sizeof...(TArgPack) + 2)*2>()(a_procInfo, 0, args);
         }
       };
 
@@ -577,17 +607,22 @@ namespace fcf {
           unsigned int originSourceSimpleTypeIndex = Type<current_arg_type>().index();
 
           bool invariantRawType = false;
+          RawDataSpecificator::function_type rawDataResolver = 0;
           DynamicIteratorSpecificator::function_type dynamicIteratorResolver = 0;
           unsigned int invariantIndex = 0;
           void* aptr = a_iasd.strictSource ? (void*) (*a_iasd.arguments)[Index] : (void*)0;
           if (originSourceSimpleTypeIndex == sourceSimpleTypeIndex) {
-            Type<current_arg_type, RawDataSpecificator>()((current_arg_type*)aptr, &invariantIndex, &invariantRawType);
+            rawDataResolver = Type<current_arg_type>().rawDataResolver();
+            if (rawDataResolver) {
+              rawDataResolver((current_arg_type*)aptr, &invariantIndex, &invariantRawType, 0);
+            }
             dynamicIteratorResolver = Type<current_arg_type>().dynamicIteratorResolver();
           } else {
             const fcf::Details::TypeInfo* ti = Details::typeStorage.get(sourceSimpleTypeIndex);
             if (ti) {
               if (ti->rawDataResolver) {
-                ti->rawDataResolver(aptr, &invariantIndex, &invariantRawType, 0);
+                rawDataResolver = ti->rawDataResolver;
+                rawDataResolver(aptr, &invariantIndex, &invariantRawType, 0);
               }
               dynamicIteratorResolver = ti->dynamicIteratorResolver;
             }
@@ -600,6 +635,7 @@ namespace fcf {
             curnode.conversion.index = Index;
             curnode.conversion.type = invariantIndex;
             curnode.conversion.mode = CM_RESOLVE;
+            curnode.conversion.converter = (void*)rawDataResolver;
             if (a_node){
               a_node->next = &curnode;
               curnode.prev = a_node;
@@ -1060,7 +1096,7 @@ void deepIndexSimpleCaller(){
 
   //duration test
   {
-    unsigned long long defaultSize = 1000000;
+    unsigned long long defaultSize = 100000;
     unsigned long long defaultSizeForDetect = defaultSize * 100;
     unsigned long long defaultDuration = 0;
     {

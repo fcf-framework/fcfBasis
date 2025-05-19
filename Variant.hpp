@@ -348,5 +348,6 @@ namespace fcf {
 
 } // fcf namespace
 
+
 #endif // #ifndef ___FCF_BASIS__VARIANT_HPP___
 

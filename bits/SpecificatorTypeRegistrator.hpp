@@ -32,7 +32,7 @@ namespace fcf {
   class SpecificatorTypeRegistrator<TContainer, RawDataSpecificator> {
     public:
       SpecificatorTypeRegistrator() {
-        Type<TContainer>().typeId->_ti->rawDataResolver = (RawDataSpecificator::function_type)resolver;
+        Type<TContainer>()._info->rawDataResolver = (RawDataSpecificator::function_type)resolver;
       }
 
       static const void* resolver(const void* a_value = 0, unsigned int* a_type = 0, bool* a_invariantType = 0, bool* a_mayBeUnintialized = 0){

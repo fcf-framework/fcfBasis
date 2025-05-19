@@ -55,6 +55,10 @@ namespace fcf {
         return _info->dynamicIteratorResolver;
       }
 
+      RawDataSpecificator::function_type rawDataResolver(){
+        return _info->rawDataResolver;
+      }
+
     protected:
       static Details::TypeInfo* _info;
   };
