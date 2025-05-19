@@ -49,7 +49,7 @@ namespace fcf {
       }
 
       static bool resolver(void* a_container, DynamicIteratorInfo* a_dynamicIteratorInfo){
-        return Type<TContainer, DynamicIteratorSpecificator>()(*(TContainer*)a_container, *a_dynamicIteratorInfo);
+        return Type<TContainer, DynamicIteratorSpecificator>()((TContainer*)a_container, a_dynamicIteratorInfo);
       }
   };
 

@@ -65,6 +65,57 @@ void iteratorTest(){
     FCF_TEST(arr[0], 1);
     FCF_TEST(arr[1], 2);
     FCF_TEST(arr[2], 3);
-
   }
+  {
+    typedef std::vector<int> container_type;
+    container_type c;
+    c.push_back(1);
+    c.push_back(2);
+    c.push_back(3);
+    unsigned int typeIndex = fcf::Type<container_type>().index();
+    const fcf::Details::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
+    fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
+    FCF_TEST((void*)resolver != 0, (void*)resolver)
+    fcf::DynamicIteratorInfo dii;
+    dii.flags = fcf::DIF_RESOLVE | fcf::DIF_GET_KEY | fcf::DIF_GET_VALUE | fcf::DIF_GET_TYPE | fcf::DIF_GET_SIZE;
+    dii.key = (int)1;
+    bool res = resolver(&c, &dii);
+    FCF_TEST(res == true, res);
+    FCF_TEST(dii.key.as<int>() == 1, dii.key.as<int>());
+    FCF_TEST(*(int*)dii.value == 2, *(int*)dii.value);
+    FCF_TEST(dii.type == fcf::Type<int>().index(), dii.type);
+    FCF_TEST(dii.size == 3, dii.size);
+  }
+
+  {
+    typedef std::vector<int> container_type;
+    container_type c;
+    c.push_back(1);
+    c.push_back(2);
+    c.push_back(3);
+    unsigned int typeIndex = fcf::Type<container_type>().index();
+    const fcf::Details::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
+    fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
+    FCF_TEST((void*)resolver != 0, (void*)resolver)
+    fcf::DynamicIteratorInfo dii;
+    dii.flags = fcf::DIF_RESOLVE | fcf::DIF_GET_KEY | fcf::DIF_GET_VALUE | fcf::DIF_GET_TYPE | fcf::DIF_GET_SIZE;
+    dii.key = (int)10;
+    bool res = resolver(&c, &dii);
+    FCF_TEST(res == false);
+    res = resolver(&c, &dii);
+    FCF_TEST(res == false);
+  }
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+

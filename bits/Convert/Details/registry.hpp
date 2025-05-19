@@ -17,6 +17,7 @@ namespace fcf {
                             unsigned int,
                             long long,
                             unsigned long long,
+                            unsigned long int,
                             float,
                             double,
                             long double,

@@ -18,7 +18,7 @@ namespace fcf {
 
       typedef SetDynamicIterator<TContainer>     self_type;
 
-      enum { is_flat_value = false };
+      enum { is_flat = false };
 
       SetDynamicIterator(container_type& a_container, key_type a_position) {
         this->_pcontiner = &a_container;

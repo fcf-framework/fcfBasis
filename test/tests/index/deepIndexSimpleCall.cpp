@@ -9,11 +9,117 @@
 #include "../../../functions.hpp"
 #include "../../../FunctionSignature.hpp"
 #include "../../../convert.hpp"
+#include "../../../bits/Specificator/DynamicIteratorFlags.hpp"
+#include "../../../bits/Specificator/DynamicIteratorInfo.hpp"
+#include "../../../DynamicIterator.hpp"
 #include "../../../Details/IndexableFunction/Storage.hpp"
 
 bool enable_log = false;
 namespace fcf {
 
+  template <typename Ty>
+  class Foreach;
+
+  namespace Details {
+    namespace Basis {
+      template <typename TTuple, int Index, int Size>
+      class TupleForeach{
+        public:
+          template <typename TFunctor>
+          void operator()(TTuple& a_container, TFunctor& a_functor){
+            a_functor(a_container, Index, std::get<Index>(a_container));
+            TupleForeach<TTuple, Index+1, Size>()(a_container, a_functor);
+          }
+      };
+      template <typename TTuple, int Size>
+      class TupleForeach<TTuple, Size, Size>{
+        public:
+          template <typename TFunctor>
+          void operator()(TTuple& a_container, TFunctor& a_functor){
+          }
+      };
+    }
+  }
+
+  template <typename... TPack>
+  class Foreach< std::tuple<TPack...> >{
+    public:
+      typedef std::tuple<TPack...> container_type;
+      template <typename TFunctor>
+      void operator()(container_type& a_container, TFunctor& a_functor){
+        Details::Basis::TupleForeach<container_type, 0, sizeof...(TPack)>()(a_container, a_functor);
+      }
+  };
+
+  template <typename TContainer, typename TFunctor>
+  void foreach(TContainer& a_container, TFunctor& a_functor){
+    Foreach<TContainer>()(a_container, a_functor);
+  }
+
+  template <size_t Index, bool Unsafe = false, typename TUnsafe = Nop>
+  struct ArgGetter{
+    template <typename TArg1, typename... TArgPack>
+    inline auto operator()(TArg1 a_arg, TArgPack... a_argPack) -> decltype( ArgGetter<Index-1, Unsafe, TUnsafe>()(a_argPack...) ) {
+      return ArgGetter<Index-1, Unsafe, TUnsafe>()(a_argPack...);
+    }
+  };
+
+  template <size_t Index, typename TUnsafe>
+  struct ArgGetter<Index, true, TUnsafe>{
+    template <typename TArg1, typename... TArgPack>
+    inline auto operator()(TArg1 a_arg, TArgPack... a_argPack) -> decltype( ArgGetter<Index-1, true, TUnsafe>()(a_argPack...) ) {
+      return ArgGetter<Index-1, true, TUnsafe>()(a_argPack...);
+    }
+    inline TUnsafe operator()() {
+      return TUnsafe();
+    }
+  };
+
+  template <typename TUnsafe>
+  struct ArgGetter<0, false, TUnsafe> {
+    template <typename TArg1, typename... TArgPack>
+    inline TArg1 operator()(TArg1 a_arg, TArgPack... a_argPack) {
+      return a_arg;
+    }
+  };
+
+
+  template <typename TUnsafe>
+  struct ArgGetter<0, true, TUnsafe> {
+    template <typename TArg1, typename... TArgPack>
+    inline TArg1 operator()(TArg1 a_arg, TArgPack... a_argPack) {
+      return a_arg;
+    }
+    inline TUnsafe operator()() {
+      return TUnsafe();
+    }
+  };
+
+  namespace Details {
+    namespace Basis {
+
+      template <typename Ty = Nop, typename... TPack>
+      class StaticVariantCopyArgs {
+        public:
+          template <typename TPtrDest>
+          void operator()(TPtrDest* a_dst, Ty a_arg1, TPack... a_pack){
+            *a_dst = a_arg1;
+            StaticVariantCopyArgs<TPack...>()(++a_dst, a_pack...);
+          }
+      };
+
+      template <typename Ty>
+      class StaticVariantCopyArgs<Ty> {
+        public:
+          template <typename TPtrDest>
+          void operator()(TPtrDest* a_dst, Ty a_arg1){
+            *a_dst = a_arg1;
+          }
+      };
+    }
+  }
+  
+  
   template<size_t StaticSize, typename Ty, bool CopyForMemory = true>
   class StaticVector {
     enum {
@@ -34,7 +140,6 @@ namespace fcf {
         _sdata = a_size;
       }
 
-
       StaticVector(size_t a_size, const Ty& a_fill)
         : _sdata(0)
         , _cdata(StaticSize) {
@@ -42,6 +147,24 @@ namespace fcf {
         _reserve((int)(a_size / STEP) * STEP + STEP);
         _sdata = a_size;
         std::fill(_pdata, _pdata + _sdata, a_fill);
+      }
+
+      template <typename... TPack>
+      StaticVector(TPack... a_pack) 
+        : _sdata(0)
+        , _cdata(StaticSize) {
+        _pdata = &_adata[0];
+        _reserve((int)(sizeof...(TPack) / STEP) * STEP + STEP);
+        _sdata = sizeof...(TPack);
+        Details::Basis::StaticVariantCopyArgs<TPack...>()(_pdata, a_pack...);
+      }
+
+      Ty& operator[](size_t a_index){
+        return _pdata[a_index];
+      }
+
+      const Ty& operator[](size_t a_index) const{
+        return _pdata[a_index];
       }
 
       Ty* get(){
@@ -95,6 +218,13 @@ namespace fcf {
         return *this;
       }
 
+      void resize(size_t a_size) {
+        if (_cdata < a_size) {
+          _reserve((int)(a_size / STEP) * STEP + STEP);
+        }
+        _sdata = a_size;
+      }
+
     private:
       void _reserve(size_t a_size){
         if (a_size > StaticSize) {
@@ -130,6 +260,7 @@ namespace fcf {
     CM_RESOLVE = 1,
     CM_CONVERT = 2,
     CM_DYNAMIC_RESOLVE = 3,
+    CM_FLAT_ITERATOR = 4,
   };
 
   struct Conversion {
@@ -193,90 +324,247 @@ namespace fcf {
         Conversion      conversion;
       };
 
+
       template <int ArgIndex, int ArgSize, typename ... TArgPack>
       struct IndexableDynamicCallProcessor{
-        template <typename TDynamicCallInfo, typename TArgTuple>
-        void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgTuple& a_argTuple){
-          typedef typename std::remove_cv<typename std::remove_pointer<typename std::remove_cv<typename std::remove_reference<decltype(std::get<ArgIndex>(a_argTuple))>::type>::type>::type>::type arg_type;
+        template <typename TDynamicCallInfo, typename TArgs>
+        void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args){
+          typedef typename std::remove_cv<
+                    typename std::remove_pointer<
+                      typename std::remove_cv<
+                        typename std::remove_reference<
+                          decltype(std::get<ArgIndex>( std::tuple<TArgPack*...>() ))
+                        >::type
+                      >::type
+                    >::type
+                  >::type arg_type;
           unsigned int currentType = BaseFunctionSignature::getSimpleType(Type<arg_type>().index());
           while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions.get()[a_stateOffset].index == ArgIndex){
             if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_RESOLVE) {
-              arg_type& ref = (arg_type&)*std::get<ArgIndex>(a_argTuple);
+              arg_type& ref = *(arg_type*)a_args[ArgIndex];
               void* rawptr = (void*)Type<arg_type, RawDataSpecificator>()(&ref);
               currentType = a_procInfo.conversions.get()[a_stateOffset].type;
-              std::get<ArgIndex>(a_argTuple) = (arg_type*)rawptr;
+              a_args[ArgIndex] = (arg_type*)rawptr;
             } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_CONVERT) {
-              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type, (const void*)std::get<ArgIndex>(a_argTuple), currentType, (ConvertOptions*)0, (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
+              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type, (const void*)a_args[ArgIndex], currentType, (ConvertOptions*)0, (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
               currentType = a_procInfo.conversions.get()[a_stateOffset].type;
-              std::get<ArgIndex>(a_argTuple) = (arg_type*)arg.ptr();
-              IndexableDynamicCallProcessor<ArgIndex, ArgSize, TArgPack...>()(a_procInfo, a_stateOffset + 1, a_argTuple);
+              a_args[ArgIndex] = (arg_type*)arg.ptr();
+              IndexableDynamicCallProcessor<ArgIndex, ArgSize, TArgPack...>()(a_procInfo, a_stateOffset + 1, a_args);
               return;
             }
             ++a_stateOffset;
           }
-          IndexableDynamicCallProcessor<ArgIndex + 1, ArgSize, TArgPack...>()(a_procInfo, a_stateOffset, a_argTuple);
+          IndexableDynamicCallProcessor<ArgIndex + 1, ArgSize, TArgPack...>()(a_procInfo, a_stateOffset, a_args);
         }
       };
 
       template <int ArgSize, typename ... TArgPack>
       struct IndexableDynamicCallProcessor<ArgSize, ArgSize, TArgPack...>{
-        template <typename TDynamicCallInfo, typename TArgTuple>
-        void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgTuple& a_argTuple){
+        template <typename TDynamicCallInfo, typename TArgs>
+        void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args){
           typedef typename Sequence<0, ArgSize-1>::type sequence_type;
-          _call(a_procInfo, a_stateOffset, a_argTuple, sequence_type());
+          _call(a_procInfo, a_stateOffset, a_args, sequence_type());
         }
 
         private:
-          template <typename TDynamicCallInfo, typename TArgTuple, int... SequencePack>
-          void _call(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgTuple& a_argTuple, Sequence<0, SequencePack...> a_sequence){
+          template <typename TDynamicCallInfo, typename TArgs, int... SequencePack>
+          void _call(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args, Sequence<0, SequencePack...> a_sequence){
             typedef void (*simple_function_type)(void*, const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type& ...);
             simple_function_type caller = (simple_function_type)a_procInfo.caller;
-            caller(a_procInfo.function, *std::get<SequencePack>(a_argTuple)...);
+            caller(a_procInfo.function, *(const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type*)a_args[SequencePack]...);
           }
+      };
+
+      template <size_t ArgSize, size_t BufferIndex, size_t SourceIndex, bool InitArg = true, bool InitNextArg = true>
+      struct IndexableDynamicCallProcessor2{
+        template <typename TDynamicCallInfo, typename TBuffer, typename... TArgPack>
+        inline void operator()(const TDynamicCallInfo& a_procInfo, TBuffer& a_args, unsigned int a_currentType, size_t a_stateOffset, const TArgPack& ... a_argPack){
+          typedef decltype(ArgGetter<SourceIndex, true, int*>()(a_argPack...)) ref_arg_type;
+          typedef typename std::remove_cv<
+                    typename std::remove_pointer<
+                      typename std::remove_cv<
+                        typename std::remove_reference<
+                          ref_arg_type
+                        >::type
+                      >::type
+                    >::type
+                  >::type arg_type;
+          unsigned int currentType = BaseFunctionSignature::getSimpleType(Type<arg_type>().index());
+          if (InitArg) {
+            a_args[BufferIndex] = ArgGetter<SourceIndex, true, int*>()((void*)&a_argPack...);
+          } else {
+            currentType = a_currentType;
+          }
+          while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions.get()[a_stateOffset].index == BufferIndex) {
+            if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_RESOLVE) {
+              arg_type& ref = *(arg_type*)a_args[BufferIndex];
+              void* rawptr = (void*)Type<arg_type, RawDataSpecificator>()(&ref);
+              currentType = a_procInfo.conversions.get()[a_stateOffset].type;
+              a_args[BufferIndex] = (arg_type*)rawptr;
+            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_CONVERT) {
+              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type, (const void*)a_args[BufferIndex], currentType, (ConvertOptions*)0, (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
+              currentType = a_procInfo.conversions.get()[a_stateOffset].type;
+              a_args[BufferIndex] = (arg_type*)arg.ptr();
+              IndexableDynamicCallProcessor2<ArgSize, BufferIndex, SourceIndex, false, InitNextArg>()(a_procInfo, a_args, currentType, a_stateOffset + 1, a_argPack...);
+              return;
+            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_FLAT_ITERATOR) {
+              typedef bool (*converter_type)(void*, DynamicIteratorInfo*);
+              converter_type converter = (converter_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+              DynamicIteratorInfo dii;
+              dii.flags = DIF_BEGIN | DIF_GET_VALUE | DIF_GET_TYPE;
+              if (!converter(a_args[BufferIndex], &dii)){
+                throw std::runtime_error("Failed to get left bound of argument");
+              }
+              unsigned int subtype = dii.type;
+              void* left = dii.value;
+              dii.flags = DIF_END | DIF_GET_VALUE;
+              if (!converter(a_args[BufferIndex], &dii)){
+                throw std::runtime_error("Failed to get left bound of argument");
+              }
+              void* right = dii.value;
+              a_args[BufferIndex] = &left;
+              a_args.resize(ArgSize+1);
+              a_args[BufferIndex+1] = &right;
+              IndexableDynamicCallProcessor2<ArgSize+1, BufferIndex, SourceIndex, false, false>()(a_procInfo, a_args, subtype, a_stateOffset + 1, a_argPack...);
+              return;
+            }
+            ++a_stateOffset;
+          }
+          IndexableDynamicCallProcessor2<ArgSize, BufferIndex+1, InitNextArg ? SourceIndex+1 : SourceIndex, InitNextArg>()(a_procInfo, a_args, currentType, a_stateOffset, a_argPack...);
+        }
+      };
+
+      template <size_t ArgSize, size_t SourceIndex, bool InitArg, bool InitNextArg>
+      struct IndexableDynamicCallProcessor2<ArgSize, ArgSize, SourceIndex, InitArg, InitNextArg>{
+        public:
+          template <typename TDynamicCallInfo, typename TBuffer, typename... TArgPack>
+          inline void operator()(const TDynamicCallInfo& a_procInfo, TBuffer& a_args, size_t a_stateOffset, const TArgPack& ... a_argPack){
+            typedef typename Sequence<0, ArgSize-1>::type sequence_type;
+            _call(a_procInfo, a_args, sequence_type());
+          }
+        protected:
+          template <typename TDynamicCallInfo, typename TBuffer, int... SequencePack>
+          inline void _call(const TDynamicCallInfo& a_procInfo, TBuffer& a_args, Sequence<0, SequencePack...> a_sequence){
+            typedef void (*simple_function_type)(void*, const decltype(SequencePack)& ...);
+            simple_function_type caller = (simple_function_type)a_procInfo.caller;
+            caller(a_procInfo.function, *(int*)a_args[SequencePack]...);
+          }
+      };
+
+      template <size_t SourceIndex, size_t BufferIndex, bool InitArg, bool InitNextArg>
+      struct IndexableDynamicCallProcessor2<8, BufferIndex, SourceIndex, InitArg, InitNextArg>{
+        template <typename TDynamicCallInfo, typename TBuffer, typename... TArgPack>
+        inline void operator()(const TDynamicCallInfo& a_procInfo, TBuffer& a_args, size_t a_stateOffset, const TArgPack& ... a_argPack){
+        }
       };
 
       struct DynamicCallProcessor{
         template <typename TDynamicCallInfo, typename... TArgPack>
         void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, const TArgPack&... a_argPack){
-          typedef typename Sequence<0, sizeof...(a_argPack)>::type sequence_type;
-          std::tuple<const typename std::remove_cv<typename std::remove_reference<TArgPack>::type>::type*...> tuple(&a_argPack...);
-          IndexableDynamicCallProcessor<0, sizeof...(a_argPack), TArgPack...>()(a_procInfo, a_stateOffset, tuple);
+          StaticVector<sizeof...(TArgPack)*2, void*> args(sizeof...(TArgPack));
+          IndexableDynamicCallProcessor2<sizeof...(TArgPack), 0, 0>()(a_procInfo, args, 0, 0, a_argPack...);
+          //StaticVector<sizeof...(TArgPack)*2, void*> args{ (void*)&a_argPack... };
+          //IndexableDynamicCallProcessor<0, sizeof...(TArgPack), TArgPack...>()(a_procInfo, 0, args);
         }
       };
 
       template <typename TTuple, typename TType, int Index>
-      struct TupleElementReplacer {
-        typedef typename Sequence<0, Index-1>::type                               left_sequence_type;
-        typedef typename Sequence<Index+1, std::tuple_size<TTuple>::value >::type right_sequence_type;
+      struct TupleElementReplace {
+        typedef typename Sequence<0, Index-1>::type                                   left_sequence_type;
+        typedef typename Sequence<Index+1, std::tuple_size<TTuple>::value - 1 >::type right_sequence_type;
         template<int... LeftSeqPack, int... RightSeqPack>
-        auto gen(Sequence<0, LeftSeqPack...>, Sequence<Index+1, RightSeqPack...>) -> decltype(std::tuple<
-              decltype(std::get<LeftSeqPack>(TTuple()))...,
+        static auto gen(Sequence<0, LeftSeqPack...>, Sequence<Index+1, RightSeqPack...>) -> decltype(std::tuple<
+              typename std::remove_reference< decltype(std::get<LeftSeqPack>(TTuple())) >::type...,
               TType,
-              decltype(std::get<RightSeqPack>(TTuple()))...
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
             >()) {
           return std::tuple<
-              decltype(std::get<LeftSeqPack>(TTuple()))...,
+              typename std::remove_reference< decltype(std::get<LeftSeqPack>(TTuple())) >::type...,
               TType,
-              decltype(std::get<RightSeqPack>(TTuple()))...
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
             >();
         }
         typedef decltype(gen(left_sequence_type(), right_sequence_type())) type;
       };
 
-      template <typename TPtrTuple>
+      template <typename TTuple, typename TType>
+      struct TupleElementReplace<TTuple, TType, 0> {
+        typedef typename Sequence<1, std::tuple_size<TTuple>::value - 1 >::type right_sequence_type;
+        template<int... LeftSeqPack, int... RightSeqPack>
+        static auto gen(Sequence<1, RightSeqPack...>) -> decltype(std::tuple<
+              TType,
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
+            >()) {
+          return std::tuple<
+              TType,
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
+            >();
+        }
+        typedef decltype(gen(right_sequence_type())) type;
+      };
+
+
+      template <typename TTuple, size_t TupleSize, typename TType, int Index>
+      struct TupleElementInsertImpl {
+        typedef typename Sequence<0, Index-1>::type                                 left_sequence_type;
+        typedef typename Sequence<Index, std::tuple_size<TTuple>::value - 1 >::type right_sequence_type;
+        template<int... LeftSeqPack, int... RightSeqPack>
+        static auto gen(Sequence<0, LeftSeqPack...>, Sequence<Index, RightSeqPack...>) -> decltype(std::tuple<
+              typename std::remove_reference< decltype(std::get<LeftSeqPack>(TTuple())) >::type...,
+              TType,
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
+            >()) {
+          return std::tuple<
+              typename std::remove_reference< decltype(std::get<LeftSeqPack>(TTuple())) >::type...,
+              TType,
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
+            >();
+        }
+        typedef decltype(gen(left_sequence_type(), right_sequence_type())) type;
+      };
+
+      template <typename TTuple, size_t TupleSize, typename TType>
+      struct TupleElementInsertImpl<TTuple, TupleSize, TType, 0> {
+        typedef typename Sequence<0, std::tuple_size<TTuple>::value - 1 >::type right_sequence_type;
+        template<int... RightSeqPack>
+        static auto gen(Sequence<0, RightSeqPack...>) -> decltype(std::tuple<
+              TType,
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
+            >()) {
+          return std::tuple<
+              TType,
+              typename std::remove_reference< decltype(std::get<RightSeqPack>(TTuple())) >::type...
+            >();
+        }
+        typedef decltype(gen(right_sequence_type())) type;
+      };
+
+
+      template <typename TTuple, typename TType>
+      struct TupleElementInsertImpl<TTuple, 0, TType, 0> {
+        typedef std::tuple<TType> type;
+      };
+
+      template <typename TTuple, typename TType, int Index>
+      struct TupleElementInsert {
+        typedef typename TupleElementInsertImpl<TTuple, std::tuple_size<TTuple>::value, TType, Index>::type type;
+      };
+
+
+
       struct InvariantArgSelectorData{
         const char*                                       name;
         DynamicCall*                                      result;
         fcf::Details::IndexableFunction::Groups::iterator groupIterator;
         BaseFunctionSignature&                            functionSignature;
-        TPtrTuple&                                        tuple;
+        StaticVector<8, void*>*                           arguments;
         bool                                              strictSource;
         bool                                              dynamicCaller;
       };
 
       template <int Index, int Size, typename TPtrTuple>
       struct InvariantArgSelector {
-        inline void operator()(ConversionNode* a_node, InvariantArgSelectorData<TPtrTuple>& a_iasd, bool a_ignoreOrigin, bool a_dynamicCaller){
+        inline void operator()(ConversionNode* a_node, InvariantArgSelectorData& a_iasd, bool a_ignoreOrigin, bool a_dynamicCaller){
           unsigned int sourceTypeIndex       = a_iasd.functionSignature.pacodes[Index];
           unsigned int sourceSimpleTypeIndex = BaseFunctionSignature::getSimpleType(sourceTypeIndex);
 
@@ -289,13 +577,19 @@ namespace fcf {
           unsigned int originSourceSimpleTypeIndex = Type<current_arg_type>().index();
 
           bool invariantRawType = false;
+          DynamicIteratorSpecificator::function_type dynamicIteratorResolver = 0;
           unsigned int invariantIndex = 0;
+          void* aptr = a_iasd.strictSource ? (void*) (*a_iasd.arguments)[Index] : (void*)0;
           if (originSourceSimpleTypeIndex == sourceSimpleTypeIndex) {
-            Type<current_arg_type, RawDataSpecificator>()(std::get<Index>(a_iasd.tuple), &invariantIndex, &invariantRawType);
+            Type<current_arg_type, RawDataSpecificator>()((current_arg_type*)aptr, &invariantIndex, &invariantRawType);
+            dynamicIteratorResolver = Type<current_arg_type>().dynamicIteratorResolver();
           } else {
             const fcf::Details::TypeInfo* ti = Details::typeStorage.get(sourceSimpleTypeIndex);
-            if (ti && ti->rawDataResolver) {
-              ti->rawDataResolver(std::get<Index>(a_iasd.tuple), &invariantIndex, &invariantRawType, 0);
+            if (ti) {
+              if (ti->rawDataResolver) {
+                ti->rawDataResolver(aptr, &invariantIndex, &invariantRawType, 0);
+              }
+              dynamicIteratorResolver = ti->dynamicIteratorResolver;
             }
           }
 
@@ -396,7 +690,6 @@ namespace fcf {
                     }
                   }
                 }
-
               } // if (leftIt != treeIt->second.end()) end
             } // if (treeIt != a_iasd.groupIterator->second.callersTree.end()) end
           } // if (a_iasd.strictSource) end
@@ -432,12 +725,70 @@ namespace fcf {
               a_node->next = 0;
             }
           }
+
+          if (dynamicIteratorResolver) {
+            DynamicIteratorInfo dii;
+            dii.flags = DIF_INFO | DIF_GET_FLAT | DIF_GET_TYPE;
+            dynamicIteratorResolver(0, &dii);
+            if (dii.flat) {
+              typedef Nop* pnop_type;
+              typedef typename TupleElementReplace<TPtrTuple, pnop_type, Index>::type rep_tuple_type;
+              typedef typename TupleElementInsert<rep_tuple_type, pnop_type, Index>::type pair_tuple_type;
+
+              BaseFunctionSignature ofs = a_iasd.functionSignature;
+              BaseFunctionSignature fs = BaseFunctionSignature(a_iasd.functionSignature.asize + 1);
+              fs.rcode = ofs.rcode;
+              std::copy(&a_iasd.functionSignature.pacodes[0],
+                        &a_iasd.functionSignature.pacodes[Index],
+                        &fs.pacodes[0]
+                        );
+
+              unsigned int ptrTypeIndex = dii.type;
+              if (ptrTypeIndex & (8 << (24 + 1)) ) {
+                ptrTypeIndex |= (16 << (24 + 1));
+              } else {
+                ptrTypeIndex |= (8 << (24 + 1));
+              }
+              fs.pacodes[Index] = a_iasd.functionSignature.getSimpleCallType(ptrTypeIndex);
+              fs.pacodes[Index+1] = a_iasd.functionSignature.getSimpleCallType(ptrTypeIndex);
+
+              std::copy(&a_iasd.functionSignature.pacodes[Index+1],
+                        &a_iasd.functionSignature.pacodes[a_iasd.functionSignature.asize],
+                        &fs.pacodes[Index+2]
+                        );
+
+              ConversionNode curnode;
+              curnode.prev = 0;
+              curnode.next = 0;
+              curnode.conversion.index     = Index;
+              curnode.conversion.type      = ptrTypeIndex;
+              curnode.conversion.mode      = CM_FLAT_ITERATOR;
+              curnode.conversion.converter = (void*)dynamicIteratorResolver;
+              if (a_node){
+                a_node->next = &curnode;
+                curnode.prev = a_node;
+              }
+
+              StaticVector<8, void*> arguments((size_t)Size+1);
+              if (a_iasd.strictSource) {
+                std::copy(&(*a_iasd.arguments)[0], &(*a_iasd.arguments)[Index], &arguments[0]);
+                arguments[Index] = 0;
+                arguments[Index+1] = 0;
+                std::copy(&(*a_iasd.arguments)[Index+1], &(*a_iasd.arguments)[Size], &arguments[Index+2]);
+              } else {
+                std::fill(&arguments[0], &arguments[Size+1], (void*)0);
+              }
+              InvariantArgSelectorData repiasd
+                   = { a_iasd.name, a_iasd.result, a_iasd.groupIterator, fs, &arguments, a_iasd.strictSource};
+              InvariantArgSelector<Index+2, Size+1, pair_tuple_type>()(&curnode, repiasd, a_ignoreOrigin, a_dynamicCaller);
+            }
+          }
         } // method end
       };
 
       template <int Size, typename TPtrTuple>
       struct InvariantArgSelector<Size, Size, TPtrTuple >{
-        inline void operator()(ConversionNode* a_node, InvariantArgSelectorData<TPtrTuple>& a_iasd, bool a_ignoreOrigin, bool a_dynamicCaller){
+        inline void operator()(ConversionNode* a_node, InvariantArgSelectorData& a_iasd, bool a_ignoreOrigin, bool a_dynamicCaller){
           if (a_ignoreOrigin && !a_node) {
             return;
           }
@@ -452,7 +803,6 @@ namespace fcf {
             a_iasd.result->complete = true;
             a_iasd.result->caller   = callerInfoIt->second.caller;
             a_iasd.result->function = Details::IndexableFunction::getStorage().functions[callerInfoIt->second.index].function;
-
           } else {
             Details::IndexableFunction::CallersTree::iterator treeIt = a_iasd.groupIterator->second.callersTree.find(a_iasd.functionSignature.asize);
             if (treeIt != a_iasd.groupIterator->second.callersTree.end()) {
@@ -546,8 +896,8 @@ namespace fcf {
           groupIt->second.callers.find(functionSignature);
 
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
-        ptr_tuple_type ptr_tuple(&a_argPack...);
-        Details::IndexableFunction::InvariantArgSelectorData<ptr_tuple_type> iasd = {a_functionName, a_result, groupIt, functionSignature, ptr_tuple, a_state.strictSource};
+        StaticVector<8, void*> arguments = {(void*)&a_argPack...};
+        Details::IndexableFunction::InvariantArgSelectorData iasd = {a_functionName, a_result, groupIt, functionSignature, &arguments, a_state.strictSource};
         {
           typedef Details::IndexableFunction::InvariantArgSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
           selector_type()(0, iasd, false, false);
@@ -584,6 +934,19 @@ namespace fcf {
   }
 
 } // namespace fcf
+
+void deepIndexContainerCaller(){
+  std::cout << "Start deepIndexContainerCaller..." << std::endl; 
+  {
+    std::vector<int> vec(10);
+    fcf::DynamicCall dc;
+    fcf::DynamicCallSeeker<void, std::vector<int>, int, int>()("random", &dc, vec, (int)0, (int)0);
+    fcf::dynamicCall(&dc, vec, (int)0, (int)10);
+    for(size_t i = 0; i < vec.size(); ++i){
+      FCF_TEST((vec[i] >= 0 && vec[i] <= 9), i, vec[i]);
+    }
+  }
+}
 
 void deepIndexNearestCaller(){
   std::cout << "Start deepIndexNearestCaller..." << std::endl; 
@@ -694,10 +1057,10 @@ void deepIndexSimpleCaller(){
   }
   enable_log = false;
   std::cout <<  "End test" << std::endl;
-  
+
   //duration test
   {
-    unsigned long long defaultSize = 100000;
+    unsigned long long defaultSize = 1000000;
     unsigned long long defaultSizeForDetect = defaultSize * 100;
     unsigned long long defaultDuration = 0;
     {
@@ -781,4 +1144,123 @@ void deepIndexSimpleCaller(){
   }
 
 }
+
+
+struct TupleTestFunc{
+  std::string result;
+  template <typename Tuple, typename TIndex, typename TValue>
+  void operator()(Tuple& a_tuple, TIndex a_index, TValue& a_value){
+    if (!result.empty()){
+      result += "|";
+    }
+    result += fcf::Type<TValue>().name();
+  }
+};
+
+
+void tupleTest() {
+  std::cout << "Start tupleTest..." << std::endl;
+
+  // insert test
+  {
+    typedef std::tuple<> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementInsert<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float", ttf.result);
+  }
+  {
+    typedef std::tuple<char> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementInsert<ttype, float, 1>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|float", ttf.result);
+  }
+  {
+    typedef std::tuple<char> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementInsert<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float|char", ttf.result);
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementInsert<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float|char|short", ttf.result);
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementInsert<ttype, float, 1>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|float|short", ttf.result);
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementInsert<ttype, float, 2>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|short|float", ttf.result);
+  }
+
+  // replace test
+  {
+    typedef std::tuple<char> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementReplace<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float", ttf.result)
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementReplace<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float|short", ttf.result)
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementReplace<ttype, float, 1>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|float", ttf.result)
+  }
+
+  {
+    typedef std::tuple<char, short, int> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementReplace<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float|short|int", ttf.result)
+  }
+  {
+    typedef std::tuple<char, short, int> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementReplace<ttype, float, 1>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|float|int", ttf.result)
+  }
+  {
+    typedef std::tuple<char, short, int> ttype;
+    typedef typename fcf::Details::IndexableFunction::TupleElementReplace<ttype, float, 2>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|short|float", ttf.result)
+  }
+}
+
 

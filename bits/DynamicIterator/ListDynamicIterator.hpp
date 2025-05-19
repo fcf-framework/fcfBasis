@@ -18,7 +18,7 @@ namespace fcf {
 
       typedef ListDynamicIterator<TContainer> self_type;
 
-      enum { is_flat_value = false };
+      enum { is_flat = false };
 
       ListDynamicIterator()
         : _key(0) {}
@@ -33,8 +33,13 @@ namespace fcf {
         : base_type(a_container)
         , _key(0)
       {
-        while(_key < a_position) {
-          operator++();
+        if (_key >= a_container.size()) {
+          _key = a_container.size();
+          this->_it = a_container.end();
+        } else {
+          while(_key < a_position) {
+            operator++();
+          }
         }
       }
 

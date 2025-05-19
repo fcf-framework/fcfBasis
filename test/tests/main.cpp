@@ -11,6 +11,8 @@ void deepIndexSimpleCaller();
 void deepIndexNearestCaller();
 void iteratorTest();
 void dynamicIteratorTest();
+void deepIndexContainerCaller();
+void tupleTest();
 
 int main(int a_argc, char* a_argv[]){
   deepIndexCallCaller();
@@ -22,5 +24,7 @@ int main(int a_argc, char* a_argv[]){
   indexTypesTest();
   iteratorTest();
   dynamicIteratorTest();
+  deepIndexContainerCaller();
+  tupleTest();
   return 0;
 }

@@ -18,11 +18,11 @@ namespace fcf {
 
       typedef VectorDynamicIterator<TContainer> self_type;
 
-      enum { is_flat_value = true };
+      enum { is_flat = true };
 
       VectorDynamicIterator(container_type& a_container, key_type a_position) {
         this->_pcontiner = &a_container;
-        this->_it = std::begin(a_container) + a_position;
+        this->_it = a_container.size() > a_position ? std::begin(a_container) + a_position : std::end(a_container);
       }
 
       self_type operator--() {

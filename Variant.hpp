@@ -63,6 +63,8 @@ namespace fcf {
 
       const void* ptr() const;
 
+      inline bool empty() const { return ptr() == 0; }
+
       template <typename TResult>
       typename std::remove_const< typename std::remove_reference<TResult>::type >::type& convert();
 

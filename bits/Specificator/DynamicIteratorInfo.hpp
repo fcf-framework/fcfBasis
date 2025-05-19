@@ -10,6 +10,7 @@ namespace fcf {
     unsigned int         flags; // enum DynamicIteratorFlags
     unsigned int         type;
     size_t               size;
+    bool                 flat;
     Variant              key;
     void*                value;
     Variant              iterator;
