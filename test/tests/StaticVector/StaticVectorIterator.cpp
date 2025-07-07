@@ -28,6 +28,7 @@ void staticVectorIteratorTest(){
     size_t key = 0;
     for(static_vector_type::const_iterator it = v.cbegin(); it != v.cend(); ++it){
       FCF_TEST(*it == (key+1), *it, (key+1));
+      FCF_TEST(*(it.operator->()) == (key+1), *it, (key+1));
       ++key;
     }
   }

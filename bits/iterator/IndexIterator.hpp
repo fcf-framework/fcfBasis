@@ -7,7 +7,7 @@ namespace fcf {
   class IndexIterator {
       IndexIterator();
     public:
-      typedef std::remove_reference<TRefItem>* ptr_type;
+      typedef typename std::remove_reference<TRefItem>::type* ptr_type;
       typedef TRefItem ref_type;
 
       inline IndexIterator(TRefContainer a_container, size_t a_index)
@@ -66,7 +66,7 @@ namespace fcf {
       }
 
       inline ptr_type operator->() {
-        return _c[_i];
+        return &_c[_i];
       }
 
       inline IndexIterator operator+(size_t a_diff) {
