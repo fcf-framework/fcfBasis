@@ -141,12 +141,14 @@ namespace fcf {
       }
 
       void pop_back(){
-        size_t prev = _getPreviousSize(capacity());
-        if (prev >= _sdata - 1){
-          _realloc(prev, _sdata-1);
-        } else {
-          --_sdata;
-          _pdata[_sdata-1].~Ty();
+        if (_sdata) {
+          size_t prev = _getPreviousSize(capacity());
+          if (prev >= _sdata - 1){
+            _realloc(prev, _sdata-1);
+          } else {
+            --_sdata;
+            _pdata[_sdata-1].~Ty();
+          }
         }
       }
 
