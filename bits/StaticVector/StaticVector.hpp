@@ -185,7 +185,6 @@ namespace fcf {
         }
       }
 
-
       void _forceRealloc(size_t a_size){
         const size_t oldCapacity = capacity();
         if ((char*)_pdata == &_adata[0]) { // if the current data is in the internal buffer
@@ -201,18 +200,18 @@ namespace fcf {
         if (a_size <= StaticSize) {
           _pdata = (Ty*)&_adata[0];
         } else if (oldCapacity != a_size){
-            //                    buffer size  |     data
-            size_t bufferSize = sizeof(size_t) + sizeof(Ty)*a_size;
-            std::shared_ptr<char> sptr(
-                                      new char[bufferSize],
-                                      [this](char* a_mem) {
-                                        _releaseSharedBuffer(a_mem, this);
-                                      }
-                                    );
-            *(size_t*)sptr.get() = a_size;
-            Ty* newBuffer = (Ty*)((size_t*)sptr.get() + 1);
-            _mdata = sptr;
-            _pdata = newBuffer;
+          //                    buffer size  |     data
+          size_t bufferSize = sizeof(size_t) + sizeof(Ty)*a_size;
+          std::shared_ptr<char> sptr(
+                                    new char[bufferSize],
+                                    [this](char* a_mem) {
+                                      _releaseSharedBuffer(a_mem, this);
+                                    }
+                                  );
+          *(size_t*)sptr.get() = a_size;
+          Ty* newBuffer = (Ty*)((size_t*)sptr.get() + 1);
+          _mdata = sptr;
+          _pdata = newBuffer;
         }
       }
 
