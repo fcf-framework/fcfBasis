@@ -322,8 +322,7 @@ namespace fcf {
           const size_t maxPowStep(_getMaxPowStep());
           size_t step = _getOwerPowStep(a_size);
           if (!step) {
-            size_t s = _getPowSize(a_size-1, 0);
-            return s;
+            return _getPowSize(a_size-1, 0);
           }
           return maxPow + (step - 1) * maxPowStep;
         }
