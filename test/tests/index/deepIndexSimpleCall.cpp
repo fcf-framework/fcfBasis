@@ -118,8 +118,7 @@ namespace fcf {
       };
     }
   }
-  
-  
+
   template<size_t StaticSize, typename Ty, bool CopyForMemory = true>
   class StaticVector {
     enum {
@@ -975,6 +974,7 @@ void deepIndexContainerCaller(){
   std::cout << "Start deepIndexContainerCaller..." << std::endl; 
   {
     std::vector<int> vec(10);
+    std::fill(std::begin(vec), std::end(vec), 99);
     fcf::DynamicCall dc;
     fcf::DynamicCallSeeker<void, std::vector<int>, int, int>()("random", &dc, vec, (int)0, (int)0);
     fcf::dynamicCall(&dc, vec, (int)0, (int)10);
