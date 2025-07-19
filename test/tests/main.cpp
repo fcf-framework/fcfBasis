@@ -2,11 +2,19 @@
 #include "../../basis.hpp"
 #include <vector>
 
-void staticVectorTest();
-void staticVectorCopyTest();
-void staticVectorPushTest();
-void staticVectorIteratorTest();
-void staticVectorExceptionTest();
+namespace FcfTest {
+  namespace BasisTest {
+
+    void staticVectorTest();
+    void staticVectorCopyTest();
+    void staticVectorExceptionTest();
+    void staticVectorIteratorTest();
+    void staticVectorPushTest();
+    void staticVectorNotReduce();
+
+  } // BasisTest namespace
+} // FcfTest namespace
+
 void deepIndexCallInner();
 void deepIndexCall();
 void variantTest();
@@ -20,12 +28,14 @@ void deepIndexContainerCaller();
 void tupleTest();
 
 int main(int a_argc, char* a_argv[]){
-  staticVectorTest();
-  staticVectorCopyTest();
-  staticVectorPushTest();
-  staticVectorIteratorTest();
-  staticVectorExceptionTest();
-  return 0;
+
+  FcfTest::BasisTest::staticVectorTest();
+  FcfTest::BasisTest::staticVectorCopyTest();
+  FcfTest::BasisTest::staticVectorExceptionTest();
+  FcfTest::BasisTest::staticVectorIteratorTest();
+  FcfTest::BasisTest::staticVectorPushTest();
+  FcfTest::BasisTest::staticVectorNotReduce();
+
   deepIndexCallCaller();
   deepIndexCallInner();
   deepIndexCall();

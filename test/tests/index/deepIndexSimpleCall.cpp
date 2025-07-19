@@ -13,6 +13,13 @@
 #include "../../../bits/Specificator/DynamicIteratorInfo.hpp"
 #include "../../../DynamicIterator.hpp"
 #include "../../../Details/IndexableFunction/Storage.hpp"
+#include "../../../StaticVector.hpp"
+/*
+ * (int*, int*, int, int)     [Find, Call] : 74nsec
+ * (int*, int*, int, variant) [Find, Call] : 174nsec
+ * (int*, int*, int, variant) [Call]       : 19nsec
+ * S
+*/
 
 bool enable_log = false;
 namespace fcf {
@@ -95,165 +102,6 @@ namespace fcf {
     }
   };
 
-  namespace Details {
-    namespace Basis {
-
-      template <typename Ty = Nop, typename... TPack>
-      class StaticVariantCopyArgs {
-        public:
-          template <typename TPtrDest>
-          void operator()(TPtrDest* a_dst, Ty a_arg1, TPack... a_pack){
-            *a_dst = a_arg1;
-            StaticVariantCopyArgs<TPack...>()(++a_dst, a_pack...);
-          }
-      };
-
-      template <typename Ty>
-      class StaticVariantCopyArgs<Ty> {
-        public:
-          template <typename TPtrDest>
-          void operator()(TPtrDest* a_dst, Ty a_arg1){
-            *a_dst = a_arg1;
-          }
-      };
-    }
-  }
-
-  template<size_t StaticSize, typename Ty, bool CopyForMemory = true>
-  class StaticVector {
-    enum {
-      STEP = StaticSize > 8 ? StaticSize : 8
-    };
-    public:
-      StaticVector()
-        : _sdata(0)
-        , _cdata(StaticSize) {
-        _pdata = &_adata[0];
-      }
-
-      StaticVector(size_t a_size) 
-        : _sdata(0)
-        , _cdata(StaticSize) {
-        _pdata = &_adata[0];
-        _reserve((int)(a_size / STEP) * STEP + STEP);
-        _sdata = a_size;
-      }
-
-      StaticVector(size_t a_size, const Ty& a_fill)
-        : _sdata(0)
-        , _cdata(StaticSize) {
-        _pdata = &_adata[0];
-        _reserve((int)(a_size / STEP) * STEP + STEP);
-        _sdata = a_size;
-        std::fill(_pdata, _pdata + _sdata, a_fill);
-      }
-
-      template <typename... TPack>
-      StaticVector(TPack... a_pack) 
-        : _sdata(0)
-        , _cdata(StaticSize) {
-        _pdata = &_adata[0];
-        _reserve((int)(sizeof...(TPack) / STEP) * STEP + STEP);
-        _sdata = sizeof...(TPack);
-        Details::Basis::StaticVariantCopyArgs<TPack...>()(_pdata, a_pack...);
-      }
-
-      Ty& operator[](size_t a_index){
-        return _pdata[a_index];
-      }
-
-      const Ty& operator[](size_t a_index) const{
-        return _pdata[a_index];
-      }
-
-      Ty* get(){
-        return _pdata;
-      }
-
-      const Ty* get() const{
-        return _pdata;
-      }
-
-      size_t size() const{
-        return _sdata;
-      }
-
-      bool empty() const{
-        return !_sdata;
-      }
-
-      void clear(){
-        _reserve(0);
-      }
-
-      void push_back(const Ty& a_value){
-        if (_sdata == _cdata){
-          _reserve(_cdata + STEP);
-        }
-        _pdata[_sdata++] = a_value;
-      }
-
-      StaticVector(const StaticVector& a_source){
-        operator=(a_source);
-      }
-
-      StaticVector& operator=(const StaticVector& a_source){
-        _sdata = a_source._sdata;
-        if (a_source._sdata <= StaticSize) {
-          std::copy(&a_source._pdata[0], &a_source._pdata[a_source._sdata], &_adata[0]);
-          _mdata.reset();
-          _pdata = &_adata[0];
-          _cdata = StaticSize;
-        } else if (CopyForMemory) {
-          _mdata.reset(new Ty[a_source._cdata], [](Ty *p) { delete[] p; });
-          std::copy(&a_source._pdata[0], &a_source._pdata[a_source._sdata], _mdata.get());
-          _pdata = _mdata.get();
-          _cdata = a_source._cdata;
-        } else {
-          _mdata = a_source._mdata;
-          _pdata = _mdata.get();
-          _cdata = a_source._cdata;
-        }
-        return *this;
-      }
-
-      void resize(size_t a_size) {
-        if (_cdata < a_size) {
-          _reserve((int)(a_size / STEP) * STEP + STEP);
-        }
-        _sdata = a_size;
-      }
-
-    private:
-      void _reserve(size_t a_size){
-        if (a_size > StaticSize) {
-          std::shared_ptr<Ty> sp(new Ty[a_size], [](Ty *p) { delete[] p; });
-          size_t size = std::min(_sdata, a_size);
-          std::copy(_pdata, _pdata + size, sp.get());
-          _mdata = sp;
-          _pdata = _mdata.get();
-          _sdata = size;
-          _cdata = a_size;
-        } else if (_sdata <= StaticSize) {
-          _sdata = std::min(_sdata, a_size);
-          _cdata = StaticSize;
-        } else {
-          size_t size = std::min(_sdata, a_size);
-          std::copy(_pdata, _pdata + size, &_adata[0]);
-          _sdata = a_size;
-          _pdata = &_adata[0];
-          _cdata = StaticSize;
-          _mdata.reset();
-        }
-      }
-
-      Ty                  _adata[StaticSize];
-      Ty*                 _pdata;
-      std::shared_ptr<Ty> _mdata;
-      size_t              _cdata;
-      size_t              _sdata;
-  };
-
   enum ConversionMode{
     CM_NONE = 0,
     CM_RESOLVE = 1,
@@ -274,7 +122,7 @@ namespace fcf {
     bool                          dynamicCaller;
     void*                         function;
     void*                         caller;
-    StaticVector<8, Conversion>   conversions;
+    StaticVector<Conversion, 8>   conversions;
     std::string                   name;
 
     DynamicCall()
@@ -329,26 +177,26 @@ namespace fcf {
         template <typename TDynamicCallInfo, typename TArgs>
         void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, TArgs& a_args){
           typedef std::pair<void*, unsigned int> arg_type;
-          while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions.get()[a_stateOffset].index == ArgIndex){
-            if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_RESOLVE) {
+          while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions[a_stateOffset].index == ArgIndex){
+            if (a_procInfo.conversions[a_stateOffset].mode == CM_RESOLVE) {
               int& ref = *(int*)a_args[ArgIndex].first;
-              RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+              RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)a_procInfo.conversions[a_stateOffset].converter;
               void* rawptr = (void*)converter(&ref, 0, 0, 0);
               a_args[ArgIndex].first = (arg_type*)rawptr;
-              a_args[ArgIndex].second = a_procInfo.conversions.get()[a_stateOffset].type;
-            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_CONVERT) {
-              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type,
+              a_args[ArgIndex].second = a_procInfo.conversions[a_stateOffset].type;
+            } else if (a_procInfo.conversions[a_stateOffset].mode == CM_CONVERT) {
+              Variant arg(a_procInfo.conversions[a_stateOffset].type,
                           (const void*)a_args[ArgIndex].first, 
                           a_args[ArgIndex].second, 
                           (ConvertOptions*)0, 
-                          (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
+                          (ConvertFunction)a_procInfo.conversions[a_stateOffset].converter);
               a_args[ArgIndex].first = (arg_type*)arg.ptr();
-              a_args[ArgIndex].second = a_procInfo.conversions.get()[a_stateOffset].type;
+              a_args[ArgIndex].second = a_procInfo.conversions[a_stateOffset].type;
               IndexableDynamicCallProcessor<ArgIndex, ArgSize, MaxSize>()(a_procInfo, a_stateOffset + 1, a_args);
               return;
-            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_FLAT_ITERATOR) {
+            } else if (a_procInfo.conversions[a_stateOffset].mode == CM_FLAT_ITERATOR) {
               typedef bool (*converter_type)(void*, DynamicIteratorInfo*);
-              converter_type converter = (converter_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+              converter_type converter = (converter_type)a_procInfo.conversions[a_stateOffset].converter;
               DynamicIteratorInfo dii;
               dii.flags = DIF_BEGIN | DIF_GET_VALUE | DIF_GET_TYPE;
               if (!converter(a_args[ArgIndex].first, &dii)){
@@ -421,22 +269,22 @@ namespace fcf {
           } else {
             currentType = a_currentType;
           }
-          while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions.get()[a_stateOffset].index == BufferIndex) {
-            if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_RESOLVE) {
-              RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+          while (a_stateOffset < a_procInfo.conversions.size() && a_procInfo.conversions[a_stateOffset].index == BufferIndex) {
+            if (a_procInfo.conversions[a_stateOffset].mode == CM_RESOLVE) {
+              RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)a_procInfo.conversions[a_stateOffset].converter;
               arg_type& ref = *(arg_type*)a_args[BufferIndex];
               void* rawptr = (void*)converter(&ref,0,0,0);
-              currentType = a_procInfo.conversions.get()[a_stateOffset].type;
+              currentType = a_procInfo.conversions[a_stateOffset].type;
               a_args[BufferIndex] = (arg_type*)rawptr;
-            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_CONVERT) {
-              Variant arg(a_procInfo.conversions.get()[a_stateOffset].type, (const void*)a_args[BufferIndex], currentType, (ConvertOptions*)0, (ConvertFunction)a_procInfo.conversions.get()[a_stateOffset].converter);
-              currentType = a_procInfo.conversions.get()[a_stateOffset].type;
+            } else if (a_procInfo.conversions[a_stateOffset].mode == CM_CONVERT) {
+              Variant arg(a_procInfo.conversions[a_stateOffset].type, (const void*)a_args[BufferIndex], currentType, (ConvertOptions*)0, (ConvertFunction)a_procInfo.conversions[a_stateOffset].converter);
+              currentType = a_procInfo.conversions[a_stateOffset].type;
               a_args[BufferIndex] = (arg_type*)arg.ptr();
               IndexableDynamicCallProcessor2<ArgSize, BufferIndex, SourceIndex, false, InitNextArg>()(a_procInfo, a_args, currentType, a_stateOffset + 1, a_argPack...);
               return;
-            } else if (a_procInfo.conversions.get()[a_stateOffset].mode == CM_FLAT_ITERATOR) {
+            } else if (a_procInfo.conversions[a_stateOffset].mode == CM_FLAT_ITERATOR) {
               typedef bool (*converter_type)(void*, DynamicIteratorInfo*);
-              converter_type converter = (converter_type)a_procInfo.conversions.get()[a_stateOffset].converter;
+              converter_type converter = (converter_type)a_procInfo.conversions[a_stateOffset].converter;
               DynamicIteratorInfo dii;
               dii.flags = DIF_BEGIN | DIF_GET_VALUE | DIF_GET_TYPE;
               if (!converter(a_args[BufferIndex], &dii)){
@@ -487,13 +335,14 @@ namespace fcf {
 
       struct DynamicCallProcessor{
         template <typename TDynamicCallInfo, typename... TArgPack>
-        void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, const TArgPack&... a_argPack){
-          StaticVector<sizeof...(TArgPack)*2, void*> args(sizeof...(TArgPack));
+        inline void operator()(const TDynamicCallInfo& a_procInfo, unsigned int a_stateOffset, const TArgPack&... a_argPack){
+          StaticVector<void*, sizeof...(TArgPack)*2> args(sizeof...(TArgPack));
           IndexableDynamicCallProcessor2<sizeof...(TArgPack), 0, 0>()(a_procInfo, args, 0, 0, a_argPack...);
-
-          //typedef std::pair<void*, unsigned int> arg_type;
-          //StaticVector<sizeof...(TArgPack)*2, arg_type> args{ arg_type((void*)&a_argPack, Type<TArgPack>().index())... };
-          //IndexableDynamicCallProcessor<0, sizeof...(TArgPack), (sizeof...(TArgPack) + 2)*2>()(a_procInfo, 0, args);
+          /*
+          typedef std::pair<void*, unsigned int> arg_type;
+          StaticVector<arg_type, sizeof...(TArgPack)*2> args{ arg_type((void*)&a_argPack, Type<TArgPack>().index())... };
+          IndexableDynamicCallProcessor<0, sizeof...(TArgPack), (sizeof...(TArgPack) + 2)*2>()(a_procInfo, 0, args);
+          */
         }
       };
 
@@ -586,7 +435,7 @@ namespace fcf {
         DynamicCall*                                      result;
         fcf::Details::IndexableFunction::Groups::iterator groupIterator;
         BaseFunctionSignature&                            functionSignature;
-        StaticVector<8, void*>*                           arguments;
+        StaticVector<void*, 8>*                           arguments;
         bool                                              strictSource;
         bool                                              dynamicCaller;
       };
@@ -804,7 +653,7 @@ namespace fcf {
                 curnode.prev = a_node;
               }
 
-              StaticVector<8, void*> arguments((size_t)Size+1);
+              StaticVector<void*, 8> arguments((size_t)Size+1);
               if (a_iasd.strictSource) {
                 std::copy(&(*a_iasd.arguments)[0], &(*a_iasd.arguments)[Index], &arguments[0]);
                 arguments[Index] = 0;
@@ -891,7 +740,7 @@ namespace fcf {
     protected:
 
       struct State {
-        typedef StaticVector<8, Conversion, false> conversions_type;
+        typedef StaticVector<Conversion, 8> conversions_type;
 
         bool             init;
         conversions_type conversions;
@@ -931,7 +780,7 @@ namespace fcf {
           groupIt->second.callers.find(functionSignature);
 
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
-        StaticVector<8, void*> arguments = {(void*)&a_argPack...};
+        StaticVector<void*, 8> arguments = {(void*)&a_argPack...};
         Details::IndexableFunction::InvariantArgSelectorData iasd = {a_functionName, a_result, groupIt, functionSignature, &arguments, a_state.strictSource};
         {
           typedef Details::IndexableFunction::InvariantArgSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
@@ -953,14 +802,14 @@ namespace fcf {
 
 
   template <typename... TArgPack>
-  void dynamicCall(const char* a_functionName, const TArgPack& ... a_argPack) {
+  inline void dynamicCall(const char* a_functionName, const TArgPack& ... a_argPack) {
     fcf::DynamicCall dc;
     fcf::DynamicCallSeeker<void, TArgPack...>()("random", &dc, a_argPack...);
     Details::IndexableFunction::DynamicCallProcessor()(dc, 0, a_argPack...);
   }
 
   template <typename... TArgPack>
-  void dynamicCall(const DynamicCall* a_dc, const TArgPack& ... a_argPack) {
+  inline void dynamicCall(const DynamicCall* a_dc, const TArgPack& ... a_argPack) {
     if (a_dc->dynamicCaller) {
       dynamicCall(a_dc->name.c_str(), a_argPack...);
     } else {
@@ -1096,7 +945,7 @@ void deepIndexSimpleCaller(){
 
   //duration test
   {
-    unsigned long long defaultSize = 100000;
+    unsigned long long defaultSize = 128*1024;
     unsigned long long defaultSizeForDetect = defaultSize * 100;
     unsigned long long defaultDuration = 0;
     {

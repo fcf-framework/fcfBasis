@@ -13,8 +13,9 @@ add_executable("basis-test" impl.cpp
                            iterator/dynamicIterator.cpp
                            StaticVector/StaticVector.cpp
                            StaticVector/StaticVectorCopy.cpp
-                           StaticVector/StaticVectorPush.cpp
-                           StaticVector/StaticVectorIterator.cpp
                            StaticVector/StaticVectorException.cpp
+                           StaticVector/StaticVectorIterator.cpp
+                           StaticVector/StaticVectorPush.cpp
+                           StaticVector/StaticVectorNotReduce.cpp
                          )
 
