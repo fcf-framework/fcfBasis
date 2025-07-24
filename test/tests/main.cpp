@@ -12,6 +12,8 @@ namespace FcfTest {
     void staticVectorPushTest();
     void staticVectorNotReduce();
 
+    void placeHolderCall();
+
   } // BasisTest namespace
 } // FcfTest namespace
 
@@ -35,6 +37,8 @@ int main(int a_argc, char* a_argv[]){
   FcfTest::BasisTest::staticVectorIteratorTest();
   FcfTest::BasisTest::staticVectorPushTest();
   FcfTest::BasisTest::staticVectorNotReduce();
+
+  FcfTest::BasisTest::placeHolderCall();
 
   deepIndexCallCaller();
   deepIndexCallInner();

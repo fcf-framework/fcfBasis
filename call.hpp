@@ -12,7 +12,7 @@ namespace fcf {
   template <typename... TArgPack>
   inline void call(const char* a_functionName, const TArgPack& ... a_argPack) {
     fcf::Call dc;
-    fcf::CallSeeker<void, TArgPack...>()("random", &dc, a_argPack...);
+    fcf::CallSeeker<void, TArgPack...>()(a_functionName, &dc, a_argPack...);
     StaticVector<void*, sizeof...(TArgPack)*2> args(sizeof...(TArgPack));
     ::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(dc, args, 0, 0, a_argPack...);
     /*

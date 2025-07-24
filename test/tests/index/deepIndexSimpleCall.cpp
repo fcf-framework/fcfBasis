@@ -1,38 +1,8 @@
-#include "../../../call.hpp"
-#include "../../../bits/Call/CallSeeker.hpp"
-#include "../../../bits/Call/Details/CallSelector.hpp"
-#include "../../../bits/Call/Details/CallSelectorState.hpp"
-#include "../../../Template/TupleInsert.hpp"
-#include "../../../Template/TupleReplace.hpp"
-#include "../../../bits/Call/Details/CallerByList.hpp"
-#include "../../../bits/Call/Details/CallConversionNode.hpp"
-#include "../../../bits/Call/Details/CallerByArg.hpp"
-
 #include <iostream>
-#include <array>
-#include <type_traits>
-#include <memory>
 #include <chrono>
-
 #include "../../libraries/fcfTest/test.hpp"
-
+#include "../../../call.hpp"
 #include "../../../functions.hpp"
-#include "../../../FunctionSignature.hpp"
-#include "../../../convert.hpp"
-#include "../../../bits/Specificator/DynamicIteratorFlags.hpp"
-#include "../../../bits/Specificator/DynamicIteratorInfo.hpp"
-#include "../../../DynamicIterator.hpp"
-#include "../../../Details/IndexableFunction/Storage.hpp"
-#include "../../../StaticVector.hpp"
-//#include "../../../Template/PackageArgResolver.hpp"
-#include "../../../Template.hpp"
-#include "../../../bits/Call/Call.hpp"
-/*
- * (int*, int*, int, int)     [Find, Call] : 74nsec
- * (int*, int*, int, variant) [Find, Call] : 174nsec
- * (int*, int*, int, variant) [Call]       : 19nsec
- * S
-*/
 
 bool enable_log = false;
 namespace fcf {

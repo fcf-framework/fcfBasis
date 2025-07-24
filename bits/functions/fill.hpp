@@ -2,6 +2,7 @@
 #define ___FCF_BASIS__BITS__FUNCTIONS__FILL_HPP___
 
 #include "../../InvariantCaller.hpp"
+#include "../../ArgPlaceHolder.hpp"
 
 namespace fcf {
 
@@ -36,6 +37,18 @@ namespace fcf {
     }
 
 } // fcf namespace
+
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  FCF_DECLARE_FUNCTION(fill, 
+                       "engine_cpu", 
+                       fcf::fill, 
+                       void(*) (int*, int*, const int&),
+                       ,
+                      );
+#endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
+
 
 #endif // #ifndef ___FCF_BASIS__BITS__FUNCTIONS__FILL_HPP___
 
