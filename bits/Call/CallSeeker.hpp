@@ -29,7 +29,7 @@ namespace fcf {
     protected:
       template <typename... TCurrentArgPack>
       void call(const char* a_functionName, Call* a_result, State& a_state, const TCurrentArgPack&... a_argPack){
-        fcf::Details::IndexableFunction::Groups::iterator groupIt = fcf::Details::IndexableFunction::getStorage().groups.find(a_functionName);
+        fcf::Details::IndexableFunction::CallFunctionGroups::iterator groupIt = fcf::Details::IndexableFunction::getStorage().groups.find(a_functionName);
         if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
           throw std::runtime_error("Function not found.");
         }
@@ -46,12 +46,12 @@ namespace fcf {
           a_result->conversions.clear();
         }
 
-        fcf::Details::IndexableFunction::Callers::iterator callerInfoIt =
+        fcf::Details::IndexableFunction::CallFunctions::iterator callerInfoIt =
           groupIt->second.callers.find(functionSignature);
 
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
         StaticVector<void*, 8> arguments = {(void*)&a_argPack...};
-        ::fcf::Details::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &arguments, a_state.strictSource};
+        ::fcf::Details::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};
         {
           typedef ::fcf::Details::CallSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
           selector_type()(0, iasd, false, false);

@@ -78,6 +78,33 @@ namespace fcf {
           return result.applySimpleCallSignature();
         }
 
+        template <typename TIterator>
+        BaseFunctionSignature getPlaceHolderSignature(TIterator a_begin, TIterator a_end){
+          BaseFunctionSignature result(asize);
+          result.rcode = rcode;
+          unsigned int currentIndex = 0;
+          for(unsigned int i = 0; i < asize; ++i) {
+            bool ignoreArg = false;
+            TIterator it = a_begin;
+            while (it != a_end && !ignoreArg) {
+              auto specificatorData = *it;
+              for(auto& pha : specificatorData.placeHolders) {
+                if (pha.argument == i){
+                  ignoreArg = true;
+                  break;
+                }
+              }
+              ++it;
+            }
+            if (!ignoreArg) {
+              result.pacodes[currentIndex] = pacodes[i];
+              ++currentIndex;
+            }
+          }
+          result.asize = currentIndex;
+          return result;
+        }
+
         BaseFunctionSignature& operator=(const BaseFunctionSignature& a_value) {
           asize = a_value.asize;
           rcode = a_value.rcode;

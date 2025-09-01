@@ -9,7 +9,7 @@ namespace fcf {
     namespace Details {
       struct FillExecutor {
         template <typename TIterator, typename TValue>
-        void call(TIterator a_begin, TIterator a_end, const TValue& a_value) {
+        void call(TIterator a_begin, TIterator a_end, TValue a_value) {
           for(; a_begin != a_end; ++a_begin) {
             *a_begin = a_value;
           }
@@ -22,12 +22,12 @@ namespace fcf {
     }
 
     template <typename TIterator, typename TValue>
-    void fill(TIterator a_begin, TIterator a_end, const TValue& a_value) {
+    void fill(TIterator a_begin, TIterator a_end, TValue a_value) {
       InvariantCaller<Details::FillExecutor>().rangeCall(a_begin, a_end, a_value);
     }
 
     template <typename TContainer, typename TValue>
-    void fill(TContainer& a_container, const TValue& a_value) {
+    void fill(TContainer& a_container, TValue a_value) {
       InvariantCaller<Details::FillExecutor>().call(a_container, a_value);
     }
 
@@ -43,7 +43,7 @@ namespace fcf {
   FCF_DECLARE_FUNCTION(fill, 
                        "engine_cpu", 
                        fcf::fill, 
-                       void(*) (int*, int*, const int&),
+                       void(*) (int*, int*, int),
                        ,
                       );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION

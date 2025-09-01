@@ -53,14 +53,18 @@
   #endif // #ifndef FCF_BASIS_CONCAT3
 
 
+  #ifndef FCF_SPECIFICATOR_REGISTRY_FORCE
+    #define __FCF_SPECIFICATOR_REGISTRY_FORCE__L2(a_itemName, a_counter) a_itemName##_##a_counter
+    #define __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(a_itemName, a_counter) __FCF_SPECIFICATOR_REGISTRY_FORCE__L2(a_itemName, a_counter)
+    #define FCF_SPECIFICATOR_REGISTRY_FORCE(a_type, a_specificator) \
+      namespace { \
+        ::fcf::SpecificatorTypeRegistrator<a_type, a_specificator> __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(specificatorReg, __COUNTER__);\
+      }
+  #endif // #ifndef FCF_SPECIFICATOR_REGISTRY
+
   #ifndef FCF_SPECIFICATOR_REGISTRY
-    #define FCF_SPECIFICATOR_REGISTRY__L2(a_itemName, a_counter) a_itemName##_##a_counter
-    #define FCF_SPECIFICATOR_REGISTRY__L1(a_itemName, a_counter) FCF_SPECIFICATOR_REGISTRY__L2(a_itemName, a_counter)
     #ifdef FCF_BASIS_IMPLEMENTATION
-      #define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator) \
-        namespace { \
-          ::fcf::SpecificatorTypeRegistrator<a_type, a_specificator> FCF_SPECIFICATOR_REGISTRY__L1(specificatorReg, __COUNTER__);\
-        }
+      #define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator) FCF_SPECIFICATOR_REGISTRY_FORCE(a_type, a_specificator)
     #else
       #define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator)
     #endif // #ifdef FCF_BASIS_IMPLEMENTATION
@@ -113,11 +117,15 @@
       }
   #endif // #ifndef FCF_TYPEID_REGISTRY_IMPL_DECL_INITVAR
 
+  #ifndef FCF_TYPEID_REGISTRY_FORCE
+    #define FCF_TYPEID_REGISTRY_FORCE(a_type, a_name, a_index) \
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type), (), a_name, a_index)\
+      FCF_TYPEID_REGISTRY_IMPL_DECL_INITVAR(a_type, a_name, a_index)
+  #endif // #ifndef FCF_TYPEID_REGISTRY
+
   #ifndef FCF_TYPEID_REGISTRY
     #ifdef FCF_BASIS_IMPLEMENTATION
-      #define FCF_TYPEID_REGISTRY(a_type, a_name, a_index) \
-        FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type), (), a_name, a_index)\
-        FCF_TYPEID_REGISTRY_IMPL_DECL_INITVAR(a_type, a_name, a_index)
+      #define FCF_TYPEID_REGISTRY(a_type, a_name, a_index) FCF_TYPEID_REGISTRY_FORCE(a_type, a_name, a_index)
     #else
       #define FCF_TYPEID_REGISTRY(a_type, a_name, a_index) \
         FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type), (), a_name, a_index)
@@ -171,38 +179,101 @@
           FCF_INITIAZE_GLOBAL_PTR__CONCAT(_fcfinitializer_, a_variable, __LINE__);\
       }
   #endif // #ifndef FCF_INITIAZE_GLOBAL_PTR
-
+/*
   #ifndef FCF_DECLARE_FUNCTION
-    #define FCF_DECLARE_FUNCTION__VARNAME2(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-    #define FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) FCF_DECLARE_FUNCTION__VARNAME2(a_varName, a_funcName, a_line)
+    #define _FCF_DECLARE_FUNCTION__SELECTOR_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR
+    #define _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR(...) _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR __VA_ARGS__
+    #define _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS_0(...) _FCF_DECLARE_FUNCTION__SELECTOR##__VA_ARGS__
+    #define _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS_0(__VA_ARGS__)
+    #define _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
+    #define _FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
+
+
+    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_arg1, a_arg2, a_arg3, ...)
+    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_placeHolder) \
+        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR a_placeHolder))
+
     #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
       a_sourceCode; \
       ::fcf::IndexableFunctionRegistrator \
-        FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
+        _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
           ( \
             #a_name, \
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>(a_sourceName),\
-            ::fcf::ArgPlaceHolder::Signature< a_signature, \
-                                              ::fcf::Details::Basis::FunctionResultType<a_signature>::type  a_placeHolder \
-                                            >(),\
+            ::fcf::Details::CallPlaceHolderSignatures < \
+              ::fcf::ArgPlaceHolder::Signature< a_signature, \
+                                                ::fcf::Details::Basis::FunctionResultType<a_signature>::type, \
+                                                _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR a_placeHolder)\
+                                              > \
+                                          > (),\
+            #a_sourceCode\
+          );
+  #endif // #ifndef FCF_DECLARE_FUNCTION
+*/
+
+  #ifndef FCF_DECLARE_FUNCTION
+
+    #define _FCF_DECLARE_FUNCTION__SELECTOR_NOP_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR ::fcf::Nop
+    #define _FCF_DECLARE_FUNCTION__SELECTOR_NOP_ON_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR
+    #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR(...) _ON_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR __VA_ARGS__
+    #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP_0(...) _FCF_DECLARE_FUNCTION__SELECTOR_NOP##__VA_ARGS__
+    #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP_0(__VA_ARGS__)
+
+    #define _FCF_DECLARE_FUNCTION__SELECTOR_FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR
+    #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR __VA_ARGS__
+    #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(...) _FCF_DECLARE_FUNCTION__SELECTOR##__VA_ARGS__
+    #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(__VA_ARGS__)
+
+    #define _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg) \
+      typename ::fcf::ArgPlaceHolder::Signature< \
+                                                a_signature, \
+                                                ::fcf::Details::Basis::FunctionResultType<a_signature>::type, \
+                                                _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
+                                                >::active_type
+
+    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_1(a_signature, a_arg1, a_arg2, a_arg3, ...) \
+      _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg1),\
+      _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg2),\
+      _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg3)
+    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, ...)\
+              _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_1(a_signature, __VA_ARGS__, , , )
+
+    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder) \
+      _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR a_placeHolder) )
+
+    #define _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
+    #define _FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
+    #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
+      a_sourceCode; \
+      ::fcf::IndexableFunctionRegistrator \
+        _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
+          ( \
+            #a_name, \
+            a_space, \
+            #a_sourceName, \
+            static_cast<a_signature>(a_sourceName),\
+            ::fcf::Details::CallPlaceHolderSignatures < \
+              _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder)\
+            > (),\
             #a_sourceCode\
           );
   #endif // #ifndef FCF_DECLARE_FUNCTION
 
+
   #ifndef FCF_EXTEND_FUNCTION
-    #define FCF_EXTEND_FUNCTION__VARNAME2(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-    #define FCF_EXTEND_FUNCTION__VARNAME(a_varName, a_funcName, a_line) FCF_EXTEND_FUNCTION__VARNAME2(a_varName, a_funcName, a_line)
+    #define _FCF_EXTEND_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
+    #define _FCF_EXTEND_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_EXTEND_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
     #define FCF_EXTEND_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_sourceCode) \
       ::fcf::IndexableFunctionRegistrator \
-        FCF_EXTEND_FUNCTION__VARNAME(functionRegistrator, a_name, __LINE__) \
+        _FCF_EXTEND_FUNCTION__VARNAME(functionRegistrator, a_name, __LINE__) \
           ( \
             #a_name, \
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>((a_signature)(void*)0),\
-            ::fcf::ArgPlaceHolder::Signature<::fcf::Nop, ::fcf::Nop, ::fcf::Nop >(),\
+            ::fcf::ArgPlaceHolder::Signature<::fcf::Nop>(),\
             #a_sourceCode\
           );
   #endif // #ifndef FCF_EXTEND_FUNCTION

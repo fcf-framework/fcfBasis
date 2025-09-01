@@ -14,6 +14,9 @@ namespace fcf {
           public:
             NobodyWrapperRegistrator(){
               unsigned int index = Type<Ty>().index();
+              if (0x1100000c == index ){
+                std::cout << "!!!!!!!!!!!!" << std::endl;
+              }
               NobodyWrapperStorage::iterator it = getStorage().find(index);
               if (it == getStorage().end()) {
                 getStorage()[index] = std::shared_ptr< BaseNobodyWrapper >(new NobodyWrapper<Ty>());

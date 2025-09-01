@@ -14,6 +14,7 @@ namespace fcf {
     fcf::Call dc;
     fcf::CallSeeker<void, TArgPack...>()(a_functionName, &dc, a_argPack...);
     StaticVector<void*, sizeof...(TArgPack)*2> args(sizeof...(TArgPack));
+    args.resize(dc.argCount);
     ::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(dc, args, 0, 0, a_argPack...);
     /*
     typedef std::pair<void*, unsigned int> arg_type;
@@ -28,6 +29,7 @@ namespace fcf {
       call(a_dc->name.c_str(), a_argPack...);
     } else {
       StaticVector<void*, sizeof...(TArgPack)*2> args(sizeof...(TArgPack));
+      args.resize(a_dc->argCount);
       ::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(*a_dc, args, 0, 0, a_argPack...);
       /*
       typedef std::pair<void*, unsigned int> arg_type;

@@ -11,9 +11,11 @@ namespace fcf {
     struct CallSelectorState {
       const char*                                       name;
       Call*                                             result;
-      fcf::Details::IndexableFunction::Groups::iterator groupIterator;
+      fcf::Details::IndexableFunction::CallFunctionGroups::iterator groupIterator;
       BaseFunctionSignature&                            functionSignature;
       StaticVector<void*, 8>*                           arguments;
+      std::vector<unsigned int>                         placeHolderVec;
+      std::vector<std::vector<unsigned int> >*          placeHolderSpecificators;
       bool                                              strictSource;
       bool                                              dynamicCaller;
     };

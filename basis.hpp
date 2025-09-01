@@ -7,6 +7,8 @@
 
 #include "Type.hpp"
 
+#include "foreach.hpp"
+
 #include "./InvariantCaller.hpp"
 
 #include "./FunctionSignature.hpp"

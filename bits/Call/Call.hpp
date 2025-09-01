@@ -7,12 +7,13 @@
 namespace fcf {
 
   struct Call {
-    bool                          complete;
-    bool                          dynamicCaller;
-    void*                         function;
-    void*                         caller;
-    StaticVector<CallConversion, 8>   conversions;
-    std::string                   name;
+    bool                            complete;
+    bool                            dynamicCaller;
+    void*                           function;
+    void*                           caller;
+    StaticVector<CallConversion, 8> conversions;
+    std::string                     name;
+    unsigned char                   argCount;
 
     Call()
       : complete(false)

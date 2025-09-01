@@ -1,16 +1,19 @@
 #ifndef ___FCF_BASIS__DETAILS__INDEXABLE_FUNCTION__STORAGE_HPP___
 #define ___FCF_BASIS__DETAILS__INDEXABLE_FUNCTION__STORAGE_HPP___
 
+#include <vector>
 #include <set>
 #include <unordered_map>
 #include <map>
 #include "../../macro.hpp"
 #include "../../bits/IndexableFunctionInfo.hpp"
+#include "../../bits/ArgPlaceHolder/SignatureData.hpp"
 namespace fcf {
   namespace Details {
     namespace IndexableFunction {
 
-        typedef std::map< BaseFunctionSignature, std::map<std::string, unsigned int>  > Indexes;
+
+        typedef std::map< BaseFunctionSignature, std::map<std::string, unsigned int>  > CallFunctionIndexes;
 
         struct ShortSignature {
           BaseFunctionSignature fullSignature;
@@ -18,31 +21,33 @@ namespace fcf {
           void*                 caller;
         };
         typedef std::map<BaseFunctionSignature, ShortSignature> ShortSignatures;
+        typedef std::vector<IndexableFunctionInfo> CallFunctionVector;
 
-        struct CallerInfo {
-          BaseFunctionSignature callerSignature;
-          unsigned int          index;
-          unsigned int          adaptSpecificator;
-          void*                 caller;
+        struct CallFunctionInfo {
+          BaseFunctionSignature                      callerSignature;
+          unsigned int                               index;
+          void*                                      caller;
+          std::vector<ArgPlaceHolder::SignatureData> placeHolder;
         };
 
-        typedef std::map<BaseFunctionSignature, CallerInfo>           CallersMap;
-        typedef std::unordered_map<unsigned int, CallersMap>          CallersTree;
-        typedef std::unordered_map<BaseFunctionSignature, CallerInfo> Callers;
+        typedef std::multimap<BaseFunctionSignature, CallFunctionInfo>           CallFunctionsMap;
+        typedef std::unordered_multimap<unsigned int, CallFunctionsMap>          CallFunctionsByArgNumber;
+        typedef std::unordered_multimap<BaseFunctionSignature, CallFunctionInfo> CallFunctions;
 
-        struct FunctionGroup {
+        struct CallFunctionGroup {
           std::map<unsigned int, ShortSignatures>   specificators;
-          Callers                                   callers;
-          CallersTree                               callersTree;
+          std::vector< std::vector<unsigned int> >  specificatorsByArgIndex;
+          CallFunctions                             callers;
+          CallFunctionsByArgNumber                  callersTree;
         };
 
-        typedef std::unordered_map<std::string, FunctionGroup > Groups;
-        //typedef std::map<std::string, FunctionGroup > Groups;
+        typedef std::unordered_map<std::string, CallFunctionGroup > CallFunctionGroups;
+        //typedef std::map<std::string, CallFunctionGroup > CallFunctionGroups;
 
         struct Storage {
-          Indexes                              indexes;
-          std::vector<IndexableFunctionInfo>   functions;
-          Groups                               groups;
+          CallFunctionIndexes indexes;
+          CallFunctionVector  functions;
+          CallFunctionGroups  groups;
         };
 
         FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT Storage* g_storage;

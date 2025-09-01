@@ -75,12 +75,12 @@ namespace fcf {
                        "engine_cpu", 
                        fcf::random, 
                        void(*) (float*, float*, const float&, const float&),
-                       (fcf::MinMaxSpecificator, float*, float*, fcf::Arg1, fcf::Arg2),
+                       ((fcf::MinMaxSpecificator, 1, float*, float*, fcf::Arg1, fcf::Arg2)),
                       );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (int*, int*, const int&, const int&), , );
+  FCF_DECLARE_FUNCTION(random, "engine_cpu", fcf::random, void(*) (int*, int*, const int&, const int&), (), );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #endif // #ifndef ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___

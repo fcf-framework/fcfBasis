@@ -299,17 +299,18 @@ namespace fcf {
       }
       ::fcf::Details::Basis::Variant::NobodyWrapperStorage::iterator wrapperIt = ::fcf::Details::Basis::Variant::getStorage().find(a_typeIndex);
       if (wrapperIt == ::fcf::Details::Basis::Variant::getStorage().end()) {
+        std::cout << "EXEC VARIANT: " << std::hex << a_typeIndex << std::dec << std::endl;
         throw std::runtime_error("The specified type index is not registered for the object variant");
       }
       size_t wsize = wrapperIt->second->size();
       if (wsize > innerBufferSize) {
-        if (a_sourceData && !(!!a_sourceTypeIndex || !!a_convertFunction)) {
+        if (a_sourceData && !a_sourceTypeIndex && !a_convertFunction) {
           _ptr = wrapperIt->second->clone(a_sourceData);
         } else {
           _ptr = wrapperIt->second->create();
         }
       } else {
-        if (a_sourceData && !(!!a_sourceTypeIndex || !!a_convertFunction)) {
+        if (a_sourceData && !a_sourceTypeIndex && !a_convertFunction) {
           _ptr = wrapperIt->second->clone(&_mem[0], a_sourceData);
         } else {
           _ptr = wrapperIt->second->create(&_mem[0]);
@@ -317,7 +318,7 @@ namespace fcf {
       }
       _index = a_typeIndex;
 
-      if (a_sourceTypeIndex || !a_convertFunction){
+      if (a_sourceTypeIndex && !a_convertFunction){
         convertRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions);
       } else if (a_convertFunction){
         a_convertFunction(ptr(), a_sourceData, a_convertOptions);

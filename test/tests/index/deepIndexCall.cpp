@@ -99,7 +99,7 @@ namespace fcf {
         }
         if (!a_curAdaptCall) {
           Details::IndexableFunction::Storage& storage = Details::IndexableFunction::getStorage();
-          Details::IndexableFunction::Groups::iterator groupIt = storage.groups.find(a_name);
+          Details::IndexableFunction::CallFunctionGroups::iterator groupIt = storage.groups.find(a_name);
           if (groupIt != storage.groups.end()) {
             const std::map<unsigned int, SpecificatorTypeInfo>& typeSpecs = Type<Ty>().specificators();
             for(std::map<unsigned int, ::fcf::Details::IndexableFunction::ShortSignatures >::iterator itGrpSpec = groupIt->second.specificators.begin();
@@ -143,7 +143,7 @@ namespace fcf {
         if (!a_curAdaptCall) {
           Details::IndexableFunction::Storage& storage = Details::IndexableFunction::getStorage();
           std::cout << "storage.groups.size: " << storage.groups.size() << std::endl;
-          Details::IndexableFunction::Groups::iterator groupIt = storage.groups.find(a_name);
+          Details::IndexableFunction::CallFunctionGroups::iterator groupIt = storage.groups.find(a_name);
           if (groupIt != storage.groups.end()) {
             std::cout << "storage.groups.find: 1" <<  std::endl;
             const std::map<unsigned int, SpecificatorTypeInfo>& typeSpecs = Type<Ty>().specificators();

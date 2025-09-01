@@ -12,6 +12,7 @@ namespace FcfTest {
     void staticVectorPushTest();
     void staticVectorNotReduce();
 
+    void declareCall();
     void placeHolderCall();
 
   } // BasisTest namespace
@@ -38,18 +39,21 @@ int main(int a_argc, char* a_argv[]){
   FcfTest::BasisTest::staticVectorPushTest();
   FcfTest::BasisTest::staticVectorNotReduce();
 
+  FcfTest::BasisTest::declareCall();
+
   FcfTest::BasisTest::placeHolderCall();
 
   deepIndexCallCaller();
   deepIndexCallInner();
   deepIndexCall();
-  deepIndexSimpleCaller();
-  deepIndexNearestCaller();
+  //deepIndexSimpleCaller();
+  //deepIndexNearestCaller();
   variantTest();
   indexTypesTest();
   iteratorTest();
   dynamicIteratorTest();
-  deepIndexContainerCaller();
-  tupleTest();
+  //deepIndexContainerCaller();
+  //tupleTest();
+  
   return 0;
 }

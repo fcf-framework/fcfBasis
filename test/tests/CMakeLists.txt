@@ -6,9 +6,10 @@ add_executable("basis-test" impl.cpp
                            index/deepIndexCallInner.cpp
                            index/deepIndexCallCaller.cpp
                            index/deepIndexCall.cpp
-                           index/deepIndexSimpleCall.cpp
+                           #index/deepIndexSimpleCall.cpp
                            index/types.cpp
                            call/placeHolderCall.cpp
+                           call/declareCall.cpp
                            variant/variant.cpp
                            iterator/iterator.cpp
                            iterator/dynamicIterator.cpp

@@ -3,50 +3,9 @@
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../call.hpp"
 #include "../../../functions.hpp"
+#include "../../../foreach.hpp"
 
 bool enable_log = false;
-namespace fcf {
-
-  template <typename Ty>
-  class Foreach;
-
-  namespace Details {
-    namespace Basis {
-      template <typename TTuple, int Index, int Size>
-      class TupleForeach{
-        public:
-          template <typename TFunctor>
-          void operator()(TTuple& a_container, TFunctor& a_functor){
-            a_functor(a_container, Index, std::get<Index>(a_container));
-            TupleForeach<TTuple, Index+1, Size>()(a_container, a_functor);
-          }
-      };
-      template <typename TTuple, int Size>
-      class TupleForeach<TTuple, Size, Size>{
-        public:
-          template <typename TFunctor>
-          void operator()(TTuple& a_container, TFunctor& a_functor){
-          }
-      };
-    }
-  }
-
-  template <typename... TPack>
-  class Foreach< std::tuple<TPack...> >{
-    public:
-      typedef std::tuple<TPack...> container_type;
-      template <typename TFunctor>
-      void operator()(container_type& a_container, TFunctor& a_functor){
-        Details::Basis::TupleForeach<container_type, 0, sizeof...(TPack)>()(a_container, a_functor);
-      }
-  };
-
-  template <typename TContainer, typename TFunctor>
-  void foreach(TContainer& a_container, TFunctor& a_functor){
-    Foreach<TContainer>()(a_container, a_functor);
-  }
-
-} // namespace fcf
 
 void deepIndexContainerCaller(){
   std::cout << "Start deepIndexContainerCaller..." << std::endl;
