@@ -33,6 +33,7 @@ void deepIndexNearestCaller(){
       FCF_TEST(arr[i] >= 0 && arr[i] <= 9, i, arr[i]);
     }
   }
+
   {
     int arr[10];
     std::fill(std::begin(arr), std::end(arr), 99);
@@ -61,12 +62,13 @@ void deepIndexNearestCaller(){
     for(size_t i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i){
       FCF_TEST(arr[i] >= 0 && arr[i] <= 9, i, arr[i]);
     }
-  }
+   }
 
 }
 
 void deepIndexSimpleCaller(){
   std::cout << "Start deepIndexSimpleCaller..." << std::endl;
+  
   {
     bool except = false;
     try {
@@ -216,6 +218,7 @@ void deepIndexSimpleCaller(){
     }
   }
 
+
 }
 
 
@@ -334,6 +337,7 @@ void tupleTest() {
     fcf::foreach(tuple, ttf);
     FCF_TEST(ttf.result == "char|short|float", ttf.result)
   }
+  
 }
 
 

@@ -13,6 +13,7 @@ namespace fcf {
       Call*                                             result;
       fcf::Details::IndexableFunction::CallFunctionGroups::iterator groupIterator;
       BaseFunctionSignature&                            functionSignature;
+      BaseFunctionSignature*                            ptrFunctionSignature;
       StaticVector<void*, 8>*                           arguments;
       std::vector<unsigned int>                         placeHolderVec;
       std::vector<std::vector<unsigned int> >*          placeHolderSpecificators;

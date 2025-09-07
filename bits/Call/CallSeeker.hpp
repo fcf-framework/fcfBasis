@@ -51,7 +51,7 @@ namespace fcf {
 
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
         StaticVector<void*, 8> arguments = {(void*)&a_argPack...};
-        ::fcf::Details::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};
+        ::fcf::Details::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};
         {
           typedef ::fcf::Details::CallSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
           selector_type()(0, iasd, false, false);

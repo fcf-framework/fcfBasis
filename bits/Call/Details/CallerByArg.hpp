@@ -32,7 +32,7 @@ namespace fcf {
                 >::type arg_type;
 
         unsigned int currentType = BaseFunctionSignature::getSimpleType(Type<arg_type>().index());
-        if (ArgSize == BufferIndex && a_stateOffset >= a_args.size()) {
+        if (ArgSize == BufferIndex && a_stateOffset >= a_procInfo.conversions.size()) {
           CallerByArgComplete<ArgSize>()(a_procInfo, a_args, currentType, a_stateOffset, a_argPack...);
           return; 
         }
@@ -92,7 +92,6 @@ namespace fcf {
             }
             unsigned int subtype = dii.type;
             void* left = dii.value;
-            std::cout << "LEFT: " << left << std::endl;
             dii.flags = DIF_END | DIF_GET_VALUE;
             if (!converter(a_args[BufferIndex], &dii)){
               throw std::runtime_error("Failed to get left bound of argument");

@@ -46,14 +46,14 @@ int main(int a_argc, char* a_argv[]){
   deepIndexCallCaller();
   deepIndexCallInner();
   deepIndexCall();
-  //deepIndexSimpleCaller();
-  //deepIndexNearestCaller();
+  deepIndexSimpleCaller();
+  deepIndexNearestCaller();
   variantTest();
   indexTypesTest();
   iteratorTest();
   dynamicIteratorTest();
-  //deepIndexContainerCaller();
-  //tupleTest();
+  deepIndexContainerCaller();
+  tupleTest();
   
   return 0;
 }
