@@ -13,9 +13,14 @@ namespace fcf {
   inline void call(const char* a_functionName, const TArgPack& ... a_argPack) {
     fcf::Call dc;
     fcf::CallSeeker<void, TArgPack...>()(a_functionName, &dc, a_argPack...);
-    StaticVector<void*, sizeof...(TArgPack)*2> args(sizeof...(TArgPack));
-    args.resize(dc.argCount);
-    ::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(dc, args, 0, 0, a_argPack...);
+    //Details::CallerPtrArgsBuffer args(sizeof...(TArgPack));
+    //args.resize(dc.argCount);
+    //::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(dc, args, 0, 0, a_argPack...);
+    {
+      Details::CallerPtrArgsBuffer args(sizeof...(TArgPack));
+      args.resize(dc.argCount);
+      ::fcf::Details::CallerByArgNewMode()(dc, args, a_argPack...);
+    }
     /*
     typedef std::pair<void*, unsigned int> arg_type;
     StaticVector<arg_type, sizeof...(TArgPack)*2> args{ arg_type((void*)&a_argPack, Type<TArgPack>().index())... };
@@ -28,9 +33,16 @@ namespace fcf {
     if (a_dc->dynamicCaller) {
       call(a_dc->name.c_str(), a_argPack...);
     } else {
-      StaticVector<void*, sizeof...(TArgPack)*2> args(sizeof...(TArgPack));
-      args.resize(a_dc->argCount);
-      ::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(*a_dc, args, 0, 0, a_argPack...);
+      //Details::CallerPtrArgsBuffer args(sizeof...(TArgPack));
+      //args.resize(a_dc->argCount);
+      //::fcf::Details::CallerByArg<sizeof...(TArgPack), 0, 0>()(*a_dc, args, 0, 0, a_argPack...);
+      
+      {
+        Details::CallerPtrArgsBuffer args(sizeof...(TArgPack));
+        args.resize(a_dc->argCount);
+        ::fcf::Details::CallerByArgNewMode()(*a_dc, args, a_argPack...);
+      }
+      
       /*
       typedef std::pair<void*, unsigned int> arg_type;
       StaticVector<arg_type, sizeof...(TArgPack)*2> args{ arg_type((void*)&a_argPack, Type<TArgPack>().index())... };

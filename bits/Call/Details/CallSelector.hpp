@@ -88,6 +88,11 @@ namespace fcf {
           }
         }
 
+        _processingNextArg(a_node, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+         if (state.result->complete) {
+          return;
+        }
+
         if (state.strictSource && currentInputArgument->invariantIndex && !currentInputArgument->pairCounter) {
           CallConversionNode curnode;
           curnode.prev = 0;
@@ -116,11 +121,6 @@ namespace fcf {
           if (a_node) {
             a_node->next = 0;
           }
-        }
-
-        _processingNextArg(a_node, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
-         if (state.result->complete) {
-          return;
         }
 
         if (state.strictSource && !currentInputArgument->pairCounter && !currentInputArgument->ignoreConvertSeeker) {
@@ -346,7 +346,7 @@ namespace fcf {
         }
       }
 
-      void _processingNextArg(CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
+      inline void _processingNextArg(CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
         if (a_currentInputArgument->pairCounter) {
           a_argumentIndex      += 2;
           a_inputArgumentIndex += 1;
@@ -425,6 +425,13 @@ namespace fcf {
         }
 
         if (state.result->complete) {
+          if (!state.dynamicCaller) {
+            state.result->argsMap.resize(state.result->argCount);
+          } else {
+            state.result->argsMap.clear();
+          }
+          unsigned int argMapIndex = 0;
+          unsigned int argMapCounter = 0;
           if (a_node) {
             unsigned int phaoffset = 0;
             CallConversionNode* begNode = a_node;
@@ -442,6 +449,7 @@ namespace fcf {
                   state.result->conversions.push_back(cc);
                   pha = _getNextPlaceHolder(pCall, pha->argument);
                   ++phaoffset;
+                  ++argMapCounter;
                 }
                 if (begNode->conversion.mode == CCM_PLACE_HOLDER) {
                   std::vector<ArgPlaceHolder::SignatureData>::iterator it =
@@ -462,11 +470,30 @@ namespace fcf {
                 }
               }
               if (!ignore) {
+                if (!state.dynamicCaller) {
+                  for(; argMapIndex <= begNode->conversion.index;){
+                    if (argMapIndex >= state.result->argsMap.size()){
+                      throw std::runtime_error("Logic_error");
+                    }
+                    state.result->argsMap[argMapIndex] = argMapCounter;
+                    ++argMapIndex;
+                    ++argMapCounter;
+                    if (begNode->conversion.mode == CCM_FLAT_ITERATOR) {
+                      ++argMapCounter;
+                    }
+                  }
+                }
                 begNode->conversion.index += phaoffset;
                 state.result->conversions.push_back(begNode->conversion);
               }
               begNode = begNode->next;
             }
+
+            /*
+            if (argMapIndex >= state.result->argsMap.size()){
+              throw std::runtime_error("Logic_error");
+            }
+            */
 
             while (pha) {
               CallConversion cc;
@@ -476,7 +503,23 @@ namespace fcf {
               pha = _getNextPlaceHolder(pCall, pha->argument);
               ++phaoffset;
             }
+          } // if (a_node) end
+
+          if (!state.dynamicCaller) {
+            for(; argMapIndex < state.result->argsMap.size(); ++argMapIndex){
+              state.result->argsMap[argMapIndex] = argMapCounter;
+              ++argMapCounter;
+            }
+            /*
+            if (argMapCounter > state.result->argsMap.size()){
+              throw std::runtime_error("Logic_error");
+            }
+            if (argMapIndex > state.result->argsMap.size()){
+              throw std::runtime_error("Logic_error");
+            }
+            */
           }
+
         }
   
       }
@@ -799,7 +842,7 @@ namespace fcf {
       } // method end
     };
 
-
+/*
     template <int Size, typename TPtrTuple, bool IgnoreIterator>
     struct CallSelector<Size, Size, TPtrTuple, IgnoreIterator, 10>{
       inline void operator()(CallConversionNode* a_node, CallSelectorState& a_iasd, bool a_ignoreOrigin, bool a_dynamicCaller){
@@ -955,7 +998,7 @@ namespace fcf {
         return result;
       }
     };
-
+*/
 
   } // Details namespace
 } // fcf namespace

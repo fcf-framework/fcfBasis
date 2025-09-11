@@ -51,6 +51,10 @@ namespace fcf {
       typedef size_t size_type;
       typedef IndexIterator<StaticVector&, Ty&>             iterator;
       typedef IndexIterator<const StaticVector&, const Ty&> const_iterator;
+      
+      enum {
+        static_capacity_value = StaticSize
+      };
 
       StaticVector()
         : _pdata((Ty*)&_adata[0])
