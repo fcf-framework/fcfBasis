@@ -19,8 +19,14 @@ namespace fcf {
       };
 
       template <typename TFunc>
-       auto getSimpleCaller(TFunc a_func) -> decltype(&SimpleCaller<TFunc>::call) {
+      auto getSimpleCaller(TFunc a_func) -> decltype(&SimpleCaller<TFunc>::call) {
         return &SimpleCaller<TFunc>::call;
+      }
+
+      template <typename TFunc>
+      void* getListCaller(TFunc a_func) {
+        void* ptr;
+        return ptr;
       }
 
     } // namespace IndexableFunction

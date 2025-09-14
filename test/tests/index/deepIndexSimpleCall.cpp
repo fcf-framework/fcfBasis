@@ -2,6 +2,7 @@
 #include <chrono>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../call.hpp"
+#include "../../../Template.hpp"
 #include "../../../functions.hpp"
 #include "../../../foreach.hpp"
 
@@ -135,7 +136,7 @@ void deepIndexSimpleCaller(){
 
   //duration test
   {
-    unsigned long long defaultSize = 1024*1024;
+    unsigned long long defaultSize = 128*8*1024;
     unsigned long long defaultSizeForDetect = defaultSize * 100;
     unsigned long long defaultDuration = 0;
     {
@@ -336,6 +337,30 @@ void tupleTest() {
     rtype tuple;
     fcf::foreach(tuple, ttf);
     FCF_TEST(ttf.result == "char|short|float", ttf.result)
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Template::TupleReplace<ttype, float, 1>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "char|float", ttf.result)
+  }
+  {
+    typedef std::tuple<char, short> ttype;
+    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float|short", ttf.result)
+  }
+  {
+    typedef std::tuple<char> ttype;
+    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    TupleTestFunc ttf;
+    rtype tuple;
+    fcf::foreach(tuple, ttf);
+    FCF_TEST(ttf.result == "float", ttf.result)
   }
   
 }

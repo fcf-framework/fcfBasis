@@ -7,6 +7,8 @@
 #include "../../../IndexableFunction.hpp"
 #include "../../../basis.hpp"
 
+#include "../../../bits/Call/Details/CallWrapper.hpp"
+
 namespace FcfTest {
   namespace BasisTest {
 
@@ -87,8 +89,35 @@ namespace FcfTest {
 namespace FcfTest {
   namespace BasisTest {
 
+    
+    void function_test_1(int* a_a1, int a_a2, short a_a3){
+      *a_a1 = a_a2;
+    }
+    void function_test_2(int* a_a1, int a_a2, short a_a3){
+      *a_a1 = (int)a_a3;
+    }
+    
     void placeHolderCall(){
       std::cout << "Start placeHolderCall()..." << std::endl;
+      
+      {
+        typedef void (function_type)(int*, int, short);
+        fcf::Details::CallWrapper<function_type> c;
+        void* cpa[4];
+        int   a1data = 0;
+        int*  a1 = &a1data;
+        int   a2 = 2;
+        short a3 = 3;
+        cpa[0] = &a1;
+        cpa[1] = &a2;
+        cpa[2] = &a3;
+        c.call(function_test_1, &cpa[0]);
+        FCF_TEST(a1data == a2, a1data, a2);
+        c.call(function_test_2, &cpa[0]);
+        FCF_TEST(a1data == a3, a1data, a3);
+          
+        
+      }
       /*
       {
         size_t val  = 999;

@@ -1,11 +1,16 @@
-#ifndef ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_HPP___
-#define ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_HPP___
+#ifndef ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_HANDLER_HPP___
+#define ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_HANDLER_HPP___
 
-#include "CallSelectorHandler.hpp"
+#include <climits>
+#include <algorithm>
+#include "../../../foreach.hpp"
+#include "../../../bits/Specificator/DynamicIteratorInfo.hpp"
+#include "CallConversionNode.hpp"
+#include "CallSelectorState.hpp"
 
 namespace fcf {
   namespace Details {
-/*
+    
     struct CallSelectorHandler {
 
       struct InputArgument {
@@ -476,9 +481,11 @@ namespace fcf {
               begNode = begNode->next;
             }
 
-            // if (argMapIndex >= state.result->argsMap.size()){
-            //   throw std::runtime_error("Logic_error");
-            // }
+            /*
+            if (argMapIndex >= state.result->argsMap.size()){
+              throw std::runtime_error("Logic_error");
+            }
+            */
 
             while (pha) {
               CallConversion cc;
@@ -495,13 +502,14 @@ namespace fcf {
               state.result->argsMap[argMapIndex] = argMapCounter;
               ++argMapCounter;
             }
-            // if (argMapCounter > state.result->argsMap.size()){
-            //   throw std::runtime_error("Logic_error");
-            // }
-            // if (argMapIndex > state.result->argsMap.size()){
-            //   throw std::runtime_error("Logic_error");
-            // }
-
+            /*
+            if (argMapCounter > state.result->argsMap.size()){
+              throw std::runtime_error("Logic_error");
+            }
+            if (argMapIndex > state.result->argsMap.size()){
+              throw std::runtime_error("Logic_error");
+            }
+            */
           }
 
         }
@@ -537,18 +545,9 @@ namespace fcf {
         }
       }
     };
-*/
-    template <int Index, int Size, typename TPtrTuple, bool IgnoreIterator = false, unsigned int MaxCount = 0>
-    struct CallSelector {
-      inline void operator()(CallSelectorState& a_state) {
-        CallSelectorHandler csh(a_state);
-        csh.initialize<TPtrTuple>();
-        csh(0, 0, 0, 0, false);
-      }
-    };
-
+    
   } // Details namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_HPP___
+#endif // #ifndef ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_HANDLER_HPP___
 

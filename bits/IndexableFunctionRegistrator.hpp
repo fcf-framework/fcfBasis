@@ -9,6 +9,7 @@
 #include "../Details/IndexableFunction/SimpleCaller.hpp"
 #include "Type/Details/TypeIndex.hpp"
 #include "ArgPlaceHolder/Signature.hpp"
+#include "Call/Details/CallWrapper.hpp"
 
 namespace fcf {
 
@@ -104,12 +105,12 @@ namespace fcf {
         }
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
-        groupIt->second.callers.insert({scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(a_function)}});
+        groupIt->second.callers.insert({scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(a_function), Details::CallWrapper<function_type>::getWrapper()}});
         Details::IndexableFunction::CallFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(scs.asize);
         if (itTree == groupIt->second.callersTree.end()) {
           itTree = groupIt->second.callersTree.insert({scs.asize, {}});
         }
-        itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(a_function)} });
+        itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(a_function), Details::CallWrapper<function_type>::getWrapper(),} });
 
         typename TPlaceHolderSignatures::signatures_type signatures;
         PlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
@@ -197,13 +198,29 @@ namespace fcf {
             ++i;
           }
 
-          groupIt->second.callers.insert({ phs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(function), placeHolder} });
+          groupIt->second.callers.insert({ 
+                                    phs, 
+                                    Details::IndexableFunction::CallFunctionInfo{
+                                      scs, 
+                                      index, 
+                                      (void*)Details::IndexableFunction::getSimpleCaller(function), 
+                                      Details::CallWrapper<TFunction>::getWrapper(),
+                                      placeHolder
+                                      } 
+                                    });
 
           Details::IndexableFunction::CallFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(phs.asize);
           if (itTree == groupIt->second.callersTree.end()) {
             itTree = groupIt->second.callersTree.insert({phs.asize, {}});
           }
-          itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(function), placeHolder} } );
+          itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{
+                                                                      scs,
+                                                                      index,
+                                                                      (void*)Details::IndexableFunction::getSimpleCaller(function),
+                                                                      Details::CallWrapper<TFunction>::getWrapper(),
+                                                                      placeHolder
+                                                                      }
+                                } );
         }
 
         template <typename Tuple, typename TIndex, typename TSignature>

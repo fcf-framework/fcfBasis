@@ -5,6 +5,8 @@
 namespace FcfTest {
   namespace BasisTest {
 
+    void sequenceTest();
+    
     void staticVectorTest();
     void staticVectorCopyTest();
     void staticVectorExceptionTest();
@@ -30,8 +32,22 @@ void dynamicIteratorTest();
 void deepIndexContainerCaller();
 void tupleTest();
 
+/*
+ * 
+Start test
+End test
+(int*, int*, int, int)     [Find, Call] : 81nsec
+(int*, int*, int, variant) [Find, Call] : 176nsec
+(int*, int*, int, variant) [Call]       : 25nsec
+Start deepIndexNearestCaller...
+Start variantTest...
+ * 
+ * 
+ * */
 int main(int a_argc, char* a_argv[]){
 
+  FcfTest::BasisTest::sequenceTest();
+  
   FcfTest::BasisTest::staticVectorTest();
   FcfTest::BasisTest::staticVectorCopyTest();
   FcfTest::BasisTest::staticVectorExceptionTest();

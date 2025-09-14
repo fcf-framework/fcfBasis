@@ -4,12 +4,17 @@
 namespace fcf {
   namespace Template {
 
-    template <int IndexStop, int ... IndexPack>
+    template <int ... IndexPack>
     struct Sequence;
 
-    template <int IndexStop>
-    struct Sequence<IndexStop>{
-      typedef Sequence<IndexStop> type;
+    template <>
+    struct Sequence<>{
+      typedef Sequence<> type;
+    };
+
+    template <int Index>
+    struct Sequence<Index>{
+      typedef Sequence<Index> type;
     };
 
     template <int IndexStop, int StartIndex, int ... IndexPack>
@@ -17,21 +22,36 @@ namespace fcf {
       typedef typename Sequence<IndexStop, StartIndex-1, StartIndex, IndexPack...>::type type;
     };
 
+    template <int IndexStop, int StartIndex>
+    struct Sequence<IndexStop, StartIndex> {
+      typedef typename Sequence<IndexStop, StartIndex-2, StartIndex-1>::type type;
+    };
+
     template <int IndexStop, int ... IndexPack>
     struct Sequence<IndexStop, IndexStop, IndexPack...> {
-      typedef Sequence<IndexStop, IndexStop, IndexPack...> type;
+      typedef Sequence<IndexStop, IndexPack...> type;
     };
 
     template <int IndexStop>
-    struct Sequence<IndexStop, -1> {
-      typedef Sequence<IndexStop> type;
+    struct Sequence<IndexStop, IndexStop> {
+      typedef Sequence<> type;
     };
 
     template <int IndexStop>
     struct Sequence<IndexStop, IndexStop-1> {
-      typedef Sequence<IndexStop> type;
+      typedef Sequence<> type;
     };
 
+    template <int IndexStop>
+    struct Sequence<IndexStop, IndexStop-2> {
+      typedef Sequence<> type;
+    };
+
+    template <int IndexStop>
+    struct Sequence<IndexStop, IndexStop+1> {
+      typedef Sequence<IndexStop> type;
+    };
+   
   } // Template namespace
 } // fcf namespace
 

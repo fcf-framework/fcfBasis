@@ -3,6 +3,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable("basis-test" impl.cpp
                            main.cpp
+                           Template/Sequence.cpp
                            index/deepIndexCallInner.cpp
                            index/deepIndexCallCaller.cpp
                            index/deepIndexCall.cpp

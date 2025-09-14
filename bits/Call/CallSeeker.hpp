@@ -54,14 +54,10 @@ namespace fcf {
         ::fcf::Details::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};
         {
           typedef ::fcf::Details::CallSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
-          selector_type()(0, iasd, false, false);
+          selector_type()(iasd);
           if (iasd.result->caller){
             return;
           }
-        }
-        {
-          typedef ::fcf::Details::CallSelector<0, sizeof...(TArgPack), ptr_tuple_type> selector_type;
-          selector_type()(0, iasd, true, false);
         }
 
         if (!a_result->complete) {
