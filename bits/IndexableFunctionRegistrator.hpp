@@ -2,7 +2,6 @@
 #define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
 
 #include "../foreach.hpp"
-#include "../bits/ArgPlaceHolder/Caller.hpp"
 #include "./IndexableFunctionSpace.hpp"
 #include "./IndexableFunctionInfo.hpp"
 #include "../Details/IndexableFunction/Storage.hpp"
@@ -105,12 +104,12 @@ namespace fcf {
         }
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
-        groupIt->second.callers.insert({scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(a_function), Details::CallWrapper<function_type>::getWrapper()}});
+        groupIt->second.callers.insert({scs, Details::IndexableFunction::CallFunctionInfo{scs, index, Details::CallWrapper<function_type>::getWrapper()}});
         Details::IndexableFunction::CallFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(scs.asize);
         if (itTree == groupIt->second.callersTree.end()) {
           itTree = groupIt->second.callersTree.insert({scs.asize, {}});
         }
-        itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{scs, index, (void*)Details::IndexableFunction::getSimpleCaller(a_function), Details::CallWrapper<function_type>::getWrapper(),} });
+        itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{scs, index, Details::CallWrapper<function_type>::getWrapper(),} });
 
         typename TPlaceHolderSignatures::signatures_type signatures;
         PlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
@@ -198,15 +197,14 @@ namespace fcf {
             ++i;
           }
 
-          groupIt->second.callers.insert({ 
-                                    phs, 
+          groupIt->second.callers.insert({
+                                    phs,
                                     Details::IndexableFunction::CallFunctionInfo{
-                                      scs, 
-                                      index, 
-                                      (void*)Details::IndexableFunction::getSimpleCaller(function), 
+                                      scs,
+                                      index,
                                       Details::CallWrapper<TFunction>::getWrapper(),
                                       placeHolder
-                                      } 
+                                      }
                                     });
 
           Details::IndexableFunction::CallFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(phs.asize);
@@ -216,7 +214,6 @@ namespace fcf {
           itTree->second.insert({ scs, Details::IndexableFunction::CallFunctionInfo{
                                                                       scs,
                                                                       index,
-                                                                      (void*)Details::IndexableFunction::getSimpleCaller(function),
                                                                       Details::CallWrapper<TFunction>::getWrapper(),
                                                                       placeHolder
                                                                       }
@@ -250,8 +247,8 @@ namespace fcf {
           fcf::Details::IndexableFunction::ShortSignature ss;
           ss.fullSignature = fs;
           ss.index = index;
-          typedef ::fcf::ArgPlaceHolder::Caller<typename TSignature::arguments_type, TFunctionResult (TArgPack...)> caller_type;
-          ss.caller = (void*)static_cast<typename caller_type::caller_type>(caller_type::call);
+//          typedef ::fcf::ArgPlaceHolder::Caller<typename TSignature::arguments_type, TFunctionResult (TArgPack...)> caller_type;
+  //        ss.caller = (void*)static_cast<typename caller_type::caller_type>(caller_type::call);
           itGrpSpec->second[sfs] = ss;
 
           /*

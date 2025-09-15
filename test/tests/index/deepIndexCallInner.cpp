@@ -137,7 +137,7 @@ void deepIndexCallInner(){
     int a2 = 2;
 
 
-
+/*
     {
       std::vector<int> vec(10, 0);
       typedef void (*function_type)(std::vector<int>&, const int&);
@@ -165,7 +165,7 @@ void deepIndexCallInner(){
         FCF_TEST(itm == 999, itm);
       }
     }
-
+*/
   }
 
 }

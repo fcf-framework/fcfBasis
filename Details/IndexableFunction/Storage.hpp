@@ -26,7 +26,6 @@ namespace fcf {
         struct CallFunctionInfo {
           BaseFunctionSignature                      callerSignature;
           unsigned int                               index;
-          void*                                      caller;
           void                                      (*lcaller)(void*, void**);
           std::vector<ArgPlaceHolder::SignatureData> placeHolder;
         };

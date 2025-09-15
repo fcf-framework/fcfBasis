@@ -5,6 +5,7 @@
 #include "ArgNumber.hpp"
 #include "Arguments.hpp"
 #include "../../FunctionSignature.hpp"
+#include "RemovePlaceHolder.hpp"
 #include "SignatureData.hpp"
 #include "../../foreach.hpp"
 #include "../../Type.hpp"
@@ -95,11 +96,6 @@ namespace fcf {
       typedef Arguments<TArgPack...>                                          arguments_type;
       typedef typename RemovePlaceHolder<TResult, TArgPack...>::function_type short_function_type;
       typedef FunctionSignature<short_function_type>                          short_function_signature_type;
-      typedef Caller<
-                    ::fcf::ArgPlaceHolder::Arguments<TResult(TArgPack...)>,
-                    TFullFunctionType
-                    > caller_type;
-      typedef typename caller_type::caller_type caller_function_type;
 
       inline static SignatureData getSignatureData(){
         std::tuple<TArgPack...> tuple;
@@ -136,11 +132,6 @@ namespace fcf {
       typedef Nop                                     arguments_type;
       typedef void(*short_function_type)();
       typedef FunctionSignature<short_function_type>  short_function_signature_type;
-      typedef Caller<
-                    ::fcf::ArgPlaceHolder::Arguments<void()>,
-                    void ()
-                    > caller_type;
-      typedef typename caller_type::caller_type caller_function_type;
 
       inline static SignatureData getSignatureData(){
         std::tuple<TArgPack...> tuple;
@@ -161,11 +152,6 @@ namespace fcf {
       typedef Nop                                     arguments_type;
       typedef void(*short_function_type)();
       typedef FunctionSignature<short_function_type>  short_function_signature_type;
-      typedef Caller<
-                    ::fcf::ArgPlaceHolder::Arguments<void()>,
-                    void ()
-                    > caller_type;
-      typedef typename caller_type::caller_type caller_function_type;
 
       inline static SignatureData getSignatureData(){
         std::tuple<TArgPack...> tuple;
