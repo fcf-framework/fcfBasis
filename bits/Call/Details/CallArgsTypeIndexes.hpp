@@ -6,6 +6,10 @@
 namespace fcf {
   namespace Details {
 
+    /**
+     * @class CallArgsTypeIndexes
+     * @brief Classes are used to preserve type indices
+     **/
     template <typename... TArgPack>
     struct CallArgsTypeIndexes {
 

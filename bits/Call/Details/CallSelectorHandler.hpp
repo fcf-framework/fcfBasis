@@ -481,12 +481,6 @@ namespace fcf {
               begNode = begNode->next;
             }
 
-            /*
-            if (argMapIndex >= state.result->argsMap.size()){
-              throw std::runtime_error("Logic_error");
-            }
-            */
-
             while (pha) {
               CallConversion cc;
               cc.mode = CCM_SKIP;
@@ -502,14 +496,6 @@ namespace fcf {
               state.result->argsMap[argMapIndex] = argMapCounter;
               ++argMapCounter;
             }
-            /*
-            if (argMapCounter > state.result->argsMap.size()){
-              throw std::runtime_error("Logic_error");
-            }
-            if (argMapIndex > state.result->argsMap.size()){
-              throw std::runtime_error("Logic_error");
-            }
-            */
           }
 
         }
