@@ -203,8 +203,8 @@
             #a_sourceName, \
             static_cast<a_signature>(a_sourceName),\
             ::fcf::Details::CallPlaceHolderSignatures < \
-              ::fcf::ArgPlaceHolder::Signature< a_signature, \
-                                                ::fcf::Details::Basis::FunctionResultType<a_signature>::type, \
+              ::fcf::Details::CallPlaceHolderSignatureGetter< a_signature, \
+                                                ::fcf::Details::CallResultTypeGetter<a_signature>::type, \
                                                 _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR a_placeHolder)\
                                               > \
                                           > (),\
@@ -227,9 +227,9 @@
     #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(__VA_ARGS__)
 
     #define _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg) \
-      typename ::fcf::ArgPlaceHolder::Signature< \
+      typename ::fcf::Details::CallPlaceHolderSignatureGetter< \
                                                 a_signature, \
-                                                ::fcf::Details::Basis::FunctionResultType<a_signature>::type, \
+                                                ::fcf::Details::CallResultTypeGetter<a_signature>::type, \
                                                 _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
                                                 >::active_type
 
@@ -273,7 +273,7 @@
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>((a_signature)(void*)0),\
-            ::fcf::ArgPlaceHolder::Signature<::fcf::Nop>(),\
+            ::fcf::ArgPlaceHolder::CallPlaceHolderSignatureGetter<::fcf::Nop>(),\
             #a_sourceCode\
           );
   #endif // #ifndef FCF_EXTEND_FUNCTION

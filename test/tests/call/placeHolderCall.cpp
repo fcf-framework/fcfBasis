@@ -27,7 +27,7 @@ namespace FcfTest {
     #define _FCF_DECLARE_FUNCTION__SIGNATURE(a_arg) \
       typename ::fcf::ArgPlaceHolder::Signature< \
                                                 a_signature, \
-                                                ::fcf::Details::Basis::FunctionResultType<a_signature>::type, \
+                                                ::fcf::Details::CallResultTypeGetter<a_signature>::type, \
                                                 _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
                                                 >::active_type
 

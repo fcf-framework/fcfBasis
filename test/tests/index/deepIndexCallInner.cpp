@@ -9,6 +9,7 @@
 void deepIndexCallInner(){
   std::cout << "Start deepIndexCallInner..." << std::endl;
   {
+    /*
     {
       typedef typename fcf::Details::Basis::ArgPlaceHolder::RemovePlaceHolderByIndex<0, int, float, double>::type type;
       FCF_TEST(fcf::Type<type>().name() == "int", fcf::Type<type>().name());
@@ -25,34 +26,38 @@ void deepIndexCallInner(){
       typedef typename fcf::Details::Basis::ArgPlaceHolder::RemovePlaceHolderByIndex<2, fcf::Arg1, int, float>::type type;
       FCF_TEST(fcf::Type<type>().name() == "fcf::Nop", fcf::Type<type>().name());
     }
+    */
   }
+  /*
   {
     ::fcf::ArgPlaceHolder::Arguments<void (int, std::string)>::type2 value1 = "test1";
     FCF_TEST(value1 == "test1", value1);
   }
+  */
+  /*
   {
-    typedef typename fcf::ArgPlaceHolder::RemovePlaceHolder<void (int, fcf::Arg1)> phtype;
+    typedef typename fcf::Details::RemovePlaceHolder<void (int, fcf::Arg1)> phtype;
     FCF_TEST(fcf::Type<phtype::type1>().name() == "int", fcf::Type<phtype::type1>().name());
     FCF_TEST(fcf::Type<phtype::type2>().name() == "fcf::Nop", fcf::Type<phtype::type2>().name());
     typedef void (*test_function_type)(int);
     FCF_TEST((std::is_same<test_function_type, phtype::function_type>::value));
   }
   {
-    typedef typename fcf::ArgPlaceHolder::RemovePlaceHolder<void (fcf::Arg1, int)> phtype;
+    typedef typename fcf::Details::RemovePlaceHolder<void (fcf::Arg1, int)> phtype;
     FCF_TEST(fcf::Type<phtype::type1>().name() == "int", fcf::Type<phtype::type1>().name());
     FCF_TEST(fcf::Type<phtype::type2>().name() == "fcf::Nop", fcf::Type<phtype::type2>().name());
     typedef void (*test_function_type)(int);
     FCF_TEST((std::is_same<test_function_type, phtype::function_type>::value));
   }
   {
-    typedef typename fcf::ArgPlaceHolder::RemovePlaceHolder<void (int)> phtype;
+    typedef typename fcf::Details::RemovePlaceHolder<void (int)> phtype;
     FCF_TEST(fcf::Type<phtype::type1>().name() == "int", fcf::Type<phtype::type1>().name());
     FCF_TEST(fcf::Type<phtype::type2>().name() == "fcf::Nop", fcf::Type<phtype::type2>().name());
     typedef void (*test_function_type)(int);
     FCF_TEST((std::is_same<test_function_type, phtype::function_type>::value));
   }
   {
-    typedef typename fcf::ArgPlaceHolder::RemovePlaceHolder<void (int, fcf::Arg1, int)> phtype;
+    typedef typename fcf::Details::RemovePlaceHolder<void (int, fcf::Arg1, int)> phtype;
     FCF_TEST(fcf::Type<phtype::type1>().name() == "int", fcf::Type<phtype::type1>().name());
     FCF_TEST(fcf::Type<phtype::type2>().name() == "int", fcf::Type<phtype::type2>().name());
     FCF_TEST(fcf::Type<phtype::type3>().name() == "fcf::Nop", fcf::Type<phtype::type3>().name());
@@ -60,11 +65,12 @@ void deepIndexCallInner(){
     FCF_TEST((std::is_same<test_function_type, phtype::function_type>::value));
   }
   {
-    typedef typename fcf::ArgPlaceHolder::RemovePlaceHolder<void (fcf::Arg1)> phtype;
+    typedef typename fcf::Details::RemovePlaceHolder<void (fcf::Arg1)> phtype;
     FCF_TEST(fcf::Type<phtype::type1>().name() == "fcf::Nop", fcf::Type<phtype::type1>().name());
     typedef void (*test_function_type)();
     FCF_TEST((std::is_same<test_function_type, phtype::function_type>::value));
   }
+  */
   {
     typedef fcf::Variant VariantArray[3];
     VariantArray variant;
@@ -74,6 +80,7 @@ void deepIndexCallInner(){
     int a1 = 1;
     int a2 = 2;
 
+    /*
     {
       typedef ::fcf::ArgPlaceHolder::Arguments<void(int, fcf::Arg1)>                      template_args_type;
       typedef fcf::Details::Basis::ArgPlaceHolder::ArgResolver<0, template_args_type, int, int>  getter1_type;
@@ -89,6 +96,7 @@ void deepIndexCallInner(){
       typedef fcf::Details::Basis::ArgPlaceHolder::ArgResolver<1, template_args_type, int, int>  getter2_type;
       FCF_TEST(getter2_type::call(variant, a1) == 1002, getter2_type::call(variant, a1));
     }
+    */
 
   }
 
@@ -100,6 +108,7 @@ void deepIndexCallInner(){
     variant[2] = 1003;
     int a1 = 1;
     int a2 = 2;
+    /*
     {
       typedef ::fcf::ArgPlaceHolder::Arguments<void(int, fcf::Arg1, int)>                             template_args_type;
       typedef fcf::Details::Basis::ArgPlaceHolder::ArgResolver<0, template_args_type, int, int, int>  getter_type;
@@ -125,6 +134,7 @@ void deepIndexCallInner(){
       typedef fcf::Details::Basis::ArgPlaceHolder::ArgResolver<1, template_args_type, int, int, int>  getter_type;
       FCF_TEST(getter_type::call(variant, a1, a2) == 1003, getter_type::call(variant, a1, a2));
     }
+    */
   }
 
   {

@@ -1,6 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__ARG_PLACE_HOLDER__ARG_NUMBER_HPP___
-#define ___FCF_BASIS__BITS__ARG_PLACE_HOLDER__ARG_NUMBER_HPP___
-
+#ifndef ___FCF_BASIS__BITS__CALL__ARG_NUMBER_HPP___
+#define ___FCF_BASIS__BITS__CALL__ARG_NUMBER_HPP___
 
 #include "Arg.hpp"
 

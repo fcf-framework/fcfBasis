@@ -1,13 +1,13 @@
-#ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_INFO_HPP___
-#define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_INFO_HPP___
+#ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_FUNCTION_INFO_HPP___
+#define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_FUNCTION_INFO_HPP___
 
-#include <vector>
-#include "../FunctionSignature.hpp"
-#include "IndexableFunctionSpace.hpp"
+#include <string>
+#include "../../FunctionSignature.hpp"
+#include "../IndexableFunctionSpace.hpp"
 
 namespace fcf {
-
-  struct IndexableFunctionInfo {
+ 
+  struct CallStorageFunctionInfo {
     std::string                         name;
     BaseFunctionSignature               signature;
     std::string                         sourceName;
@@ -37,6 +37,6 @@ namespace fcf {
     }
   };
 
-} // fcf namespace
+} // namespace fcf
 
-#endif // #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_INFO_HPP___
+#endif // #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_FUNCTION_INFO_HPP___

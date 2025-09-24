@@ -15,6 +15,8 @@
 
 #include "./IndexableFunction.hpp"
 
+#include "call.hpp"
+
 #include "functions.hpp"
 
 #include "specificators.hpp"
@@ -29,7 +31,6 @@
 
 #include "DynamicIterator.hpp"
 
-#include "call.hpp"
 
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___
 

@@ -2,7 +2,7 @@
 #define ___FCF__BASIS__BITS__CALL__CALL_CONVERSION_HPP___
 
 #include "../../StaticVector.hpp"
-#include "../ArgPlaceHolder/SignatureData.hpp"
+#include "PartPlaceHolder/CallPlaceHolderInfo.hpp"
 #include "CallConversionMode.hpp"
 
 namespace fcf {
@@ -15,7 +15,7 @@ namespace fcf {
     unsigned int                                      converterArgCount;
     unsigned int                                      specificatorIndex;
     unsigned int                                      pointerCounter;
-    StaticVector<ArgPlaceHolder::PlaceHolderArgEx, 2> placeHolders;
+    StaticVector<CallPlaceHolderArgEx, 2> placeHolders;
   };
 
 } // fcf namespace

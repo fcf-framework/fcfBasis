@@ -120,15 +120,15 @@ namespace fcf {
         }
 
         if (state.strictSource && !currentInputArgument->pairCounter && !currentInputArgument->ignoreConvertSeeker) {
-          Details::IndexableFunction::CallFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
+          CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
           if (treeIt != state.groupIterator->second.callersTree.end()){
             const Details::TypeInfo* ti =  Details::typeStorage.get(currentInputArgument->clearTypeIndex);
             BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
             for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
               shortSign.pacodes[i] = 0;
             }
-            ::fcf::Details::IndexableFunction::CallFunctionsMap::iterator rightIt = treeIt->second.lower_bound(shortSign);
-            ::fcf::Details::IndexableFunction::CallFunctionsMap::iterator leftIt = rightIt;
+            CallStorageSelectionFunctionsMap::iterator rightIt = treeIt->second.lower_bound(shortSign);
+            CallStorageSelectionFunctionsMap::iterator leftIt = rightIt;
             if (rightIt != treeIt->second.end()) {
               if (leftIt != treeIt->second.end()) {
                 --leftIt;
@@ -296,8 +296,8 @@ namespace fcf {
         state.placeHolderVec.resize(originPlaceHolderVecSize);
       }
 
-      static ArgPlaceHolder::PlaceHolderArg* _getNextPlaceHolder(fcf::Details::IndexableFunction::CallFunctionInfo* pCall, int a_currentArgNumber){
-        ArgPlaceHolder::PlaceHolderArg* result = 0;
+      static ::fcf::CallPlaceHolderArg* _getNextPlaceHolder(CallStorageSelectionFunctionInfo* pCall, int a_currentArgNumber){
+        ::fcf::CallPlaceHolderArg* result = 0;
         unsigned int minValue = UINT_MAX;
         bool         exit = false;
         for(size_t phsi  = 0; phsi < pCall->placeHolder.size() && !exit; ++phsi){
@@ -360,9 +360,9 @@ namespace fcf {
       }
 
       void _complete(CallConversionNode* a_node, bool a_dynamicCaller) {
-        fcf::Details::IndexableFunction::CallFunctionInfo* pCall = 0;
+        CallStorageSelectionFunctionInfo* pCall = 0;
         if (!state.dynamicCaller) {
-          std::pair<fcf::Details::IndexableFunction::CallFunctions::iterator, fcf::Details::IndexableFunction::CallFunctions::iterator> range =
+          std::pair<CallStorageSelectionFunctions::iterator, CallStorageSelectionFunctions::iterator> range =
               state.groupIterator->second.callers.equal_range(*state.ptrFunctionSignature);
           for(; range.first != range.second; ++range.first) {
             size_t i = 0;
@@ -388,12 +388,12 @@ namespace fcf {
           pCall = &range.first->second;
           state.result->complete = true;
           state.result->caller   = (void*)range.first->second.lcaller;
-          state.result->function = Details::IndexableFunction::getStorage().functions[range.first->second.index].function;
+          state.result->function = getCallStorage().functions[range.first->second.index].function;
           state.result->argCount = range.first->second.callerSignature.asize;
         } else {
-          Details::IndexableFunction::CallFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
+          CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
           if (treeIt != state.groupIterator->second.callersTree.end()) {
-            ::fcf::Details::IndexableFunction::CallFunctionsMap::const_iterator it = treeIt->second.begin();
+            CallStorageSelectionFunctionsMap::const_iterator it = treeIt->second.begin();
             for(; it != treeIt->second.end(); ++it) {
               unsigned int argIndex = 0;
               for(; argIndex < state.ptrFunctionSignature->asize; ++argIndex){
@@ -430,7 +430,7 @@ namespace fcf {
             while(begNode->prev){
               begNode = begNode->prev;
             }
-            ArgPlaceHolder::PlaceHolderArg* pha = pCall ? _getNextPlaceHolder(pCall, -1) : 0;
+            ::fcf::CallPlaceHolderArg* pha = pCall ? _getNextPlaceHolder(pCall, -1) : 0;
             while(begNode){
               bool ignore = begNode->conversion.mode == CCM_NONE;
               if (pCall) {
@@ -444,15 +444,15 @@ namespace fcf {
                   ++argMapCounter;
                 }
                 if (begNode->conversion.mode == CCM_PLACE_HOLDER) {
-                  std::vector<ArgPlaceHolder::SignatureData>::iterator it =
-                    std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [begNode](ArgPlaceHolder::SignatureData& a_itm){
+                  std::vector<::fcf::CallPlaceHolderInfo>::iterator it =
+                    std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [begNode](::fcf::CallPlaceHolderInfo& a_itm){
                       return a_itm.specificatorIndex == begNode->conversion.specificatorIndex;
                     });
                   if (it == pCall->placeHolder.end()){
                     ignore = true;
                   } else {
                     for(auto ph : it->placeHolders) {
-                      ArgPlaceHolder::PlaceHolderArgEx phe;
+                      ::fcf::CallPlaceHolderArgEx phe;
                       phe.argument = ph.argument;
                       phe.placeHolderArgument = ph.placeHolderArgument;
                       phe.type = pCall->callerSignature.pacodes[ph.argument];

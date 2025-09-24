@@ -3,7 +3,6 @@
 
 #include <stddef.h>
 #include <type_traits>
-#include "../../../Template/PackageArgResolver.hpp"
 #include "../../../Template/Sequence.hpp"
 #include "../../../FunctionSignature.hpp"
 #include "../../Specificator/DynamicIteratorInfo.hpp"
@@ -76,7 +75,7 @@ namespace fcf {
                 }
                 resolve(*aptr, vs);
                 for(size_t i = 0; i < cc.placeHolders.size(); ++i){
-                  const ArgPlaceHolder::PlaceHolderArgEx& phae = cc.placeHolders[i];
+                  const CallPlaceHolderArgEx& phae = cc.placeHolders[i];
                   const size_t argBufferIndex = argBuffer.size();
                   if (argBufferIndex >= argBufferCapacity){
                     throw std::runtime_error("Argument buffer overflow");

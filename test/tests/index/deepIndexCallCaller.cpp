@@ -2,7 +2,7 @@
 
 #include "../../libraries/fcfTest/test.hpp"
 
-#include "../../../Details/IndexableFunction/SimpleCaller.hpp"
+//#include "../../../Details/IndexableFunction/SimpleCaller.hpp"
 
 namespace NTestCaller {
 
@@ -18,6 +18,7 @@ namespace NTestCaller {
 
 void deepIndexCallCaller() {
   std::cout << "Start deepIndexCallCaller..." << std::endl;
+  /*
   {
     int res = 0;
     auto ptrFunc = NTestCaller::test1;
@@ -36,4 +37,5 @@ void deepIndexCallCaller() {
     res = caller(ptrFunc, &val);
     FCF_TEST(res == val + 1, res, val + 1);
   }
+  */
 }

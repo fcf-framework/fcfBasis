@@ -2,6 +2,10 @@
 #define ___FCF_BASIS__CALL_HPP___
 
 #include "macro.hpp"
+
+// Included for use macros
+#include "bits/Call/Details/CallResultTypeGetter.hpp"
+
 #include "bits/Call/CallSeeker.hpp"
 #include "bits/Call/Details/Caller.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_STATE_HPP___
 #define ___FCF__BASIS__BITS__CALL__DETAILS__CALL_SELECTOR_STATE_HPP___
 
-#include "../../../Details/IndexableFunction/Storage.hpp"
+#include "../../PartCallStorage/CallStorage.hpp"
 #include "../../../StaticVector.hpp"
 #include "../Call.hpp"
 
@@ -11,7 +11,7 @@ namespace fcf {
     struct CallSelectorState {
       const char*                                       name;
       Call*                                             result;
-      fcf::Details::IndexableFunction::CallFunctionGroups::iterator groupIterator;
+      CallStorageSelectionFunctionGroups::iterator      groupIterator;
       BaseFunctionSignature&                            functionSignature;
       BaseFunctionSignature*                            ptrFunctionSignature;
       StaticVector<void*, 8>*                           arguments;

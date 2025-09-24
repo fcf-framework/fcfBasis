@@ -1,15 +1,15 @@
-#ifndef ___FCF_BASIS__BITS__ARG_PLACE_HOLDER__IS_PLACE_HOLDER_HPP___
-#define ___FCF_BASIS__BITS__ARG_PLACE_HOLDER__IS_PLACE_HOLDER_HPP___
+#ifndef ___FCF__BASIS__BITS__CALL__PART_PLACE_HOLDER__DETAILS__CALL_PLACE_HOLDER_ARG_DETECTOR_HPP___
+#define ___FCF__BASIS__BITS__CALL__PART_PLACE_HOLDER__DETAILS__CALL_PLACE_HOLDER_ARG_DETECTOR_HPP___
 
 #include <type_traits>
-#include "../../Nop.hpp"
-#include "Arg.hpp"
+#include "../../../../Nop.hpp"
+#include "../../Arg.hpp"
 
 namespace fcf {
-  namespace ArgPlaceHolder {
+  namespace Details {
 
     template <typename Ty = Nop, typename... TPack>
-    struct IsPlaceHolder {
+    struct CallPlaceHolderArgDetector {
       typedef typename std::remove_reference<Ty>::type check_type;
       enum {
         value = std::is_same<Arg1,  check_type>::value ||
@@ -28,4 +28,4 @@ namespace fcf {
   } // ArgPlaceHolder namespace  
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__ARG_PLACE_HOLDER__IS_PLACE_HOLDER_HPP___
+#endif // #ifndef ___FCF__BASIS__BITS__CALL__PART_PLACE_HOLDER__DETAILS__CALL_PLACE_HOLDER_ARG_DETECTOR_HPP___

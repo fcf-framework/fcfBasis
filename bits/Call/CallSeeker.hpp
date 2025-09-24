@@ -1,6 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__CALL__CALL_SEEKER_HPP___
 #define ___FCF__BASIS__BITS__CALL__CALL_SEEKER_HPP___
 
+
 #include "Details/CallSelector.hpp"
 
 namespace fcf {
@@ -29,8 +30,8 @@ namespace fcf {
     protected:
       template <typename... TCurrentArgPack>
       void call(const char* a_functionName, Call* a_result, State& a_state, const TCurrentArgPack&... a_argPack){
-        fcf::Details::IndexableFunction::CallFunctionGroups::iterator groupIt = fcf::Details::IndexableFunction::getStorage().groups.find(a_functionName);
-        if (groupIt == Details::IndexableFunction::getStorage().groups.end()) {
+        CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);
+        if (groupIt == getCallStorage().groups.end()) {
           throw std::runtime_error("Function not found.");
         }
 
@@ -46,7 +47,7 @@ namespace fcf {
           a_result->conversions.clear();
         }
 
-        fcf::Details::IndexableFunction::CallFunctions::iterator callerInfoIt =
+        CallStorageSelectionFunctions::iterator callerInfoIt =
           groupIt->second.callers.find(functionSignature);
 
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
