@@ -1,19 +1,20 @@
-#ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
-#define ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
+#ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
+#define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
 
-#include "../foreach.hpp"
-#include "./IndexableFunctionSpace.hpp"
-#include "./PartCallStorage/CallStorageFunctionInfo.hpp"
-#include "PartCallStorage/CallStorage.hpp"
-#include "Type/Details/TypeIndex.hpp"
-#include "Call/PartPlaceHolder/Details/CallPlaceHolderSignatureGetter.hpp"
-#include "Call/Details/CallWrapper.hpp"
+
+#include "../../foreach.hpp"
+#include "CallStorageSpace.hpp"
+#include "../Type/Details/TypeIndex.hpp"
+#include "../Call/PartPlaceHolder/Details/CallPlaceHolderSignatureGetter.hpp"
+#include "../Call/Details/CallWrapper.hpp"
+#include "CallStorageFunctionInfo.hpp"
+#include "CallStorage.hpp"
 
 namespace fcf {
 
-    struct IndexableFunctionRegistrator {
+    struct CallStorageRegistrator {
       template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-      IndexableFunctionRegistrator(const std::string& a_name,
+      CallStorageRegistrator(const std::string& a_name,
                                    const std::string& a_space,
                                    const std::string& a_sourceName,
                                    TFunctionResult (*a_function)(TArgPack...),
@@ -68,7 +69,7 @@ namespace fcf {
           sfi.sourceName = a_function && weight ? a_sourceName : std::string();
           sfi.function   = a_function && weight ? (void*)a_function : (void*)0;
 
-          IndexableFunctionSpace sfs;
+          CallStorageSpace sfs;
           sfs.sourceName = a_sourceName;
           sfs.function   = (void*)a_function;
           sfs.spaces     = spaces;
@@ -88,7 +89,7 @@ namespace fcf {
             sfi.sourceName = a_sourceName;
           }
 
-          IndexableFunctionSpace sfs;
+          CallStorageSpace sfs;
           sfs.sourceName = a_sourceName;
           sfs.function   = (void*)a_function;
           sfs.spaces     = spaces;
@@ -200,31 +201,6 @@ namespace fcf {
           }
           groupIt->second.specificatorsByArgIndex[TSignature::ArgIndex-1].push_back(specificatorIndex);
 
-          /*
-          std::map<unsigned int, Details::IndexableFunction::ShortSignatures>::iterator itGrpSpec =
-            groupIt->second.specificators.find(specificatorIndex);
-          if (itGrpSpec == groupIt->second.specificators.end()) {
-            std::pair<unsigned int, Details::IndexableFunction::ShortSignatures> item;
-            item.first = specificatorIndex;
-            itGrpSpec = groupIt->second.specificators.insert(item).first;
-          }
-          typename TSignature::short_function_signature_type sfs;
-          fcf::Details::IndexableFunction::ShortSignature ss;
-          ss.fullSignature = fs;
-          ss.index = index;
-        
-//          typedef ::fcf::ArgPlaceHolder::Caller<typename TSignature::arguments_type, TFunctionResult (TArgPack...)> caller_type;
-  //        ss.caller = (void*)static_cast<typename caller_type::caller_type>(caller_type::call);
-          itGrpSpec->second[sfs] = ss;
-          */
-          /*
-          BaseFunctionSignature scsfs = sfs.getSimpleCallSignature();
-          :CallStorageSelectionFunctionsByArgNumber:iterator itTree = groupIt->second.callersTree.find(scsfs.asize);
-          if (itTree == groupIt->second.callersTree.end()) {
-            itTree = groupIt->second.callersTree.insert({scsfs.asize, {}}).first;
-          }
-          itTree->second[scsfs] = Details::IndexableFunction::CallFunctionInfo{scsfs, index, (void*)ss.caller};
-          */
         }
 
         TFunction                                             function;
@@ -260,4 +236,5 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__INDEXABLE_FUNCTION_REGISTRATOR_HPP___
+
+#endif // #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___

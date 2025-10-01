@@ -37,12 +37,7 @@ namespace fcf {
       Variant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       ~Variant();
-/*
-      template <typename TDestinationType, typename TSourceType>
-      static convert_function_type getConverter();
 
-      static convert_function_type getConverter(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex);
-*/
       Variant& operator=(const Variant& a_variant);
 
       template <typename Ty>

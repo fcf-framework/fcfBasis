@@ -3,8 +3,11 @@
 
 #include "macro.hpp"
 
+#include "Type.hpp"
+
 // Included for use macros
 #include "bits/Call/Details/CallResultTypeGetter.hpp"
+#include "bits/PartCallStorage/CallStorageRegistrator.hpp"
 
 #include "bits/Call/CallSeeker.hpp"
 #include "bits/Call/Details/Caller.hpp"

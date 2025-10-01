@@ -6,13 +6,14 @@ namespace FcfTest {
   namespace BasisTest {
 
     void sequenceTest();
-    
+
     void staticVectorTest();
     void staticVectorCopyTest();
     void staticVectorExceptionTest();
     void staticVectorIteratorTest();
     void staticVectorPushTest();
     void staticVectorNotReduce();
+    void staticVectorInsertTest();
 
     void declareCall();
     void placeHolderCall();
@@ -54,6 +55,7 @@ int main(int a_argc, char* a_argv[]){
   FcfTest::BasisTest::staticVectorIteratorTest();
   FcfTest::BasisTest::staticVectorPushTest();
   FcfTest::BasisTest::staticVectorNotReduce();
+  FcfTest::BasisTest::staticVectorInsertTest();
 
   FcfTest::BasisTest::declareCall();
 

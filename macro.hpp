@@ -195,7 +195,7 @@
 
     #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
       a_sourceCode; \
-      ::fcf::IndexableFunctionRegistrator \
+      ::fcf::CallStorageRegistrator \
         _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
           ( \
             #a_name, \
@@ -247,7 +247,7 @@
     #define _FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
     #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
       a_sourceCode; \
-      ::fcf::IndexableFunctionRegistrator \
+      ::fcf::CallStorageRegistrator \
         _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
           ( \
             #a_name, \
@@ -266,7 +266,7 @@
     #define _FCF_EXTEND_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
     #define _FCF_EXTEND_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_EXTEND_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
     #define FCF_EXTEND_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_sourceCode) \
-      ::fcf::IndexableFunctionRegistrator \
+      ::fcf::CallStorageRegistrator \
         _FCF_EXTEND_FUNCTION__VARNAME(functionRegistrator, a_name, __LINE__) \
           ( \
             #a_name, \
@@ -280,12 +280,12 @@
 
   #ifndef FCF_GET_FUNCTION_INDEX
     #define FCF_GET_FUNCTION_INDEX(a_name, a_signature) \
-      ::fcf::IndexableFunctionRegistrator::getIndex<a_signature>(a_name)
+      ::fcf::CallStorageRegistrator::getIndex<a_signature>(a_name)
   #endif // #ifndef FCF_GET_FUNCTION_INDEX
 
   #ifndef FCF_GET_FUNCTION
     #define FCF_GET_FUNCTION(a_index) \
-      ::fcf::Details::IndexableFunction::getStorage().functions[a_index].function
+      ::fcf::getCallStorage().functions[a_index].function
   #endif // #ifndef FCF_GET_FUNCTION
 
 #endif // #ifndef ___FCF_BASIS__MACRO_HPP___

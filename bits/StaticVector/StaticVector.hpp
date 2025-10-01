@@ -51,7 +51,7 @@ namespace fcf {
       typedef size_t size_type;
       typedef IndexIterator<StaticVector&, Ty&>             iterator;
       typedef IndexIterator<const StaticVector&, const Ty&> const_iterator;
-      
+
       enum {
         static_capacity_value = StaticSize
       };
@@ -68,7 +68,7 @@ namespace fcf {
 
       StaticVector(size_t a_size)
         : _pdata((Ty*)&_adata[0])
-        , _sdata(0) 
+        , _sdata(0)
         , _cdata(StaticSize){
         _realloc(_getBufferSize(a_size), a_size);
       }
@@ -83,7 +83,7 @@ namespace fcf {
 
       StaticVector(std::initializer_list<Ty> a_list)
         : _pdata((Ty*)&_adata[0])
-        , _sdata(0) 
+        , _sdata(0)
         , _cdata(StaticSize) {
         _forceRealloc(_getBufferSize(a_list.size()));
         for(auto it = a_list.begin(); it != a_list.end(); ++it){

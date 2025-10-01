@@ -2,7 +2,6 @@
 #define ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
 
 #include "../../Variant.hpp"
-#include "../../InvariantCaller.hpp"
 #include "../../ArgPlaceHolder.hpp"
 #include "../../Details/randomGenerator.hpp"
 
@@ -22,58 +21,13 @@ namespace fcf {
       }
     }
 
-    template <typename Ty>
-    void random(Ty* a_begin, Ty* a_end, const Variant& a_min, const Variant& a_max) {
-      Ty min =  a_min.get<Ty>();
-      Ty max =  a_max.get<Ty>();
-      for (; a_begin != a_end; ++a_begin) {
-        double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
-        *a_begin = min + ((max - min) * r);
-      }
-    }
-
-    namespace Details {
-      struct RandomExecutor {
-        template <typename TIterator, typename TyMin, typename TyMax>
-        void call(TIterator a_begin, TIterator a_end, const TyMin& a_min, const TyMax& a_max) {
-          for(; a_begin != a_end; ++a_begin) {
-            *a_begin = random(a_min, a_max);
-          }
-        }
-        template <typename TContainer, typename TIterator>
-        void callA(TContainer& a_container, TIterator a_begin, TIterator a_end) {
-          InvariantCaller<RandomExecutor>().rangeCall(a_begin,
-                                                      a_end,
-                                                      Type<TContainer, MinMaxSpecificator>().min(a_container),
-                                                      Type<TContainer, MinMaxSpecificator>().max(a_container)
-                                                      );
-        }
-      };
-    }
-
-    template <typename TIterator, typename TMinValue, typename TMaxValue >
-    void random(TIterator a_begin, TIterator a_end, TMinValue a_min, TMaxValue a_max) {
-      InvariantCaller<Details::RandomExecutor>().rangeCall(a_begin, a_end, a_min, a_max);
-    }
-
-
-   template <typename TContainer, typename TMinValue, typename TMaxValue >
-    void random(TContainer& a_container, TMinValue a_min, TMaxValue a_max) {
-      InvariantCaller<Details::RandomExecutor>().call(a_container, a_min, a_max);
-    }
-
-    template <typename TContainer >
-    void random(TContainer& a_container) {
-      InvariantCaller<Details::RandomExecutor>().callA<MinMaxSpecificator>(a_container);
-    }
-
 } // fcf namespace
 
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_DECLARE_FUNCTION(random, 
-                       "engine_cpu", 
-                       fcf::random, 
+  FCF_DECLARE_FUNCTION(random,
+                       "engine_cpu",
+                       fcf::random,
                        void(*) (float*, float*, const float&, const float&),
                        ((fcf::MinMaxSpecificator, 1, float*, float*, fcf::Arg1, fcf::Arg2)),
                       );

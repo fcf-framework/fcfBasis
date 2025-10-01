@@ -4,7 +4,6 @@
 #include "../../../functions.hpp"
 #include "../../../Type.hpp"
 #include "../../../specificators.hpp"
-#include "../../../IndexableFunction.hpp"
 #include "../../../basis.hpp"
 
 #include "../../../bits/Call/Details/CallWrapper.hpp"

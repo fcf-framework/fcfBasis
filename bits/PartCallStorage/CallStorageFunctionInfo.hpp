@@ -3,22 +3,22 @@
 
 #include <string>
 #include "../../FunctionSignature.hpp"
-#include "../IndexableFunctionSpace.hpp"
+#include "CallStorageSpace.hpp"
 
 namespace fcf {
  
   struct CallStorageFunctionInfo {
-    std::string                         name;
-    BaseFunctionSignature               signature;
-    std::string                         sourceName;
-    void*                               function;
-    std::vector<IndexableFunctionSpace> spaces;
+    std::string                   name;
+    BaseFunctionSignature         signature;
+    std::string                   sourceName;
+    void*                         function;
+    std::vector<CallStorageSpace> spaces;
 
     template <typename TSpaceNames>
-    std::vector<IndexableFunctionSpace>::const_iterator getSpace(const TSpaceNames& a_spaces) const{
+    std::vector<CallStorageSpace>::const_iterator getSpace(const TSpaceNames& a_spaces) const{
       int                                      curWeight = 0;
-      std::vector<IndexableFunctionSpace>::const_iterator curIt     = spaces.cend();
-      for(std::vector<IndexableFunctionSpace>::const_iterator it = spaces.cbegin(); it != spaces.cend(); ++it) {
+      std::vector<CallStorageSpace>::const_iterator curIt     = spaces.cend();
+      for(std::vector<CallStorageSpace>::const_iterator it = spaces.cbegin(); it != spaces.cend(); ++it) {
         int weight = 0;
         if (it->spaces.find("*") != it->spaces.end()){
           weight += 1;

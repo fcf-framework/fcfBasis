@@ -12,7 +12,7 @@
 #include "../nativeType.hpp"
 #include "Type/TypeInitializer.hpp"
 #include "../Variant.hpp"
-#include "./DynamicIterator/DynamicIterator.hpp"
+#include "./PartIterator/DynamicIterator.hpp"
 
 FCF_TYPEID_REGISTRY(char,               "char",               FCF_INT8_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(unsigned char,      "unsigned char",      FCF_UINT8_TYPE_INDEX);
@@ -33,7 +33,7 @@ FCF_TYPEID_REGISTRY(std::string,        "std::string",        30);
 namespace fcf {
   class Variant;
 } // fcf namespace
-FCF_TYPEID_REGISTRY(fcf::Variant,        "fcf::Variant",         31);
+FCF_TYPEID_REGISTRY(fcf::Variant,       "fcf::Variant",         31);
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant, fcf::RawDataSpecificator);
 
 FCF_TYPEID_REGISTRY(fcf::Nop, "fcf::Nop", 0);

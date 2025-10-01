@@ -1,6 +1,6 @@
 #ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_HPP___
 #define ___FCF_BASIS__INDEXABLE_FUNCTION_HPP___
 
-#include "./bits/IndexableFunctionRegistrator.hpp"
+#include "./bits/PartCallStorage/CallStorageRegistrator.hpp"
 
 #endif // #ifndef ___FCF_BASIS__INDEXABLE_FUNCTION_HPP___

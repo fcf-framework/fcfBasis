@@ -9,19 +9,13 @@
 
 #include "foreach.hpp"
 
-#include "./InvariantCaller.hpp"
-
 #include "./FunctionSignature.hpp"
-
-#include "./IndexableFunction.hpp"
 
 #include "call.hpp"
 
 #include "functions.hpp"
 
 #include "specificators.hpp"
-
-#include "Details/Convert/Storage.hpp"
 
 #include "convert.hpp"
 
