@@ -9,9 +9,6 @@
 #include "Details/Variant/Wrapper.hpp"
 #include "Details/Variant/NobodyWrapper.hpp"
 #include "bits/Convert/convertRuntime.hpp"
-#include "Type.hpp"
-#include "specificators.hpp"
-#include "bits/registry.hpp"
 
 namespace fcf {
 
@@ -87,6 +84,13 @@ namespace fcf {
       void*        _ptr;
   };
 
+} // fcf namespace
+  
+#include "Type.hpp" 
+#include "specificators.hpp"
+#include "bits/registry.hpp"
+
+namespace fcf{
   #ifdef FCF_BASIS_IMPLEMENTATION
     Variant::Variant()
       : _index(0)
@@ -245,6 +249,7 @@ namespace fcf {
     }
     return *(TResult*)ptr();
   }
+  
 
   template <typename TType>
   bool Variant::is() const{

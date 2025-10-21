@@ -2,10 +2,14 @@
 #define ___FCF_BASIS__BITS__SPECIFICATOR_TYPE_REGISTRATOR_HPP___
 #include <iostream>
 #include "../Type.hpp"
-namespace fcf {
 
+namespace fcf {
+// Specificator registrar
+// SpecificatorRegistrar
+// // SpecificatorRegistrarCaller
+ 
   namespace Details {
-    namespace SpecificatorTypeRegistrator {
+    namespace SpecificatorRegistrar {
 
       template <typename... TArgPack>
       unsigned int getArgCount(void (*a_func)(TArgPack... a_argPack)){
@@ -16,12 +20,12 @@ namespace fcf {
   }
 
   template <typename TContainer, typename TSpecificator>
-  class SpecificatorTypeRegistrator {
+  class SpecificatorRegistrar {
     public:
-      SpecificatorTypeRegistrator() {
+      SpecificatorRegistrar() {
         unsigned int specificatorIndex = Type<TSpecificator>().index();
         fcf::SpecificatorTypeInfo sti;
-        sti.argc = Details::SpecificatorTypeRegistrator::getArgCount(
+        sti.argc = Details::SpecificatorRegistrar::getArgCount(
                               Type<TContainer, TSpecificator>::resolve) - 1;
         sti.resolve = (void*)Type<TContainer, TSpecificator>::resolve;
         Type<TContainer>()._info->specificators[specificatorIndex] = sti;
@@ -29,9 +33,9 @@ namespace fcf {
   };
 
   template <typename TContainer>
-  class SpecificatorTypeRegistrator<TContainer, RawDataSpecificator> {
+  class SpecificatorRegistrar<TContainer, RawDataSpecificator> {
     public:
-      SpecificatorTypeRegistrator() {
+      SpecificatorRegistrar() {
         Type<TContainer>()._info->rawDataResolver = (RawDataSpecificator::function_type)resolver;
       }
 
@@ -42,9 +46,9 @@ namespace fcf {
 
 
   template <typename TContainer>
-  class SpecificatorTypeRegistrator<TContainer, DynamicIteratorSpecificator> {
+  class SpecificatorRegistrar<TContainer, DynamicIteratorSpecificator> {
     public:
-      SpecificatorTypeRegistrator() {
+      SpecificatorRegistrar() {
         Type<TContainer>()._info->dynamicIteratorResolver = (DynamicIteratorSpecificator::function_type)resolver;
       }
 

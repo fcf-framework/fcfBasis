@@ -1,7 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__REGISTRATOR_HPP___
 #define ___FCF__BASIS__BITS__SPECIFICATOR__DETAILS__REGISTRATOR_HPP___
 
-#include "../../Type.hpp"
+#include "../../../Type.hpp"
 #include "Storage.hpp"
 
 namespace fcf {

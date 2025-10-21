@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <cmath>
-#include "../../bits/iterator/IndexIterator.hpp"
+#include "../../bits/PartContainerAccess/ContainerAccess.hpp"
 
 namespace FcfTest {
   namespace BasisTest {
@@ -14,7 +14,27 @@ namespace FcfTest {
   } // BasisTest namespace
 } // FcfTest namespace
 
+
+
 namespace fcf {
+
+  template<typename Ty, unsigned int StaticSize=16, unsigned int OffsetSize=2, unsigned int StepSize=2, unsigned int StepModuleInt=2, unsigned int StepModuleFrac=0, unsigned int MaxPow=/*16*2*4096/sizeof(Ty)*/ 0 >
+  class StaticVector;
+
+  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow>
+  struct ContainerAccessInfo< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> > {
+    typedef FlatCursor<StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>  , 
+                       size_t, Ty> cursor_type;
+  };
+
+
+  /*
+  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow>
+  class DynamicIterator< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> >;
+
+  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow>
+  class DynamicIterator< const StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> >;
+  */
 
   ///
   /// @class StaticVector<typename Ty, unsigned int StaticSize=16, unsigned int OffsetSize=2, unsigned int StepSize=2, unsigned int StepModuleInt=2, unsigned int StepModuleFrac=0, unsigned int MaxPow=2*4096/sizeof(Ty)>
@@ -41,16 +61,17 @@ namespace fcf {
   ///           - unsigned int MaxPow - The limit value after which the buffer size calculation goes into linear form and a simple increment is performed.
   ///                                   If the value is 0, but this functionality is not used
   ///
-  template<typename Ty, unsigned int StaticSize=16, unsigned int OffsetSize=2, unsigned int StepSize=2, unsigned int StepModuleInt=2, unsigned int StepModuleFrac=0, unsigned int MaxPow=/*16*2*4096/sizeof(Ty)*/ 0 >
+  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
   class StaticVector {
     friend void ::FcfTest::BasisTest::staticVectorTest();
     friend void ::FcfTest::BasisTest::staticVectorPushTest();
 
     public:
-      typedef Ty value_type;
-      typedef size_t size_type;
-      typedef IndexIterator<StaticVector&, Ty&>             iterator;
-      typedef IndexIterator<const StaticVector&, const Ty&> const_iterator;
+      typedef StaticVector                                             self_type;
+      typedef Ty                                                       value_type;
+      typedef size_t                                                   size_type;
+      typedef ContainerAccess<self_type, false>                        iterator;
+      typedef ContainerAccess<self_type, true>                         const_iterator;
 
       enum {
         static_capacity_value = StaticSize
@@ -185,6 +206,70 @@ namespace fcf {
         _realloc(newBufferSize, a_size);
       }
 
+      iterator insert(iterator a_iterator, const Ty& a_value){
+        size_t nextSize;
+        if (_cdata <= _sdata){
+          nextSize = _getNextSize(_cdata);
+        } else {
+          nextSize = _cdata;
+        }
+        _insert(nextSize, a_iterator.key(), &a_value, 1);
+        return iterator(*this, a_iterator.key());
+      }
+
+      template <typename TInsertIterator>
+      iterator insert(iterator a_iterator, TInsertIterator a_begin, TInsertIterator a_end){
+        size_t insertSize = std::distance(a_begin, a_end);
+        size_t nextSize;
+        if (!insertSize)  {
+          return iterator(*this, a_iterator.key());
+        } else if (insertSize == 1) {
+          nextSize = _getNextSize(_cdata);
+        } else {
+          nextSize = _getBufferSize(_sdata + insertSize);
+        }
+        _insert(nextSize, a_iterator.key(), a_begin, std::distance(a_begin, a_end));
+        return iterator(*this, a_iterator.key());
+      }
+
+      iterator erase(iterator a_iterator, bool a_notReduce = false){
+        if (a_iterator.key() >= _sdata){
+          return iterator(*this, 0);
+        }
+        size_t newBufferSize;
+        if (a_notReduce) {
+          newBufferSize = _cdata;
+        } else {
+          size_t prev = _getPreviousSize(capacity());
+          if (prev >= _sdata - 1) {
+            newBufferSize = prev;
+          } else {
+            newBufferSize = _cdata;
+          }
+        }
+        _erase(newBufferSize, a_iterator.key(), 1);
+        return iterator(*this, a_iterator.key());
+      }
+
+      iterator erase(iterator a_begin, iterator a_end, bool a_notReduce = false){
+        if (a_begin.key() >= _sdata){
+          return iterator(*this, 0);
+        }
+        if (a_end.key() > _sdata){
+          a_end.cursor.key = _sdata;
+        }
+        size_t insertSize = a_begin.distance(a_end);
+        size_t eraseSize = a_begin.distance(a_end);
+        size_t newBufferSize;
+        if (a_notReduce) {
+          newBufferSize = _cdata;
+        } else {
+          newBufferSize= _getBufferSize(_sdata - eraseSize);
+        }
+        _erase(newBufferSize, a_begin.key(), eraseSize);
+        return iterator(*this, a_begin.key());
+      }
+
     protected:
       struct PrebuildPowSizes {
         PrebuildPowSizes() {
@@ -258,6 +343,38 @@ namespace fcf {
         }
       }
 
+
+      template <typename TIterator>
+      static void _iteratorCopy(Ty* a_mem, TIterator& a_iterator, size_t a_size, size_t& a_sdata) {
+        for(size_t i = 0; i < a_size; ++i) {
+          new (&a_mem[i]) Ty(*a_iterator);
+          ++a_sdata;
+          ++a_iterator;
+        }
+      }
+
+      static void _memRightMove(Ty* a_mem, size_t a_memSize, Ty* a_destMem) {
+        Ty* mem = a_mem + a_memSize - 1;
+        Ty* endMem = a_mem - 1;
+        Ty* destMem = a_destMem + a_memSize - 1;
+        while(mem != endMem) {
+          new (destMem) Ty(*mem);
+          mem->~Ty();
+          --mem;
+          --destMem;
+        }
+      }
+
+      static void _memLeftMove(Ty* a_mem, size_t a_memSize, Ty* a_destMem) {
+        Ty* endMem = a_mem + a_memSize;
+        while(a_mem != endMem) {
+          new (a_destMem) Ty(*a_mem);
+          a_mem->~Ty();
+          ++a_mem;
+          ++a_destMem;
+        }
+      }
+
       void _forceRealloc(size_t a_size){
         const size_t oldCapacity = capacity();
 
@@ -277,6 +394,87 @@ namespace fcf {
           _mdata.reset(new char[bufferSize]);
           _pdata = (Ty*)_mdata.get();
           _cdata = a_size;
+        }
+      }
+
+      void _erase(size_t a_newBufferSize, size_t a_position, size_t a_size) {
+        if (a_newBufferSize <= StaticSize || capacity() == a_newBufferSize) {
+          const Ty* destroyPtr =  _pdata + a_position;
+          const Ty* endDestroyPtr = _pdata + a_position + a_size;
+          while(destroyPtr != endDestroyPtr) {
+            destroyPtr->~Ty();
+            ++destroyPtr;
+          }
+          _memLeftMove(&_pdata[a_position + a_size], _sdata - a_position - a_size, &_pdata[a_position]);
+          _sdata -= a_size;
+          _cdata = a_newBufferSize;
+        } else {
+          size_t bufferSize = sizeof(Ty)*a_newBufferSize;
+          std::unique_ptr<char[]> uptr(new char[bufferSize]);
+          Ty* newPtr                    = (Ty*)uptr.get();
+          Ty* oldPtr                    = _pdata;
+
+          size_t copyCounter = 0;
+          try {
+            _copyMem(newPtr, a_position, oldPtr, copyCounter);
+          } catch(...){
+            _destroyMem(newPtr, copyCounter);
+            throw;
+          }
+          try {
+            oldPtr += a_position + a_size;
+            _copyMem(&newPtr[a_position], _sdata - a_position - a_size, oldPtr, copyCounter);
+          } catch(...){
+            _destroyMem(newPtr, copyCounter);
+            throw;
+          }
+          _destroyMem(_pdata, _sdata);
+          _mdata.swap(uptr);
+          _sdata = copyCounter;
+          _pdata = newPtr;
+          _cdata = a_newBufferSize;
+        }
+      }
+
+      template <typename TIterator>
+      void _insert(size_t a_newBufferSize, size_t a_position, TIterator a_iterator, size_t a_insertSize) {
+        if (a_newBufferSize <= StaticSize) {
+          _memRightMove((Ty*)_adata + a_position, _sdata - a_position, (Ty*)_adata + a_position + a_insertSize);
+          _iteratorCopy((Ty*)_adata + a_position, a_iterator, a_insertSize, _sdata);
+        } else if (capacity() == a_newBufferSize) {
+          _memRightMove(&_pdata[a_position], _sdata - a_position, &_pdata[a_position + a_insertSize]);
+          _iteratorCopy(&_pdata[a_position], a_iterator, a_insertSize, _sdata);
+        } else {
+          size_t bufferSize = sizeof(Ty)*a_newBufferSize;
+          std::unique_ptr<char[]> uptr(new char[bufferSize]);
+          Ty* newPtr                    = (Ty*)uptr.get();
+          Ty* oldPtr                    = _pdata;
+
+          size_t copyCounter = 0;
+          try {
+            _copyMem(newPtr, a_position, oldPtr, copyCounter);
+          } catch(...) {
+            _destroyMem(newPtr, copyCounter);
+            throw;
+          }
+          try {
+            _iteratorCopy(&newPtr[a_position], a_iterator, a_insertSize, copyCounter);
+          } catch(...) {
+            _destroyMem(newPtr, copyCounter);
+            throw;
+          }
+          try {
+            oldPtr += a_position;
+            _copyMem(&newPtr[a_position + a_insertSize], _sdata - a_position, oldPtr, copyCounter);
+          } catch(...) {
+            _destroyMem(newPtr, copyCounter);
+            throw;
+          }
+          _destroyMem(_pdata, _sdata);
+          _mdata.swap(uptr);
+          _sdata = copyCounter;
+          _pdata = newPtr;
+          _cdata = a_newBufferSize;
         }
       }
 

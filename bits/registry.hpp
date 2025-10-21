@@ -11,8 +11,10 @@
 #include "../Nop.hpp"
 #include "../nativeType.hpp"
 #include "Type/TypeInitializer.hpp"
+#include "./PartContainerAccess/ContainerAccess.hpp"
+#include "Type/DynamicIteratorSpecificator/Type_DynamicIteratorSpecificator.hpp"
 #include "../Variant.hpp"
-#include "./PartIterator/DynamicIterator.hpp"
+#include "../bits/PartType/NDetails/TypeRegistrar.hpp"
 
 FCF_TYPEID_REGISTRY(char,               "char",               FCF_INT8_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(unsigned char,      "unsigned char",      FCF_UINT8_TYPE_INDEX);
@@ -30,43 +32,19 @@ FCF_TYPEID_REGISTRY_SINGLE(void,        "void",               20);
 FCF_TYPEID_REGISTRY(bool,               "bool",               21);
 FCF_TYPEID_REGISTRY(std::string,        "std::string",        30);
 
-namespace fcf {
-  class Variant;
-} // fcf namespace
 FCF_TYPEID_REGISTRY(fcf::Variant,       "fcf::Variant",         31);
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant, fcf::RawDataSpecificator);
 
 FCF_TYPEID_REGISTRY(fcf::Nop, "fcf::Nop", 0);
 
-FCF_TYPEID_TEMPLATE1_REGISTRY(std::vector, "std::vector");
-FCF_TYPEID_SUBTEMPLATE1_REGISTRY(fcf::DynamicIterator<std::vector, "fcf::VectorDynamicIterator<std::vector");
+FCF_TEMPLATE_TYPEID_DECLARE(std::vector, "std::vector", (typename Ty), (Ty), (::fcf::Type<Ty>().name()));
+FCF_TEMPLATE_SPECIFICATOR_REGISTRY(std::vector, DynamicIteratorSpecificator);
 
-namespace fcf {
-  template <typename Ty>
-  class TemplateSpecializationInitializer< std::vector<Ty> > {
-    public:
-      typedef std::vector<Ty> type;
-      void operator()(){
-        SpecificatorTypeRegistrator<type, DynamicIteratorSpecificator> regDIS;
-      }
-  };
-} // fcf namespace
+FCF_TEMPLATE_TYPEID_DECLARE(fcf::ContainerAccess, "fcf::ContainerAccess", (typename Ty), (Ty), (::fcf::Type<Ty>().name()));
 
-FCF_TYPEID_REGISTRY(std::vector<char>,            "std::vector<char>",            0);
-FCF_TYPEID_REGISTRY(std::vector<unsigned char>,   "std::vector<unsigned char>",   0);
-FCF_TYPEID_REGISTRY(std::vector<short>,           "std::vector<short>",           0);
-FCF_TYPEID_REGISTRY(std::vector<unsigned short>,  "std::vector<unsigned short>",  0);
-FCF_TYPEID_REGISTRY(std::vector<int>,             "std::vector<int>",             0);
-FCF_TYPEID_REGISTRY(std::vector<unsigned int>,    "std::vector<unsigned int>",    0);
-//FCF_TYPEID_REGISTRY(std::vector<char>::iterator, "fcf::vector<char>::iterator", 0);
-
-
-//FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS((std::vector<T1>::iterator), (typename T1), "it", 0, std::vector<T1>::iterator) \
-//FCF_TYPEID_TEMPLATE1_SUBTYPE_REGISTRY(std::vector, iterator, "std::vector", "iterator");
-
-FCF_TYPEID_TEMPLATE1_REGISTRY(std::list, "std::list");
-FCF_TYPEID_TEMPLATE1_REGISTRY(std::set, "std::set");
-FCF_TYPEID_TEMPLATE2_REGISTRY(std::map, "std::map");
+FCF_TEMPLATE_TYPEID_DECLARE(std::list, "std::list", (typename Ty), (Ty), (Type<Ty>().name()));
+FCF_TEMPLATE_TYPEID_DECLARE(std::set, "std::set", (typename Ty), (Ty), (Type<Ty>().name()));
+FCF_TEMPLATE_TYPEID_DECLARE(std::map, "std::map", (typename TKey, typename TValue), (TKey, TValue), (Type<TKey>().name()+","+Type<TValue>().name()));
 
 
 #endif // #ifndef ___FCF_BASIS__BITS__REGISTRY_HPP___

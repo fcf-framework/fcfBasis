@@ -3,7 +3,7 @@
 
 #include "../Type.hpp"
 #include "../../Specificator/DynamicIteratorInfo.hpp"
-#include "../../PartIterator/DynamicIterator.hpp"
+#include "../../PartContainerAccess/ContainerAccess.hpp"
 
 namespace fcf {
   
@@ -12,20 +12,20 @@ namespace fcf {
     enum { enable = true };
 
     bool operator()(TContainer* a_container, DynamicIteratorInfo* a_info){
-      typedef DynamicIterator<TContainer> dynamic_iterator_type;
+      typedef ContainerAccess<TContainer> dynamic_iterator_type;
       dynamic_iterator_type* pit;
       if (a_info->flags & DIF_ITERATION) {
         if (!a_info->iterator.is<dynamic_iterator_type>()) {
-          a_info->iterator.set(dynamic_iterator_type(*a_container, IP_BEGIN));
+          a_info->iterator.set(dynamic_iterator_type(*a_container, CP_BEGIN));
           pit = (dynamic_iterator_type*)a_info->iterator.ptr();
         } else {
           pit = (dynamic_iterator_type*)a_info->iterator.ptr();
-          if (*pit == dynamic_iterator_type(*a_container, IP_END)){
+          if (*pit == dynamic_iterator_type(*a_container, CP_END)){
             return false;
           }
           ++*pit;
         }
-        if (*pit == dynamic_iterator_type(*a_container, IP_END)){
+        if (*pit == dynamic_iterator_type(*a_container, CP_END)){
           return false;
         }
       } else if (a_info->flags & DIF_RESOLVE) {
@@ -33,18 +33,18 @@ namespace fcf {
           if (!a_info->key.empty()) {
             a_info->iterator.set(dynamic_iterator_type(*a_container, a_info->key.convert<typename dynamic_iterator_type::key_type>()));
           } else {
-            a_info->iterator.set(dynamic_iterator_type(*a_container, IP_BEGIN));
+            a_info->iterator.set(dynamic_iterator_type(*a_container, CP_BEGIN));
           }
         }
         pit = (dynamic_iterator_type*)a_info->iterator.ptr();
-        if (*pit == dynamic_iterator_type(*a_container, IP_END)){
+        if (*pit == dynamic_iterator_type(*a_container, CP_END)){
           return false;
         }
       } else if (a_info->flags & DIF_BEGIN) {
-        a_info->iterator.set(dynamic_iterator_type(*a_container, IP_BEGIN));
+        a_info->iterator.set(dynamic_iterator_type(*a_container, CP_BEGIN));
         pit = (dynamic_iterator_type*)a_info->iterator.ptr();
       } else if (a_info->flags & DIF_END) {
-        a_info->iterator.set(dynamic_iterator_type(*a_container, IP_END));
+        a_info->iterator.set(dynamic_iterator_type(*a_container, CP_END));
         pit = (dynamic_iterator_type*)a_info->iterator.ptr();
       }
       if (a_info->flags & DIF_GET_TYPE) {

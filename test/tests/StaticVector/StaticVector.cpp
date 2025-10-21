@@ -79,7 +79,7 @@ namespace FcfTest {
         FCF_TEST(v.capacity() == 4);
         FCF_TEST(v.size() == 4);
         v.pop_back();
-        FCF_TEST(v.capacity() == 4);
+        FCF_TEST(v.capacity() == 4, v.capacity());
         FCF_TEST(v.size() == 3);
       }
 

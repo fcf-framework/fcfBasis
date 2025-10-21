@@ -13,7 +13,6 @@ namespace fcf {
     std::vector<::fcf::CallPlaceHolderInfo> placeHolder;
   };
 
-  
 } // fcf namespace
 
 #endif // #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SELECTION_FUNCTION_INFO_HPP___

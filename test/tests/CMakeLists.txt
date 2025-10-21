@@ -21,5 +21,6 @@ add_executable("basis-test" impl.cpp
                            StaticVector/StaticVectorInsert.cpp
                            StaticVector/StaticVectorPush.cpp
                            StaticVector/StaticVectorNotReduce.cpp
+                           StaticVector/StaticVectorErase.cpp
                          )
 

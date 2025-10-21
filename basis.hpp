@@ -23,7 +23,9 @@
 
 #include "bits/Type/DynamicIteratorSpecificator/registry.hpp"
 
-#include "DynamicIterator.hpp"
+#include "bits/PartContainerAccess/ContainerAccess.hpp"
+
+#include "bits/PartContainerAccess/DynamicContainerAccessBase.hpp"
 
 
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___

@@ -41,6 +41,11 @@
     #endif // #ifdef WIN32
   #endif // #ifndef FCF_BASIS_DECL_EXPORT
 
+  #define FCF_REMOVE_PARENTHESIS_SELECTORFCF_REMOVE_PARENTHESIS_ARGUMENT
+  #define FCF_REMOVE_PARENTHESIS_ARGUMENT(...) FCF_REMOVE_PARENTHESIS_ARGUMENT __VA_ARGS__
+  #define FCF_REMOVE_PARENTHESIS_0(...) FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
+  #define FCF_REMOVE_PARENTHESIS(...) FCF_REMOVE_PARENTHESIS_0(__VA_ARGS__)
+
   #ifndef FCF_BASIS_VARNAME
     #define FCF_BASIS_VARNAME__IMPL2(a_varName, a_suffix, a_counter) a_varName##a_suffix##a_counter
     #define FCF_BASIS_VARNAME__IMPL1(a_varName, a_suffix, a_counter) FCF_BASIS_VARNAME__IMPL2(a_varName, a_suffix, a_counter)
@@ -58,7 +63,7 @@
     #define __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(a_itemName, a_counter) __FCF_SPECIFICATOR_REGISTRY_FORCE__L2(a_itemName, a_counter)
     #define FCF_SPECIFICATOR_REGISTRY_FORCE(a_type, a_specificator) \
       namespace { \
-        ::fcf::SpecificatorTypeRegistrator<a_type, a_specificator> __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(specificatorReg, __COUNTER__);\
+        ::fcf::SpecificatorRegistrar<a_type, a_specificator> __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(specificatorReg, __COUNTER__);\
       }
   #endif // #ifndef FCF_SPECIFICATOR_REGISTRY
 
@@ -147,6 +152,88 @@
     #define FCF_TYPEID_TEMPLATE1_REGISTRY(a_type, a_name) \
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type<T1>), (typename T1), a_name + "<" + fcf::Type<T1>().name() + ">", 0)
   #endif // #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
+
+  #ifndef FCF_TEMPLATE_TYPEID_DECLARE
+    #define FCF_TEMPLATE_TYPEID_DECLARE(a_template, a_templateName, a_templateArgumentsDeclaration, a_templateArguments, a_templateArgumentsName) \
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_template < FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) >), \
+                                            a_templateArgumentsDeclaration, \
+                                            a_templateName + "<" + FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsName) + ">", \
+                                            0)\
+      namespace fcf {\
+        namespace NDetails {\
+          template <typename TUnstatic, unsigned int UnstaticCounter, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
+          struct TypeRegistrar<TUnstatic, UnstaticCounter, a_template < FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) > > {\
+            typedef a_template < FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) > type;\
+            TypeRegistrar(unsigned int a_index){\
+              ::fcf::Details::Basis::Variant::NobodyWrapperRegistrator<type> registrer(a_index);\
+            }\
+          };\
+        }\
+      }\
+      namespace fcf::NDetails::Declarations::a_template##_specificator_declare {\
+        template <unsigned int Index>\
+        struct PartialSpecificatorRegistrar;\
+        template <typename TUnstatic, unsigned int UnstaticCounter, int Index, typename = void>\
+        struct PartialSpecificatorRegistrarExists {\
+          enum { value = false };\
+        };\
+        template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
+        struct PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index, decltype(void(PartialSpecificatorRegistrar<Index>()))> {\
+          enum { value = true };\
+        };\
+        template <typename TUnstatic, unsigned int UnstaticCounter, int Index = -1, bool Exisis = true>\
+        struct PartialSpecificatorRegistrarLast {\
+          enum { value = PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index+1, PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index+1>::value >::value };\
+        };\
+        template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
+        struct PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index, false> {\
+          enum { value = Index };\
+        };\
+      }\
+      namespace fcf::NDetails {\
+        template <typename TUnstatic, unsigned int UnstaticCounter, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index, unsigned int Size >\
+        struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Size> {\
+          SpecificatorRegistrarCallerWalker(){\
+            typedef a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> type;\
+            ::fcf::NDetails::Declarations::a_template##_specificator_declare::PartialSpecificatorRegistrar<Index> registrar;\
+            registrar.template registry<type>();\
+            SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, type, Index+1, Size> nextCaller;\
+          }\
+        };\
+        template <typename TUnstatic, unsigned int UnstaticCounter, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index>\
+        struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Index> {\
+          SpecificatorRegistrarCallerWalker(){\
+          }\
+        };\
+        template <typename TUnstatic, unsigned int UnstaticCounter,  FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
+        struct SpecificatorRegistrarCaller<TUnstatic, UnstaticCounter, a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> > {\
+          SpecificatorRegistrarCaller(){\
+            ::std::cout << (std::string() + a_templateName + "<" + FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsName) + ">") << ::std::endl;\
+            ::std::cout << "TEST!!!!!!: " << ::fcf::NDetails::Declarations::a_template##_specificator_declare::PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter>::value << ::std::endl;\
+            SpecificatorRegistrarCallerWalker<TUnstatic, \
+                                              UnstaticCounter, \
+                                              a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, \
+                                              0, \
+                                              ::fcf::NDetails::Declarations::a_template##_specificator_declare::PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter>::value\
+            > registrer;\
+          }\
+        };\
+      }
+  #endif // #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
+  
+  #ifndef FCF_TEMPLATE_SPECIFICATOR_REGISTRY
+    #define FCF_TEMPLATE_SPECIFICATOR_REGISTRY(a_template, a_specificator)\
+      namespace fcf::NDetails::Declarations::a_template##_specificator_declare {\
+        template <>\
+        struct PartialSpecificatorRegistrar< PartialSpecificatorRegistrarLast<void, __COUNTER__>::value > {\
+          template <typename Ty>\
+          void registry(){\
+            ::fcf::SpecificatorRegistrar<Ty, a_specificator> registrar;\
+          }\
+        };\
+      }
+  #endif
+
 
   #ifndef FCF_TYPEID_SUBTEMPLATE1_REGISTRY
     #define FCF_TYPEID_SUBTEMPLATE1_REGISTRY(a_type, a_name) \

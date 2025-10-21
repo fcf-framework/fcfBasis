@@ -136,7 +136,7 @@ void deepIndexSimpleCaller(){
 
   //duration test
   {
-    unsigned long long defaultSize = 128*1024;
+    unsigned long long defaultSize = 16*1024;
     unsigned long long defaultSizeForDetect = defaultSize * 100;
     unsigned long long defaultDuration = 0;
     {

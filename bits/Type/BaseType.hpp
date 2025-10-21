@@ -3,6 +3,9 @@
 
 #include <type_traits>
 #include "../Convert/Details/setConverterDecl.hpp"
+#include "../../bits/TemplateSpecializationInitializer.hpp"
+#include "../../Details/Variant/NobodyWrapperRegistrator.hpp"
+#include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
 #include "TypeId.hpp"
 #include <iostream>
 namespace fcf {
@@ -16,7 +19,7 @@ namespace fcf {
       enum { flat = false };
 
       template <typename TContainer, typename TSpecificator>
-      friend class SpecificatorTypeRegistrator;
+      friend class SpecificatorRegistrar;
 
       template <typename TSource, typename TDestination>
       friend void ::fcf::Details::Basis::Convert::setConverter();
@@ -29,8 +32,14 @@ namespace fcf {
           if(!std::is_same<Ty, basic_type>::value){
             baseTypeIndex = BaseType<basic_type>().index();
           }
-          Details::TypeInfo initTypeInfo = { TypeId<Ty>().index(), TypeId<Ty>().name()};
+          const unsigned int index = TypeId<Ty>().index();
+          Details::TypeInfo initTypeInfo = { index, TypeId<Ty>().name()};
           _info = Details::typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
+          if ((index & 0xce000000) == 0) { // if not ref and not const
+            typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
+            ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, simple_type> typeRegistrar(index);
+            ::fcf::NDetails::SpecificatorRegistrarCaller<BaseType, __COUNTER__, simple_type> specificatorsRegistrar;
+          }
         }
       }
       const std::string& name() {

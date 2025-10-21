@@ -10,10 +10,10 @@ void dynamicIteratorTest(){
     c.push_back(1);
     c.push_back(2);
     c.push_back(3);
-    fcf::DynamicIterator<container_type> vdi1(c);
+    fcf::ContainerAccess<container_type> vdi1(c);
     ++vdi1;
-    fcf::DynamicIterator<container_type> vdi2(c, fcf::IP_BEGIN);
-    fcf::DynamicIterator<container_type> vdi3;
+    fcf::ContainerAccess<container_type> vdi2(c, fcf::CP_BEGIN);
+    fcf::ContainerAccess<container_type> vdi3;
     FCF_TEST(vdi1 != vdi2);
     FCF_TEST(vdi1.key() == 1);
     FCF_TEST(vdi1.value() == 2);
@@ -24,20 +24,20 @@ void dynamicIteratorTest(){
     FCF_TEST(vdi1.value() == 1);
     FCF_TEST(vdi1 == vdi2);
 
-    vdi1 = fcf::DynamicIterator<container_type>(c, 1);
+    vdi1 = fcf::ContainerAccess<container_type>(c, 1);
     FCF_TEST(vdi1.key() == 1);
     FCF_TEST(vdi1.value() == 2);
   }
   {
     typedef std::list<int> container_type;
-    typedef fcf::DynamicIterator<container_type> iterator_type;
+    typedef fcf::ContainerAccess<container_type> iterator_type;
     container_type                             c;
     c.push_back(1);
     c.push_back(2);
     c.push_back(3);
     iterator_type vdi1(c);
     ++vdi1;
-    iterator_type vdi2(c, fcf::IP_BEGIN);
+    iterator_type vdi2(c, fcf::CP_BEGIN);
     iterator_type vdi3;
     FCF_TEST(vdi1 != vdi2);
     FCF_TEST(vdi1.key() == 1);
@@ -56,14 +56,14 @@ void dynamicIteratorTest(){
 
   {
     typedef std::map<int, int> container_type;
-    typedef fcf::DynamicIterator<container_type> iterator_type;
+    typedef fcf::ContainerAccess<container_type> iterator_type;
     container_type                             c;
     c[0] = 1;
     c[1] = 2;
     c[2] = 3;
     iterator_type vdi1(c);
     ++vdi1;
-    iterator_type vdi2(c, fcf::IP_BEGIN);
+    iterator_type vdi2(c, fcf::CP_BEGIN);
     iterator_type vdi3;
     FCF_TEST(vdi1 != vdi2);
     FCF_TEST(vdi1.key() == 1);
@@ -82,14 +82,14 @@ void dynamicIteratorTest(){
 
   {
     typedef std::set<std::string> container_type;
-    typedef fcf::DynamicIterator<container_type> iterator_type;
+    typedef fcf::ContainerAccess<container_type> iterator_type;
     container_type        c;
     c.insert("0");
     c.insert("1");
     c.insert("2");
     iterator_type vdi1(c);
     ++vdi1;
-    iterator_type vdi2(c, fcf::IP_BEGIN);
+    iterator_type vdi2(c, fcf::CP_BEGIN);
     iterator_type vdi3;
     FCF_TEST(vdi1 != vdi2);
     FCF_TEST(vdi1.key() == "1");

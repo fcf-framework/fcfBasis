@@ -35,10 +35,12 @@ namespace fcf {
   struct TypeInitializer {
     TypeInitializer() {
       unsigned int index = ::fcf::Type<Ty>().index();
+      /*
       if ((index & 0xce000000) == 0) { // if not ref and not const
         typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
         NDetails::TypeInitializerHandler<simple_type, std::is_reference<simple_type>::value>()(index);
       }
+      */
     }
   };
 } // fcf namespace

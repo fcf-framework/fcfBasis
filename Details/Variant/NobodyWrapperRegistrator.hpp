@@ -1,8 +1,8 @@
 #ifndef ___FCF_BASIS__DETAILS__VARIANT__NOBODY_WRAPPER_REGISTRATOR_HPP___
 #define ___FCF_BASIS__DETAILS__VARIANT__NOBODY_WRAPPER_REGISTRATOR_HPP___
 
-#include "../../Type.hpp"
 #include "Storage.hpp"
+#include "NobodyWrapper.hpp"
 
 namespace fcf {
   namespace Details {
@@ -12,20 +12,19 @@ namespace fcf {
         template <typename Ty>
         class NobodyWrapperRegistrator {
           public:
-            NobodyWrapperRegistrator(){
-              unsigned int index = Type<Ty>().index();
-              if (0x1100000c == index ){
-                std::cout << "!!!!!!!!!!!!" << std::endl;
-              }
-              NobodyWrapperStorage::iterator it = getStorage().find(index);
+            NobodyWrapperRegistrator(unsigned int a_typeIndex){
+              NobodyWrapperStorage::iterator it = getStorage().find(a_typeIndex);
               if (it == getStorage().end()) {
-                getStorage()[index] = std::shared_ptr< BaseNobodyWrapper >(new NobodyWrapper<Ty>());
+                getStorage()[a_typeIndex] = std::shared_ptr< BaseNobodyWrapper >(new NobodyWrapper<Ty>());
               }
             }
         };
 
         template <>
         class NobodyWrapperRegistrator<void> {
+          public:
+            NobodyWrapperRegistrator(unsigned int a_typeIndex){
+            }
         };
 
       } // Variant namespace

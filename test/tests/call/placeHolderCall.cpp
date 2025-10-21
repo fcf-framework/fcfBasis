@@ -4,6 +4,7 @@
 #include "../../../functions.hpp"
 #include "../../../Type.hpp"
 #include "../../../specificators.hpp"
+#include "../../../bits/registry.hpp"
 #include "../../../basis.hpp"
 
 #include "../../../bits/Call/Details/CallWrapper.hpp"
@@ -140,7 +141,17 @@ namespace FcfTest {
         }
       }
       */
-      
+
+      {
+        size_t size = 10;
+        std::vector<int> v(size);
+        std::fill(v.begin(), v.end(), 10);
+        fcf::call("fill", v, 11);
+        for(auto itm : v){
+          FCF_TEST(itm == 11, itm);
+        }
+      }
+
       {
         size_t size = 10;
         std::vector<PHCTestDataItem> v(size);
