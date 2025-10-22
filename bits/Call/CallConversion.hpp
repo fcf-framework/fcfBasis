@@ -12,7 +12,6 @@ namespace fcf {
     unsigned int                                      type;
     unsigned int                                      index;
     void*                                             converter;
-    unsigned int                                      converterArgCount;
     unsigned int                                      specificatorIndex;
     unsigned int                                      pointerCounter;
     StaticVector<CallPlaceHolderArgEx, 2> placeHolders;

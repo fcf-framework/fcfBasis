@@ -33,7 +33,7 @@ namespace fcf {
             baseTypeIndex = BaseType<basic_type>().index();
           }
           const unsigned int index = TypeId<Ty>().index();
-          Details::TypeInfo initTypeInfo = { index, TypeId<Ty>().name()};
+          TypeInfo initTypeInfo = { index, TypeId<Ty>().name()};
           _info = Details::typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
           if ((index & 0xce000000) == 0) { // if not ref and not const
             typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
@@ -45,18 +45,24 @@ namespace fcf {
       const std::string& name() {
         return _info->name;
       }
+
       unsigned int index() {
         return _info->index;
       }
+
+      const TypeInfo& getTypeInfo() {
+        return *_info;
+      }
+
       const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
         return _info->specificators;
       }
 
-      const Details::TypeInfo::Converters& converters(){
+      const TypeInfo::Converters& converters(){
         return _info->converters;
       }
 
-      const Details::TypeInfo::Converters& backConverters(){
+      const TypeInfo::Converters& backConverters(){
         return _info->backConverters;
       }
 
@@ -69,10 +75,10 @@ namespace fcf {
       }
 
     protected:
-      static Details::TypeInfo* _info;
+      static TypeInfo* _info;
   };
 
-  template <typename Ty> Details::TypeInfo* BaseType<Ty>::_info;
+  template <typename Ty> TypeInfo* BaseType<Ty>::_info;
 
 } // fcf namespace
 

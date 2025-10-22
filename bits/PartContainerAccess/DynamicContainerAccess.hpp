@@ -1,6 +1,8 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
 
+#include "DynamicContainerAccessBase.hpp"
+
 namespace fcf {
 
   template <typename TContainerAccess>
@@ -10,6 +12,9 @@ namespace fcf {
       typedef typename TContainerAccess::container_type container_type;
       typedef typename TContainerAccess::key_type       key_type;
       typedef typename TContainerAccess::value_type     value_type;
+
+      DynamicContainerAccess(){
+      }
 
       DynamicContainerAccess(container_type& a_container, ::fcf::ContainerPosition a_position = ::fcf::CP_BEGIN)
         : _containerAccess(a_container, a_position){
@@ -73,8 +78,8 @@ namespace fcf {
 
     protected:
       TContainerAccess _containerAccess;
-  }
-  
+  };
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___

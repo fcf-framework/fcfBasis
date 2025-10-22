@@ -12,6 +12,9 @@
 
 namespace fcf {
 
+  template <typename Ty, typename TSpecificator>
+  struct TypeImpl;
+
   template <typename Ty, typename TInfoMode = Nop>
   struct Type : public BaseType<Ty> {
     enum { container = false };

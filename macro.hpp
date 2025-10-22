@@ -208,8 +208,6 @@
         template <typename TUnstatic, unsigned int UnstaticCounter,  FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
         struct SpecificatorRegistrarCaller<TUnstatic, UnstaticCounter, a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> > {\
           SpecificatorRegistrarCaller(){\
-            ::std::cout << (std::string() + a_templateName + "<" + FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsName) + ">") << ::std::endl;\
-            ::std::cout << "TEST!!!!!!: " << ::fcf::NDetails::Declarations::a_template##_specificator_declare::PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter>::value << ::std::endl;\
             SpecificatorRegistrarCallerWalker<TUnstatic, \
                                               UnstaticCounter, \
                                               a_template <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, \

@@ -9,22 +9,11 @@
 #include "../bits/Convert/ConvertFunction.hpp"
 #include "../bits/SpecificatorTypeInfo.hpp"
 #include "../bits/Specificator/specificators.hpp"
+#include "../bits/Type/TypeId.hpp"
+#include "../bits/PartType/TypeInfo.hpp"
 
 namespace fcf {
   namespace Details {
-
-    struct TypeInfo{
-      typedef std::unordered_map<unsigned int, ConvertFunction> Converters;
-
-      unsigned int                                      index;
-      std::string                                       name;
-      RawDataSpecificator::function_type                rawDataResolver;
-      DynamicIteratorSpecificator::function_type        dynamicIteratorResolver;
-      Converters                                        converters;
-      Converters                                        backConverters;
-      std::map<unsigned int, SpecificatorTypeInfo>      specificators;
-    };
-
     typedef std::shared_ptr<TypeInfo> SPTypeInfo;
 
     class TypeStorageContainer {

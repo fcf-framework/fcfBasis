@@ -50,7 +50,7 @@ void iteratorTest(){
     c.push_back(2);
     c.push_back(3);
     unsigned int typeIndex = fcf::Type<container_type>().index();
-    const fcf::Details::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
+    const fcf::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
     fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
     FCF_TEST((void*)resolver != 0, (void*)resolver)
     fcf::DynamicIteratorInfo dii;
@@ -73,7 +73,7 @@ void iteratorTest(){
     c.push_back(2);
     c.push_back(3);
     unsigned int typeIndex = fcf::Type<container_type>().index();
-    const fcf::Details::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
+    const fcf::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
     fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
     FCF_TEST((void*)resolver != 0, (void*)resolver)
     fcf::DynamicIteratorInfo dii;
@@ -94,7 +94,7 @@ void iteratorTest(){
     c.push_back(2);
     c.push_back(3);
     unsigned int typeIndex = fcf::Type<container_type>().index();
-    const fcf::Details::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
+    const fcf::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
     fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
     FCF_TEST((void*)resolver != 0, (void*)resolver)
     fcf::DynamicIteratorInfo dii;

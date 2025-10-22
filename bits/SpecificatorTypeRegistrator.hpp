@@ -2,6 +2,7 @@
 #define ___FCF_BASIS__BITS__SPECIFICATOR_TYPE_REGISTRATOR_HPP___
 #include <iostream>
 #include "../Type.hpp"
+#include "PartSpecificator/SpecificatorRegistrar.hpp"
 
 namespace fcf {
 // Specificator registrar
@@ -18,19 +19,6 @@ namespace fcf {
 
     }
   }
-
-  template <typename TContainer, typename TSpecificator>
-  class SpecificatorRegistrar {
-    public:
-      SpecificatorRegistrar() {
-        unsigned int specificatorIndex = Type<TSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.argc = Details::SpecificatorRegistrar::getArgCount(
-                              Type<TContainer, TSpecificator>::resolve) - 1;
-        sti.resolve = (void*)Type<TContainer, TSpecificator>::resolve;
-        Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-      }
-  };
 
   template <typename TContainer>
   class SpecificatorRegistrar<TContainer, RawDataSpecificator> {

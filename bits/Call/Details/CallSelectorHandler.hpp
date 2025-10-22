@@ -5,12 +5,14 @@
 #include <algorithm>
 #include "../../../foreach.hpp"
 #include "../../../bits/Specificator/DynamicIteratorInfo.hpp"
+#include "../../../bits/PartType/getTypeInfo.hpp"
+#include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "CallConversionNode.hpp"
 #include "CallSelectorState.hpp"
 
 namespace fcf {
   namespace Details {
-    
+
     struct CallSelectorHandler {
 
       struct InputArgument {
@@ -18,6 +20,7 @@ namespace fcf {
         unsigned int                                        clearTypeIndex;
         RawDataSpecificator::function_type                  rawDataResolver;
         DynamicIteratorSpecificator::function_type          dynamicIteratorResolver;
+        ContainerAccessSpecificator::UniversalCallType      containerAccessResolver;
         bool                                                invariantRawType;
         unsigned int                                        invariantIndex;
         void*                                               ptrArg;
@@ -54,7 +57,6 @@ namespace fcf {
         if (a_argumentIndex < state.placeHolderSpecificators->size()) {
           for(size_t i = 0; i < (*state.placeHolderSpecificators)[a_argumentIndex].size(); ++i){
             unsigned int specificatorTypeIndex = (*state.placeHolderSpecificators)[a_argumentIndex][i];
-            const fcf::Details::TypeInfo* clearTypeInfo = Details::typeStorage.get(currentInputArgument->clearTypeIndex);
             std::map<unsigned int, SpecificatorTypeInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
             if (specificatorIt == currentInputArgument->specificators->cend()) {
               continue;
@@ -75,7 +77,6 @@ namespace fcf {
             curnode.conversion.type = currentInputArgument->clearTypeIndex;
             curnode.conversion.mode = CCM_PLACE_HOLDER;
             curnode.conversion.converter = (void*)specificatorIt->second.resolve;
-            curnode.conversion.converterArgCount = specificatorIt->second.argc;
             if (a_node) {
               a_node->next = &curnode;
               curnode.prev = a_node;
@@ -122,7 +123,7 @@ namespace fcf {
         if (state.strictSource && !currentInputArgument->pairCounter && !currentInputArgument->ignoreConvertSeeker) {
           CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
           if (treeIt != state.groupIterator->second.callersTree.end()){
-            const Details::TypeInfo* ti =  Details::typeStorage.get(currentInputArgument->clearTypeIndex);
+            const TypeInfo* ti =  Details::typeStorage.get(currentInputArgument->clearTypeIndex);
             BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
             for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
               shortSign.pacodes[i] = 0;
@@ -328,9 +329,10 @@ namespace fcf {
         a_inputArgument.ptrArg                  = a_ptrArg;
         a_inputArgument.typeIndex               = a_type;
         a_inputArgument.clearTypeIndex          = typeIndexToClearTypeIndex(a_type);
-        const fcf::Details::TypeInfo* typeInfo  = Details::typeStorage.get(a_inputArgument.clearTypeIndex);
+        const fcf::TypeInfo* typeInfo  = Details::typeStorage.get(a_inputArgument.clearTypeIndex);
         a_inputArgument.rawDataResolver         = typeInfo->rawDataResolver;
         a_inputArgument.dynamicIteratorResolver = typeInfo->dynamicIteratorResolver;
+        a_inputArgument.containerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>();
         a_inputArgument.specificators           = &typeInfo->specificators;
         a_inputArgument.invariantIndex          = false;
         a_inputArgument.ignoreConvertSeeker     = false;
@@ -499,7 +501,7 @@ namespace fcf {
           }
 
         }
-  
+
       }
 
 
@@ -520,6 +522,7 @@ namespace fcf {
         ia.clearTypeIndex          = typeIndexToClearTypeIndex(Type<current_arg_type>().index());
         ia.rawDataResolver         = Type<current_arg_type>().rawDataResolver();
         ia.dynamicIteratorResolver = Type<current_arg_type>().dynamicIteratorResolver();
+        ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo().template getSpecificator<ContainerAccessSpecificator>();
         ia.specificators           = &Type<current_arg_type>().specificators();
         ia.invariantIndex          = false;
         ia.invariantRawType        = 0;
@@ -531,7 +534,7 @@ namespace fcf {
         }
       }
     };
-    
+
   } // Details namespace
 } // fcf namespace
 

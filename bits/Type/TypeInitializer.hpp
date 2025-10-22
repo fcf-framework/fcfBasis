@@ -9,38 +9,10 @@
 #include "Type.hpp"
 #include <iostream>
 namespace fcf {
-  
-  
-  namespace NDetails {
-    
-    template <typename Ty, bool IsRef>
-    struct TypeInitializerHandler {
-      inline void operator()(unsigned int a_typeIndex){
-        typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
-        ::fcf::Details::Basis::Variant::NobodyWrapperRegistrator<Ty>();
-        TemplateSpecializationInitializer<Ty>()();
-      }
-    };
-
-    template <typename Ty>
-    struct TypeInitializerHandler<Ty, true> {
-      inline void operator()(unsigned int a_typeIndex){
-      }
-    };
-
-
-  };
-  
   template <typename Ty>
   struct TypeInitializer {
     TypeInitializer() {
-      unsigned int index = ::fcf::Type<Ty>().index();
-      /*
-      if ((index & 0xce000000) == 0) { // if not ref and not const
-        typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
-        NDetails::TypeInitializerHandler<simple_type, std::is_reference<simple_type>::value>()(index);
-      }
-      */
+      ::fcf::Type<Ty>().index();
     }
   };
 } // fcf namespace
