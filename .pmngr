@@ -1,0 +1,12 @@
+{
+  project:           "fcf-basis",
+
+  /* File re-inclusion protection method */
+  /* Available values: */
+  /*    "macro" */
+  /*    "pragma" */
+  includeProtection: "macro",
+
+  defaultNamespace: "fcf",
+}
+

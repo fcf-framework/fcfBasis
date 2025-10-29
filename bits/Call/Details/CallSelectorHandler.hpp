@@ -19,8 +19,7 @@ namespace fcf {
         unsigned int                                        typeIndex;
         unsigned int                                        clearTypeIndex;
         RawDataSpecificator::function_type                  rawDataResolver;
-        DynamicIteratorSpecificator::function_type          dynamicIteratorResolver;
-        ContainerAccessSpecificator::UniversalCallType      containerAccessResolver;
+        UniversalCall                                       containerAccessResolver;
         bool                                                invariantRawType;
         unsigned int                                        invariantIndex;
         void*                                               ptrArg;
@@ -236,57 +235,58 @@ namespace fcf {
           }
         }
 
-        if (currentInputArgument->dynamicIteratorResolver && !currentInputArgument->pairCounter) {
-          DynamicIteratorInfo dii;
-          dii.flags = DIF_INFO | DIF_GET_FLAT | DIF_GET_TYPE;
-          currentInputArgument->dynamicIteratorResolver(0, &dii);
-          if (dii.flat) {
-            BaseFunctionSignature* ptrOriginFunctionSignature = state.ptrFunctionSignature;
-            BaseFunctionSignature ofs = *state.ptrFunctionSignature;
-            BaseFunctionSignature fs = BaseFunctionSignature(state.ptrFunctionSignature->asize + 1);
-            fs.rcode = ofs.rcode;
-            std::copy(&state.ptrFunctionSignature->pacodes[0],
-                      &state.ptrFunctionSignature->pacodes[a_argumentIndex],
-                      &fs.pacodes[0]
-                      );
+        if (currentInputArgument->containerAccessResolver && !currentInputArgument->pairCounter) {
+          Variant viterator = currentInputArgument->containerAccessResolver(0, 0, 0);
+          DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
+          if (iterator) {
+            if (iterator->isFlatContainer()) {
+              BaseFunctionSignature* ptrOriginFunctionSignature = state.ptrFunctionSignature;
+              BaseFunctionSignature ofs = *state.ptrFunctionSignature;
+              BaseFunctionSignature fs = BaseFunctionSignature(state.ptrFunctionSignature->asize + 1);
+              fs.rcode = ofs.rcode;
+              std::copy(&state.ptrFunctionSignature->pacodes[0],
+                        &state.ptrFunctionSignature->pacodes[a_argumentIndex],
+                        &fs.pacodes[0]
+                        );
 
-            unsigned int ptrTypeIndex = dii.type;
-            if (ptrTypeIndex & (8 << (24 + 1)) ) {
-              ptrTypeIndex |= (16 << (24 + 1));
-            } else {
-              ptrTypeIndex |= (8 << (24 + 1));
-            }
-            fs.pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
-            fs.pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
+              unsigned int ptrTypeIndex = iterator->getValueTypeIndex();
+              if (ptrTypeIndex & (8 << (24 + 1)) ) {
+                ptrTypeIndex |= (16 << (24 + 1));
+              } else {
+                ptrTypeIndex |= (8 << (24 + 1));
+              }
+              fs.pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
+              fs.pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
 
-            std::copy(&state.ptrFunctionSignature->pacodes[a_argumentIndex+1],
-                      &state.ptrFunctionSignature->pacodes[state.ptrFunctionSignature->asize],
-                      &fs.pacodes[a_argumentIndex+2]
-                      );
+              std::copy(&state.ptrFunctionSignature->pacodes[a_argumentIndex+1],
+                        &state.ptrFunctionSignature->pacodes[state.ptrFunctionSignature->asize],
+                        &fs.pacodes[a_argumentIndex+2]
+                        );
 
-            CallConversionNode curnode;
-            curnode.prev = 0;
-            curnode.next = 0;
-            curnode.conversion.index     = a_argumentIndex;
-            curnode.conversion.type      = ptrTypeIndex;
-            curnode.conversion.mode      = CCM_FLAT_ITERATOR;
-            curnode.conversion.converter = (void*)currentInputArgument->dynamicIteratorResolver;
-            if (a_node) {
-              a_node->next = &curnode;
-              curnode.prev = a_node;
-            }
+              CallConversionNode curnode;
+              curnode.prev = 0;
+              curnode.next = 0;
+              curnode.conversion.index     = a_argumentIndex;
+              curnode.conversion.type      = ptrTypeIndex;
+              curnode.conversion.mode      = CCM_FLAT_ITERATOR;
+              curnode.conversion.converter = (void*)currentInputArgument->containerAccessResolver;
+              if (a_node) {
+                a_node->next = &curnode;
+                curnode.prev = a_node;
+              }
 
-            _fillCurrentInputArgument(*currentInputArgument, ptrTypeIndex, 0);
-            currentInputArgument->pairCounter = 1;
+              _fillCurrentInputArgument(*currentInputArgument, ptrTypeIndex, 0);
+              currentInputArgument->pairCounter = 1;
 
-            state.ptrFunctionSignature = &fs;
+              state.ptrFunctionSignature = &fs;
 
-            (*this)(&curnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+              (*this)(&curnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
 
-            state.ptrFunctionSignature = ptrOriginFunctionSignature;
+              state.ptrFunctionSignature = ptrOriginFunctionSignature;
 
-            if (state.result->complete) {
-              return;
+              if (state.result->complete) {
+                return;
+              }
             }
           }
         }
@@ -331,7 +331,6 @@ namespace fcf {
         a_inputArgument.clearTypeIndex          = typeIndexToClearTypeIndex(a_type);
         const fcf::TypeInfo* typeInfo  = Details::typeStorage.get(a_inputArgument.clearTypeIndex);
         a_inputArgument.rawDataResolver         = typeInfo->rawDataResolver;
-        a_inputArgument.dynamicIteratorResolver = typeInfo->dynamicIteratorResolver;
         a_inputArgument.containerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>();
         a_inputArgument.specificators           = &typeInfo->specificators;
         a_inputArgument.invariantIndex          = false;
@@ -521,7 +520,6 @@ namespace fcf {
         ia.typeIndex               = Type<current_arg_type>().index();
         ia.clearTypeIndex          = typeIndexToClearTypeIndex(Type<current_arg_type>().index());
         ia.rawDataResolver         = Type<current_arg_type>().rawDataResolver();
-        ia.dynamicIteratorResolver = Type<current_arg_type>().dynamicIteratorResolver();
         ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo().template getSpecificator<ContainerAccessSpecificator>();
         ia.specificators           = &Type<current_arg_type>().specificators();
         ia.invariantIndex          = false;

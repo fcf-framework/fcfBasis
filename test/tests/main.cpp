@@ -19,6 +19,8 @@ namespace FcfTest {
     void declareCall();
     void placeHolderCall();
 
+    void minMaxSpecificatorTest();
+
   } // BasisTest namespace
 } // FcfTest namespace
 
@@ -327,7 +329,6 @@ FCF_TEMPLATE_TYPEID_DECLARE_001(std::vector, "std::vector", (typename Ty), (Ty),
 
 //FCF_TEMPLATE_TYPEID_REGISTRY(std::vector, std::vector<int>, "std::vector<int>", 0);
 //FCF_TEMPLATE_TYPEID_REGISTRY(std::vector, std::vector<short>, "std::vector<short>", 0);
-FCF_ASSOCIATION_TEMPLATE_SPECIFICATOR_REGISTRY_FORCE(std::vector, fcf::DynamicIteratorSpecificator);
   
   
 int main(int a_argc, char* a_argv[]){
@@ -339,6 +340,8 @@ int main(int a_argc, char* a_argv[]){
 //  fcf::Details::PrintList<>()();
 //  std::cout << "L!" << fcf::Details::DeclCounterLast<int, float, -1>::value << std::endl;
   FcfTest::BasisTest::sequenceTest();
+  
+  FcfTest::BasisTest::minMaxSpecificatorTest();
   
   FcfTest::BasisTest::staticVectorTest();
   FcfTest::BasisTest::staticVectorCopyTest();

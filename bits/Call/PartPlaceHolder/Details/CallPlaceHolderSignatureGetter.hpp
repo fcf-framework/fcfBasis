@@ -10,6 +10,8 @@
 #include "CallPlaceHolderRemover.hpp"
 #include "../CallPlaceHolderInfo.hpp"
 
+#include "../../../PartType/getTypeInfo.hpp"
+
 namespace fcf {
   namespace Details {
 
@@ -29,6 +31,7 @@ namespace fcf {
         cphi.specificatorIndex = Type<TSpecificator>().index();
         SignatureDataFiller sdf = {cphi};
         fcf::foreach(tuple, sdf);
+        std::cout << "cphi.specificatorIndex: " << cphi.specificatorIndex << " | "<< getTypeInfo(cphi.specificatorIndex).name << std::endl;
         return cphi;
       }
 

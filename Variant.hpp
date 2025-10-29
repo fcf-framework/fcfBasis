@@ -58,13 +58,16 @@ namespace fcf {
       inline bool empty() const { return ptr() == 0; }
 
       template <typename TResult>
-      typename std::remove_const< typename std::remove_reference<TResult>::type >::type& convert();
+      typename std::remove_const< typename std::remove_reference<TResult>::type >::type& as();
 
       template <typename TResult>
-      TResult as() const;
+      typename std::remove_const< typename std::remove_reference<TResult>::type >::type& get();
 
       template <typename TResult>
-      TResult get() const;
+      TResult cast() const;
+
+      template <typename TResult>
+      TResult strict_cast() const;
 
       template <typename TType>
       bool is() const;
@@ -85,10 +88,11 @@ namespace fcf {
   };
 
 } // fcf namespace
-  
+
 #include "Type.hpp" 
 #include "specificators.hpp"
 #include "bits/registry.hpp"
+#include "bits/PartSpecificator/StoredDataTypeSpecificator.hpp"
 
 namespace fcf{
   #ifdef FCF_BASIS_IMPLEMENTATION
@@ -219,7 +223,7 @@ namespace fcf{
   #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
   template <typename TResult>
-  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& Variant::convert() {
+  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& Variant::as() {
     typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
     if (typeIndex() == Type<TResult>().index()){
       return *(result_type*)ptr();
@@ -232,7 +236,17 @@ namespace fcf{
   }
 
   template <typename TResult>
-  TResult Variant::as() const{
+  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& Variant::get() {
+    typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
+    if (typeIndex() != Type<TResult>().index()){
+      throw std::runtime_error(std::string() + "The type saved in the variant is not '" + Type<TResult>().name() + "' type");
+    } else {
+      return *(result_type*)ptr();
+    }
+  }
+
+  template <typename TResult>
+  TResult Variant::cast() const{
     if (typeIndex() == Type<TResult>().index()){
       return *(TResult*)ptr();
     } else {
@@ -243,7 +257,7 @@ namespace fcf{
   }
 
   template <typename TResult>
-  TResult Variant::get() const{
+  TResult Variant::strict_cast() const{
     if (typeIndex() != Type<TResult>().index()){
       throw std::runtime_error(std::string() + "The type saved in the variant is not '" + Type<TResult>().name() + "' type");
     }
@@ -268,26 +282,31 @@ namespace fcf{
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     void Variant::_clone(const Variant& a_variant) {
-      Details::Basis::Variant::BaseWrapper* wrp = (Details::Basis::Variant::BaseWrapper*)a_variant._ptr;
-      if (a_variant._ptr == &_mem[0]){
-        wrp->clone(&_mem[0]);
+      if (a_variant._ptr) {
+        Details::Basis::Variant::BaseWrapper* wrp = (Details::Basis::Variant::BaseWrapper*)a_variant._ptr;
+        if (a_variant._ptr == &_mem[0]){
+          wrp->clone(&_mem[0]);
+        } else {
+          _ptr = wrp->clone();
+        }
+        _index = a_variant._index;
       } else {
-        _ptr = wrp->clone();
+        _ptr = 0;
+        _index = 0;
       }
-      _index = a_variant._index;
     }
   #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
   template <typename Ty>
   void Variant::_set(const Ty& a_value) {
-    typedef typename Type<Ty, MemoryTypeSpecificator>::type type;
+    typedef typename Type<Ty, StoredDataTypeSpecificator>::type type;
     if (sizeof(type) > innerBufferSize){
       _ptr = new Details::Basis::Variant::Wrapper<type>(a_value);
     } else {
       new (&_mem[0]) Details::Basis::Variant::Wrapper<type>(a_value);
       _ptr = &_mem[0];
     }
-    _index = Type< typename Type<Ty, MemoryTypeSpecificator>::type >().index();
+    _index = Type< typename Type<Ty, StoredDataTypeSpecificator>::type >().index();
   }
 
   #ifdef FCF_BASIS_IMPLEMENTATION

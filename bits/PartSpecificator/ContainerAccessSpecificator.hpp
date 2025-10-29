@@ -1,6 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__PART_SPECIFICATOR__CONTAINER_ACCESS_SPECIFICATOR_HPP___
 #define ___FCF__BASIS__BITS__PART_SPECIFICATOR__CONTAINER_ACCESS_SPECIFICATOR_HPP___
 
+#include "../../bits/PartTypes/UniversalCall.hpp"
 #include "SpecificatorRegistrar.hpp"
 #include "../Type/Type.hpp"
 #include "../../Variant.hpp"
@@ -10,7 +11,6 @@
 namespace fcf {
 
   struct ContainerAccessSpecificator{
-    typedef Variant (*UniversalCallType)(void*);
   };
 
   template <typename Ty>
@@ -24,9 +24,8 @@ namespace fcf {
 
     typedef DynamicContainerAccess< ContainerAccess<Ty> > ContainerAccessType;
 
-    inline Variant universalCall(Ty* a_container) const {
-      return !a_container ? Variant(ContainerAccessType())
-                          : Variant(ContainerAccessType(*a_container));
+    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
+      return Variant(Type<Ty, ContainerAccessType>().call(a_object));
     }
 
     inline ContainerAccessType call(Ty* a_container) const {
@@ -48,7 +47,7 @@ namespace fcf {
       }
 
       static Variant universalCall(TContainer* a_container) {
-        return Type<TContainer, ContainerAccessSpecificator>().universalCall(a_container);
+        return Type<TContainer, ContainerAccessSpecificator>().call(a_container);
       }
   };
 

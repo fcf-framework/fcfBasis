@@ -264,39 +264,6 @@
           FCF_INITIAZE_GLOBAL_PTR__CONCAT(_fcfinitializer_, a_variable, __LINE__);\
       }
   #endif // #ifndef FCF_INITIAZE_GLOBAL_PTR
-/*
-  #ifndef FCF_DECLARE_FUNCTION
-    #define _FCF_DECLARE_FUNCTION__SELECTOR_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR
-    #define _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR(...) _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR __VA_ARGS__
-    #define _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS_0(...) _FCF_DECLARE_FUNCTION__SELECTOR##__VA_ARGS__
-    #define _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS_0(__VA_ARGS__)
-    #define _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-    #define _FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
-
-
-    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_arg1, a_arg2, a_arg3, ...)
-    #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_placeHolder) \
-        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR a_placeHolder))
-
-    #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
-      a_sourceCode; \
-      ::fcf::CallStorageRegistrator \
-        _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
-          ( \
-            #a_name, \
-            a_space, \
-            #a_sourceName, \
-            static_cast<a_signature>(a_sourceName),\
-            ::fcf::Details::CallPlaceHolderSignatures < \
-              ::fcf::Details::CallPlaceHolderSignatureGetter< a_signature, \
-                                                ::fcf::Details::CallResultTypeGetter<a_signature>::type, \
-                                                _FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS(_FCF_DECLARE_FUNCTION__REMOVE_PARENTHESIS__EMPTY_SELECTOR a_placeHolder)\
-                                              > \
-                                          > (),\
-            #a_sourceCode\
-          );
-  #endif // #ifndef FCF_DECLARE_FUNCTION
-*/
 
   #ifndef FCF_DECLARE_FUNCTION
 

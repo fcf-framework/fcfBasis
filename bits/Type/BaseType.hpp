@@ -6,6 +6,7 @@
 #include "../../bits/TemplateSpecializationInitializer.hpp"
 #include "../../Details/Variant/NobodyWrapperRegistrator.hpp"
 #include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
+#include "../../bits/PartTypes/UniversalCall.hpp"
 #include "TypeId.hpp"
 #include <iostream>
 namespace fcf {
@@ -15,8 +16,6 @@ namespace fcf {
     public:
 
       enum { container = false };
-
-      enum { flat = false };
 
       template <typename TContainer, typename TSpecificator>
       friend class SpecificatorRegistrar;
@@ -42,6 +41,7 @@ namespace fcf {
           }
         }
       }
+
       const std::string& name() {
         return _info->name;
       }
@@ -58,16 +58,17 @@ namespace fcf {
         return _info->specificators;
       }
 
+      template <typename TSpecificator>
+      UniversalCall getSpecificator() const {
+        return _info->getSpecificator<TSpecificator>();
+      }
+
       const TypeInfo::Converters& converters(){
         return _info->converters;
       }
 
       const TypeInfo::Converters& backConverters(){
         return _info->backConverters;
-      }
-
-      DynamicIteratorSpecificator::function_type dynamicIteratorResolver(){
-        return _info->dynamicIteratorResolver;
       }
 
       RawDataSpecificator::function_type rawDataResolver(){

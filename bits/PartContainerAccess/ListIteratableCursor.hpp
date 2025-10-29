@@ -25,6 +25,10 @@ namespace fcf {
     }
 
     inline void setPosition(const key_type& a_position) {
+      if (a_position >= getContainerSize()) {
+        setEndPosition();
+        return;
+      }
       key = 0;
       iterator = container->begin();
       while(key < a_position){
@@ -34,23 +38,37 @@ namespace fcf {
     }
 
     inline void addPosition(size_t a_position) {
+      if (a_position + key >= getContainerSize()) {
+        setEndPosition();
+        return;
+      }
       while(a_position--){
         ++iterator;
       };
     }
 
     inline void decPosition(size_t a_position) {
+      if (a_position > key){
+        setBeginPosition();
+        return;
+      }
       while(a_position--){
         --iterator;
       };
     }
 
     inline void decPosition() {
+      if (!key){
+        return;
+      }
       --iterator;
       --key;
     }
 
     inline void incPosition() {
+      if (isEnd()){
+        return;
+      }
       ++iterator;
       ++key;
     }

@@ -13,7 +13,7 @@ void variantTest(){
     v3 = v2;
     v2.clear();
     v2 = fcf::convert<fcf::Variant>("999");
-    FCF_TEST(fcf::convert<double>(v2) == 999, v2.as<std::string>());
-    FCF_TEST(fcf::convert<double>(v3) == 123.1, v3.as<std::string>());
+    FCF_TEST(fcf::convert<double>(v2) == 999, v2.cast<std::string>());
+    FCF_TEST(fcf::convert<double>(v3) == 123.1, v3.cast<std::string>());
   }
 }

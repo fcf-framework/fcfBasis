@@ -28,6 +28,7 @@ namespace fcf {
 
       friend container_type;
       enum { is_flat = cursor_type::is_flat };
+      enum { is_const_resolve_value = std::is_const<resolve_value_type>::value || ConstMode };
 
       inline ContainerAccess(){
       }

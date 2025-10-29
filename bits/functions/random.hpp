@@ -13,8 +13,8 @@ namespace fcf {
       return a_min + (((Ty1)a_max - a_min) * r);
     }
 
-    template <typename Ty>
-    void random(Ty* a_begin, Ty* a_end, const Ty& a_min, const Ty& a_max) {
+    template <typename TItem, typename TValue>
+    void random(TItem* a_begin, TItem* a_end, const TValue& a_min, const TValue& a_max) {
       for (; a_begin != a_end; ++a_begin) {
         double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
         *a_begin = a_min + ((a_max - a_min) * r);

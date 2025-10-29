@@ -5,13 +5,33 @@
 
 namespace fcf {
 
+  template <bool IsConstValue>
+  struct DynamicContainerAccessHelper{
+
+    template <typename TContainerAcces, typename TValue>
+    void set(TContainerAcces& a_container, const TValue& a_value){
+      a_container.value() = a_value;
+    }
+  };
+
+  template <>
+  struct DynamicContainerAccessHelper<false>{
+
+    template <typename TContainerAcces, typename TValue>
+    void set(TContainerAcces& a_container, const TValue& a_value){
+      throw std::runtime_error("The container does not support the recording of the value");
+    }
+  };
+
   template <typename TContainerAccess>
   class DynamicContainerAccess : public DynamicContainerAccessBase {
     public:
+      enum { is_const_resolve_value = TContainerAccess::is_const_resolve_value };
 
-      typedef typename TContainerAccess::container_type container_type;
-      typedef typename TContainerAccess::key_type       key_type;
-      typedef typename TContainerAccess::value_type     value_type;
+      typedef typename TContainerAccess::container_type             container_type;
+      typedef typename TContainerAccess::key_type                   key_type;
+      typedef typename TContainerAccess::value_type                 value_type;
+      typedef DynamicContainerAccessHelper<is_const_resolve_value>  helper_type;
 
       DynamicContainerAccess(){
       }
@@ -23,16 +43,20 @@ namespace fcf {
       virtual ~DynamicContainerAccess() {
       }
 
+      virtual bool isFlatContainer(){
+        return TContainerAccess::is_flat;
+      }
+
       virtual void setBeginPosition() {
         _containerAccess.setBeginPosition();
       }
 
       virtual void setEndPosition() {
-        _containerAccess.setBeginPosition();
+        _containerAccess.setEndPosition();
       }
 
       virtual void setPosition(const ::fcf::Variant& a_key){
-        _containerAccess.setPosition(a_key.get<key_type>());
+        _containerAccess.setPosition(a_key.cast<key_type>());
       };
 
       virtual void dec(){
@@ -50,6 +74,18 @@ namespace fcf {
         }
         return (void*)&_containerAccess.value();
       };
+
+      virtual void setValue(const Variant& a_value){
+        helper_type().set(_containerAccess, a_value.cast<value_type>());
+      }
+
+      virtual unsigned int getValueTypeIndex() const {
+        return Type<typename TContainerAccess::value_type>().index();
+      }
+
+      virtual unsigned int getKeyTypeIndex() const {
+        return Type<typename TContainerAccess::key_type>().index();
+      }
 
       virtual const void* getConstValuePtr() const {
         return & ((TContainerAccess&)_containerAccess).value();

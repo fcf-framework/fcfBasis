@@ -13,12 +13,20 @@
 #include "Type/TypeInitializer.hpp"
 #include "./PartContainerAccess/ContainerAccess.hpp"
 #include "./PartContainerAccess/DynamicContainerAccess.hpp"
-#include "Type/DynamicIteratorSpecificator/Type_DynamicIteratorSpecificator.hpp"
 #include "../Variant.hpp"
 #include "../bits/PartType/NDetails/TypeRegistrar.hpp"
+#include "../bits/PartTypes/UniversalArguments.hpp"
 #include "../bits/PartSpecificator/PartSpecificator.hpp"
 
+FCF_TYPEID_REGISTRY(fcf::ContainerAccessSpecificator, "fcf::ContainerAccessSpecificator", 0);
+FCF_TYPEID_REGISTRY(fcf::MinMaxSpecificator,          "fcf::MinMaxSpecificator", 0);
+FCF_TYPEID_REGISTRY(fcf::ValueSpecificator,           "fcf::ValueSpecificator",  0);
+FCF_TYPEID_REGISTRY(fcf::StoredDataTypeSpecificator,  "fcf::StoredDataTypeSpecificator",  0);
+
 FCF_TYPEID_REGISTRY(char,               "char",               FCF_INT8_TYPE_INDEX);
+FCF_SPECIFICATOR_REGISTRY(char*,        fcf::StoredDataTypeSpecificator);
+FCF_SPECIFICATOR_REGISTRY(const char*,  fcf::StoredDataTypeSpecificator);
+
 FCF_TYPEID_REGISTRY(unsigned char,      "unsigned char",      FCF_UINT8_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(short,              "short",              FCF_INT16_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(unsigned short,     "unsigned short",     FCF_UINT16_TYPE_INDEX);
@@ -34,10 +42,12 @@ FCF_TYPEID_REGISTRY_SINGLE(void,        "void",               20);
 FCF_TYPEID_REGISTRY(bool,               "bool",               21);
 FCF_TYPEID_REGISTRY(std::string,        "std::string",        30);
 
-FCF_TYPEID_REGISTRY(fcf::ContainerAccessSpecificator, "fcf::ContainerAccessSpecificator", 0);
+
 
 FCF_TYPEID_REGISTRY(fcf::Variant,       "fcf::Variant",         31);
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant, fcf::RawDataSpecificator);
+
+FCF_TYPEID_REGISTRY(fcf::UniversalArguments,       "fcf::UniversalArguments",         0);
 
 FCF_TYPEID_REGISTRY(fcf::Nop, "fcf::Nop", 0);
 
@@ -62,7 +72,6 @@ namespace fcf {
   struct Type<std::vector<Ty>, ContainerAccessSpecificator>: public TypeImpl<std::vector<Ty>, ContainerAccessSpecificator>{
   };
 } // fcf namespace
-FCF_TEMPLATE_SPECIFICATOR_REGISTRY(std::vector, DynamicIteratorSpecificator);
 FCF_TEMPLATE_SPECIFICATOR_REGISTRY(std::vector, ContainerAccessSpecificator);
 
 

@@ -65,7 +65,7 @@ namespace fcf {
   class Converter<TDestination, Variant>{
     public:
       void operator()(TDestination& a_destination, const Variant& a_source, ConvertOptions* a_convertOptions = 0){
-        a_destination = a_source.as<TDestination>();
+        a_destination = a_source.cast<TDestination>();
       }
   };
 

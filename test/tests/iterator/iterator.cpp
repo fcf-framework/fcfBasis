@@ -1,46 +1,46 @@
 #include <iostream>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../basis.hpp"
+#include "../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
+#include <array>
 
+ 
+
+  
 void iteratorTest(){
   std::cout << "Start iteratorTest()..." << std::endl;
-
   {
     typedef std::vector<char> type;
     type vec;
     vec.push_back(1);
     vec.push_back(2);
     vec.push_back(3);
-    fcf::DynamicIteratorSpecificator::function_type resolver = fcf::Type<type>().dynamicIteratorResolver();
-    fcf::DynamicIteratorInfo dii;
-    dii.flags = fcf::DIF_ITERATION | fcf::DIF_GET_KEY | fcf::DIF_GET_VALUE | fcf::DIF_GET_TYPE | fcf::DIF_GET_SIZE;
-    FCF_TEST((void*)resolver != 0, (void*)resolver);
+    fcf::Variant vit = fcf::Type<type>().getSpecificator<fcf::ContainerAccessSpecificator>()(&vec, 0, 0);
+    fcf::DynamicContainerAccessBase* it = (fcf::DynamicContainerAccessBase*)vit.ptr();
+    FCF_TEST((void*)vit.ptr() != 0, (void*)vit.ptr());
 
-    size_t i = 0;
-    bool res;
-    res = resolver(&vec, &dii);
-    FCF_TEST(res == true);
-    FCF_TEST(dii.key.as<int>() == 0, dii.key.as<int>());
-    FCF_TEST(*(char*)dii.value == 1, *(char*)dii.value);
-    FCF_TEST(dii.type == fcf::Type<char>().index(), dii.type, fcf::Type<char>().index());
-    FCF_TEST(dii.size == 3, dii.size);
+    FCF_TEST(it->isEnd() == false);
+    FCF_TEST(it->getKey().cast<int>() == 0, it->getKey().cast<int>());
+    FCF_TEST(it->getValue().cast<int>() == 1, it->getValue().cast<int>());
+    FCF_TEST(it->getValueTypeIndex() == fcf::Type<char>().index(), it->getValueTypeIndex(), fcf::Type<char>().index());
+    FCF_TEST(it->getContainerSize() == 3, it->getContainerSize());
 
-    res = resolver(&vec, &dii);
-    FCF_TEST(res == true);
-    FCF_TEST(dii.key.as<int>() == 1, dii.key.as<int>());
-    FCF_TEST(*(char*)dii.value == 2, *(char*)dii.value);
-    FCF_TEST(dii.type == fcf::Type<char>().index(), dii.type, fcf::Type<char>().index());
-    FCF_TEST(dii.size == 3, dii.size);
+    it->inc();
+    FCF_TEST(it->isEnd() == false);
+    FCF_TEST(it->getKey().cast<int>() == 1, it->getKey().cast<int>());
+    FCF_TEST(it->getValue().cast<int>() == 2, it->getValue().cast<int>());
+    FCF_TEST(it->getValueTypeIndex() == fcf::Type<char>().index(), it->getValueTypeIndex(), fcf::Type<char>().index());
+    FCF_TEST(it->getContainerSize() == 3, it->getContainerSize());
 
-    res = resolver(&vec, &dii);
-    FCF_TEST(res == true);
-    FCF_TEST(dii.key.as<int>() == 2, dii.key.as<int>());
-    FCF_TEST(*(char*)dii.value == 3, *(char*)dii.value);
-    FCF_TEST(dii.type == fcf::Type<char>().index(), dii.type, fcf::Type<char>().index());
-    FCF_TEST(dii.size == 3, dii.size);
+    it->inc();
+    FCF_TEST(it->isEnd() == false);
+    FCF_TEST(it->getKey().cast<int>() == 2, it->getKey().cast<int>());
+    FCF_TEST(it->getValue().cast<int>() == 3, it->getValue().cast<int>());
+    FCF_TEST(it->getValueTypeIndex() == fcf::Type<char>().index(), it->getValueTypeIndex(), fcf::Type<char>().index());
+    FCF_TEST(it->getContainerSize() == 3, it->getContainerSize());
 
-    res = resolver(&vec, &dii);
-    FCF_TEST(res == false);
+    it->inc();
+    FCF_TEST(it->isEnd() == true);
   }
 
   {
@@ -49,17 +49,16 @@ void iteratorTest(){
     c.push_back(1);
     c.push_back(2);
     c.push_back(3);
-    unsigned int typeIndex = fcf::Type<container_type>().index();
-    const fcf::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
-    fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
-    FCF_TEST((void*)resolver != 0, (void*)resolver)
-    fcf::DynamicIteratorInfo dii;
-    dii.flags = fcf::DIF_ITERATION | fcf::DIF_GET_KEY | fcf::DIF_GET_VALUE | fcf::DIF_GET_TYPE | fcf::DIF_GET_SIZE;
+
+    fcf::Variant vit = fcf::Type<container_type>().getSpecificator<fcf::ContainerAccessSpecificator>()(&c, 0, 0);
+    fcf::DynamicContainerAccessBase& it = *(fcf::DynamicContainerAccessBase*)vit.ptr();
+
     size_t i = 0;
-    int arr[3];
-    while(resolver(&c, &dii)){
-      arr[i] = *(int*)dii.value;
+    int arr[3] = {0,0,0};
+    while(it){
+      arr[i] = it.getValue().cast<int>();
       ++i;
+      ++it;
     }
     FCF_TEST(i, 3);
     FCF_TEST(arr[0], 1);
@@ -72,19 +71,18 @@ void iteratorTest(){
     c.push_back(1);
     c.push_back(2);
     c.push_back(3);
-    unsigned int typeIndex = fcf::Type<container_type>().index();
-    const fcf::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
-    fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
-    FCF_TEST((void*)resolver != 0, (void*)resolver)
-    fcf::DynamicIteratorInfo dii;
-    dii.flags = fcf::DIF_RESOLVE | fcf::DIF_GET_KEY | fcf::DIF_GET_VALUE | fcf::DIF_GET_TYPE | fcf::DIF_GET_SIZE;
-    dii.key = (int)1;
-    bool res = resolver(&c, &dii);
-    FCF_TEST(res == true, res);
-    FCF_TEST(dii.key.as<int>() == 1, dii.key.as<int>());
-    FCF_TEST(*(int*)dii.value == 2, *(int*)dii.value);
-    FCF_TEST(dii.type == fcf::Type<int>().index(), dii.type);
-    FCF_TEST(dii.size == 3, dii.size);
+
+    fcf::Variant vit = fcf::Type<container_type>().getSpecificator<fcf::ContainerAccessSpecificator>()(&c, 0, 0);
+    fcf::DynamicContainerAccessBase& it = *(fcf::DynamicContainerAccessBase*)vit.ptr();
+
+    FCF_TEST(it == true);
+    it.setPosition(1);
+
+    FCF_TEST(it == true);
+    FCF_TEST(it.getKey().cast<int>() == 1, it.getKey().cast<int>());
+    FCF_TEST(it.getValue().cast<int>() == 2, it.getValue().cast<int>());
+    FCF_TEST(it.getValueTypeIndex() == fcf::Type<int>().index(), it.getValueTypeIndex());
+    FCF_TEST(it.getContainerSize() == 3, it.getContainerSize());
   }
 
   {
@@ -93,19 +91,16 @@ void iteratorTest(){
     c.push_back(1);
     c.push_back(2);
     c.push_back(3);
-    unsigned int typeIndex = fcf::Type<container_type>().index();
-    const fcf::TypeInfo* ti = fcf::Details::typeStorage.get(typeIndex);
-    fcf::DynamicIteratorSpecificator::function_type resolver = ti->dynamicIteratorResolver;
-    FCF_TEST((void*)resolver != 0, (void*)resolver)
-    fcf::DynamicIteratorInfo dii;
-    dii.flags = fcf::DIF_RESOLVE | fcf::DIF_GET_KEY | fcf::DIF_GET_VALUE | fcf::DIF_GET_TYPE | fcf::DIF_GET_SIZE;
-    dii.key = (int)10;
-    bool res = resolver(&c, &dii);
-    FCF_TEST(res == false);
-    res = resolver(&c, &dii);
-    FCF_TEST(res == false);
+    fcf::Variant vit = fcf::Type<container_type>().getSpecificator<fcf::ContainerAccessSpecificator>()(&c, 0, 0);
+    fcf::DynamicContainerAccessBase& it = *(fcf::DynamicContainerAccessBase*)vit.ptr();
+
+    FCF_TEST(it);
+    it.setPosition(10);
+    FCF_TEST(!it);
+    ++it;
+    FCF_TEST(!it);
   }
-  
+
 }
 
 

@@ -14,6 +14,7 @@ add_executable("basis-test" impl.cpp
                            variant/variant.cpp
                            iterator/iterator.cpp
                            iterator/dynamicIterator.cpp
+                           specificator/MinMaxSpecificator.cpp
                            StaticVector/StaticVector.cpp
                            StaticVector/StaticVectorCopy.cpp
                            StaticVector/StaticVectorException.cpp

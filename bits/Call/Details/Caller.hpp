@@ -5,8 +5,10 @@
 #include <type_traits>
 #include "../../../Template/Sequence.hpp"
 #include "../../../FunctionSignature.hpp"
+#include "../../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../Specificator/DynamicIteratorInfo.hpp"
 #include "../CallConversionMode.hpp"
+#include "../../PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "CallArgsTypeIndexes.hpp"
 
 namespace fcf {
@@ -66,14 +68,27 @@ namespace fcf {
                 if (si == s.end()){
                   throw std::runtime_error("Invalid specificator");
                 }
-                fcf::StaticVector<fcf::Variant, 4> vs;
-                typedef void (*resolve_type)(int&, fcf::StaticVector<fcf::Variant, 4>&);
-                resolve_type resolve = (resolve_type)si->second.resolve;
+
                 int* aptr = (int*)args[cc.index];
                 for(unsigned int i = 0; i < cc.pointerCounter; ++i){
                   aptr = *(int**) aptr;
                 }
-                resolve(*aptr, vs);
+
+                UniversalCall call = (UniversalCall)si->second.resolve;
+                fcf::Variant callResult = call(aptr, 0, 0);
+
+                Variant* callResults;
+                size_t   callResultsSize;
+                if (callResult.typeIndex() == Type<UniversalArguments>().index()){
+                  callResult = call(aptr, 0, 0);
+                  UniversalArguments& ua = *(UniversalArguments*)callResult.ptr();
+                  callResults = &ua[0];
+                  callResultsSize = ua.size();
+                } else {
+                  callResults = &callResult;
+                  callResultsSize = 1;
+                }
+
                 for(size_t i = 0; i < cc.placeHolders.size(); ++i){
                   const CallPlaceHolderArgEx& phae = cc.placeHolders[i];
                   const size_t argBufferIndex = argBuffer.size();
@@ -81,27 +96,28 @@ namespace fcf {
                     throw std::runtime_error("Argument buffer overflow");
                   }
                   argBuffer.resize(argBufferIndex+1);
-                  argBuffer[argBufferIndex].set(phae.type, vs[phae.placeHolderArgument-1].ptr(), vs[phae.placeHolderArgument-1].typeIndex());
+
+                  if (phae.placeHolderArgument-1 >= callResultsSize) {
+                    throw std::runtime_error("The function of the specificator returned an insufficient number of arguments");
+                  }
+
+                  argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].typeIndex());
                   args[phae.argument] = argBuffer[argBufferIndex].ptr();
                 }
               }
               break;
             case CCM_FLAT_ITERATOR:
               {
-                typedef bool (*converter_type)(void*, DynamicIteratorInfo*);
-                converter_type converter = (converter_type)cc.converter;
-                DynamicIteratorInfo dii;
-                dii.flags = DIF_BEGIN | DIF_GET_VALUE | DIF_GET_TYPE;
-                if (!converter(args[cc.index], &dii)){
+                UniversalCall converter = (UniversalCall)cc.converter;
+                Variant viterator = converter(args[cc.index], 0, 0);
+                DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
+                if (!iterator){
                   throw std::runtime_error("Failed to get left bound of argument");
                 }
-                unsigned int subtype = dii.type;
-                void* left = dii.value;
-                dii.flags = DIF_END | DIF_GET_VALUE;
-                if (!converter(args[cc.index], &dii)){
-                  throw std::runtime_error("Failed to get left bound of argument");
-                }
-                void* right = dii.value;
+                unsigned int subtype = iterator->getValueTypeIndex();
+                void* left = iterator->getValuePtr();
+                iterator->setEndPosition();
+                void* right = iterator->getValuePtr();
                 args[cc.index] = &left;
                 args[cc.index+1] = &right;
               }

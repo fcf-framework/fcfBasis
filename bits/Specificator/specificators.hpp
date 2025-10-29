@@ -15,11 +15,6 @@ namespace fcf {
     struct IteratorContainerSpecificator { };
   #endif //#ifndef FCF_ITERATOR_CONTAINER_SPECIFICATOR
 
-  #ifndef FCF_MEMORY_TYPE_SPECIFICATOR
-    #define FCF_MEMORY_TYPE_SPECIFICATOR
-    struct MemoryTypeSpecificator { };
-  #endif //#ifndef FCF_MEMORY_TYPE_SPECIFICATOR
-
   #ifndef FCF_DEFAULT_CONVERT_SPECIFICATOR
     #define FCF_DEFAULT_CONVERT_SPECIFICATOR
     struct DefaultConvertSpecificator { };
@@ -33,26 +28,7 @@ namespace fcf {
     };
   #endif //#ifndef FCF_RAW_DATA_SPECIFICATOR
 
-  #ifndef FCF_MIN_MAX_SPECIFICATOR
-    #define FCF_MIN_MAX_SPECIFICATOR
-    struct MinMaxSpecificator { };
-  #endif //#ifndef FCF_MIN_MAX_SPECIFICATOR
-
-  #ifndef FCF_VALUE_SPECIFICATOR
-    #define FCF_VALUE_SPECIFICATOR
-    struct ValueSpecificator { };
-  #endif //#ifndef FCF_VALUE_SPECIFICATOR
-
-  #ifndef FCF_DYNAMIC_ITERATOR_SPECIFICATOR
-    #define FCF_DYNAMIC_ITERATOR_SPECIFICATOR
-
-    struct DynamicIteratorSpecificator {
-      enum { enable = false };
-      typedef bool (*function_type)(void* a_container, DynamicIteratorInfo* a_info);
-    };
-
-  #endif //#ifndef FCF_DYNAMIC_ITERATOR_SPECIFICATOR
-  
+ 
   
   
 

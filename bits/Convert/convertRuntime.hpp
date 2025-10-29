@@ -37,7 +37,6 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options) {
-      std::cout << std::hex << "a_resultTypeIndex: " << a_resultTypeIndex << ": a_sourceTypeIndex : " << a_sourceTypeIndex << std::dec<< std::endl;
       if (typeIndexIsPointer(a_resultTypeIndex) && typeIndexIsPointer(a_sourceTypeIndex)){
         *((int**)a_resultData) = *(int**)a_sourceData;
         return;
