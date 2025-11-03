@@ -58,21 +58,6 @@ namespace fcf{
     typedef std::string type;
   };
 
-  template <typename TContainer>
-  class SpecificatorRegistrar<TContainer, StoredDataTypeSpecificator> {
-    public:
-      SpecificatorRegistrar() {
-        unsigned int specificatorIndex = Type<StoredDataTypeSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.argc = 1;
-        sti.resolve = (void*)universalCall;
-        Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-      }
-
-      static Variant universalCall(TContainer* a_container) {
-        return Type<TContainer, StoredDataTypeSpecificator>().universalCall(a_container, 0, 0);
-      }
-  };
 
 } // fcf namespace
 

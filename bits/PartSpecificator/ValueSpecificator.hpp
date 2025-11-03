@@ -34,21 +34,6 @@ namespace fcf {
 
   };
 
-  template <typename TContainer>
-  class SpecificatorRegistrar<TContainer, ValueSpecificator> {
-    public:
-      SpecificatorRegistrar() {
-        unsigned int specificatorIndex = Type<ValueSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.argc = 1;
-        sti.resolve = (void*)universalCall;
-        Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-      }
-
-      static Variant universalCall(TContainer* a_container) {
-        return Type<TContainer, ValueSpecificator>().universalCall(a_container, 0, 0);
-      }
-  };
 
 }
 

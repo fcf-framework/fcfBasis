@@ -42,22 +42,6 @@ namespace fcf{
     }
   };
 
-  template <typename TContainer>
-  class SpecificatorRegistrar<TContainer, MinMaxSpecificator> {
-    public:
-      SpecificatorRegistrar() {
-        unsigned int specificatorIndex = Type<MinMaxSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.argc = 1;
-        sti.resolve = (void*)universalCall;
-        Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-      }
-
-      static Variant universalCall(TContainer* a_container, Variant* a_argv, size_t a_argc) {
-        return Type<TContainer, MinMaxSpecificator>().universalCall(a_container, a_argv, a_argc);
-      }
-  };
-
 
 } // fcf namespace
 

@@ -13,6 +13,7 @@ namespace fcf {
   struct ContainerAccessSpecificator{
   };
 
+
   template <typename Ty>
   struct Type<Ty, ContainerAccessSpecificator> {
     enum { enable = false };
@@ -25,7 +26,7 @@ namespace fcf {
     typedef DynamicContainerAccess< ContainerAccess<Ty> > ContainerAccessType;
 
     inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
-      return Variant(Type<Ty, ContainerAccessType>().call(a_object));
+      return Variant(Type<Ty, ContainerAccessSpecificator>().call(a_object));
     }
 
     inline ContainerAccessType call(Ty* a_container) const {
@@ -33,22 +34,6 @@ namespace fcf {
                           : ContainerAccessType(*a_container);
     }
 
-  };
-
-  template <typename TContainer>
-  class SpecificatorRegistrar<TContainer, ContainerAccessSpecificator> {
-    public:
-      SpecificatorRegistrar() {
-        unsigned int specificatorIndex = Type<ContainerAccessSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.argc = 1;
-        sti.resolve = (void*)universalCall;
-        Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-      }
-
-      static Variant universalCall(TContainer* a_container) {
-        return Type<TContainer, ContainerAccessSpecificator>().call(a_container);
-      }
   };
 
 } // fcf namespace

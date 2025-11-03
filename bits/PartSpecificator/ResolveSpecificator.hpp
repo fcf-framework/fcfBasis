@@ -24,7 +24,6 @@ namespace fcf{
       SpecificatorRegistrar() {
         unsigned int specificatorIndex = Type<ResolveSpecificator>().index();
         fcf::SpecificatorTypeInfo sti;
-        sti.argc = 1;
         sti.resolve = (void*)universalCall;
         Type<TContainer>()._info->specificators[specificatorIndex] = sti;
         Type<TContainer>()._info->resolver = call;

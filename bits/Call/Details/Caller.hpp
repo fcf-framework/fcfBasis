@@ -28,8 +28,8 @@ namespace fcf {
         size_t       currentArgIndex = SIZE_MAX;
         unsigned int currentArgType  = 0;
 
-        const size_t argBufferCapacity = sizeof...(a_argPack) * 3;
-        StaticVector<fcf::Variant, sizeof...(a_argPack) * 3> argBuffer;
+        const size_t argBufferCapacity = sizeof...(a_argPack) * 10;
+        StaticVector<fcf::Variant, sizeof...(a_argPack) * 10> argBuffer;
 
         _initArgs<0>(a_callInfo, args, a_argPack...);
 
@@ -56,9 +56,13 @@ namespace fcf {
                   currentArgType = callerArgsResolver.indexes[cc.index];
                   currentArgIndex = cc.index;
                 }
-                ::fcf::Variant arg(cc.type, (const void*)args[cc.index], currentArgType, (ConvertOptions*)0, (ConvertFunction)cc.converter);
+                const size_t argBufferIndex = argBuffer.size();
+                if ((argBufferIndex) >= argBufferCapacity){
+                  throw std::runtime_error("Argument buffer overflow");
+                }
+                argBuffer.push_back(::fcf::Variant(cc.type, (const void*)args[cc.index], currentArgType, (ConvertOptions*)0, (ConvertFunction)cc.converter));
                 currentArgType = cc.type;
-                args[cc.index] = (arg_type*)arg.ptr();
+                args[cc.index] = (arg_type*)argBuffer[argBuffer.size()-1].ptr();
               }
               break;
             case CCM_PLACE_HOLDER:
@@ -114,12 +118,18 @@ namespace fcf {
                 if (!iterator){
                   throw std::runtime_error("Failed to get left bound of argument");
                 }
-                unsigned int subtype = iterator->getValueTypeIndex();
-                void* left = iterator->getValuePtr();
+                const size_t argBufferIndex = argBuffer.size();
+                if ((argBufferIndex+1) >= argBufferCapacity){
+                  throw std::runtime_error("Argument buffer overflow");
+                }
+
+                argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
+                args[cc.index] = argBuffer[argBuffer.size()-1].ptr();
+
                 iterator->setEndPosition();
-                void* right = iterator->getValuePtr();
-                args[cc.index] = &left;
-                args[cc.index+1] = &right;
+
+                argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
+                args[cc.index+1] = argBuffer[argBuffer.size()-1].ptr();
               }
               break;
           } // switch(cc.mode) end
