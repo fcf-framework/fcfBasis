@@ -50,7 +50,7 @@ namespace fcf {
               typeIndex &= 0xff000000;
               typeIndex |= typeCounter | 0x01000000;
             };
-            SPTypeInfo spti(new TypeInfo({typeIndex, a_ti.name, 0}));
+            SPTypeInfo spti(new TypeInfo(typeIndex, a_ti.name));
             nit = _ns.insert({spti->name, spti}).first;
             _is.insert({spti->index, spti});
           }

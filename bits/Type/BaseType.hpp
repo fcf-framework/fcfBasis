@@ -4,7 +4,6 @@
 #include <type_traits>
 #include "../Convert/Details/setConverterDecl.hpp"
 #include "../../bits/TemplateSpecializationInitializer.hpp"
-#include "../../Details/Variant/NobodyWrapperRegistrator.hpp"
 #include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "TypeId.hpp"
@@ -32,11 +31,11 @@ namespace fcf {
             baseTypeIndex = BaseType<basic_type>().index();
           }
           const unsigned int index = TypeId<Ty>().index();
-          TypeInfo initTypeInfo = { index, TypeId<Ty>().name()};
+          TypeInfo initTypeInfo(index, TypeId<Ty>().name());
           _info = Details::typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
           if ((index & 0xce000000) == 0) { // if not ref and not const
             typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
-            ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, simple_type> typeRegistrar(index);
+            ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, simple_type> typeRegistrar(_info, index);
             ::fcf::NDetails::SpecificatorRegistrarCaller<BaseType, __COUNTER__, simple_type> specificatorsRegistrar;
           }
         }
@@ -50,8 +49,8 @@ namespace fcf {
         return _info->index;
       }
 
-      const TypeInfo& getTypeInfo() {
-        return *_info;
+      const TypeInfo* getTypeInfo() {
+        return _info;
       }
 
       const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
@@ -69,10 +68,6 @@ namespace fcf {
 
       const TypeInfo::Converters& backConverters(){
         return _info->backConverters;
-      }
-
-      RawDataSpecificator::function_type rawDataResolver(){
-        return _info->rawDataResolver;
       }
 
     protected:

@@ -22,6 +22,9 @@ namespace fcf {
             virtual BaseWrapper* clone(char* a_mem) {
               return new (a_mem) Wrapper(data);
             };
+            virtual size_t size(){
+              return sizeof(Wrapper<Ty>);
+            }
             Ty data;
         };
 

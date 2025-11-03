@@ -44,8 +44,8 @@ namespace fcf {
                   args[cc.index] = variant->ptr();
                   currentArgType = variant->typeIndex();
                 } else {
-                  RawDataSpecificator::function_type converter = (RawDataSpecificator::function_type)cc.converter;
-                  args[cc.index] = (void*)converter((arg_type*)args[cc.index],0,0,0);
+                  ResolveSpecificator::CallFunctionType converter = (ResolveSpecificator::CallFunctionType)cc.converter;
+                  args[cc.index] = converter((arg_type*)args[cc.index]).data;
                   currentArgType = cc.type;
                 }
               }

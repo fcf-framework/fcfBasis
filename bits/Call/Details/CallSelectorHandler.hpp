@@ -18,12 +18,10 @@ namespace fcf {
       struct InputArgument {
         unsigned int                                        typeIndex;
         unsigned int                                        clearTypeIndex;
-        RawDataSpecificator::function_type                  rawDataResolver;
+        ResolveSpecificator::CallFunctionType               resolver;
+        ResolveData                                         resolveData; 
         UniversalCall                                       containerAccessResolver;
-        bool                                                invariantRawType;
-        unsigned int                                        invariantIndex;
         void*                                               ptrArg;
-        void*                                               ptrInvariantArg;
         const std::map<unsigned int, SpecificatorTypeInfo>* specificators;
         unsigned int                                        pairCounter;
         bool                                                ignoreConvertSeeker;
@@ -89,22 +87,22 @@ namespace fcf {
           return;
         }
 
-        if (state.strictSource && currentInputArgument->invariantIndex && !currentInputArgument->pairCounter) {
+        if (state.strictSource && currentInputArgument->resolveData.typeIndex && !currentInputArgument->pairCounter) {
           CallConversionNode curnode;
           curnode.prev = 0;
           curnode.next = 0;
           curnode.conversion.index = a_argumentIndex;
-          curnode.conversion.type = currentInputArgument->invariantIndex;
+          curnode.conversion.type = currentInputArgument->resolveData.typeIndex;
           curnode.conversion.mode = CCM_RESOLVE;
-          curnode.conversion.converter = (void*)currentInputArgument->rawDataResolver;
+          curnode.conversion.converter = (void*)currentInputArgument->resolver;
           if (a_node) {
             a_node->next = &curnode;
             curnode.prev = a_node;
           }
-          state.ptrFunctionSignature->pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(currentInputArgument->invariantIndex);
+          state.ptrFunctionSignature->pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(currentInputArgument->resolveData.typeIndex);
 
           InputArgument nextTypeInputArgument;
-          _fillCurrentInputArgument(nextTypeInputArgument, currentInputArgument->invariantIndex, currentInputArgument->ptrInvariantArg);
+          _fillCurrentInputArgument(nextTypeInputArgument, currentInputArgument->resolveData.typeIndex, currentInputArgument->resolveData.data);
           nextTypeInputArgument.pairCounter = currentInputArgument->pairCounter;
 
           (*this)(&curnode, &nextTypeInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
@@ -203,7 +201,7 @@ namespace fcf {
           } // if (treeIt != state.groupIterator->second.callersTree.end()) end
         } // if (a_iasd.strictSource) end
 
-        if (!state.strictSource && currentInputArgument->invariantRawType && !currentInputArgument->pairCounter) {
+        if (!state.strictSource && currentInputArgument->resolveData.invariant && !currentInputArgument->pairCounter) {
           CallConversionNode curnode;
           curnode.prev = 0;
           curnode.next = 0;
@@ -330,16 +328,16 @@ namespace fcf {
         a_inputArgument.typeIndex               = a_type;
         a_inputArgument.clearTypeIndex          = typeIndexToClearTypeIndex(a_type);
         const fcf::TypeInfo* typeInfo  = Details::typeStorage.get(a_inputArgument.clearTypeIndex);
-        a_inputArgument.rawDataResolver         = typeInfo->rawDataResolver;
+        a_inputArgument.resolver                = typeInfo->resolver;
         a_inputArgument.containerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>();
         a_inputArgument.specificators           = &typeInfo->specificators;
-        a_inputArgument.invariantIndex          = false;
         a_inputArgument.ignoreConvertSeeker     = false;
-        a_inputArgument.invariantRawType        = 0;
-        if (a_inputArgument.rawDataResolver) {
-          a_inputArgument.ptrInvariantArg = a_inputArgument.rawDataResolver(a_inputArgument.ptrArg, &a_inputArgument.invariantIndex, &a_inputArgument.invariantRawType, 0);
+        if (a_inputArgument.resolver) {
+          a_inputArgument.resolveData = a_inputArgument.resolver(a_inputArgument.ptrArg);
         } else {
-          a_inputArgument.ptrInvariantArg = 0;
+          a_inputArgument.resolveData.data      = 0;
+          a_inputArgument.resolveData.typeIndex = 0;
+          a_inputArgument.resolveData.invariant = false;
         }
       }
 
@@ -519,16 +517,16 @@ namespace fcf {
         ia.ptrArg                  = state.strictSource ? (current_arg_type*) (*state.arguments)[a_index] : (current_arg_type*)0;
         ia.typeIndex               = Type<current_arg_type>().index();
         ia.clearTypeIndex          = typeIndexToClearTypeIndex(Type<current_arg_type>().index());
-        ia.rawDataResolver         = Type<current_arg_type>().rawDataResolver();
-        ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo().template getSpecificator<ContainerAccessSpecificator>();
+        ia.resolver                = Type<current_arg_type>().getTypeInfo()->resolver;
+        ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>();
         ia.specificators           = &Type<current_arg_type>().specificators();
-        ia.invariantIndex          = false;
-        ia.invariantRawType        = 0;
         ia.pairCounter             = 0;
-        if (ia.rawDataResolver) {
-          ia.ptrInvariantArg = ia.rawDataResolver(ia.ptrArg, &ia.invariantIndex, &ia.invariantRawType, 0);
+        if (ia.resolver) {
+          ia.resolveData = ia.resolver(ia.ptrArg);
         } else {
-          ia.ptrInvariantArg = 0;
+          ia.resolveData.data      = 0;
+          ia.resolveData.typeIndex = 0;
+          ia.resolveData.invariant = false;
         }
       }
     };

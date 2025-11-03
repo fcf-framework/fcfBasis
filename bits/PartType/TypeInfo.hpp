@@ -11,23 +11,31 @@
 #include "../../bits/SpecificatorTypeInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/Specificator/specificators.hpp"
+#include "../../bits/PartSpecificator/ResolveSpecificatorDefinition.hpp"
+#include "../../bits/PartType/TypeDefinition.hpp"
 #include "../../bits/Type/TypeId.hpp"
 #include "../../bits/Type/Type.hpp"
+#include "../../Details/Variant/NobodyWrapper.hpp"
 
 namespace fcf {
-
-  template <typename Ty, typename TInfoMode = Nop>
-  struct Type;
 
   struct TypeInfo{
     typedef std::unordered_map<unsigned int, ConvertFunction> Converters;
 
-    unsigned int                                      index;
-    std::string                                       name;
-    RawDataSpecificator::function_type                rawDataResolver;
-    Converters                                        converters;
-    Converters                                        backConverters;
-    std::map<unsigned int, SpecificatorTypeInfo>      specificators;
+    unsigned int                                                  index;
+    std::string                                                   name;
+    ResolveSpecificator::CallFunctionType                         resolver;
+    Converters                                                    converters;
+    Converters                                                    backConverters;
+    std::map<unsigned int, SpecificatorTypeInfo>                  specificators;
+    std::shared_ptr< Details::Basis::Variant::BaseNobodyWrapper > initializer;
+
+    TypeInfo(unsigned int a_index, const std::string& a_name)
+      : index(a_index)
+      , name(a_name)
+      , resolver(0) {
+
+    }
 
     template <typename TSpecificator>
     UniversalCall getSpecificator() const {

@@ -23,14 +23,5 @@ namespace fcf {
   };
 } // fcf namespace
 
-namespace fcf {
-  template <typename Ty>
-  struct Type<Ty, RawDataSpecificator> {
-    enum { enable = false };
-  };
-
-
-} // fcf namespace
-
 
 #endif // #ifndef ___FCF__BASIS__BITS__TYPE__TYPE_HPP___

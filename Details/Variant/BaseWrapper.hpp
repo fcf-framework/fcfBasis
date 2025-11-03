@@ -13,6 +13,7 @@ namespace fcf {
             virtual ~BaseWrapper();
             virtual BaseWrapper* clone() = 0;
             virtual BaseWrapper* clone(char* a_mem) = 0;
+            virtual size_t size() = 0;
         };
 
         #ifdef FCF_BASIS_IMPLEMENTATION

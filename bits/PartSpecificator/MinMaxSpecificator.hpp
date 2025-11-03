@@ -40,7 +40,6 @@ namespace fcf{
 
       return result;
     }
-
   };
 
   template <typename TContainer>

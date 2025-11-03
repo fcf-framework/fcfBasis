@@ -22,6 +22,10 @@ FCF_TYPEID_REGISTRY(fcf::ContainerAccessSpecificator, "fcf::ContainerAccessSpeci
 FCF_TYPEID_REGISTRY(fcf::MinMaxSpecificator,          "fcf::MinMaxSpecificator", 0);
 FCF_TYPEID_REGISTRY(fcf::ValueSpecificator,           "fcf::ValueSpecificator",  0);
 FCF_TYPEID_REGISTRY(fcf::StoredDataTypeSpecificator,  "fcf::StoredDataTypeSpecificator",  0);
+FCF_TYPEID_REGISTRY(fcf::ResolveData,                 "fcf::ResolveData",  0);
+FCF_TYPEID_REGISTRY(fcf::ResolveSpecificator,         "fcf::ResolveSpecificator",  0);
+
+
 
 FCF_TYPEID_REGISTRY(char,               "char",               FCF_INT8_TYPE_INDEX);
 FCF_SPECIFICATOR_REGISTRY(char*,        fcf::StoredDataTypeSpecificator);
@@ -45,7 +49,7 @@ FCF_TYPEID_REGISTRY(std::string,        "std::string",        30);
 
 
 FCF_TYPEID_REGISTRY(fcf::Variant,       "fcf::Variant",         31);
-FCF_SPECIFICATOR_REGISTRY(fcf::Variant, fcf::RawDataSpecificator);
+FCF_SPECIFICATOR_REGISTRY(fcf::Variant, fcf::ResolveSpecificator);
 
 FCF_TYPEID_REGISTRY(fcf::UniversalArguments,       "fcf::UniversalArguments",         0);
 

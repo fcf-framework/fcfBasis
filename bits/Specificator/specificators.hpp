@@ -21,13 +21,6 @@ namespace fcf {
   #endif //#ifndef FCF_DEFAULT_CONVERT_SPECIFICATOR
 
 
-  #ifndef FCF_RAW_DATA_SPECIFICATOR
-    #define FCF_RAW_DATA_SPECIFICATOR
-    struct RawDataSpecificator { 
-      typedef void* (*function_type)(const void* a_value /* = 0 */, unsigned int* a_type/* = 0 */, bool* a_invariantType/* = 0*/, bool* a_mayBeUnintialized/* = 0*/);
-    };
-  #endif //#ifndef FCF_RAW_DATA_SPECIFICATOR
-
  
   
   

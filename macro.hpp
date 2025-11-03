@@ -159,17 +159,6 @@
                                             a_templateArgumentsDeclaration, \
                                             a_templateName + "<" + FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsName) + ">", \
                                             0)\
-      namespace fcf {\
-        namespace NDetails {\
-          template <typename TUnstatic, unsigned int UnstaticCounter, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
-          struct TypeRegistrar<TUnstatic, UnstaticCounter, a_template < FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) > > {\
-            typedef a_template < FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) > type;\
-            TypeRegistrar(unsigned int a_index){\
-              ::fcf::Details::Basis::Variant::NobodyWrapperRegistrator<type> registrer(a_index);\
-            }\
-          };\
-        }\
-      }\
       namespace fcf::NDetails::Declarations::a_template##_specificator_declare {\
         template <unsigned int Index>\
         struct PartialSpecificatorRegistrar;\

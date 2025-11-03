@@ -1,9 +1,9 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPES__UNIVERSAL_CALL_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPES__UNIVERSAL_CALL_HPP___
 
-namespace fcf{
+#include "../PartVariant/VariantPredefinition.hpp"
 
-  class Variant;
+namespace fcf{
 
   typedef Variant (*UniversalCall)(void*, Variant*, size_t);
 
