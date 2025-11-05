@@ -1,7 +1,7 @@
-#ifndef ___FCF_BASIS__BITS__TYPE__TYPE_ID_HPP___
-#define ___FCF_BASIS__BITS__TYPE__TYPE_ID_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_ID_HPP___
+#define ___FCF_BASIS__BITS__PART_TYPE__TYPE_ID_HPP___
 
-namespace fcf {
+namespace fcf{
 
   template <typename Ty>
   struct TypeId;
@@ -28,4 +28,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__TYPE__TYPE_ID_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_ID_HPP___

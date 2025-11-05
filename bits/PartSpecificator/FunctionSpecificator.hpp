@@ -3,7 +3,7 @@
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "SpecificatorRegistrar.hpp"
-#include "../Type/Type.hpp"
+#include "../PartType/Type.hpp"
 #include "../../Variant.hpp"
 #include "../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../foreach.hpp"

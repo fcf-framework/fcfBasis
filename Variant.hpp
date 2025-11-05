@@ -5,12 +5,9 @@
 #include <map>
 #include <stdexcept>
 #include "macro.hpp"
-#include "Details/MaxTypesSize.hpp"
-#include "Details/Variant/Wrapper.hpp"
-#include "Details/Variant/NobodyWrapper.hpp"
 #include "bits/Convert/convertRuntime.hpp"
-#include "bits/PartVariant/NDetails/VariantAllocator.hpp"
 #include "bits/PartVariant/VariantPredefinition.hpp"
+#include "bits/PartVariant/NDetails/VariantAllocator.hpp"
 #include "bits/PartType/DynamicType.hpp"
 
 namespace fcf {
@@ -109,7 +106,6 @@ namespace fcf {
 } // fcf namespace
 
 #include "Type.hpp"
-#include "specificators.hpp"
 #include "bits/registry.hpp"
 #include "bits/PartSpecificator/StoredDataTypeSpecificator.hpp"
 
@@ -302,12 +298,12 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   void* BasicVariant<innerBufferSize>::ptr(){
-    return &((Details::Basis::Variant::Wrapper<int>*)_ptr)->data;
+    return &((TypeWrapper<int>*)_ptr)->data;
   }
 
   template <size_t innerBufferSize>
   const void* BasicVariant<innerBufferSize>::ptr() const{
-    return &((Details::Basis::Variant::Wrapper<int>*)_ptr)->data;
+    return &((TypeWrapper<int>*)_ptr)->data;
   }
 
   template <size_t innerBufferSize>
@@ -366,16 +362,16 @@ namespace fcf{
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::_destroy(){
     if (_ptr == &_mem[0]){
-      ((Details::Basis::Variant::BaseWrapper*)_ptr)->~BaseWrapper();
+      ((BaseTypeWrapper*)_ptr)->~BaseTypeWrapper();
     } else if (_ptr) {
-      delete (Details::Basis::Variant::BaseWrapper*)_ptr;
+      delete (BaseTypeWrapper*)_ptr;
     }
   }
 
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::_clone(const BasicVariant& a_variant) {
     if (a_variant._ptr) {
-      Details::Basis::Variant::BaseWrapper* wrp = (Details::Basis::Variant::BaseWrapper*)a_variant._ptr;
+      BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._ptr;
       if (a_variant._ptr == &a_variant._mem[0]){
         _ptr = wrp->clone(&_mem[0]);
       } else {
@@ -392,7 +388,7 @@ namespace fcf{
   template <size_t InputInnerBufferSize>
   void BasicVariant<innerBufferSize>::_clone(const BasicVariant<InputInnerBufferSize>& a_variant) {
     if (a_variant._ptr) {
-      Details::Basis::Variant::BaseWrapper* wrp = (Details::Basis::Variant::BaseWrapper*)a_variant._ptr;
+      BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._ptr;
       if (wrp->size() <= innerBufferSize){
         _ptr = wrp->clone(&_mem[0]);
       } else {

@@ -4,7 +4,7 @@
 
 #include "../../foreach.hpp"
 #include "CallStorageSpace.hpp"
-#include "../Type/Details/TypeIndex.hpp"
+#include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../Call/PartPlaceHolder/Details/CallPlaceHolderSignatureGetter.hpp"
 #include "../Call/Details/CallWrapper.hpp"
 #include "CallStorageFunctionInfo.hpp"
@@ -187,8 +187,10 @@ namespace fcf {
 
         template <typename Tuple, typename TIndex, typename TSignature>
         void operator()(Tuple& a_tuple, TIndex a_index, TSignature& a_signature) {
-          unsigned int specificatorIndex =
-            ::fcf::Details::Basis::Type::TypeIndex< typename TSignature::specificator_type >::index();
+          unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
+          if (specificatorIndex == Type<Nop>().index()){
+            specificatorIndex = 0;
+          }
 
           if (!TSignature::ArgIndex) {
             return;

@@ -10,12 +10,11 @@
 #include "../../bits/Convert/ConvertFunction.hpp"
 #include "../../bits/SpecificatorTypeInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "../../bits/Specificator/specificators.hpp"
 #include "../../bits/PartSpecificator/ResolveSpecificatorDefinition.hpp"
 #include "../../bits/PartType/TypeDefinition.hpp"
-#include "../../bits/Type/TypeId.hpp"
-#include "../../bits/Type/Type.hpp"
-#include "../../Details/Variant/NobodyWrapper.hpp"
+#include "../../bits/PartType/TypeId.hpp"
+#include "../../bits/PartType/Type.hpp"
+#include "../../bits/PartType/BaseTypeFactory.hpp"
 
 namespace fcf {
 
@@ -28,7 +27,7 @@ namespace fcf {
     Converters                                                    converters;
     Converters                                                    backConverters;
     std::map<unsigned int, SpecificatorTypeInfo>                  specificators;
-    std::shared_ptr< Details::Basis::Variant::BaseNobodyWrapper > initializer;
+    std::shared_ptr< BaseTypeFactory >                            initializer;
 
     TypeInfo(unsigned int a_index, const std::string& a_name)
       : index(a_index)

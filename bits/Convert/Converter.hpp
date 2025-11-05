@@ -5,12 +5,12 @@
 #include <string>
 #include <sstream>
 #include "ConvertOptions.hpp"
-#include "../Specificator/specificators.hpp"
-#include "../Type/Type.hpp"
+#include "../PartType/Type.hpp"
+#include "../PartConvert/DefaultConvertMode.hpp"
 
 namespace fcf {
 
-  template <typename TDestination, typename TSource, typename TSpecificator = DefaultConvertSpecificator>
+  template <typename TDestination, typename TSource, typename TSpecificator = DefaultConvertMode>
   class Converter{
     public:
       void operator()(TDestination& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){

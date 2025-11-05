@@ -4,7 +4,7 @@
 #include <climits>
 #include <algorithm>
 #include "../../../foreach.hpp"
-#include "../../../bits/Specificator/DynamicIteratorInfo.hpp"
+#include "../../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../../bits/PartType/getTypeInfo.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "CallConversionNode.hpp"
@@ -68,9 +68,9 @@ namespace fcf {
             curnode.next = 0;
             curnode.conversion.index = a_argumentIndex;
             curnode.conversion.specificatorIndex = specificatorTypeIndex;
-            curnode.conversion.pointerCounter    = typeIndexIsSinglePointer(currentInputArgument->typeIndex) ? 1 :
-                                                   typeIndexIsDoublePointer(currentInputArgument->typeIndex) ? 2 :
-                                                                                                               0;
+            curnode.conversion.pointerCounter    = TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex) ? 1 :
+                                                   TypeIndexConverter<>::isDoublePointer(currentInputArgument->typeIndex) ? 2 :
+                                                                                                                   0;
             curnode.conversion.type = currentInputArgument->clearTypeIndex;
             curnode.conversion.mode = CCM_PLACE_HOLDER;
             curnode.conversion.converter = (void*)specificatorIt->second.resolve;
@@ -120,7 +120,7 @@ namespace fcf {
         if (state.strictSource && !currentInputArgument->pairCounter && !currentInputArgument->ignoreConvertSeeker) {
           CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
           if (treeIt != state.groupIterator->second.callersTree.end()){
-            const TypeInfo* ti =  Details::typeStorage.get(currentInputArgument->clearTypeIndex);
+            const TypeInfo* ti = typeStorage.get(currentInputArgument->clearTypeIndex);
             BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
             for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
               shortSign.pacodes[i] = 0;
@@ -326,8 +326,8 @@ namespace fcf {
       void _fillCurrentInputArgument(InputArgument& a_inputArgument, unsigned int a_type, void* a_ptrArg){
         a_inputArgument.ptrArg                  = a_ptrArg;
         a_inputArgument.typeIndex               = a_type;
-        a_inputArgument.clearTypeIndex          = typeIndexToClearTypeIndex(a_type);
-        const fcf::TypeInfo* typeInfo  = Details::typeStorage.get(a_inputArgument.clearTypeIndex);
+        a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(a_type);
+        const fcf::TypeInfo* typeInfo           = typeStorage.get(a_inputArgument.clearTypeIndex);
         a_inputArgument.resolver                = typeInfo->resolver;
         a_inputArgument.containerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>();
         a_inputArgument.specificators           = &typeInfo->specificators;
@@ -516,7 +516,7 @@ namespace fcf {
         InputArgument& ia = inputArguments[a_index];
         ia.ptrArg                  = state.strictSource ? (current_arg_type*) (*state.arguments)[a_index] : (current_arg_type*)0;
         ia.typeIndex               = Type<current_arg_type>().index();
-        ia.clearTypeIndex          = typeIndexToClearTypeIndex(Type<current_arg_type>().index());
+        ia.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(Type<current_arg_type>().index());
         ia.resolver                = Type<current_arg_type>().getTypeInfo()->resolver;
         ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>();
         ia.specificators           = &Type<current_arg_type>().specificators();

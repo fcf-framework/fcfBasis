@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include <type_traits>
-#include "../../../Template/Sequence.hpp"
+#include "../../../bits/PartMetaType/MetaTypeSequence.hpp"
 
 namespace fcf {
   namespace Details {
@@ -18,7 +18,7 @@ namespace fcf {
         typedef TResult (*function_type)(TArgPack...);
 
         static void call(function_type a_function, void** a_args){
-          typedef typename Template::Sequence<0, sizeof...(TArgPack)>::type sequence_type;
+          typedef typename MetaTypeSequence<0, sizeof...(TArgPack)>::type sequence_type;
           _call(a_function, a_args, sequence_type());
         }
 
@@ -29,7 +29,7 @@ namespace fcf {
 
       protected:
         template <int... SequencePack>
-        static inline void _call(function_type a_function, void** a_args, Template::Sequence<SequencePack...> a_sequence){
+        static inline void _call(function_type a_function, void** a_args, MetaTypeSequence<SequencePack...> a_sequence){
           typedef std::tuple<TArgPack...> tuple_type;
           a_function(*(typename std::remove_cv< typename std::remove_reference< typename std::tuple_element<SequencePack, tuple_type>::type >::type >::type  *)a_args[SequencePack]...);
         }

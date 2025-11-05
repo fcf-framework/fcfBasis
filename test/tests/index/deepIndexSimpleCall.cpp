@@ -2,9 +2,11 @@
 #include <chrono>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../call.hpp"
-#include "../../../Template.hpp"
 #include "../../../functions.hpp"
 #include "../../../foreach.hpp"
+#include "../../../bits/PartMetaType/MetaTypeTupleReplace.hpp"
+#include "../../../bits/PartMetaType/MetaTypeTupleInsert.hpp"
+
 
 bool enable_log = false;
 
@@ -241,7 +243,7 @@ void tupleTest() {
   // insert test
   {
     typedef std::tuple<> ttype;
-    typedef typename fcf::Template::TupleInsert<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleInsert<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -249,7 +251,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char> ttype;
-    typedef typename fcf::Template::TupleInsert<ttype, float, 1>::type rtype;
+    typedef typename fcf::MetaTypeTupleInsert<ttype, float, 1>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -257,7 +259,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char> ttype;
-    typedef typename fcf::Template::TupleInsert<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleInsert<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -265,7 +267,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleInsert<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleInsert<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -273,7 +275,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleInsert<ttype, float, 1>::type rtype;
+    typedef typename fcf::MetaTypeTupleInsert<ttype, float, 1>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -281,7 +283,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleInsert<ttype, float, 2>::type rtype;
+    typedef typename fcf::MetaTypeTupleInsert<ttype, float, 2>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -291,7 +293,7 @@ void tupleTest() {
   // replace test
   {
     typedef std::tuple<char> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -299,7 +301,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -307,7 +309,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 1>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 1>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -316,7 +318,7 @@ void tupleTest() {
 
   {
     typedef std::tuple<char, short, int> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -324,7 +326,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short, int> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 1>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 1>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -332,7 +334,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short, int> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 2>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 2>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -340,7 +342,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 1>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 1>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -348,7 +350,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char, short> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);
@@ -356,7 +358,7 @@ void tupleTest() {
   }
   {
     typedef std::tuple<char> ttype;
-    typedef typename fcf::Template::TupleReplace<ttype, float, 0>::type rtype;
+    typedef typename fcf::MetaTypeTupleReplace<ttype, float, 0>::type rtype;
     TupleTestFunc ttf;
     rtype tuple;
     fcf::foreach(tuple, ttf);

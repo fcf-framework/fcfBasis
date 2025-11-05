@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__CONVERT__DETAILS__SET_CONVERTER_HPP___
 
 #include "convertWrapper.hpp"
-#include "../../../bits/Type/Type.hpp"
+#include "../../../bits/PartType/Type.hpp"
 
 namespace fcf {
   namespace Details {

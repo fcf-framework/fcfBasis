@@ -2,8 +2,7 @@
 #define ___FCF__BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
 
 #include "SpecificatorRegistrarCaller.hpp"
-#include "../../../Details/Variant/NobodyWrapper.hpp"
-#include "../../../Details/Variant/BaseNobodyWrapper.hpp"
+#include "../../../bits/PartType/TypeFactory.hpp"
 
 namespace fcf {
   namespace NDetails {
@@ -12,7 +11,7 @@ namespace fcf {
     struct TypeRegistrar {
       typedef Ty type;
       TypeRegistrar(::fcf::TypeInfo* a_info, unsigned int a_index){
-        a_info->initializer = std::shared_ptr< Details::Basis::Variant::BaseNobodyWrapper >(new Details::Basis::Variant::NobodyWrapper<Ty>());
+        a_info->initializer = std::shared_ptr< BaseTypeFactory >(new TypeFactory<Ty>());
       }
     };
 

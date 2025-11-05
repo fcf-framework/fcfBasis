@@ -1,27 +1,29 @@
-#ifndef ___FCF_BASIS__DETAILS__TYPE_STORAGE_HPP___
-#define ___FCF_BASIS__DETAILS__TYPE_STORAGE_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
+#define ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
 
 #include <string>
 #include <map>
 #include <unordered_map>
 #include <memory>
-#include "../macro.hpp"
-#include "../bits/Convert/ConvertFunction.hpp"
-#include "../bits/SpecificatorTypeInfo.hpp"
-#include "../bits/Specificator/specificators.hpp"
-#include "../bits/Type/TypeId.hpp"
-#include "../bits/PartType/TypeInfo.hpp"
+#include "../../macro.hpp"
+#include "../../bits/Convert/ConvertFunction.hpp"
+#include "../../bits/SpecificatorTypeInfo.hpp"
+#include "../../bits/PartType/TypeId.hpp"
+#include "../../bits/PartType/TypeInfo.hpp"
 
-namespace fcf {
-  namespace Details {
-    typedef std::shared_ptr<TypeInfo> SPTypeInfo;
+namespace fcf{
 
-    class TypeStorageContainer {
+    class TypeStorage {
+      public:
+        typedef std::shared_ptr<TypeInfo>          SPTypeInfo;
+
+      protected:
         typedef std::map<std::string, SPTypeInfo>  NameStorage;
         typedef std::map<unsigned int, SPTypeInfo> IndexStorage;
+
       public:
 
-        inline TypeStorageContainer()
+        inline TypeStorage()
           : _ac(0) { }
 
         inline const TypeInfo* get(unsigned int a_index) {
@@ -63,9 +65,8 @@ namespace fcf {
         unsigned int  _ac;
     };
 
-    FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT TypeStorageContainer typeStorage;
+    FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT TypeStorage typeStorage;
 
-  } // Details namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__DETAILS__TYPE_STORAGE_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___

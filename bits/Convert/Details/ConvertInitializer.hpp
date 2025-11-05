@@ -3,7 +3,7 @@
 
 #include "setConverter.hpp"
 #include "../Converter.hpp"
-#include "../../../bits/Type/Type.hpp"
+#include "../../../bits/PartType/Type.hpp"
 
 namespace fcf {
   namespace Details {

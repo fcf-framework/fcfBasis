@@ -4,8 +4,8 @@
 #include "../../macro.hpp"
 #include "../../error.hpp"
 #include "ConvertFunction.hpp"
-#include "../../Details/typeStorage.hpp"
-#include "../../bits/Type/Type.hpp"
+#include "../../bits/PartType/TypeStorage.hpp"
+#include "../../bits/PartType/Type.hpp"
 
 namespace fcf {
 
@@ -15,7 +15,7 @@ namespace fcf {
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex) {
       do {
-        const TypeInfo* pti = fcf::Details::typeStorage.get(a_sourceTypeIndex);
+        const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
         if (!pti)
           break;
         const ::fcf::TypeInfo::Converters& converters = pti->converters; 
@@ -32,7 +32,7 @@ namespace fcf {
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex, int* a_error) {
       do {
-        const TypeInfo* pti = fcf::Details::typeStorage.get(a_sourceTypeIndex);
+        const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
         if (!pti)
           break;
         const ::fcf::TypeInfo::Converters& converters = pti->converters; 

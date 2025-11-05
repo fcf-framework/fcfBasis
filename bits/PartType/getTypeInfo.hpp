@@ -10,7 +10,7 @@ namespace fcf {
     if (a_errorDst) {
       *a_errorDst = 0;
     }
-    const fcf::TypeInfo* ptr = Details::typeStorage.get(a_typeIndex);
+    const fcf::TypeInfo* ptr = typeStorage.get(a_typeIndex);
     if (!ptr) {
       if (a_errorDst) {
         static const std::runtime_error error("The requested type index is not registered");

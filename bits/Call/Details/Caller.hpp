@@ -3,10 +3,8 @@
 
 #include <stddef.h>
 #include <type_traits>
-#include "../../../Template/Sequence.hpp"
 #include "../../../FunctionSignature.hpp"
 #include "../../../bits/PartTypes/UniversalArguments.hpp"
-#include "../../Specificator/DynamicIteratorInfo.hpp"
 #include "../CallConversionMode.hpp"
 #include "../../PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "CallArgsTypeIndexes.hpp"
@@ -67,7 +65,7 @@ namespace fcf {
               break;
             case CCM_PLACE_HOLDER:
               {
-                const std::map<unsigned int, SpecificatorTypeInfo>& s = Details::typeStorage.get(cc.type)->specificators;
+                const std::map<unsigned int, SpecificatorTypeInfo>& s = typeStorage.get(cc.type)->specificators;
                 const std::map<unsigned int, SpecificatorTypeInfo>::const_iterator si = s.find(cc.specificatorIndex);
                 if (si == s.end()){
                   throw std::runtime_error("Invalid specificator");

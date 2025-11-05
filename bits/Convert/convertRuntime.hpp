@@ -5,16 +5,16 @@
 #include "ConvertOptions.hpp"
 #include "ConvertFunction.hpp"
 #include "getConvertFunction.hpp"
-#include "../../bits/Type/Type.hpp"
-#include "../../bits/Type/typeIndexFunctions.hpp"
-#include "../../Details/typeStorage.hpp"
+#include "../../bits/PartType/Type.hpp"
+#include "../../bits/PartType/TypeIndexConverter.hpp"
+#include "../../bits/PartType/TypeStorage.hpp"
 //#include "../../Variant.hpp"
 
 namespace fcf {
 
   template <typename TDestination>
   void convertRuntimeByDestination(TDestination* a_destinationData, const void* a_source, unsigned int a_sourceTypeIndex, ConvertOptions* a_options = 0) {
-    if (std::is_pointer<TDestination>::value && typeIndexIsPointer(a_sourceTypeIndex)) {
+    if (std::is_pointer<TDestination>::value && TypeIndexConverter<>::isPointer(a_sourceTypeIndex)) {
       *(int**)a_destinationData = *(int**)a_source;
       return;
     }
@@ -24,7 +24,7 @@ namespace fcf {
 
   template <typename TSource>
   void convertRuntimeBySource(void* a_destinationData, unsigned int a_destinationTypeIndex, const TSource* a_source, ConvertOptions* a_options = 0) {
-    if (std::is_pointer<TSource>::value && typeIndexIsPointer(a_destinationTypeIndex)){
+    if (std::is_pointer<TSource>::value && TypeIndexConverter<>::isPointer(a_destinationTypeIndex)){
       *((int**)a_destinationData) = *(int**)a_source;
       return;
     }
@@ -37,7 +37,7 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options) {
-      if (typeIndexIsPointer(a_resultTypeIndex) && typeIndexIsPointer(a_sourceTypeIndex)){
+      if (TypeIndexConverter<>::isPointer(a_resultTypeIndex) && TypeIndexConverter<>::isPointer(a_sourceTypeIndex)){
         *((int**)a_resultData) = *(int**)a_sourceData;
         return;
       }
@@ -48,7 +48,7 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options, int* a_error) {
-      if (typeIndexIsPointer(a_resultTypeIndex) && typeIndexIsPointer(a_sourceTypeIndex)){
+      if (TypeIndexConverter<>::isPointer(a_resultTypeIndex) && TypeIndexConverter<>::isPointer(a_sourceTypeIndex)){
         *((int**)a_resultData) = *(int**)a_sourceData;
         return;
       }

@@ -2,32 +2,32 @@
 #include <tuple>
 #include <vector>
 #include "../../libraries/fcfTest/test.hpp"
-#include "../../../Template.hpp"
+#include "../../../bits/PartMetaType/MetaTypeSequence.hpp"
 #include "../../../foreach.hpp"
 
 namespace FcfTest {
   namespace BasisTest {
 
     namespace SequenceTest {
-     
+
       template <int Index>
       struct Item {
         enum {index_value = Index};
       };
-     
+
       template <int Start, int End>
       struct Filler{
-        
+
         typedef std::vector<int> vector_type;
-        
+
         void operator()(vector_type& a_container){
           container = &a_container;
-          typedef typename fcf::Template::Sequence<Start, End>::type sequence_type;
+          typedef typename fcf::MetaTypeSequence<Start, End>::type sequence_type;
           _call(sequence_type());
         }
-        
+
         template <int ... SequencePack>
-        void _call(fcf::Template::Sequence<SequencePack...> a_sequence){
+        void _call(fcf::MetaTypeSequence<SequencePack...> a_sequence){
           typedef std::tuple< Item<SequencePack>...  > tuple_type;
           tuple_type tuple;
           fcf::foreach(tuple, *this);
@@ -37,14 +37,14 @@ namespace FcfTest {
         void operator()(TTuple& a_container, size_t a_index, TItem a_item){
           container->push_back(TItem::index_value);
         }
-       
+
         vector_type* container;
       };
 
-     
-     
+
+
     };
-    
+
     void sequenceTest(){
       std::cout << "Start sequenceTest()..." << std::endl;
 
@@ -124,9 +124,9 @@ namespace FcfTest {
         size_t expsize = 0;
         FCF_TEST(v.size() == expsize, v.size(), expsize);
       }
-      
+
     }
   }
 }
-      
+
 

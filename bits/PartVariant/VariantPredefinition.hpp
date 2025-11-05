@@ -1,15 +1,15 @@
 #ifndef ___FCF_BASIS__BITS__PART_VARIANT__VARIANT_PREDEFINITION_HPP___
 #define ___FCF_BASIS__BITS__PART_VARIANT__VARIANT_PREDEFINITION_HPP___
 
-#include "../../Details/MaxTypesSize.hpp"
-#include "../../Details/Variant/Wrapper.hpp"
+#include "../../bits/PartMetaType/MetaTypeMaxTypeSize.hpp"
+#include "../../bits/PartType/TypeWrapper.hpp"
 
 namespace fcf{
 
-  enum { DefaultVariantBufferSize = fcf::Details::Basis::MaxTypesSize<
-                          typename Details::Basis::Variant::Wrapper<std::string>,
-                          typename Details::Basis::Variant::Wrapper<std::wstring>,
-                          typename Details::Basis::Variant::Wrapper< std::map<std::string, std::string> >
+  enum { DefaultVariantBufferSize = MetaTypeMaxTypeSize<
+                          TypeWrapper<std::string>,
+                          TypeWrapper<std::wstring>,
+                          TypeWrapper< std::map<std::string, std::string> >
                           >::size };
 
   template <size_t InnerBufferSize = DefaultVariantBufferSize>
