@@ -10,8 +10,8 @@ namespace fcf{
     public:
       SpecificatorRegistrar() {
         unsigned int specificatorIndex = Type<TSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.resolve = (void*)SpecificatorRegistrar::universalCall;
+        fcf::SpecificatorInfo sti;
+        sti.universalCall = (UniversalCall)SpecificatorRegistrar::universalCall;
         Type<TContainer>()._info->specificators[specificatorIndex] = sti;
       }
     protected:

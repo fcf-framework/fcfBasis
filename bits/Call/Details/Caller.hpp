@@ -65,8 +65,8 @@ namespace fcf {
               break;
             case CCM_PLACE_HOLDER:
               {
-                const std::map<unsigned int, SpecificatorTypeInfo>& s = typeStorage.get(cc.type)->specificators;
-                const std::map<unsigned int, SpecificatorTypeInfo>::const_iterator si = s.find(cc.specificatorIndex);
+                const std::map<unsigned int, SpecificatorInfo>& s = typeStorage.get(cc.type)->specificators;
+                const std::map<unsigned int, SpecificatorInfo>::const_iterator si = s.find(cc.specificatorIndex);
                 if (si == s.end()){
                   throw std::runtime_error("Invalid specificator");
                 }
@@ -76,7 +76,7 @@ namespace fcf {
                   aptr = *(int**) aptr;
                 }
 
-                UniversalCall call = (UniversalCall)si->second.resolve;
+                UniversalCall call = (UniversalCall)si->second.universalCall;
                 fcf::Variant callResult = call(aptr, 0, 0);
 
                 Variant* callResults;

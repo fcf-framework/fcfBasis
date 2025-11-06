@@ -23,8 +23,8 @@ namespace fcf{
     public:
       SpecificatorRegistrar() {
         unsigned int specificatorIndex = Type<ResolveSpecificator>().index();
-        fcf::SpecificatorTypeInfo sti;
-        sti.resolve = (void*)universalCall;
+        fcf::SpecificatorInfo sti;
+        sti.universalCall = (UniversalCall)universalCall;
         Type<TContainer>()._info->specificators[specificatorIndex] = sti;
         Type<TContainer>()._info->resolver = call;
       }

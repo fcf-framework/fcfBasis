@@ -7,7 +7,7 @@
 #include <memory>
 #include "../../macro.hpp"
 #include "../../bits/Convert/ConvertFunction.hpp"
-#include "../../bits/SpecificatorTypeInfo.hpp"
+#include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/TypeInfo.hpp"
 

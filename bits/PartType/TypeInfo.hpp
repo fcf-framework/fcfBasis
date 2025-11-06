@@ -8,7 +8,7 @@
 #include <memory>
 #include "../../macro.hpp"
 #include "../../bits/Convert/ConvertFunction.hpp"
-#include "../../bits/SpecificatorTypeInfo.hpp"
+#include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartSpecificator/ResolveSpecificatorDefinition.hpp"
 #include "../../bits/PartType/TypeDefinition.hpp"
@@ -26,7 +26,7 @@ namespace fcf {
     ResolveSpecificator::CallFunctionType                         resolver;
     Converters                                                    converters;
     Converters                                                    backConverters;
-    std::map<unsigned int, SpecificatorTypeInfo>                  specificators;
+    std::map<unsigned int, SpecificatorInfo>                      specificators;
     std::shared_ptr< BaseTypeFactory >                            initializer;
 
     TypeInfo(unsigned int a_index, const std::string& a_name)
@@ -39,9 +39,9 @@ namespace fcf {
     template <typename TSpecificator>
     UniversalCall getSpecificator() const {
       const unsigned int specificatorIndex = Type<TSpecificator>().index();
-      std::map<unsigned int, SpecificatorTypeInfo>::const_iterator it = specificators.find(specificatorIndex);
+      std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
       if (it != specificators.end()) {
-        return (UniversalCall)it->second.resolve;
+        return (UniversalCall)it->second.universalCall;
       }
       return (UniversalCall)0;
     }

@@ -22,7 +22,7 @@ namespace fcf {
         ResolveData                                         resolveData; 
         UniversalCall                                       containerAccessResolver;
         void*                                               ptrArg;
-        const std::map<unsigned int, SpecificatorTypeInfo>* specificators;
+        const std::map<unsigned int, SpecificatorInfo>*     specificators;
         unsigned int                                        pairCounter;
         bool                                                ignoreConvertSeeker;
       };
@@ -54,7 +54,7 @@ namespace fcf {
         if (a_argumentIndex < state.placeHolderSpecificators->size()) {
           for(size_t i = 0; i < (*state.placeHolderSpecificators)[a_argumentIndex].size(); ++i){
             unsigned int specificatorTypeIndex = (*state.placeHolderSpecificators)[a_argumentIndex][i];
-            std::map<unsigned int, SpecificatorTypeInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
+            std::map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
             if (specificatorIt == currentInputArgument->specificators->cend()) {
               continue;
             }
@@ -73,7 +73,7 @@ namespace fcf {
                                                                                                                    0;
             curnode.conversion.type = currentInputArgument->clearTypeIndex;
             curnode.conversion.mode = CCM_PLACE_HOLDER;
-            curnode.conversion.converter = (void*)specificatorIt->second.resolve;
+            curnode.conversion.converter = (void*)specificatorIt->second.universalCall;
             if (a_node) {
               a_node->next = &curnode;
               curnode.prev = a_node;

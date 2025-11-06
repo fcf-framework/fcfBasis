@@ -56,7 +56,7 @@ namespace fcf{
         return _info;
       }
 
-      const std::map<unsigned int, SpecificatorTypeInfo>& specificators() {
+      const std::map<unsigned int, SpecificatorInfo>& specificators() {
         return _info->specificators;
       }
 

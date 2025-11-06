@@ -27,7 +27,7 @@ namespace fcf {
   };
 
   template <typename TDestination>
-    class Converter<TDestination, std::string>{
+  class Converter<TDestination, std::string>{
     public:
       void operator()(TDestination& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         std::istringstream iss(a_source);
