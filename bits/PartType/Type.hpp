@@ -8,7 +8,7 @@
 #include "../../Nop.hpp"
 #include "../../bits/PartType/TypeStorage.hpp"
 
-#include "../Convert/Details/setConverterDecl.hpp"
+#include "../../bits/PartConvert/NDetails/setConverterDefinition.hpp"
 #include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/TypeId.hpp"
@@ -22,7 +22,7 @@ namespace fcf{
       friend class SpecificatorRegistrar;
 
       template <typename TSource, typename TDestination>
-      friend void ::fcf::Details::Basis::Convert::setConverter();
+      friend void ::fcf::NDetails::setConverter();
 
       typedef Ty         owner_type;
 

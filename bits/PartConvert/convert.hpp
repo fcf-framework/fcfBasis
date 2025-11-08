@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__CONVERT__CONVERT_HPP___
-#define ___FCF_BASIS__BITS__CONVERT__CONVERT_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_HPP___
+#define ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_HPP___
 
 #include "ConvertOptions.hpp"
 #include "Converter.hpp"
@@ -13,7 +13,6 @@ namespace fcf {
     return result;
   }
 
-
   template <typename TDest, typename TSource>
   void convert(TDest& a_dst, const TSource& a_source, ConvertOptions* a_options = 0) {
     Converter<TDest, TSource>()(a_dst, a_source, a_options);
@@ -21,5 +20,4 @@ namespace fcf {
 
 } // fcf namespace
 
-
-#endif // #ifndef ___FCF_BASIS__BITS__CONVERT__CONVERT_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_HPP___

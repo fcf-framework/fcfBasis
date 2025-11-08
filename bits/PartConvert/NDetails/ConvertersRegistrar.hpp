@@ -1,14 +1,12 @@
 #ifndef ___FCF_BASIS__BITS__PART_CONVERT__NDETAILS__CONVERTERS_REGISTRAR_HPP___
 #define ___FCF_BASIS__BITS__PART_CONVERT__NDETAILS__CONVERTERS_REGISTRAR_HPP___
 
-#include <iostream>
 #include <tuple>
 #include "../../../Type.hpp"
-#include "../../../bits/Convert/Details/setConverter.hpp"
+#include "../../../bits/PartConvert/NDetails/setConverter.hpp"
 
 namespace fcf::NDetails {
 
-  
   template <int Index>
   struct ConvertersRegistrarMarker;
 
@@ -46,12 +44,10 @@ namespace fcf::NDetails {
       if (std::is_same<TCurrent, TItem>::value){
         return;
       }
-      fcf::Details::Basis::Convert::setConverter<TCurrent, TItem>();
-      fcf::Details::Basis::Convert::setConverter<TItem, TCurrent>();
+      setConverter<TCurrent, TItem>();
+      setConverter<TItem, TCurrent>();
     }
   };
-
-
 
   template <int Index, int Size, typename TCurrent, typename ... TPack>
   struct ConvertersRegistrarWalker {

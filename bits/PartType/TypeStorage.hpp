@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <memory>
 #include "../../macro.hpp"
-#include "../../bits/Convert/ConvertFunction.hpp"
+#include "../../bits/PartConvert/ConvertFunction.hpp"
 #include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/TypeInfo.hpp"

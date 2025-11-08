@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__CONVERT__CONVERTER_HPP___
-#define ___FCF_BASIS__BITS__CONVERT__CONVERTER_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___
+#define ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___
 
 #include <algorithm>
 #include <string>
@@ -71,5 +71,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__CONVERT__CONVERTER_HPP___
-
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___

@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__CONVERT__GET_CONVERT_FUNCTION_HPP___
-#define ___FCF__BASIS__BITS__CONVERT__GET_CONVERT_FUNCTION_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___
+#define ___FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___
 
 #include "../../macro.hpp"
 #include "../../error.hpp"
@@ -100,4 +100,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CONVERT__GET_CONVERT_FUNCTION_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___

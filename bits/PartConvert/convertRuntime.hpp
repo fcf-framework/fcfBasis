@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__CONVERT__CONVERT_RUNTIME_HPP___
-#define ___FCF_BASIS__BITS__CONVERT__CONVERT_RUNTIME_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_RUNTIME_HPP___
+#define ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_RUNTIME_HPP___
 
 #include <stdexcept>
 #include "ConvertOptions.hpp"
@@ -8,7 +8,6 @@
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartType/TypeStorage.hpp"
-//#include "../../Variant.hpp"
 
 namespace fcf {
 
@@ -59,5 +58,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__CONVERT__CONVERT_RUNTIME_HPP___
-
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_RUNTIME_HPP___
