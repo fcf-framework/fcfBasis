@@ -236,6 +236,19 @@
     #define FCF_TYPEID_TEMPLATE2_REGISTRY(a_type, a_name) \
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type<T1, T2>), (typename T1, typename T2), a_name + "<" + fcf::Type<T1>().name() + "," + fcf::Type<T1>().name() + ">", 0)
   #endif // #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
+         
+
+  #ifndef FCF_CONVERTERS_REGISTRY_FORCE
+    #define FCF_CONVERTERS_REGISTRY_FORCE(a_type) \
+      namespace fcf::NDetails { \
+        template <>\
+        struct ConvertersRegistrarMarker< ConvertersRegistrarMarkerEnd<__COUNTER__>::value > {\
+          typedef a_type type;\
+        };\
+        ConvertersRegistrarInitializer<__COUNTER__, a_type, ConvertersRegistrarMarkerEnd<__COUNTER__>::value> FCF_BASIS_VARNAME(_g_converters_registrar, __COUNTER__) ;\
+      }
+  #endif
+  
 
   #ifndef FCF_INITIAZE_GLOBAL_PTR
     #define FCF_INITIAZE_GLOBAL_PTR__CONCAT2(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line

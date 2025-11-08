@@ -18,7 +18,12 @@ namespace fcf {
         typedef int& ref_type;
         typedef int arg_type;
 
-        void* args[sizeof...(TArgPack)];
+        const size_t maxArgCount = 10;
+
+        if (a_callInfo.argCount > maxArgCount){
+          throw std::runtime_error("Argument buffer overflow");
+        }
+        void* args[maxArgCount];
 
         static const unsigned int variantTypeIndex = Type<Variant>().index();
         static const CallArgsTypeIndexes<TArgPack...> callerArgsResolver;

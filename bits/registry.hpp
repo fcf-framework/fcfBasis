@@ -41,6 +41,7 @@ FCF_TYPEID_REGISTRY(unsigned long long, "unsigned long long", FCF_UINT64_TYPE_IN
 FCF_TYPEID_REGISTRY(float,              "float",              FCF_FLOAT32_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(double,             "double",             FCF_FLOAT64_TYPE_INDEX);
 FCF_TYPEID_REGISTRY(long double,        "long double",        FCF_FLOAT128_TYPE_INDEX);
+FCF_TYPEID_REGISTRY(long int,           "long int",  0);
 FCF_TYPEID_REGISTRY(unsigned long int,  "unsigned long int",  0);
 FCF_TYPEID_REGISTRY_SINGLE(void,        "void",               20);
 FCF_TYPEID_REGISTRY(bool,               "bool",               21);

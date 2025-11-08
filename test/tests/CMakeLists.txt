@@ -1,6 +1,9 @@
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#set(CMAKE_CXX_FLAGS "-Os")
+#set(CMAKE_CXX_FLAGS_RELEASE "-Os")
+
 add_executable("basis-test" impl.cpp
                            main.cpp
                            Template/Sequence.cpp

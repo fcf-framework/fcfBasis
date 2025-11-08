@@ -14,7 +14,7 @@ namespace fcf {
     void*                                             converter;
     unsigned int                                      specificatorIndex;
     unsigned int                                      pointerCounter;
-    StaticVector<CallPlaceHolderArgEx, 2> placeHolders;
+    StaticVector<CallPlaceHolderArgEx, 2>             placeHolders;
   };
 
 } // fcf namespace
