@@ -27,11 +27,13 @@ namespace fcf {
         bool                                                ignoreConvertSeeker;
       };
 
+      FCF_FOREACH_METHOD_WRAPPER(ArgInitializerForeachWrapper, CallSelectorHandler, argInit);
+
       template <typename TTuple>
       void initialize() {
         TTuple tuple;
         inputArguments.resize(std::tuple_size<TTuple>::value);
-        foreach(tuple, *this);
+        foreach(tuple, ArgInitializerForeachWrapper(this));
       }
 
       CallSelectorHandler(CallSelectorState& a_state)
@@ -503,7 +505,7 @@ namespace fcf {
 
 
       template <typename TContainer, typename TItem>
-      void operator()(TContainer& a_container, size_t a_index, const TItem& a_item){
+      void argInit(TContainer& a_container, size_t a_index, const TItem& a_item){
         typedef
           typename std::remove_cv<
             typename std::remove_pointer<

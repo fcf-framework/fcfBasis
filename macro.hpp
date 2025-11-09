@@ -41,6 +41,20 @@
     #endif // #ifdef WIN32
   #endif // #ifndef FCF_BASIS_DECL_EXPORT
 
+  #ifndef FCF_FOREACH_METHOD_WRAPPER
+    #define FCF_FOREACH_METHOD_WRAPPER(a_name, a_class, a_methodName)\
+      struct a_name {\
+        a_name(a_class* a_owner)\
+          : _owner(a_owner){\
+        }\
+        template <typename ... TPack>\
+        void operator()(TPack... a_args){\
+          _owner->a_methodName(a_args...);\
+        }\
+        a_class* _owner;\
+      };
+  #endif
+
   #define FCF_REMOVE_PARENTHESIS_SELECTORFCF_REMOVE_PARENTHESIS_ARGUMENT
   #define FCF_REMOVE_PARENTHESIS_ARGUMENT(...) FCF_REMOVE_PARENTHESIS_ARGUMENT __VA_ARGS__
   #define FCF_REMOVE_PARENTHESIS_0(...) FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
