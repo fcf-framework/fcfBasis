@@ -133,12 +133,20 @@ namespace fcf {
         return iterator(*this, 0);
       }
 
+      iterator begin() const{
+        return const_iterator(*this, 0);
+      }
+
       const_iterator cbegin() const{
         return const_iterator(*this, 0);
       }
 
       iterator end(){
         return iterator(*this, _sdata);
+      }
+
+      iterator end() const{
+        return const_iterator(*this, _sdata);
       }
 
       const_iterator cend() const{

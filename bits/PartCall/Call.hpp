@@ -1,10 +1,10 @@
-#ifndef ___FCF__BASIS__BITS__CALL__CALL_HPP___
-#define ___FCF__BASIS__BITS__CALL__CALL_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___
 
 #include "CallConversion.hpp"
 #include "../../StaticVector.hpp"
 
-namespace fcf {
+namespace fcf{
 
   struct Call {
     bool                            complete;
@@ -27,4 +27,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL__CALL_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___

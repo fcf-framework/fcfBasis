@@ -15,19 +15,19 @@ namespace FcfTest {
       std::cout << "Start declareCall()..." << std::endl;
 
       {
-        std::string expected = "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+        std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type";
         std::string str = FCFTEST_STRINGIFY(
@@ -36,19 +36,19 @@ namespace FcfTest {
         FCF_TEST(str == expected, str, expected);
       }
       {
-        std::string expected = "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+        std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type";
         std::string str = FCFTEST_STRINGIFY(
@@ -57,19 +57,19 @@ namespace FcfTest {
         FCF_TEST(str == expected, str, expected);
       }
       {
-        std::string expected = "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+        std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "1-1, 1-2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type";
         std::string str = FCFTEST_STRINGIFY(
@@ -78,19 +78,19 @@ namespace FcfTest {
         FCF_TEST(str == expected, str, expected);
       }
       {
-        std::string expected = "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+        std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "1-1, 1-2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "::fcf::Nop "
                                                                         ">::active_type";
         std::string str = FCFTEST_STRINGIFY(
@@ -99,19 +99,19 @@ namespace FcfTest {
         FCF_TEST(str == expected, str, expected);
       }
       {
-        std::string expected = "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+        std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "1-1, 1-2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "3 "
                                                                         ">::active_type";
         std::string str = FCFTEST_STRINGIFY(
@@ -120,19 +120,19 @@ namespace FcfTest {
         FCF_TEST(str == expected, str, expected);
       }
       {
-        std::string expected = "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+        std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "1-1, 1-2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "2 "
                                                                         ">::active_type, "
-                               "typename ::fcf::Details::CallPlaceHolderSignatureGetter< "
+                               "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
                                                                           "void(), "
-                                                                          "::fcf::Details::CallResultTypeGetter<void()>::type, "
+                                                                          "::fcf::NDetails::CallResultTypeGetter<void()>::type, "
                                                                           "3 "
                                                                         ">::active_type";
         std::string str = FCFTEST_STRINGIFY(

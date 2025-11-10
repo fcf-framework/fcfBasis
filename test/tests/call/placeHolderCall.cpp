@@ -6,7 +6,7 @@
 #include "../../../bits/registry.hpp"
 #include "../../../basis.hpp"
 
-#include "../../../bits/Call/Details/CallWrapper.hpp"
+#include "../../../bits/PartCall/NDetails/CallWrapper.hpp"
 
 namespace FcfTest {
   namespace BasisTest {
@@ -62,7 +62,7 @@ namespace FcfTest {
       
       {
         typedef void (function_type)(int*, int, short);
-        fcf::Details::CallWrapper<function_type> c;
+        fcf::NDetails::CallWrapper<function_type> c;
         void* cpa[4];
         int   a1data = 0;
         int*  a1 = &a1data;

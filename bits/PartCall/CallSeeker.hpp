@@ -1,10 +1,9 @@
-#ifndef ___FCF__BASIS__BITS__CALL__CALL_SEEKER_HPP___
-#define ___FCF__BASIS__BITS__CALL__CALL_SEEKER_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___
 
+#include "NDetails/CallSelector.hpp"
 
-#include "Details/CallSelector.hpp"
-
-namespace fcf {
+namespace fcf{
 
   template <typename TRes, typename... TArgPack>
   class CallSeeker {
@@ -12,7 +11,6 @@ namespace fcf {
 
       struct State {
         typedef StaticVector<CallConversion, 8> conversions_type;
-
         bool             init;
         conversions_type conversions;
         bool             strictSource;
@@ -52,9 +50,9 @@ namespace fcf {
 
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
         StaticVector<void*, 8> arguments = {(void*)&a_argPack...};
-        ::fcf::Details::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};
+        ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};
         {
-          typedef ::fcf::Details::CallSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
+          typedef ::fcf::NDetails::CallSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
           selector_type()(iasd);
           if (iasd.result->caller){
             return;
@@ -69,5 +67,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL__CALL_SEEKER_HPP___
-
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___

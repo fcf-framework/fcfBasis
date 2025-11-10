@@ -1,7 +1,7 @@
-#ifndef ___FCF_BASIS__BITS__CALL__ARG_HPP___
-#define ___FCF_BASIS__BITS__CALL__ARG_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL__ARG_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL__ARG_HPP___
 
-namespace fcf {
+namespace fcf{
 
   struct Arg1  { enum { value = 1  }; };
   struct Arg2  { enum { value = 2  }; };
@@ -16,4 +16,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__CALL__ARG_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__ARG_HPP___

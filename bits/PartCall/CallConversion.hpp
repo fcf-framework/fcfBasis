@@ -1,11 +1,11 @@
-#ifndef ___FCF__BASIS__BITS__CALL__CALL_CONVERSION_HPP___
-#define ___FCF__BASIS__BITS__CALL__CALL_CONVERSION_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_CONVERSION_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL__CALL_CONVERSION_HPP___
 
 #include "../../StaticVector.hpp"
-#include "PartPlaceHolder/CallPlaceHolderInfo.hpp"
+#include "../../bits/PartCallPlaceHolder/CallPlaceHolderInfo.hpp"
 #include "CallConversionMode.hpp"
 
-namespace fcf {
+namespace fcf{
 
   struct CallConversion {
     CallConversionMode                                mode;
@@ -19,4 +19,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL__CALL_CONVERSION_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_CONVERSION_HPP___

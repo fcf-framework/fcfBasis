@@ -313,9 +313,8 @@
     #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(__VA_ARGS__)
 
     #define _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg) \
-      typename ::fcf::Details::CallPlaceHolderSignatureGetter< \
-                                                a_signature, \
-                                                ::fcf::Details::CallResultTypeGetter<a_signature>::type, \
+      typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<a_signature, \
+                                                ::fcf::NDetails::CallResultTypeGetter<a_signature>::type, \
                                                 _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
                                                 >::active_type
 
@@ -335,12 +334,12 @@
       a_sourceCode; \
       ::fcf::CallStorageRegistrator \
         _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
-          ( \
+          (\
             #a_name, \
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>(a_sourceName),\
-            ::fcf::Details::CallPlaceHolderSignatures < \
+            ::fcf::NDetails::CallPlaceHolderSignatures <\
               _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder)\
             > (),\
             #a_sourceCode\
@@ -354,7 +353,7 @@
     #define FCF_EXTEND_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_sourceCode) \
       ::fcf::CallStorageRegistrator \
         _FCF_EXTEND_FUNCTION__VARNAME(functionRegistrator, a_name, __LINE__) \
-          ( \
+          (\
             #a_name, \
             a_space, \
             #a_sourceName, \

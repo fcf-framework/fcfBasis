@@ -1,19 +1,17 @@
-#ifndef ___FCF__BASIS__BITS__CALL__PART_PLACE_HOLDER__DETAILS__CALL_PLACE_HOLDER_SIGNATURE_GETTER_HPP___
-#define ___FCF__BASIS__BITS__CALL__PART_PLACE_HOLDER__DETAILS__CALL_PLACE_HOLDER_SIGNATURE_GETTER_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_SIGNATURE_GETTER_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_SIGNATURE_GETTER_HPP___
 
 #include <tuple>
-#include "../../../../foreach.hpp"
-#include "../../../../Type.hpp"
-
-#include "../../ArgNumber.hpp"
-#include "../../../../FunctionSignature.hpp"
+#include "../../../foreach.hpp"
+#include "../../../Type.hpp"
+#include "../../../bits/PartCall/ArgNumber.hpp"
+#include "../../../FunctionSignature.hpp"
+#include "../../../bits/PartType/getTypeInfo.hpp"
 #include "CallPlaceHolderRemover.hpp"
 #include "../CallPlaceHolderInfo.hpp"
 
-#include "../../../PartType/getTypeInfo.hpp"
 
-namespace fcf {
-  namespace Details {
+namespace fcf::NDetails {
 
     template <typename TFullFunctionType, typename TResult, typename TSpecificator, unsigned int SpecificatorSourceArgIndex = 0, typename... TArgPack>
     struct CallPlaceHolderSignatureGetter {
@@ -87,11 +85,8 @@ namespace fcf {
       }
     };
 
+} // fcf::NDetails namespace
 
-  } // Details namespace
-} // fcf namespace
+#include "../../../bits/PartCall/NDetails/CallPlaceHolderSignatures.hpp"
 
-
-#include "../../Details/CallPlaceHolderSignatures.hpp"
-
-#endif // #ifndef ___FCF__BASIS__BITS__CALL__PART_PLACE_HOLDER__DETAILS__CALL_PLACE_HOLDER_SIGNATURE_GETTER_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_SIGNATURE_GETTER_HPP___

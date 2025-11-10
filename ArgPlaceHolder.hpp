@@ -1,9 +1,9 @@
 #ifndef ___FCF_BASIS__ARG_PLACE_HOLDER_HPP___
 #define ___FCF_BASIS__ARG_PLACE_HOLDER_HPP___
 
-#include "bits/Call/Arg.hpp"
-#include "bits/Call/PartPlaceHolder/Details/CallPlaceHolderArgDetector.hpp"
-#include "bits/Call/PartPlaceHolder/Details/CallPlaceHolderRemover.hpp"
-#include "bits/Call/PartPlaceHolder/Details/CallPlaceHolderSignatureGetter.hpp"
+#include "bits/PartCall/Arg.hpp"
+#include "bits/PartCallPlaceHolder/NDetails/CallPlaceHolderArgDetector.hpp"
+#include "bits/PartCallPlaceHolder/NDetails/CallPlaceHolderRemover.hpp"
+#include "bits/PartCallPlaceHolder/NDetails/CallPlaceHolderSignatureGetter.hpp"
 
 #endif // #ifndef ___FCF_BASIS__ARG_PLACE_HOLDER_HPP___

@@ -6,11 +6,11 @@
 #include "Type.hpp"
 
 // Included for use macros
-#include "bits/Call/Details/CallResultTypeGetter.hpp"
+#include "bits/PartCall/NDetails/CallResultTypeGetter.hpp"
 #include "bits/PartCallStorage/CallStorageRegistrator.hpp"
 
-#include "bits/Call/CallSeeker.hpp"
-#include "bits/Call/Details/Caller.hpp"
+#include "bits/PartCall/CallSeeker.hpp"
+#include "bits/PartCall/NDetails/Caller.hpp"
 
 
 namespace fcf {
@@ -19,7 +19,7 @@ namespace fcf {
   inline void call(const char* a_functionName, const TArgPack& ... a_argPack) {
     Call dc;
     CallSeeker<void, TArgPack...>()(a_functionName, &dc, a_argPack...);
-    Details::Caller()(dc, a_argPack...);
+    NDetails::Caller()(dc, a_argPack...);
   }
 
   template <typename... TArgPack>
@@ -27,7 +27,7 @@ namespace fcf {
     if (a_dc->dynamicCaller) {
       call(a_dc->name.c_str(), a_argPack...);
     } else {
-      Details::Caller()(*a_dc, a_argPack...);
+      NDetails::Caller()(*a_dc, a_argPack...);
     }
   }
 

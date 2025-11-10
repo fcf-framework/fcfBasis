@@ -5,8 +5,8 @@
 #include "../../foreach.hpp"
 #include "CallStorageSpace.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
-#include "../Call/PartPlaceHolder/Details/CallPlaceHolderSignatureGetter.hpp"
-#include "../Call/Details/CallWrapper.hpp"
+#include "../../bits/PartCallPlaceHolder/NDetails/CallPlaceHolderSignatureGetter.hpp"
+#include "../PartCall/NDetails/CallWrapper.hpp"
 #include "CallStorageFunctionInfo.hpp"
 #include "CallStorage.hpp"
 
@@ -104,12 +104,12 @@ namespace fcf {
         }
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
-        groupIt->second.callers.insert({scs, CallStorageSelectionFunctionInfo{scs, index, Details::CallWrapper<function_type>::getWrapper()}});
+        groupIt->second.callers.insert({scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper()}});
         CallStorageSelectionFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(scs.asize);
         if (itTree == groupIt->second.callersTree.end()) {
           itTree = groupIt->second.callersTree.insert({scs.asize, {}});
         }
-        itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{scs, index, Details::CallWrapper<function_type>::getWrapper(),} });
+        itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(),} });
 
         typename TPlaceHolderSignatures::signatures_type signatures;
         PlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
@@ -167,7 +167,7 @@ namespace fcf {
                                     CallStorageSelectionFunctionInfo{
                                       scs,
                                       index,
-                                      Details::CallWrapper<TFunction>::getWrapper(),
+                                      NDetails::CallWrapper<TFunction>::getWrapper(),
                                       placeHolder
                                       }
                                     });
@@ -179,7 +179,7 @@ namespace fcf {
           itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{
                                                                       scs,
                                                                       index,
-                                                                      Details::CallWrapper<TFunction>::getWrapper(),
+                                                                      NDetails::CallWrapper<TFunction>::getWrapper(),
                                                                       placeHolder
                                                                       }
                                 } );
