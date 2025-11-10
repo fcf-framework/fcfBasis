@@ -20,6 +20,7 @@ namespace FcfTest {
     void placeHolderCall();
 
     void minMaxSpecificatorTest();
+    void foreachTest();
 
   } // BasisTest namespace
 } // FcfTest namespace
@@ -41,6 +42,7 @@ void tupleTest();
 int main(int a_argc, char* a_argv[]){
 
   variantTest(); 
+  FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::sequenceTest();
   
   FcfTest::BasisTest::minMaxSpecificatorTest();

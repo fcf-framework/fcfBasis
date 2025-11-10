@@ -44,16 +44,35 @@
   #ifndef FCF_FOREACH_METHOD_WRAPPER
     #define FCF_FOREACH_METHOD_WRAPPER(a_name, a_class, a_methodName)\
       struct a_name {\
-        a_name(a_class* a_owner)\
+        inline a_name(a_class* a_owner)\
           : _owner(a_owner){\
         }\
+        inline a_name(a_class&& a_owner)\
+          : _owner(&a_owner){\
+        }\
+        inline a_name(a_class& a_owner)\
+          : _owner(&a_owner){\
+        }\
         template <typename ... TPack>\
-        void operator()(TPack... a_args){\
+        inline void operator()(TPack&&... a_args){\
           _owner->a_methodName(a_args...);\
         }\
         a_class* _owner;\
       };
   #endif
+
+  #ifndef FCF_FOREACH_FUNCTION_WRAPPER
+    #define FCF_FOREACH_FUNCTION_WRAPPER(a_name, a_functionName)\
+      struct a_name {\
+        inline a_name(){\
+        }\
+        template <typename ... TPack>\
+        inline void operator()(TPack&&... a_args){\
+          a_functionName(a_args...);\
+        }\
+      };
+  #endif
+
 
   #define FCF_REMOVE_PARENTHESIS_SELECTORFCF_REMOVE_PARENTHESIS_ARGUMENT
   #define FCF_REMOVE_PARENTHESIS_ARGUMENT(...) FCF_REMOVE_PARENTHESIS_ARGUMENT __VA_ARGS__
@@ -250,7 +269,6 @@
     #define FCF_TYPEID_TEMPLATE2_REGISTRY(a_type, a_name) \
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type<T1, T2>), (typename T1, typename T2), a_name + "<" + fcf::Type<T1>().name() + "," + fcf::Type<T1>().name() + ">", 0)
   #endif // #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
-         
 
   #ifndef FCF_CONVERTERS_REGISTRY_FORCE
     #define FCF_CONVERTERS_REGISTRY_FORCE(a_type) \

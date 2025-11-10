@@ -27,7 +27,7 @@ namespace fcf {
         bool                                                ignoreConvertSeeker;
       };
 
-      FCF_FOREACH_METHOD_WRAPPER(ArgInitializerForeachWrapper, CallSelectorHandler, argInit);
+      FCF_FOREACH_METHOD_WRAPPER(ArgInitializerForeachWrapper, CallSelectorHandler, _argInit);
 
       template <typename TTuple>
       void initialize() {
@@ -503,34 +503,34 @@ namespace fcf {
 
       }
 
-
-      template <typename TContainer, typename TItem>
-      void argInit(TContainer& a_container, size_t a_index, const TItem& a_item){
-        typedef
-          typename std::remove_cv<
-            typename std::remove_pointer<
+      protected:
+        template <typename TContainer, typename TItem>
+        void _argInit(TContainer& a_container, size_t a_index, const TItem& a_item){
+          typedef
+            typename std::remove_cv<
               typename std::remove_pointer<
-                TItem
+                typename std::remove_pointer<
+                  TItem
+                >::type
               >::type
-            >::type
-          >::type current_arg_type;
+            >::type current_arg_type;
 
-        InputArgument& ia = inputArguments[a_index];
-        ia.ptrArg                  = state.strictSource ? (current_arg_type*) (*state.arguments)[a_index] : (current_arg_type*)0;
-        ia.typeIndex               = Type<current_arg_type>().index();
-        ia.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(Type<current_arg_type>().index());
-        ia.resolver                = Type<current_arg_type>().getTypeInfo()->resolver;
-        ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>();
-        ia.specificators           = &Type<current_arg_type>().specificators();
-        ia.pairCounter             = 0;
-        if (ia.resolver) {
-          ia.resolveData = ia.resolver(ia.ptrArg);
-        } else {
-          ia.resolveData.data      = 0;
-          ia.resolveData.typeIndex = 0;
-          ia.resolveData.invariant = false;
+          InputArgument& ia = inputArguments[a_index];
+          ia.ptrArg                  = state.strictSource ? (current_arg_type*) (*state.arguments)[a_index] : (current_arg_type*)0;
+          ia.typeIndex               = Type<current_arg_type>().index();
+          ia.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(Type<current_arg_type>().index());
+          ia.resolver                = Type<current_arg_type>().getTypeInfo()->resolver;
+          ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>();
+          ia.specificators           = &Type<current_arg_type>().specificators();
+          ia.pairCounter             = 0;
+          if (ia.resolver) {
+            ia.resolveData = ia.resolver(ia.ptrArg);
+          } else {
+            ia.resolveData.data      = 0;
+            ia.resolveData.typeIndex = 0;
+            ia.resolveData.invariant = false;
+          }
         }
-      }
     };
 
   } // Details namespace
