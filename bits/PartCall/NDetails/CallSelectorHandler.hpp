@@ -121,7 +121,6 @@ namespace fcf::NDetails {
       if (state.strictSource && !currentInputArgument->pairCounter && !currentInputArgument->ignoreConvertSeeker) {
         CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
         if (treeIt != state.groupIterator->second.callersTree.end()){
-          const TypeInfo* ti = typeStorage.get(currentInputArgument->clearTypeIndex);
           BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
           for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
             shortSign.pacodes[i] = 0;
@@ -309,7 +308,7 @@ namespace fcf::NDetails {
             exit = true;
             break;
           }
-          if (ca > a_currentArgNumber && ca < minValue) {
+          if (ca > a_currentArgNumber && (unsigned int)ca < minValue) {
             minValue = ca;
             result = &pCall->placeHolder[phsi].placeHolders[phai];
           }

@@ -14,7 +14,6 @@ namespace fcf::NDetails {
   struct Caller {
     template <typename... TArgPack>
     inline void operator()(const Call& a_callInfo, const TArgPack& ... a_argPack){
-      typedef int& ref_type;
       typedef int arg_type;
 
       const size_t maxArgCount = 10;
@@ -133,6 +132,8 @@ namespace fcf::NDetails {
               argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
               args[cc.index+1] = argBuffer[argBuffer.size()-1].ptr();
             }
+            break;
+          default:
             break;
         } // switch(cc.mode) end
       } // for(size_t conversionIndex = 0; conversionIndex < a_callInfo.conversions.size(); ++conversionIndex) end

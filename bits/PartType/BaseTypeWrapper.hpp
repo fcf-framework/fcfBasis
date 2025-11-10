@@ -7,7 +7,7 @@ namespace fcf{
 
   class FCF_BASIS_DECL_EXPORT BaseTypeWrapper {
     public:
-      ~BaseTypeWrapper();
+      virtual ~BaseTypeWrapper();
       virtual size_t size() = 0;
       virtual BaseTypeWrapper* clone() = 0;
       virtual BaseTypeWrapper* clone(char* a_mem) = 0;

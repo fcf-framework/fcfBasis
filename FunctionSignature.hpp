@@ -178,7 +178,7 @@ namespace fcf {
     {
       size_t res = 17;
       res = res * 31 + a_signature.rcode;
-      for(int i = 0; i < a_signature.asize; ++i){
+      for(size_t i = 0; i < a_signature.asize; ++i){
         res = res * 31 + a_signature.pacodes[i];
       }
       return res;

@@ -192,7 +192,7 @@ namespace FcfTest {
         FCF_TEST(g_staticVectorCopyTestItem_constructCounter == 2, g_staticVectorCopyTestItem_constructCounter);
         static_vector_type v2(3);
         v2 = v1;
-        for(size_t i = 0; i < 2; ++i){
+        for(int i = 0; i < 2; ++i){
           FCF_TEST(v1[i].value == i, i, v1[i].value);
           FCF_TEST(v2[i].value == i, i, v2[i].value);
         }
@@ -217,7 +217,7 @@ namespace FcfTest {
         FCF_TEST(g_staticVectorCopyTestItem_constructCounter == 2, g_staticVectorCopyTestItem_constructCounter);
         static_vector_type v2(3);
         v2 = v1;
-        for(size_t i = 0; i < 2; ++i){
+        for(int i = 0; i < 2; ++i){
           FCF_TEST(v1[i].value == i, i, v1[i].value);
           FCF_TEST(v2[i].value == i, i, v2[i].value);
         }
@@ -311,7 +311,7 @@ namespace FcfTest {
         FCF_TEST(g_staticVectorCopyTestItem_constructCounter == 3, g_staticVectorCopyTestItem_constructCounter);
         static_vector_type v2(2);
         v2 = v1;
-        for(size_t i = 0; i < 3; ++i){
+        for(int i = 0; i < 3; ++i){
           FCF_TEST(v1[i].value == i, i, v1[i].value);
           FCF_TEST(v2[i].value == i, i, v2[i].value);
         }
@@ -336,7 +336,7 @@ namespace FcfTest {
         FCF_TEST(g_staticVectorCopyTestItem_constructCounter == 3, g_staticVectorCopyTestItem_constructCounter);
         static_vector_type v2(3);
         v2 = v1;
-        for(size_t i = 0; i < 3; ++i){
+        for(int i = 0; i < 3; ++i){
           FCF_TEST(v1[i].value == i, i, v1[i].value);
           FCF_TEST(v2[i].value == i, i, v2[i].value);
         }
@@ -360,7 +360,7 @@ namespace FcfTest {
         FCF_TEST(g_staticVectorCopyTestItem_constructCounter == 3, g_staticVectorCopyTestItem_constructCounter);
         static_vector_type v2(3);
         v2 = v1;
-        for(size_t i = 0; i < 3; ++i){
+        for(int i = 0; i < 3; ++i){
           FCF_TEST(v1[i].value == i, i, v1[i].value);
           FCF_TEST(v2[i].value == i, i, v2[i].value);
         }
@@ -381,7 +381,7 @@ namespace FcfTest {
         static_vector_type v1 = {1, 2, 3};
         FCF_TEST(v1.capacity() == 4, v1.capacity());
         FCF_TEST(v1.size() == 3, v1.size());
-        for(size_t i = 0; i < 3; ++i){
+        for(int i = 0; i < 3; ++i){
           FCF_TEST(v1[i].value == (i+1), (i+1), v1[i].value);
         }
 
@@ -397,7 +397,7 @@ namespace FcfTest {
         static_vector_type v1 = {1, 2, 3};
         FCF_TEST(v1.capacity() == 4, v1.capacity());
         FCF_TEST(v1.size() == 3, v1.size());
-        for(size_t i = 0; i < 3; ++i){
+        for(int i = 0; i < 3; ++i){
           FCF_TEST(v1[i].value == (i+1), (i+1), v1[i].value);
         }
 

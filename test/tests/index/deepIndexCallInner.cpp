@@ -72,6 +72,7 @@ void deepIndexCallInner(){
   }
   */
   {
+    /*
     typedef fcf::Variant VariantArray[3];
     VariantArray variant;
     variant[0] = 1001;
@@ -80,7 +81,7 @@ void deepIndexCallInner(){
     int a1 = 1;
     int a2 = 2;
 
-    /*
+
     {
       typedef ::fcf::ArgPlaceHolder::Arguments<void(int, fcf::Arg1)>                      template_args_type;
       typedef fcf::Details::Basis::ArgPlaceHolder::ArgResolver<0, template_args_type, int, int>  getter1_type;
@@ -101,6 +102,7 @@ void deepIndexCallInner(){
   }
 
   {
+/*
     typedef fcf::Variant VariantArray[3];
     VariantArray variant;
     variant[0] = 1001;
@@ -108,7 +110,7 @@ void deepIndexCallInner(){
     variant[2] = 1003;
     int a1 = 1;
     int a2 = 2;
-    /*
+
     {
       typedef ::fcf::ArgPlaceHolder::Arguments<void(int, fcf::Arg1, int)>                             template_args_type;
       typedef fcf::Details::Basis::ArgPlaceHolder::ArgResolver<0, template_args_type, int, int, int>  getter_type;
@@ -138,6 +140,7 @@ void deepIndexCallInner(){
   }
 
   {
+/*
     typedef fcf::Variant VariantArray[3];
     VariantArray variant;
     variant[0] = 1001;
@@ -147,7 +150,7 @@ void deepIndexCallInner(){
     int a2 = 2;
 
 
-/*
+
     {
       std::vector<int> vec(10, 0);
       typedef void (*function_type)(std::vector<int>&, const int&);

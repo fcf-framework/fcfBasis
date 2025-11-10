@@ -219,7 +219,7 @@ namespace FcfTest {
         g_staticVectorPushTestItem_destructCounter = 0;
         {
           static_vector_type v;
-          for(int i = 0; i < 10; ++i) {
+          for(size_t i = 0; i < 10; ++i) {
             v.push_back(i);
             size_t c = (size_t)std::ceil((double)(i+1) / 2);
             c *= 2;
@@ -241,7 +241,7 @@ namespace FcfTest {
         g_staticVectorPushTestItem_destructCounter = 0;
         {
           static_vector_type v;
-          for(int i = 0; i < 10; ++i) {
+          for(size_t i = 0; i < 10; ++i) {
             v.push_back(i);
             size_t c = (size_t)std::ceil((double)(i+1) / 2);
             c *= 2;
@@ -251,7 +251,7 @@ namespace FcfTest {
             FCF_TEST(v.size() == (i+1), v.size(), (i+1));
             FCF_TEST(v.capacity() == c, v.capacity(), c, i);
           }
-          for(int i = 0; i < 10; ++i) {
+          for(size_t i = 0; i < 10; ++i) {
             v.pop_back();
             size_t c = (size_t)std::ceil((double)(10 - i - 1) / 2);
             c *= 2;

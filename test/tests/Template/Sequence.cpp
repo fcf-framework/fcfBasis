@@ -52,9 +52,9 @@ namespace FcfTest {
         FcfTest::BasisTest::SequenceTest::Filler<0, 3> filler;
         std::vector<int> v;
         filler(v);
-        size_t expsize = 3;
-        FCF_TEST(v.size() == expsize, v.size(), expsize);
-        for(size_t i = 0; i < expsize; ++i){
+        int expsize = 3;
+        FCF_TEST((int)v.size() == expsize, v.size(), expsize);
+        for(int i = 0; i < expsize; ++i){
           FCF_TEST(v[i] == i, v[i], i);
         }
       }
@@ -65,7 +65,7 @@ namespace FcfTest {
         size_t expsize = 2;
         FCF_TEST(v.size() == expsize, v.size(), expsize);
         for(size_t i = 0; i < expsize; ++i){
-          FCF_TEST(v[i] == i, v[i], i);
+          FCF_TEST((size_t)v[i] == i, v[i], i);
         }
       }
       {
@@ -75,7 +75,7 @@ namespace FcfTest {
         size_t expsize = 1;
         FCF_TEST(v.size() == expsize, v.size(), expsize);
         for(size_t i = 0; i < expsize; ++i){
-          FCF_TEST(v[i] == i, v[i], i);
+          FCF_TEST((size_t)v[i] == i, v[i], i);
         }
       }
       {
@@ -94,7 +94,7 @@ namespace FcfTest {
         size_t expsize = 3;
         FCF_TEST(v.size() == expsize, v.size(), expsize);
         for(size_t i = 0; i < expsize; ++i){
-          FCF_TEST(v[i] == i+1, v[i], i+1);
+          FCF_TEST((size_t)v[i] == i+1, v[i], i+1);
         }
       }
       {
@@ -104,7 +104,7 @@ namespace FcfTest {
         size_t expsize = 2;
         FCF_TEST(v.size() == expsize, v.size(), expsize);
         for(size_t i = 0; i < expsize; ++i){
-          FCF_TEST(v[i] == i+1, v[i], i+1);
+          FCF_TEST((size_t)v[i] == i+1, v[i], i+1);
         }
       }
       {
@@ -114,7 +114,7 @@ namespace FcfTest {
         size_t expsize = 1;
         FCF_TEST(v.size() == expsize, v.size(), expsize);
         for(size_t i = 0; i < expsize; ++i){
-          FCF_TEST(v[i] == i+1, v[i], i+1);
+          FCF_TEST((size_t)v[i] == i+1, v[i], i+1);
         }
       }
       {

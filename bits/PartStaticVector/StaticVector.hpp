@@ -264,7 +264,6 @@ namespace fcf{
         if (a_end.key() > _sdata){
           a_end.cursor.key = _sdata;
         }
-        size_t insertSize = a_begin.distance(a_end);
         size_t eraseSize = a_begin.distance(a_end);
         size_t newBufferSize;
         if (a_notReduce) {

@@ -19,7 +19,6 @@ namespace fcf{
     enum { enable = true };
 
     inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
-      unsigned int typeIndex = Type<Ty, StoredDataTypeSpecificator>().call(a_object);
       return Type<Ty, StoredDataTypeSpecificator>().call(a_object);
     }
 

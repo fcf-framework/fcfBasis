@@ -45,9 +45,6 @@ namespace fcf{
           a_result->conversions.clear();
         }
 
-        CallStorageSelectionFunctions::iterator callerInfoIt =
-          groupIt->second.callers.find(functionSignature);
-
         typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
         StaticVector<void*, 8> arguments = {(void*)&a_argPack...};
         ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_result, groupIt, functionSignature, &functionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource};

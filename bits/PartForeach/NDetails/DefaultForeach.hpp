@@ -9,7 +9,6 @@ namespace fcf::NDetails {
   struct DefaultForeach {
     template <typename TInputContainer, typename TFunctor, typename ...TArgPack>
     inline void operator()(TInputContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
-      typedef typename std::remove_reference<TInputContainer>::type container_type;
       auto begin = std::begin(a_container);
       auto end   = std::end(a_container);
       for(size_t i = 0; begin != end; ++begin, ++i) {

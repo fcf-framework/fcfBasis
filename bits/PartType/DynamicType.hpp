@@ -10,8 +10,8 @@ namespace fcf{
     public:
 
       DynamicType()
-        : _info(0)
-        , _index(0) {
+        : _index(0)
+        , _info(0) {
       }
 
       DynamicType(unsigned int a_typeIndex)

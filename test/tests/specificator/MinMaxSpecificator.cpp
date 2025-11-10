@@ -8,9 +8,9 @@
 namespace FcfTest::BasisTest::MinMaxSpecificatorTest{
 
   struct Item{
+    int value;
     int min;
     int max;
-    int value;
 
     Item()
       : value(0)
