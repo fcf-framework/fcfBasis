@@ -25,7 +25,7 @@ namespace fcf {
 
     typedef DynamicContainerAccess< ContainerAccess<Ty> > ContainerAccessType;
 
-    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
+    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
       return Variant(Type<Ty, ContainerAccessSpecificator>().call(a_object));
     }
 

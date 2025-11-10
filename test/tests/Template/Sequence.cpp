@@ -27,14 +27,14 @@ namespace FcfTest {
         }
 
         template <int ... SequencePack>
-        void _call(fcf::MetaTypeSequence<SequencePack...> a_sequence){
+        void _call(fcf::MetaTypeSequence<SequencePack...> /*a_sequence*/){
           typedef std::tuple< Item<SequencePack>...  > tuple_type;
           tuple_type tuple;
           fcf::foreach(tuple, *this);
         }
 
         template <typename TTuple, typename TItem>
-        void operator()(TTuple& a_container, size_t a_index, TItem a_item){
+        void operator()(TTuple& /*a_container*/, size_t /*a_index*/, TItem /*a_item*/){
           container->push_back(TItem::index_value);
         }
 

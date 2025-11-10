@@ -16,7 +16,7 @@ namespace fcf{
 
     template <typename Ty>
     struct VariantAllocatorHandler<Ty, 0> {
-      void* operator()(void* a_innerBuffer, const Ty& a_value) {
+      void* operator()(void* /*a_innerBuffer*/, const Ty& a_value) {
         return new TypeWrapper<Ty>(a_value);
       }
     };

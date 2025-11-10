@@ -29,7 +29,7 @@ namespace FcfTest {
 namespace fcf {
   template <>
   struct Type<FcfTest::BasisTest::PHCTestDataItem, ValueSpecificator> : public TypeImpl<FcfTest::BasisTest::PHCTestDataItem, ValueSpecificator> {
-    inline auto call(FcfTest::BasisTest::PHCTestDataItem* a_container) -> decltype(a_container->value) const {
+    inline auto call(FcfTest::BasisTest::PHCTestDataItem* a_container) const -> decltype(a_container->defaultValue) {
       return a_container->defaultValue;
     }
   };
@@ -50,10 +50,10 @@ FCF_DECLARE_FUNCTION(fill,
 namespace FcfTest {
   namespace BasisTest {
 
-    void function_test_1(int* a_a1, int a_a2, short a_a3){
+    void function_test_1(int* a_a1, int a_a2, short /*a_a3*/){
       *a_a1 = a_a2;
     }
-    void function_test_2(int* a_a1, int a_a2, short a_a3){
+    void function_test_2(int* a_a1, int /*a_a2*/, short a_a3){
       *a_a1 = (int)a_a3;
     }
     

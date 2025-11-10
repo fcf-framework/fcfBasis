@@ -22,7 +22,7 @@ namespace FcfTest {
           }
 
           Item(int a_value, bool a_ignoreExcept = false)
-            : value(9999) {
+            : value(a_value) {
             ++g_initCounter;
             if (!a_ignoreExcept && g_initCounter == g_exceptValue){
               throw std::runtime_error("Test Error");

@@ -19,7 +19,7 @@ namespace fcf::NDetails {
     }
 
     template <typename TTuple, typename TItem>
-    void operator()(const TTuple& a_tuple, size_t a_index, const TItem* a_item){
+    void operator()(const TTuple& /*a_tuple*/, size_t a_index, const TItem* /*a_item*/){
       indexes[a_index] = Type<TItem>().index();
     }
 

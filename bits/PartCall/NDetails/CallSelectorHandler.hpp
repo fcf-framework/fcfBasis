@@ -358,7 +358,7 @@ namespace fcf::NDetails {
       (*this)(a_node, 0, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
     }
 
-    void _complete(CallConversionNode* a_node, bool a_dynamicCaller) {
+    void _complete(CallConversionNode* a_node, bool /*a_dynamicCaller*/) {
       CallStorageSelectionFunctionInfo* pCall = 0;
       if (!state.dynamicCaller) {
         std::pair<CallStorageSelectionFunctions::iterator, CallStorageSelectionFunctions::iterator> range =
@@ -503,7 +503,7 @@ namespace fcf::NDetails {
 
     protected:
       template <typename TContainer, typename TItem>
-      void _argInit(TContainer& a_container, size_t a_index, const TItem& a_item){
+      void _argInit(TContainer& /*a_container*/, size_t a_index, const TItem& /*a_item*/){
         typedef
           typename std::remove_cv<
             typename std::remove_pointer<

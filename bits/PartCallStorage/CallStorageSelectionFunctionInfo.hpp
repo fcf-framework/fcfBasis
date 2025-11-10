@@ -7,10 +7,12 @@
 namespace fcf {
 
   struct CallStorageSelectionFunctionInfo {
+    typedef std::vector<::fcf::CallPlaceHolderInfo> PlaceHolderType;
+    
     BaseFunctionSignature                   callerSignature;
     unsigned int                            index;
     void                                    (*lcaller)(void*, void**);
-    std::vector<::fcf::CallPlaceHolderInfo> placeHolder;
+    PlaceHolderType                         placeHolder;
   };
 
 } // fcf namespace

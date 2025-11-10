@@ -14,6 +14,7 @@ namespace fcf {
   class Converter{
     public:
       void operator()(TDestination& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
         a_destination = (TDestination)a_source;
       }
   };
@@ -22,6 +23,7 @@ namespace fcf {
   class Converter<std::string, TSource>{
     public:
       void operator()(std::string& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
         a_destination = std::to_string(a_source);
       }
   };
@@ -30,6 +32,7 @@ namespace fcf {
   class Converter<TDestination, std::string>{
     public:
       void operator()(TDestination& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
         std::istringstream iss(a_source);
         char c = 0;
         TDestination result;
@@ -45,6 +48,7 @@ namespace fcf {
   class Converter<std::string, std::string>{
     public:
       void operator()(std::string& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
         a_destination = a_source;
       }
   };
@@ -57,6 +61,7 @@ namespace fcf {
   class Converter<Variant, TSource>{
     public:
       void operator()(Variant& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
         a_destination = a_source;
       }
   };
@@ -65,6 +70,7 @@ namespace fcf {
   class Converter<TDestination, Variant>{
     public:
       void operator()(TDestination& a_destination, const Variant& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
         a_destination = a_source.cast<TDestination>();
       }
   };

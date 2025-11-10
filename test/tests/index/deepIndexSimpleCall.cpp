@@ -228,7 +228,7 @@ void deepIndexSimpleCaller(){
 struct TupleTestFunc{
   std::string result;
   template <typename Tuple, typename TIndex, typename TValue>
-  void operator()(Tuple& a_tuple, TIndex a_index, TValue& a_value){
+  void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TValue& /*a_value*/){
     if (!result.empty()){
       result += "|";
     }

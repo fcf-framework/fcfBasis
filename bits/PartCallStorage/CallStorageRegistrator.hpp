@@ -18,7 +18,7 @@ namespace fcf {
                                    const std::string& a_space,
                                    const std::string& a_sourceName,
                                    TFunctionResult (*a_function)(TArgPack...),
-                                   TPlaceHolderSignatures a_phs,
+                                   TPlaceHolderSignatures /*a_phs*/,
                                    std::string a_sourceCode = std::string()){
         typedef TFunctionResult (*function_type)(TArgPack...);
         FunctionSignature<TFunctionResult (TArgPack...)> fs;
@@ -104,12 +104,12 @@ namespace fcf {
         }
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
-        groupIt->second.callers.insert({scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper()}});
+        groupIt->second.callers.insert({scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(), CallStorageSelectionFunctionInfo::PlaceHolderType()}});
         CallStorageSelectionFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(scs.asize);
         if (itTree == groupIt->second.callersTree.end()) {
           itTree = groupIt->second.callersTree.insert({scs.asize, {}});
         }
-        itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(),} });
+        itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(), CallStorageSelectionFunctionInfo::PlaceHolderType() } });
 
         typename TPlaceHolderSignatures::signatures_type signatures;
         PlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
@@ -186,7 +186,7 @@ namespace fcf {
         }
 
         template <typename Tuple, typename TIndex, typename TSignature>
-        void operator()(Tuple& a_tuple, TIndex a_index, TSignature& a_signature) {
+        void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TSignature& /*a_signature*/) {
           unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
           if (specificatorIndex == Type<Nop>().index()){
             specificatorIndex = 0;

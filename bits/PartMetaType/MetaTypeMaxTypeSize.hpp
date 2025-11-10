@@ -5,7 +5,7 @@ namespace fcf{
 
   template <typename Ty, typename... TPack>
   struct MetaTypeMaxTypeSize {
-    enum { size =  sizeof(Ty) > MetaTypeMaxTypeSize<TPack...>::size ? sizeof(Ty) : MetaTypeMaxTypeSize<TPack...>::size };
+    enum { size =  sizeof(Ty) > MetaTypeMaxTypeSize<TPack...>::size ? (size_t)sizeof(Ty) : (size_t)MetaTypeMaxTypeSize<TPack...>::size };
   };
 
   template <typename Ty>

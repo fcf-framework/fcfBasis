@@ -28,7 +28,7 @@ namespace fcf::NDetails {
 
     protected:
       template <int... SequencePack>
-      static inline void _call(function_type a_function, void** a_args, MetaTypeSequence<SequencePack...> a_sequence){
+      static inline void _call(function_type a_function, void** a_args, MetaTypeSequence<SequencePack...> /*a_sequence*/){
         typedef std::tuple<TArgPack...> tuple_type;
         a_function(*(typename std::remove_cv< typename std::remove_reference< typename std::tuple_element<SequencePack, tuple_type>::type >::type >::type  *)a_args[SequencePack]...);
       }

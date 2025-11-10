@@ -22,7 +22,7 @@ namespace fcf{
   struct TypeImpl<Ty, MinMaxSpecificator> {
     enum { enable = true };
 
-    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
+    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
       Variant result(UniversalArguments(2));
 
       typedef decltype(&Type<Ty, MinMaxSpecificator>::call) call_type;

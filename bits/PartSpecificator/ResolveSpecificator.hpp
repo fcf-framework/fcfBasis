@@ -13,7 +13,7 @@ namespace fcf{
   struct TypeImpl<Ty, ResolveSpecificator> {
     enum { enable = true };
 
-    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
+    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
       return Variant(ResolveData(Type<Ty, ResolveSpecificator>().call(a_object)));
     }
   };

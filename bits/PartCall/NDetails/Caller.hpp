@@ -150,7 +150,7 @@ namespace fcf::NDetails {
     }
 
     template <size_t Index, typename TDynamicCallInfo, typename TBuffer>
-    inline void _initArgs(const TDynamicCallInfo& a_callInfo, TBuffer& a_args) {
+    inline void _initArgs(const TDynamicCallInfo& /*a_callInfo*/, TBuffer& /*a_args*/) {
     }
 
   };

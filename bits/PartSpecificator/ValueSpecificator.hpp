@@ -21,7 +21,7 @@ namespace fcf {
   struct TypeImpl<Ty, ValueSpecificator> {
     enum { enable = true };
 
-    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
+    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
       return Type<Ty, ValueSpecificator>().call(a_object);
     }
 
