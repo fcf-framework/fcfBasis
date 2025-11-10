@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__STATIC_VECTOR__STATIC_VECTOR_HPP___
-#define ___FCF_BASIS__BITS__STATIC_VECTOR__STATIC_VECTOR_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
+#define ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
 
 #include <memory>
 #include <cmath>
@@ -14,9 +14,7 @@ namespace FcfTest {
   } // BasisTest namespace
 } // FcfTest namespace
 
-
-
-namespace fcf {
+namespace fcf{
 
   template<typename Ty, unsigned int StaticSize=16, unsigned int OffsetSize=2, unsigned int StepSize=2, unsigned int StepModuleInt=2, unsigned int StepModuleFrac=0, unsigned int MaxPow=/*16*2*4096/sizeof(Ty)*/ 0 >
   class StaticVector;
@@ -589,7 +587,7 @@ namespace fcf {
         if (maxPow == 0 || a_size < maxPow) {
           size_t result;
           if (a_size >= OffsetSize) {
-            a_size -= OffsetSize;
+          a_size -= OffsetSize;
           }
           if (!StepModuleFrac) {
             result = a_size * StepModuleInt + StepSize + OffsetSize;
@@ -701,4 +699,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__STATIC_VECTOR__STATIC_VECTOR_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
