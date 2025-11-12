@@ -7,5 +7,7 @@
 #include "ValueSpecificator.hpp"
 #include "MinMaxSpecificator.hpp"
 #include "ResolveSpecificator.hpp"
+#include "LessSpecificator.hpp"
+#include "EqualSpecificator.hpp"
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_SPECIFICATOR__PART_SPECIFICATOR_HPP___

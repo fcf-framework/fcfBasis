@@ -7,6 +7,7 @@ namespace fcf{
 
   struct SpecificatorInfo {
     UniversalCall universalCall;
+    void*         call;
   };
 
 } // fcf namespace

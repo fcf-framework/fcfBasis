@@ -62,6 +62,18 @@ namespace fcf {
 
       void clear();
 
+      bool operator<(const Variant& a_value) const;
+
+      bool operator<=(const Variant& a_value) const;
+
+      bool operator==(const Variant& a_value) const;
+
+      bool operator!=(const Variant& a_value) const;
+
+      bool operator>(const Variant& a_value) const;
+
+      bool operator>=(const Variant& a_value) const;
+
       unsigned int typeIndex() const;
 
       void* ptr();
@@ -98,9 +110,9 @@ namespace fcf {
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
-      char         _mem[innerBufferSize];
-      unsigned int _index;
-      void*        _ptr;
+      char            _mem[innerBufferSize];
+      const TypeInfo* _typeInfo;
+      void*           _ptr;
   };
 
 } // fcf namespace
@@ -108,11 +120,13 @@ namespace fcf {
 #include "Type.hpp"
 #include "bits/registry.hpp"
 #include "bits/PartSpecificator/StoredDataTypeSpecificator.hpp"
+#include "bits/PartSpecificator/LessSpecificator.hpp"
+#include "bits/PartSpecificator/EqualSpecificator.hpp"
 
 namespace fcf{
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant()
-    : _index(0)
+    : _typeInfo(0)
     , _ptr(0) {
   }
 
@@ -142,12 +156,12 @@ namespace fcf{
   BasicVariant<innerBufferSize>::BasicVariant(DynamicType a_dynamicType){
     const unsigned int index = a_dynamicType.index();
     if (!index){
-      _index = 0;
+      _typeInfo = 0;
       _ptr = 0;
       return;
     }
     _ptr = a_dynamicType.getTypeInfo()->initializer->create();
-    _index = index;
+    _typeInfo = a_dynamicType.getTypeInfo();
   }
 
   template <size_t innerBufferSize>
@@ -155,12 +169,12 @@ namespace fcf{
   BasicVariant<innerBufferSize>::BasicVariant(Type<Ty, Nop> a_type){
     const unsigned int index = a_type.index();
     if (!index){
-      _index = 0;
+      _typeInfo = 0;
       _ptr = 0;
       return;
     }
     _ptr   = a_type.getTypeInfo()->initializer->create();
-    _index = index;
+    _typeInfo = a_type.getTypeInfo();
   }
 
 
@@ -197,7 +211,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
 
     const unsigned int index = a_dynamicType.index();
     if (!index){
@@ -205,7 +219,7 @@ namespace fcf{
     }
 
     _ptr = a_dynamicType.getTypeInfo()->initializer->create();
-    _index = index;
+    _typeInfo = a_dynamicType.getTypeInfo();
   }
 
   template <size_t innerBufferSize>
@@ -214,7 +228,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
 
     const unsigned int index = a_type.index();
     if (!index){
@@ -222,7 +236,7 @@ namespace fcf{
     }
 
     _ptr = a_type.getTypeInfo()->initializer->create();
-    _index = index;
+    _typeInfo = a_type.getTypeInfo();
   }
 
   template <size_t innerBufferSize>
@@ -230,7 +244,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
     _clone(a_variant);
     return *this;
   }
@@ -241,7 +255,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
     _clone(a_variant);
     return *this;
   }
@@ -252,7 +266,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
     _set(a_value);
     return *this;
   }
@@ -262,7 +276,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
     _clone(a_variant);
   }
 
@@ -272,7 +286,7 @@ namespace fcf{
   {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
     _set(a_value);
   }
 
@@ -280,7 +294,7 @@ namespace fcf{
   void BasicVariant<innerBufferSize>::set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
     _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
   }
 
@@ -288,12 +302,89 @@ namespace fcf{
   void BasicVariant<innerBufferSize>::clear() {
     _destroy();
     _ptr = 0;
-    _index = 0;
+    _typeInfo = 0;
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator<(const Variant& a_value) const {
+    if (!a_value._typeInfo) {
+      return false;
+    } else if (_typeInfo == a_value._typeInfo) {
+      return _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), a_value.ptr());
+    } else if (!_typeInfo) {
+      return true;
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, a_value.ptr(), a_value._typeInfo->index);
+        return _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), buffer.ptr());
+      } catch(...) {
+        return _typeInfo->index < a_value._typeInfo->index;
+      }
+    }
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator<=(const Variant& a_value) const {
+    if (!_typeInfo) {
+      return true;
+    } else if (_typeInfo == a_value._typeInfo) {
+      bool res = _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), a_value.ptr());
+      if (res) {
+        return true;
+      }
+      return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), a_value.ptr());
+    } else if (!a_value._typeInfo) {
+      return false;
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, a_value.ptr(), a_value._typeInfo->index);
+        bool res = _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), buffer.ptr());
+        if (res) {
+          return true;
+        }
+        return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), buffer.ptr());
+      } catch(...) {
+        return _typeInfo->index < a_value._typeInfo->index;
+      }
+    }
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator==(const Variant& a_value) const {
+    if (!a_value._typeInfo) {
+      return !_typeInfo;
+    } else if (_typeInfo == a_value._typeInfo) {
+      return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), a_value.ptr());
+    } else if (!_typeInfo) {
+      return false;
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, a_value.ptr(), a_value._typeInfo->index);
+        return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), buffer.ptr());
+      } catch(...) {
+        return false;
+      }
+    }
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator!=(const Variant& a_value) const {
+    return (*this) == a_value;
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator>(const Variant& a_value) const {
+    return !((*this) <= a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator>=(const Variant& a_value) const {
+    return !((*this) < a_value);
   }
 
   template <size_t innerBufferSize>
   unsigned int BasicVariant<innerBufferSize>::typeIndex() const{
-    return _index;
+    return _typeInfo ? _typeInfo->index : 0;
   }
 
   template <size_t innerBufferSize>
@@ -377,10 +468,10 @@ namespace fcf{
       } else {
         _ptr = wrp->clone();
       }
-      _index = a_variant._index;
+      _typeInfo = a_variant._typeInfo;
     } else {
       _ptr = 0;
-      _index = 0;
+      _typeInfo = 0;
     }
   }
 
@@ -394,10 +485,10 @@ namespace fcf{
       } else {
         _ptr = wrp->clone();
       }
-      _index = a_variant._index;
+      _typeInfo = a_variant._typeInfo;
     } else {
       _ptr = 0;
-      _index = 0;
+      _typeInfo = 0;
     }
   }
 
@@ -414,7 +505,7 @@ namespace fcf{
       _ptr = &_mem[0];
     }
     */
-    _index = Type< typename Type<Ty, StoredDataTypeSpecificator>::type >().index();
+    _typeInfo = Type<type>().getTypeInfo();
   }
 
   template <size_t innerBufferSize>
@@ -425,7 +516,8 @@ namespace fcf{
       a_sourceTypeIndex = 0;
     }
     DynamicType dt(a_typeIndex);
-    size_t wsize = dt.getTypeInfo()->initializer->size();
+    const TypeInfo* ti = dt.getTypeInfo();
+    size_t wsize = ti->initializer->size();
     if (wsize > innerBufferSize) {
       if (a_sourceData && !a_sourceTypeIndex && !a_convertFunction) {
         _ptr = dt.getTypeInfo()->initializer->clone(a_sourceData);
@@ -439,7 +531,7 @@ namespace fcf{
         _ptr = dt.getTypeInfo()->initializer->create(&_mem[0]);
       }
     }
-    _index = a_typeIndex;
+    _typeInfo = ti;
 
     if (a_sourceTypeIndex && !a_convertFunction){
       convertRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions);

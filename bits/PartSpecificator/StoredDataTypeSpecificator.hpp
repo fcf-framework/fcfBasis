@@ -23,7 +23,7 @@ namespace fcf{
     }
 
     inline unsigned int call(Ty* /*a_object*/) const {
-      return Type< typename Type<Ty, StoredDataTypeSpecificator>::type   >().index();
+      return Type< typename Type<Ty, StoredDataTypeSpecificator>::type >().index();
     }
   };
 
