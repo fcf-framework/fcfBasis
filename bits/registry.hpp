@@ -28,8 +28,8 @@ FCF_TYPEID_REGISTRY(fcf::ResolveData,                 "fcf::ResolveData",  0);
 FCF_TYPEID_REGISTRY(fcf::ResolveSpecificator,         "fcf::ResolveSpecificator",  0);
 FCF_TYPEID_REGISTRY(fcf::LessSpecificator,            "fcf::LessSpecificator",  0);
 FCF_TYPEID_REGISTRY(fcf::EqualSpecificator,           "fcf::EqualSpecificator",  0);
-FCF_TYPEID_REGISTRY(fcf::AddToSpecificator,           "fcf::AddToSpecificator",  0);
-FCF_TYPEID_REGISTRY(fcf::SubToSpecificator,           "fcf::SubToSpecificator",  0);
+FCF_TYPEID_REGISTRY(fcf::AddSpecificator,           "fcf::AddSpecificator",  0);
+FCF_TYPEID_REGISTRY(fcf::SubSpecificator,           "fcf::SubSpecificator",  0);
 FCF_TYPEID_REGISTRY(fcf::BoolSpecificator,           "fcf::BoolSpecificator",  0);
 
 
@@ -38,10 +38,10 @@ namespace fcf { template<> struct Type<char, LessSpecificator> : public TypeImpl
 FCF_SPECIFICATOR_REGISTRY(char,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<char, EqualSpecificator> : public TypeImpl<char, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(char,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<char, AddToSpecificator> : public TypeImpl<char, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(char,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<char, SubToSpecificator> : public TypeImpl<char, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(char,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<char, AddSpecificator> : public TypeImpl<char, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(char,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<char, SubSpecificator> : public TypeImpl<char, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(char,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<char, BoolSpecificator> : public TypeImpl<char, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(char,  fcf::BoolSpecificator);
 
@@ -93,10 +93,10 @@ namespace fcf { template<> struct Type<unsigned char, LessSpecificator> : public
 FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<unsigned char, EqualSpecificator> : public TypeImpl<unsigned char, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<unsigned char, AddToSpecificator> : public TypeImpl<unsigned char, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<unsigned char, SubToSpecificator> : public TypeImpl<unsigned char, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<unsigned char, AddSpecificator> : public TypeImpl<unsigned char, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<unsigned char, SubSpecificator> : public TypeImpl<unsigned char, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<unsigned char, BoolSpecificator> : public TypeImpl<unsigned char, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned char,  fcf::BoolSpecificator);
 
@@ -106,10 +106,10 @@ namespace fcf { template<> struct Type<short, LessSpecificator> : public TypeImp
 FCF_SPECIFICATOR_REGISTRY(short,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<short, EqualSpecificator> : public TypeImpl<short, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(short,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<short, AddToSpecificator> : public TypeImpl<short, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(short,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<short, SubToSpecificator> : public TypeImpl<short, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(short,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<short, AddSpecificator> : public TypeImpl<short, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(short,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<short, SubSpecificator> : public TypeImpl<short, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(short,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<short, BoolSpecificator> : public TypeImpl<short, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(short,  fcf::BoolSpecificator);
 
@@ -119,10 +119,10 @@ namespace fcf { template<> struct Type<unsigned short, LessSpecificator> : publi
 FCF_SPECIFICATOR_REGISTRY(short,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<unsigned short, EqualSpecificator> : public TypeImpl<unsigned short, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(short,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<unsigned short, AddToSpecificator> : public TypeImpl<unsigned short, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(short,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<unsigned short, SubToSpecificator> : public TypeImpl<unsigned short, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(short,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<unsigned short, AddSpecificator> : public TypeImpl<unsigned short, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(short,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<unsigned short, SubSpecificator> : public TypeImpl<unsigned short, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(short,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<unsigned short, BoolSpecificator> : public TypeImpl<unsigned short, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(short,  fcf::BoolSpecificator);
 
@@ -132,10 +132,10 @@ namespace fcf { template<> struct Type<int, LessSpecificator> : public TypeImpl<
 FCF_SPECIFICATOR_REGISTRY(int,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<int, EqualSpecificator> : public TypeImpl<int, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(int,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<int, AddToSpecificator> : public TypeImpl<int, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(int,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<int, SubToSpecificator> : public TypeImpl<int, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(int,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<int, AddSpecificator> : public TypeImpl<int, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(int,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<int, SubSpecificator> : public TypeImpl<int, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(int,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<int, BoolSpecificator> : public TypeImpl<int, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(int,  fcf::BoolSpecificator);
 
@@ -145,10 +145,10 @@ namespace fcf { template<> struct Type<unsigned int, LessSpecificator> : public 
 FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<unsigned int, EqualSpecificator> : public TypeImpl<unsigned int, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<unsigned int, AddToSpecificator> : public TypeImpl<unsigned int, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<unsigned int, SubToSpecificator> : public TypeImpl<unsigned int, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<unsigned int, AddSpecificator> : public TypeImpl<unsigned int, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<unsigned int, SubSpecificator> : public TypeImpl<unsigned int, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<unsigned int, BoolSpecificator> : public TypeImpl<unsigned int, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned int,  fcf::BoolSpecificator);
 
@@ -158,10 +158,10 @@ namespace fcf { template<> struct Type<long long, LessSpecificator> : public Typ
 FCF_SPECIFICATOR_REGISTRY(long long,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<long long, EqualSpecificator> : public TypeImpl<long long, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(long long,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<long long, AddToSpecificator> : public TypeImpl<long long, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(long long,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<long long, SubToSpecificator> : public TypeImpl<long long, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(long long,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<long long, AddSpecificator> : public TypeImpl<long long, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(long long,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<long long, SubSpecificator> : public TypeImpl<long long, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(long long,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<long long, BoolSpecificator> : public TypeImpl<long long, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(long long,  fcf::BoolSpecificator);
 
@@ -171,10 +171,10 @@ namespace fcf { template<> struct Type<unsigned long long, LessSpecificator> : p
 FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<unsigned long long, EqualSpecificator> : public TypeImpl<unsigned long long, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<unsigned long long, AddToSpecificator> : public TypeImpl<unsigned long long, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<unsigned long long, SubToSpecificator> : public TypeImpl<unsigned long long, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<unsigned long long, AddSpecificator> : public TypeImpl<unsigned long long, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<unsigned long long, SubSpecificator> : public TypeImpl<unsigned long long, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<unsigned long long, BoolSpecificator> : public TypeImpl<unsigned long long, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned long long,  fcf::BoolSpecificator);
 
@@ -184,10 +184,10 @@ namespace fcf { template<> struct Type<float, LessSpecificator> : public TypeImp
 FCF_SPECIFICATOR_REGISTRY(float,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<float, EqualSpecificator> : public TypeImpl<float, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(float,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<float, AddToSpecificator> : public TypeImpl<float, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(float,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<float, SubToSpecificator> : public TypeImpl<float, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(float,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<float, AddSpecificator> : public TypeImpl<float, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(float,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<float, SubSpecificator> : public TypeImpl<float, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(float,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<float, BoolSpecificator> : public TypeImpl<float, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(float,  fcf::BoolSpecificator);
 
@@ -197,10 +197,10 @@ namespace fcf { template<> struct Type<double, LessSpecificator> : public TypeIm
 FCF_SPECIFICATOR_REGISTRY(double,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<double, EqualSpecificator> : public TypeImpl<double, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(double,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<double, AddToSpecificator> : public TypeImpl<double, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(double,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<double, SubToSpecificator> : public TypeImpl<double, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(double,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<double, AddSpecificator> : public TypeImpl<double, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(double,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<double, SubSpecificator> : public TypeImpl<double, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(double,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<double, BoolSpecificator> : public TypeImpl<double, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(double,  fcf::BoolSpecificator);
 
@@ -210,10 +210,10 @@ namespace fcf { template<> struct Type<long double, LessSpecificator> : public T
 FCF_SPECIFICATOR_REGISTRY(long double,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<long double, EqualSpecificator> : public TypeImpl<long double, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(long double,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<long double, AddToSpecificator> : public TypeImpl<long double, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(long double,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<long double, SubToSpecificator> : public TypeImpl<long double, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(long double,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<long double, AddSpecificator> : public TypeImpl<long double, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(long double,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<long double, SubSpecificator> : public TypeImpl<long double, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(long double,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<long double, BoolSpecificator> : public TypeImpl<long double, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(long double,  fcf::BoolSpecificator);
 
@@ -223,10 +223,10 @@ namespace fcf { template<> struct Type<long int, LessSpecificator> : public Type
 FCF_SPECIFICATOR_REGISTRY(long int,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<long int, EqualSpecificator> : public TypeImpl<long int, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(long int,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<long int, AddToSpecificator> : public TypeImpl<long int, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(long int,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<long int, SubToSpecificator> : public TypeImpl<long int, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(long int,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<long int, AddSpecificator> : public TypeImpl<long int, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(long int,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<long int, SubSpecificator> : public TypeImpl<long int, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(long int,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<long int, BoolSpecificator> : public TypeImpl<long int, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(long int,  fcf::BoolSpecificator);
 
@@ -236,10 +236,10 @@ namespace fcf { template<> struct Type<unsigned long int, LessSpecificator> : pu
 FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<unsigned long int, EqualSpecificator> : public TypeImpl<unsigned long int, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<unsigned long int, AddToSpecificator> : public TypeImpl<unsigned long int, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<unsigned long int, SubToSpecificator> : public TypeImpl<unsigned long int, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<unsigned long int, AddSpecificator> : public TypeImpl<unsigned long int, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<unsigned long int, SubSpecificator> : public TypeImpl<unsigned long int, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<unsigned long int, BoolSpecificator> : public TypeImpl<unsigned long int, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(unsigned long int,  fcf::BoolSpecificator);
 
@@ -251,10 +251,10 @@ namespace fcf { template<> struct Type<bool, LessSpecificator> : public TypeImpl
 FCF_SPECIFICATOR_REGISTRY(bool,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<bool, EqualSpecificator> : public TypeImpl<bool, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(bool,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<bool, AddToSpecificator> : public TypeImpl<bool, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(bool,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<bool, SubToSpecificator> : public TypeImpl<bool, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(bool,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<bool, AddSpecificator> : public TypeImpl<bool, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(bool,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<bool, SubSpecificator> : public TypeImpl<bool, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(bool,  fcf::SubSpecificator);
 namespace fcf { template<> struct Type<bool, BoolSpecificator> : public TypeImpl<bool, BoolSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(bool,  fcf::BoolSpecificator);
 
@@ -264,8 +264,8 @@ namespace fcf { template<> struct Type<std::string, LessSpecificator> : public T
 FCF_SPECIFICATOR_REGISTRY(std::string,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<std::string, EqualSpecificator> : public TypeImpl<std::string, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(std::string,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<std::string, AddToSpecificator> : public TypeImpl<std::string, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(std::string,  fcf::AddToSpecificator);
+namespace fcf { template<> struct Type<std::string, AddSpecificator> : public TypeImpl<std::string, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(std::string,  fcf::AddSpecificator);
 namespace fcf { template<> struct Type<std::string, BoolSpecificator> : public TypeImpl<std::string, BoolSpecificator> {
   bool call(const std::string* a_value){
     return !a_value->empty();
@@ -280,10 +280,11 @@ namespace fcf { template<> struct Type<fcf::Variant, LessSpecificator> : public 
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::LessSpecificator);
 namespace fcf { template<> struct Type<fcf::Variant, EqualSpecificator> : public TypeImpl<fcf::Variant, EqualSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::EqualSpecificator);
-namespace fcf { template<> struct Type<fcf::Variant, AddToSpecificator> : public TypeImpl<fcf::Variant, AddToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::AddToSpecificator);
-namespace fcf { template<> struct Type<fcf::Variant, SubToSpecificator> : public TypeImpl<fcf::Variant, SubToSpecificator> {}; } 
-FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::SubToSpecificator);
+namespace fcf { template<> struct Type<fcf::Variant, AddSpecificator> : public TypeImpl<fcf::Variant, AddSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::AddSpecificator);
+namespace fcf { template<> struct Type<fcf::Variant, SubSpecificator> : public TypeImpl<fcf::Variant, SubSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::SubSpecificator);
+
 //namespace fcf { template<> struct Type<fcf::Variant, BoolSpecificator> : public TypeImpl<fcf::Variant, BoolSpecificator> {}; } 
 //FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::BoolSpecificator);
 

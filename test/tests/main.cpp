@@ -22,6 +22,7 @@ namespace FcfTest {
     void minMaxSpecificatorTest();
     void foreachTest();
     void variantCmpTest();
+    void variantConstructorTest();
     void variantArithmeticTest();
 
   } // BasisTest namespace
@@ -44,6 +45,7 @@ void tupleTest();
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
   variantTest();
   FcfTest::BasisTest::foreachTest();
+  FcfTest::BasisTest::variantConstructorTest();
   FcfTest::BasisTest::variantCmpTest();
   FcfTest::BasisTest::variantArithmeticTest();
   FcfTest::BasisTest::sequenceTest();

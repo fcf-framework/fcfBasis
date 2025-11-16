@@ -37,6 +37,13 @@ namespace fcf{
         return _info;
       }
 
+      size_t getWrapperSize(std::exception const ** a_errorDst = 0){
+        if (!_prepare(a_errorDst)){
+          return 0;
+        }
+        return _info->initializer->size();
+      }
+
     protected:
       inline bool _prepare(std::exception const ** a_errorDst = 0){
         if (a_errorDst) {

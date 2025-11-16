@@ -9,8 +9,8 @@
 #include "ResolveSpecificator.hpp"
 #include "LessSpecificator.hpp"
 #include "EqualSpecificator.hpp"
-#include "AddToSpecificator.hpp"
-#include "SubToSpecificator.hpp"
+#include "AddSpecificator.hpp"
+#include "SubSpecificator.hpp"
 #include "BoolSpecificator.hpp"
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_SPECIFICATOR__PART_SPECIFICATOR_HPP___

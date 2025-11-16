@@ -10,6 +10,7 @@
 
 #include "../../bits/PartConvert/NDetails/setConverterDefinition.hpp"
 #include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
+#include "../../bits/PartType/TypeWrapper.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 
@@ -54,6 +55,10 @@ namespace fcf{
 
       const TypeInfo* getTypeInfo() {
         return _info;
+      }
+
+      size_t getWrapperSize(){
+        return sizeof(fcf::TypeWrapper<Ty>);
       }
 
       const std::map<unsigned int, SpecificatorInfo>& specificators() {
