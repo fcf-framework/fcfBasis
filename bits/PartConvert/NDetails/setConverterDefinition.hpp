@@ -3,7 +3,7 @@
 
 namespace fcf::NDetails {
 
-  template <typename TSource, typename TDestination>
+  template <typename TDestination, typename TSource>
   inline void setConverter();
 
 } // fcf::NDetails namespace

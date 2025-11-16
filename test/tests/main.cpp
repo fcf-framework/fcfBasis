@@ -22,6 +22,7 @@ namespace FcfTest {
     void minMaxSpecificatorTest();
     void foreachTest();
     void variantCmpTest();
+    void variantArithmeticTest();
 
   } // BasisTest namespace
 } // FcfTest namespace
@@ -37,18 +38,18 @@ void iteratorTest();
 void dynamicIteratorTest();
 void deepIndexContainerCaller();
 void tupleTest();
-  
 
 
-int main(int /*a_argc*/, char* /*a_argv*/[]){
 
-  variantTest(); 
+int main(int /*a_argc*/, char* /*a_argv*/[]) {
+  variantTest();
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantCmpTest();
+  FcfTest::BasisTest::variantArithmeticTest();
   FcfTest::BasisTest::sequenceTest();
-  
+
   FcfTest::BasisTest::minMaxSpecificatorTest();
-  
+
   FcfTest::BasisTest::staticVectorTest();
   FcfTest::BasisTest::staticVectorCopyTest();
   FcfTest::BasisTest::staticVectorExceptionTest();
@@ -72,6 +73,6 @@ int main(int /*a_argc*/, char* /*a_argv*/[]){
   dynamicIteratorTest();
   deepIndexContainerCaller();
   tupleTest();
-  
+
   return 0;
 }

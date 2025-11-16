@@ -62,17 +62,80 @@ namespace fcf {
 
       void clear();
 
-      bool operator<(const Variant& a_value) const;
 
-      bool operator<=(const Variant& a_value) const;
 
-      bool operator==(const Variant& a_value) const;
+      bool operator<(const BasicVariant& a_value) const;
 
-      bool operator!=(const Variant& a_value) const;
+      template <typename Ty>
+      bool operator<(const Ty& a_value) const;
 
-      bool operator>(const Variant& a_value) const;
+      bool operator<(const char* a_value) const;
 
-      bool operator>=(const Variant& a_value) const;
+
+
+      bool operator<=(const BasicVariant& a_value) const;
+
+      template <typename Ty>
+      bool operator<=(const Ty& a_value) const;
+
+      bool operator<=(const char* a_value) const;
+
+
+
+      bool operator==(const BasicVariant& a_value) const;
+
+      template <typename Ty>
+      bool operator==(const Ty& a_value) const;
+
+      bool operator==(const char* a_value) const;
+
+
+
+      bool operator!=(const BasicVariant& a_value) const;
+
+      template <typename Ty>
+      bool operator!=(const Ty& a_value) const;
+
+      bool operator!=(const char* a_value) const;
+
+
+
+      bool operator>(const BasicVariant& a_value) const;
+
+      template <typename Ty>
+      bool operator>(const Ty& a_value) const;
+
+      bool operator>(const char* a_value) const;
+
+
+
+      bool operator>=(const BasicVariant& a_value) const;
+
+      template <typename Ty>
+      bool operator>=(const Ty& a_value) const;
+
+      bool operator>=(const char* a_value) const;
+
+
+      BasicVariant& operator+=(const BasicVariant& a_value);
+
+      template <typename Ty>
+      BasicVariant& operator+=(const Ty&& a_value);
+
+      BasicVariant operator+(const BasicVariant& a_value);
+
+      template <typename Ty>
+      BasicVariant operator+(const Ty&& a_value);
+
+      BasicVariant& operator-=(const BasicVariant& a_value);
+
+      template <typename Ty>
+      BasicVariant& operator-=(const Ty&& a_value);
+
+      BasicVariant operator-(const BasicVariant& a_value);
+
+      template <typename Ty>
+      BasicVariant operator-(const Ty&& a_value);
 
       unsigned int typeIndex() const;
 
@@ -110,6 +173,15 @@ namespace fcf {
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
+      template <typename Ty>
+      bool _less(const Ty& a_value) const;
+
+      template <typename Ty>
+      bool _lessEqual(const Ty& a_value) const;
+
+      template <typename Ty>
+      bool _equal(const Ty& a_value) const;
+
       char            _mem[innerBufferSize];
       const TypeInfo* _typeInfo;
       void*           _ptr;
@@ -122,8 +194,19 @@ namespace fcf {
 #include "bits/PartSpecificator/StoredDataTypeSpecificator.hpp"
 #include "bits/PartSpecificator/LessSpecificator.hpp"
 #include "bits/PartSpecificator/EqualSpecificator.hpp"
+#include "bits/PartSpecificator/AddToSpecificator.hpp"
+#include "bits/PartSpecificator/SubToSpecificator.hpp"
+
+
 
 namespace fcf{
+
+  template <size_t innerBufferSize>
+  std::ostream& operator<<(std::ostream& a_stream, const BasicVariant<innerBufferSize>& a_variant){
+    a_stream << a_variant. template cast<std::string>();
+    return a_stream;
+  }
+
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant()
     : _typeInfo(0)
@@ -306,7 +389,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator<(const Variant& a_value) const {
+  bool BasicVariant<innerBufferSize>::operator<(const BasicVariant<innerBufferSize>& a_value) const {
     if (!a_value._typeInfo) {
       return false;
     } else if (_typeInfo == a_value._typeInfo) {
@@ -324,7 +407,18 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator<=(const Variant& a_value) const {
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::operator<(const Ty& a_value) const {
+    return _less(a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator<(const char* a_value) const {
+    return _less(a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator<=(const BasicVariant<innerBufferSize>& a_value) const {
     if (!_typeInfo) {
       return true;
     } else if (_typeInfo == a_value._typeInfo) {
@@ -350,7 +444,18 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator==(const Variant& a_value) const {
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::operator<=(const Ty& a_value) const {
+    return _lessEqual(a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator<=(const char* a_value) const {
+    return _lessEqual(a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator==(const BasicVariant<innerBufferSize>& a_value) const {
     if (!a_value._typeInfo) {
       return !_typeInfo;
     } else if (_typeInfo == a_value._typeInfo) {
@@ -368,19 +473,170 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator!=(const Variant& a_value) const {
-    return (*this) == a_value;
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::operator==(const Ty& a_value) const{
+    return _equal(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator>(const Variant& a_value) const {
+  bool BasicVariant<innerBufferSize>::operator==(const char* a_value) const{
+    return _equal(a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator!=(const BasicVariant<innerBufferSize>& a_value) const {
+    return !((*this) == a_value);
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::operator!=(const Ty& a_value) const {
+    return !((*this) == a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator!=(const char* a_value) const {
+    return !((*this) == a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator>(const BasicVariant<innerBufferSize>& a_value) const {
     return !((*this) <= a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator>=(const Variant& a_value) const {
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::operator>(const Ty& a_value) const {
+    return !((*this) <= a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator>(const char* a_value) const {
+    return !((*this) <= a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator>=(const BasicVariant<innerBufferSize>& a_value) const {
     return !((*this) < a_value);
   }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::operator>=(const Ty& a_value) const{
+    return !((*this) < a_value);
+  }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::operator>=(const char* a_value) const{
+    return !((*this) < a_value);
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator+=(const BasicVariant<innerBufferSize>& a_value){
+    if (!_typeInfo || !a_value._typeInfo) {
+      return *this;
+    } else if (_typeInfo == a_value._typeInfo) {
+      _typeInfo->getSafeSpecificatorCall<AddToSpecificator>()(ptr(), a_value.ptr());
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, a_value.ptr(), a_value._typeInfo->index);
+        _typeInfo->getSafeSpecificatorCall<AddToSpecificator>()(ptr(), buffer.ptr());
+      } catch(...){
+      }
+    }
+    return *this;
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator+=(const Ty&& a_value){
+    if (!_typeInfo) {
+      return *this;
+    }
+
+    typedef typename std::remove_reference<Ty>::type ArgType;
+
+    unsigned int argTypeIndex = Type<ArgType>().index();
+    if (_typeInfo->index == argTypeIndex) {
+      _typeInfo->getSafeSpecificatorCall<AddToSpecificator>()(ptr(), &a_value);
+      return *this;
+    }
+
+    try {
+      Variant buffer(_typeInfo->index, &a_value, argTypeIndex);
+      _typeInfo->getSafeSpecificatorCall<AddToSpecificator>()(ptr(), buffer.ptr());
+    } catch(...) {
+    }
+
+    return *this;
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator+(const BasicVariant<innerBufferSize>& a_value){
+    BasicVariant<innerBufferSize> result(*this);
+    result += a_value;
+    return result;
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator+(const Ty&& a_value){
+    return BasicVariant<innerBufferSize>(*this) += a_value;
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator-=(const BasicVariant<innerBufferSize>& a_value){
+    if (!_typeInfo || !a_value._typeInfo) {
+      return *this;
+    } else if (_typeInfo == a_value._typeInfo) {
+      _typeInfo->getSafeSpecificatorCall<SubToSpecificator>()(ptr(), a_value.ptr());
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, a_value.ptr(), a_value._typeInfo->index);
+        _typeInfo->getSafeSpecificatorCall<SubToSpecificator>()(ptr(), buffer.ptr());
+      } catch(...) {
+      }
+    }
+    return *this;
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator-=(const Ty&& a_value){
+    if (!_typeInfo) {
+      return *this;
+    }
+
+    typedef typename std::remove_reference<Ty>::type ArgType;
+
+    unsigned int argTypeIndex = Type<ArgType>().index();
+    if (_typeInfo->index == argTypeIndex) {
+      _typeInfo->getSafeSpecificatorCall<SubToSpecificator>()(ptr(), &a_value);
+      return *this;
+    }
+
+    try {
+      Variant buffer(_typeInfo->index, &a_value, argTypeIndex);
+      _typeInfo->getSafeSpecificatorCall<SubToSpecificator>()(ptr(), buffer.ptr());
+    } catch(...) {
+    }
+
+    return *this;
+  }
+
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator-(const BasicVariant<innerBufferSize>& a_value){
+    return BasicVariant<innerBufferSize>(*this) -= a_value;
+  }
+
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator-(const Ty&& a_value){
+    return BasicVariant<innerBufferSize>(*this) -= a_value;
+  }
+
 
   template <size_t innerBufferSize>
   unsigned int BasicVariant<innerBufferSize>::typeIndex() const{
@@ -389,12 +645,12 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   void* BasicVariant<innerBufferSize>::ptr(){
-    return &((TypeWrapper<int>*)_ptr)->data;
+    return _ptr ? &((TypeWrapper<int>*)_ptr)->data : 0;
   }
 
   template <size_t innerBufferSize>
   const void* BasicVariant<innerBufferSize>::ptr() const{
-    return &((TypeWrapper<int>*)_ptr)->data;
+    return _ptr ? &((TypeWrapper<int>*)_ptr)->data : 0;
   }
 
   template <size_t innerBufferSize>
@@ -539,6 +795,84 @@ namespace fcf{
       a_convertFunction(ptr(), a_sourceData, a_convertOptions);
     }
   }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::_less(const Ty& a_value) const{
+    if (!_typeInfo) {
+      return true;
+    }
+
+    typedef typename std::remove_reference<Ty>::type ArgType;
+
+    unsigned int argTypeIndex = Type<ArgType>().index();
+    if (_typeInfo->index == argTypeIndex) {
+      return _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), &a_value);
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, &a_value, argTypeIndex);
+        return _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), buffer.ptr());
+      } catch(...) {
+        return _typeInfo->index < argTypeIndex;
+      }
+    }
+  }
+
+
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::_lessEqual(const Ty& a_value) const {
+    if (!_typeInfo) {
+      return true;
+    }
+
+    typedef typename std::remove_reference<Ty>::type ArgType;
+
+    unsigned int argTypeIndex = Type<ArgType>().index();
+    if (_typeInfo->index == argTypeIndex) {
+      bool res = _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), &a_value);
+      if (res) {
+        return true;
+      }
+      return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), &a_value);
+    } else {
+      try {
+        Variant buffer(_typeInfo->index, &a_value, argTypeIndex);
+        bool res = _typeInfo->getSafeSpecificatorCall<LessSpecificator>()(ptr(), buffer.ptr());
+        if (res) {
+          return true;
+        }
+        return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), buffer.ptr());
+      } catch(...) {
+        return _typeInfo->index < argTypeIndex;
+      }
+    }
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  bool BasicVariant<innerBufferSize>::_equal(const Ty& a_value) const {
+    if (!_typeInfo) {
+      return false;
+    }
+
+    typedef typename std::remove_reference<Ty>::type ArgType;
+
+    unsigned int argTypeIndex = Type<ArgType>().index();
+    if (_typeInfo->index == argTypeIndex) {
+      return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), &a_value);
+    }
+
+    try {
+      Variant buffer(_typeInfo->index, &a_value, argTypeIndex);
+      return _typeInfo->getSafeSpecificatorCall<EqualSpecificator>()(ptr(), buffer.ptr());
+    } catch(...) {
+    }
+
+    return false;
+  }
+
 }  // fcf namespace
 
 #include "bits/PartSpecificator/ResolveSpecificator.hpp"

@@ -25,5 +25,6 @@ add_executable("basis-test" impl.cpp
                            StaticVector/StaticVectorErase.cpp
                            PartForeach/foreach.cpp
                            PartVariant/VariantCmpTest.cpp
+                           PartVariant/VariantArithmeticTest.cpp
                          )
 

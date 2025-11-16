@@ -52,6 +52,67 @@ namespace fcf {
         a_destination = a_source;
       }
   };
+
+  template <>
+  class Converter<const char*, char*>{
+    public:
+      void operator()(const char*& a_destination, char* a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = a_source;
+      }
+  };
+  template <>
+  class Converter<std::string, const char*>{
+    public:
+      void operator()(std::string& a_destination, const char* a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = a_source;
+      }
+  };
+
+  template <>
+  class Converter<std::string, char*>{
+    public:
+      void operator()(std::string& a_destination, char* a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = a_source;
+      }
+  };
+
+  template <>
+  class Converter<const char*, const char*>{
+    public:
+      void operator()(const char*& a_destination, const char* const& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = a_source;
+      }
+  };
+
+  template <>
+  class Converter<char*, char*>{
+    public:
+      void operator()(char*& a_destination, char* const& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = a_source;
+      }
+  };
+
+  template <typename TDestination>
+  class Converter<TDestination, const char*>{
+    public:
+      void operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions = 0){
+        Converter<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions);
+      }
+  };
+
+  template <typename TDestination>
+  class Converter<TDestination, char*>{
+    public:
+      void operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions = 0){
+        Converter<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions);
+      }
+  };
+
 } // fcf namespace
 
 #include "../../Variant.hpp"

@@ -21,7 +21,7 @@ namespace fcf{
       template <typename TContainer, typename TSubSpecificator>
       friend class SpecificatorRegistrar;
 
-      template <typename TSource, typename TDestination>
+      template <typename TDestination, typename TSource>
       friend void ::fcf::NDetails::setConverter();
 
       typedef Ty         owner_type;

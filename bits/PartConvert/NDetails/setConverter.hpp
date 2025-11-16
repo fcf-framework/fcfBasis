@@ -6,7 +6,7 @@
 
 namespace fcf::NDetails {
 
-  template <typename TSource, typename TDestination>
+  template <typename TDestination, typename TSource>
   inline void setConverter() {
     ::fcf::Type<TSource>()._info->converters[::fcf::Type<TDestination>().index()] = (ConvertFunction)convertWrapper<TDestination, TSource>;
     ::fcf::Type<TDestination>()._info->backConverters[::fcf::Type<TSource>().index()] = (ConvertFunction)convertWrapper<TDestination, TSource>;
