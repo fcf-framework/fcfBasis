@@ -11,6 +11,8 @@
 #include "EqualSpecificator.hpp"
 #include "AddSpecificator.hpp"
 #include "SubSpecificator.hpp"
+#include "MulSpecificator.hpp"
 #include "BoolSpecificator.hpp"
+
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_SPECIFICATOR__PART_SPECIFICATOR_HPP___
