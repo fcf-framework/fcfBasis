@@ -1,6 +1,10 @@
 #ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__BOOL_SPECIFICATOR_HPP___
 #define ___FCF_BASIS__BITS__PART_SPECIFICATOR__BOOL_SPECIFICATOR_HPP___
 
+#include "../../bits/PartTypes/UniversalCall.hpp"
+#include "../../bits/PartType/Type.hpp"
+#include "../../Variant.hpp"
+
 namespace fcf{
 
   struct BoolSpecificator {

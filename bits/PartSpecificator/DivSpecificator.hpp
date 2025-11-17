@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__MUL_SPECIFICATOR_HPP___
-#define ___FCF_BASIS__BITS__PART_SPECIFICATOR__MUL_SPECIFICATOR_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__DIV_SPECIFICATOR_HPP___
+#define ___FCF_BASIS__BITS__PART_SPECIFICATOR__DIV_SPECIFICATOR_HPP___
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/Type.hpp"
@@ -7,17 +7,17 @@
 
 namespace fcf{
 
-  struct MulSpecificator {
+  struct DivSpecificator {
     typedef void (*CallType)(void* a_destination, const void* a_leftValue, const void* a_rightValue);
   };
 
   template <typename Ty>
-  struct Type<Ty, MulSpecificator> {
+  struct Type<Ty, DivSpecificator> {
     enum { enable = false };
   };
 
   template <typename Ty>
-  struct TypeImpl<Ty, MulSpecificator> {
+  struct TypeImpl<Ty, DivSpecificator> {
     enum { enable = true };
 
     inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
@@ -44,15 +44,15 @@ namespace fcf{
       if (Type<Ty>().index() != (a_argv+1)->typeIndex()) {
         throw std::runtime_error("Error sum different types");
       }
-      Type<Ty, MulSpecificator>().call(a_object, leftPtr, rightPtr);
+      Type<Ty, DivSpecificator>().call(a_object, leftPtr, rightPtr);
       return Variant();
     }
 
     inline void call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) const {
-      *a_destination = (*a_leftValue) * (*a_rightValue);
+      *a_destination = (*a_leftValue) / (*a_rightValue);
     }
   };
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__MUL_SPECIFICATOR_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__DIV_SPECIFICATOR_HPP___

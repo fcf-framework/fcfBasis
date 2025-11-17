@@ -12,6 +12,7 @@
 #include "AddSpecificator.hpp"
 #include "SubSpecificator.hpp"
 #include "MulSpecificator.hpp"
+#include "DivSpecificator.hpp"
 #include "BoolSpecificator.hpp"
 
 
