@@ -284,6 +284,8 @@ namespace fcf { template<> struct Type<fcf::Variant, AddSpecificator> : public T
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::AddSpecificator);
 namespace fcf { template<> struct Type<fcf::Variant, SubSpecificator> : public TypeImpl<fcf::Variant, SubSpecificator> {}; } 
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::SubSpecificator);
+namespace fcf { template<> struct Type<fcf::Variant, BoolSpecificator> : public TypeImpl<fcf::Variant, BoolSpecificator> {}; } 
+FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::BoolSpecificator);
 
 //namespace fcf { template<> struct Type<fcf::Variant, BoolSpecificator> : public TypeImpl<fcf::Variant, BoolSpecificator> {}; } 
 //FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::BoolSpecificator);

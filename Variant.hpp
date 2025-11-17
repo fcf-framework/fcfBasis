@@ -66,7 +66,7 @@ namespace fcf {
 
       void clear();
 
-
+      operator bool() const;
 
       bool operator<(const BasicVariant& a_value) const;
 
@@ -147,12 +147,16 @@ namespace fcf {
 
       BasicVariant& operator-=(const char* a_value);
 
+
+
       BasicVariant operator-(const BasicVariant& a_value) const;
 
       template <typename Ty>
       BasicVariant operator-(const Ty& a_value) const;
 
       BasicVariant operator-(const char* a_value) const;
+
+
 
       unsigned int typeIndex() const;
 
@@ -229,6 +233,7 @@ namespace fcf {
 #include "bits/PartSpecificator/EqualSpecificator.hpp"
 #include "bits/PartSpecificator/AddSpecificator.hpp"
 #include "bits/PartSpecificator/SubSpecificator.hpp"
+#include "bits/PartSpecificator/BoolSpecificator.hpp"
 
 
 
@@ -471,6 +476,20 @@ namespace fcf{
     _ptr = 0;
     _typeInfo = 0;
   }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>::operator bool() const{
+    const void* p = ptr();
+    if (p) {
+      return false;
+    }
+    BoolSpecificator::CallType c = _typeInfo->getSpecificatorCall<BoolSpecificator>();
+    if (!c) {
+      return true;
+    }
+    return !!p;
+  }
+
 
   template <size_t innerBufferSize>
   bool BasicVariant<innerBufferSize>::operator<(const BasicVariant<innerBufferSize>& a_value) const {
