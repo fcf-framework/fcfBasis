@@ -3,14 +3,16 @@
 
 #include "../CallConversion.hpp"
 
-namespace fcf::NDetails {
+namespace fcf{
+  namespace NDetails {
 
-  struct CallConversionNode {
-    CallConversionNode* prev;
-    CallConversionNode* next;
-    CallConversion  conversion;
-  };
+    struct CallConversionNode {
+      CallConversionNode* prev;
+      CallConversionNode* next;
+      CallConversion  conversion;
+    };
 
-} // fcf::NDetails namespace
+  } // NDetails namespace
+} // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_CONVERSION_NODE_HPP___

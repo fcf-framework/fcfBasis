@@ -3,23 +3,25 @@
 
 #include "../../../Nop.hpp"
 
-namespace fcf::NDetails {
+namespace fcf {
+  namespace NDetails {
 
-  template <typename TResult = Nop>
-  struct CallResultTypeGetter {
-    typedef TResult type;
-  };
+    template <typename TResult = Nop>
+    struct CallResultTypeGetter {
+      typedef TResult type;
+    };
 
-  template <typename TResult, typename... TPack>
-  struct CallResultTypeGetter<TResult (TPack...)> {
-    typedef TResult type;
-  };
+    template <typename TResult, typename... TPack>
+    struct CallResultTypeGetter<TResult (TPack...)> {
+      typedef TResult type;
+    };
 
-  template <typename TResult, typename... TPack>
-  struct CallResultTypeGetter<TResult (*)(TPack...)> {
-    typedef TResult type;
-  };
+    template <typename TResult, typename... TPack>
+    struct CallResultTypeGetter<TResult (*)(TPack...)> {
+      typedef TResult type;
+    };
 
-} // fcf::NDetails namespace
+  } // NDetails namespace
+} // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_RESULT_TYPE_GETTER_HPP___

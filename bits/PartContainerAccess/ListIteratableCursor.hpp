@@ -115,6 +115,29 @@ namespace fcf {
       return iterator == a_cursor.iterator;
     }
 
+    inline void set(key_type a_key, const value_type& a_value){
+      const size_t s = container->size();
+      if (a_key < s){
+        if (key > a_key){
+          key = 0;
+          iterator = std::begin(*container);
+        }
+        for(; a_key != key; ++key, ++iterator);
+        *iterator = a_value;
+      } else if (a_key == s) {
+        (*container).push_back(a_value);
+        iterator = --(*container).end();
+        key = a_key;
+      } else {
+        for(size_t i = s; i < a_key; ++i){
+          (*container).push_back(value_type());
+        }
+        (*container).push_back(a_value);
+        iterator = --(*container).end();
+        key = a_key;
+      }
+    }
+
     container_type* container;
     iterator_type   iterator;
     key_type        key;

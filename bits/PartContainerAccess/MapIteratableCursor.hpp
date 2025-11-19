@@ -91,6 +91,13 @@ namespace fcf {
       return iterator == container->end();
     }
 
+    inline void set(key_type a_key, const value_type& a_value) {
+      auto insRes = container->insert(stored_value_type(a_key, a_value));
+      if (!insRes.second){
+        insRes.first->second = a_value;
+      }
+    }
+
     inline MapIteratableCursor erase() {
       return MapIteratableCursor{container, container->erase(iterator)};
     }

@@ -87,6 +87,10 @@ namespace fcf {
       return iterator == a_cursor.iterator;
     }
 
+    inline void set(key_type /*a_key*/, const value_type& a_value) {
+      container->insert(a_value);
+    }
+
     container_type* container;
     iterator_type   iterator;
   };

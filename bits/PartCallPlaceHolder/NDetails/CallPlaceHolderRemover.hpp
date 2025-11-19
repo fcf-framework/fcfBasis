@@ -5,7 +5,8 @@
 #include "../../../bits/PartCall/NDetails/CallFunctionBuilderByTuple.hpp"
 #include "CallPlaceHolderArgDetector.hpp"
 
-namespace fcf::NDetails {
+namespace fcf {
+  namespace NDetails {
 
     template <typename TTuple, typename TResult, typename... TArgPack>
     struct CallPlaceHolderRemoverImpl;
@@ -43,6 +44,7 @@ namespace fcf::NDetails {
       typedef typename CallPlaceHolderRemoverImpl<std::tuple<>, TResult, TArgPack...>::function_type function_type;
     };
 
-} // fcf::NDetails namespace
+  } // NDetails namespace
+} // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___

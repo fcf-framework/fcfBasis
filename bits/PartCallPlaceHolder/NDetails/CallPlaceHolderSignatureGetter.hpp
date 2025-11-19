@@ -11,7 +11,8 @@
 #include "../CallPlaceHolderInfo.hpp"
 
 
-namespace fcf::NDetails {
+namespace fcf {
+  namespace NDetails {
 
     template <typename TFullFunctionType, typename TResult, typename TSpecificator, unsigned int SpecificatorSourceArgIndex = 0, typename... TArgPack>
     struct CallPlaceHolderSignatureGetter {
@@ -85,7 +86,8 @@ namespace fcf::NDetails {
       }
     };
 
-} // fcf::NDetails namespace
+  } // NDetails namespace
+} // fcf namespace
 
 #include "../../../bits/PartCall/NDetails/CallPlaceHolderSignatures.hpp"
 

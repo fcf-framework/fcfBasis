@@ -5,38 +5,40 @@
 #include "../../../bits/functions/random.hpp"
 
 
-namespace FcfTest::BasisTest::MinMaxSpecificatorTest{
+namespace FcfTest{
+  namespace BasisTest{
+    namespace MinMaxSpecificatorTest{
 
-  struct Item{
-    int value;
-    int min;
-    int max;
+      struct Item{
+        int value;
+        int min;
+        int max;
 
-    Item()
-      : value(0)
-      , min(1)
-      , max(10) {
-    }
-    Item(const Item& a_item)
-      : value(a_item.value)
-      , min(a_item.min)
-      , max(a_item.max) {
-    }
+        Item()
+          : value(0)
+          , min(1)
+          , max(10) {
+        }
+        Item(const Item& a_item)
+          : value(a_item.value)
+          , min(a_item.min)
+          , max(a_item.max) {
+        }
 
-    Item(int a_value)
-      : value(a_value)
-      , min(1)
-      , max(10) {
-    }
+        Item(int a_value)
+          : value(a_value)
+          , min(1)
+          , max(10) {
+        }
 
-    Item& operator=(int a_value){
-      value = a_value;
-      return *this;
-    }
+        Item& operator=(int a_value){
+          value = a_value;
+          return *this;
+        }
 
-  };
+      };
 
-}
+}}}
 
 namespace fcf {
 
@@ -70,20 +72,16 @@ FCF_DECLARE_FUNCTION(random,
                      ((fcf::MinMaxSpecificator, 1, Item*, Item*, fcf::Arg1, fcf::Arg2)),
                     );
 
-namespace FcfTest::BasisTest {
-
-
-
-
-  void minMaxSpecificatorTest(){
-    std::cout << "Start minMaxSpecificatorTest()..." << std::endl;
-    std::vector<FcfTest::BasisTest::MinMaxSpecificatorTest::Item> vector(100);
-    fcf::call("random", vector);
-    for(Item& itm : vector){
-      FCF_TEST(itm.value >= 1, itm.value);
-      FCF_TEST(itm.value < 10, itm.value);
+namespace FcfTest {
+  namespace BasisTest {
+    void minMaxSpecificatorTest(){
+      std::cout << "Start minMaxSpecificatorTest()..." << std::endl;
+      std::vector<FcfTest::BasisTest::MinMaxSpecificatorTest::Item> vector(100);
+      fcf::call("random", vector);
+      for(Item& itm : vector){
+        FCF_TEST(itm.value >= 1, itm.value);
+        FCF_TEST(itm.value < 10, itm.value);
+      }
     }
-
-  }
-
-} // FcfTest::BasisTest namespace
+  } // BasisTest namespace
+} // FcfTest namespace

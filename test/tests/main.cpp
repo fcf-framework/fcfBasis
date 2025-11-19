@@ -41,8 +41,49 @@ void deepIndexContainerCaller();
 void tupleTest();
 
 
+namespace NTest{
+namespace {
+  namespace {
+    struct S{
+    };
+  }
+}
+}
+
+
+
+
+#define SRINGIFY_3(a_var) #a_var
+#define SRINGIFY_2(a_var) SRINGIFY_3(a_var)
+#define SRINGIFY_1(a_var) SRINGIFY_2(a_var)
+#define SRINGIFY_0(a_var) SRINGIFY_1(a_var)
+#define SRINGIFY(a_var) SRINGIFY_0(a_var)
 
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
+  {
+    std::string s = SRINGIFY(FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES((std,vector)) );
+    std::cout << s << std::endl;
+
+    s = SRINGIFY(FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES((std,vector)) );
+    std::cout << s << std::endl;
+
+    s = SRINGIFY(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES((std,vector)) );
+    std::cout << s << std::endl;
+
+    //return 0;
+  }
+  /*
+  {
+    std::map<int, int> m;
+    m[1] = 1;
+    std::cout << m[1] << std::endl;
+    auto res = m.insert(std::pair<int, int>(1,2));
+    std::cout << m[1] << "|"<< res.second << std::endl;
+    res = m.insert(std::pair<int, int>(2,2));
+    std::cout << m[2] << "|"<< res.second << std::endl;
+    return 0;
+  }
+  */
   variantTest();
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstructorTest();

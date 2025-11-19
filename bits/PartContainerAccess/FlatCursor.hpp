@@ -79,6 +79,19 @@ namespace fcf {
       return key == a_cursor.key;
     }
 
+    inline void set(key_type a_key, const value_type& a_value){
+      const size_t s = container->size();
+      if (a_key < s){
+        (*container)[a_key] = a_value;
+      } else if (a_key == s) {
+        (*container).push_back(a_value);
+      } else {
+        (*container).resize(a_key + 1);
+        (*container)[a_key] = a_value;
+      }
+      key = a_key;
+    }
+
     container_type* container;
     key_type        key;
   };
