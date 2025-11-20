@@ -20,11 +20,15 @@ namespace fcf {
     }
 
     SetIteratableCursor(TContainer& a_container)
-      : container(&a_container){
+      : container(&a_container)
+      , iterator(std::begin(a_container)){
     }
 
-    inline void setPosition(const key_type& a_position) {
+    inline void setPosition(const key_type& a_position, bool a_create) {
       iterator = container->find(a_position);
+      if (a_create && iterator == container->end()){
+        iterator = container->insert(a_position).first;
+      }
     }
 
     inline void addPosition(size_t a_position) {
@@ -85,10 +89,6 @@ namespace fcf {
 
     inline bool equal(const self_type& a_cursor) const {
       return iterator == a_cursor.iterator;
-    }
-
-    inline void set(key_type /*a_key*/, const value_type& a_value) {
-      container->insert(a_value);
     }
 
     container_type* container;

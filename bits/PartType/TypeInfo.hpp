@@ -15,6 +15,7 @@
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/BaseTypeFactory.hpp"
+#include "../../bits/PartType/TypeIndexConverter.hpp"
 
 namespace fcf {
 
@@ -23,6 +24,7 @@ namespace fcf {
 
     unsigned int                                                  index;
     std::string                                                   name;
+    unsigned int                                                  dataIndex;
     ResolveSpecificator::CallFunctionType                         resolver;
     Converters                                                    converters;
     Converters                                                    backConverters;
@@ -32,6 +34,7 @@ namespace fcf {
     TypeInfo(unsigned int a_index, const std::string& a_name)
       : index(a_index)
       , name(a_name)
+      , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
       , resolver(0) {
 
     }

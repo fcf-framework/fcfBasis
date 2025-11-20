@@ -20,11 +20,15 @@ namespace fcf {
     }
 
     MapIteratableCursor(TContainer& a_container)
-      : container(&a_container){
+      : container(&a_container)
+      , iterator(std::begin(a_container)){
     }
 
-    inline void setPosition(const key_type& a_position) {
+    inline void setPosition(const key_type& a_position, bool a_create) {
       iterator = container->find(a_position);
+      if (a_create && iterator == container->end()){
+        iterator = container->insert(stored_value_type(a_position, value_type())).first;
+      }
     }
 
     inline void addPosition(size_t a_position) {
@@ -89,13 +93,6 @@ namespace fcf {
 
     inline bool isEnd() const {
       return iterator == container->end();
-    }
-
-    inline void set(key_type a_key, const value_type& a_value) {
-      auto insRes = container->insert(stored_value_type(a_key, a_value));
-      if (!insRes.second){
-        insRes.first->second = a_value;
-      }
     }
 
     inline MapIteratableCursor erase() {

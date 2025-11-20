@@ -94,6 +94,117 @@ namespace FcfTest {
         FCF_TEST((v1 < cv2) == true);
       }
       //
+      // operator < (ref)
+      //
+      {
+        int i = 3;
+        fcf::Variant v1;
+        fcf::Variant v2(i, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        int i1 = 1;
+        int i2 = 2;
+        fcf::Variant v1(i1, fcf::Variant::REF);
+        fcf::Variant v2(i2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        int i1 = 1;
+        int i2 = 2;
+        fcf::Variant v1(i1);
+        fcf::Variant v2(i2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        int i1 = 2;
+        int i2 = 1;
+        fcf::Variant v1(i1);
+        fcf::Variant v2(i2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == false);
+        FCF_TEST((v2 < v1) == true);
+      }
+      {
+        fcf::Nop n1;
+        int i2 = 2;
+        fcf::Variant v1(n1, fcf::Variant::REF);
+        fcf::Variant v2(i2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == false);
+        FCF_TEST((v2 < v1) == true);
+      }
+      {
+        int i1 = 2;
+        int i2 = 2;
+        fcf::Variant v1(i1, fcf::Variant::REF);
+        fcf::Variant v2(i2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == false);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        unsigned int i1 = 1;
+        int i2 = 2;
+        fcf::Variant v1(i1, fcf::Variant::REF);
+        fcf::Variant v2(i2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        unsigned int i1 = 1;
+        std::string s2 = "2";
+        fcf::Variant v1(i1, fcf::Variant::REF);
+        fcf::Variant v2(s2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        std::string a1 = "-1";
+        int         a2 = 2;
+        fcf::Variant v1(a1, fcf::Variant::REF);
+        fcf::Variant v2(a2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        std::string a1 = "-1";
+        int         a2 = -1;
+        fcf::Variant v1(a1, fcf::Variant::REF);
+        fcf::Variant v2(a2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == false);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        int               a1 = 999999;
+        std::vector<int>  a2 = {1};
+        fcf::Variant v1(a1, fcf::Variant::REF);
+        fcf::Variant v2(a2, fcf::Variant::REF);
+        FCF_TEST((v1 < v2) == true);
+        FCF_TEST((v2 < v1) == false);
+      }
+      {
+        int          a1 = 2;
+        fcf::Variant v1(a1, fcf::Variant::REF);
+        FCF_TEST((v1 < 3) == true);
+        FCF_TEST((v1 < 2) == false);
+        FCF_TEST((v1 < "3") == true);
+        FCF_TEST((v1 < "2") == false);
+      }
+      {
+        int          a1 = 2;
+        fcf::Variant v1(a1, fcf::Variant::REF);
+        int cv1 = 3;
+        FCF_TEST((v1 < cv1) == true);
+        int cv2 = 2;
+        FCF_TEST((v1 < cv2) == false);
+        const char* cv3 = "3";
+        FCF_TEST((v1 < cv3) == true);
+        std::string cv4 = "2";
+        FCF_TEST((v1 < cv4) == false);
+      }
+
+      //
       // operator ==
       //
       {

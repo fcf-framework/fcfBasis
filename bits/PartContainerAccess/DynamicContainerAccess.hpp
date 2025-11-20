@@ -55,8 +55,8 @@ namespace fcf {
         _containerAccess.setEndPosition();
       }
 
-      virtual void setPosition(const ::fcf::Variant& a_key){
-        _containerAccess.setPosition(a_key.cast<key_type>());
+      virtual void setPosition(const ::fcf::Variant& a_key, bool a_create = false){
+        _containerAccess.setPosition(a_key.cast<key_type>(), a_create);
       };
 
       virtual void dec(){

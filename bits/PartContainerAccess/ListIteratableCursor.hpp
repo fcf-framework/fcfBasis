@@ -21,19 +21,30 @@ namespace fcf {
     }
 
     ListIteratableCursor(TContainer& a_container)
-      : container(&a_container){
+      : container(&a_container)
+      , key(0)
+      , iterator(std::begin(*container)){
     }
 
-    inline void setPosition(const key_type& a_position) {
-      if (a_position >= getContainerSize()) {
-        setEndPosition();
-        return;
-      }
-      key = 0;
-      iterator = container->begin();
-      while(key < a_position){
-        ++iterator;
-        ++key;
+    inline void setPosition(const key_type& a_position, bool a_create) {
+      size_t s = container->size();
+      if (a_position < s) {
+        if (key > a_position){
+          key = 0;
+          iterator = std::begin(*container);
+        }
+        for(; key != a_position; ++key, ++iterator);
+      } else {
+        if (a_create){
+          for(; key <= a_position; ++key){
+            container->push_back(value_type());
+          }
+          key -= 1;
+          iterator = --std::end(*container);
+        } else {
+          iterator = std::end(*container);
+          key = s;
+        }
       }
     }
 
@@ -115,7 +126,7 @@ namespace fcf {
       return iterator == a_cursor.iterator;
     }
 
-    inline void set(key_type a_key, const value_type& a_value){
+    inline value_type& resolve(key_type a_key){
       const size_t s = container->size();
       if (a_key < s){
         if (key > a_key){
@@ -123,19 +134,18 @@ namespace fcf {
           iterator = std::begin(*container);
         }
         for(; a_key != key; ++key, ++iterator);
-        *iterator = a_value;
       } else if (a_key == s) {
-        (*container).push_back(a_value);
+        (*container).push_back(value_type());
         iterator = --(*container).end();
         key = a_key;
       } else {
-        for(size_t i = s; i < a_key; ++i){
+        for(size_t i = s; i <= a_key; ++i){
           (*container).push_back(value_type());
         }
-        (*container).push_back(a_value);
         iterator = --(*container).end();
         key = a_key;
       }
+      return *iterator;
     }
 
     container_type* container;

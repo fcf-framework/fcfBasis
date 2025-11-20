@@ -9,14 +9,16 @@ namespace fcf{
 
     template <typename Ty, int InnerBufferMode>
     struct VariantAllocatorHandler {
-      void* operator()(void* a_innerBuffer, const Ty& a_value) {
+       template <typename InputType>
+       BaseTypeWrapper* operator()(void* a_innerBuffer, const InputType& a_value) {
         return new (a_innerBuffer) TypeWrapper<Ty>(a_value);
       }
     };
 
     template <typename Ty>
     struct VariantAllocatorHandler<Ty, 0> {
-      void* operator()(void* /*a_innerBuffer*/, const Ty& a_value) {
+      template <typename InputType>
+      BaseTypeWrapper* operator()(void* /*a_innerBuffer*/, const InputType& a_value) {
         return new TypeWrapper<Ty>(a_value);
       }
     };
@@ -25,7 +27,8 @@ namespace fcf{
     struct VariantAllocator {
       enum { InnerBufferMode = sizeof(TypeWrapper<Ty>) > InnerBufferSize ? 0 : 1 };
 
-      void* operator()(void* a_innerBuffer, const Ty& a_value) {
+      template <typename InputType>
+      BaseTypeWrapper* operator()(void* a_innerBuffer, const InputType& a_value) {
         return VariantAllocatorHandler<Ty, InnerBufferMode>()(a_innerBuffer, a_value);
       }
     };

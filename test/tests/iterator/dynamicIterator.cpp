@@ -24,7 +24,7 @@ void dynamicIteratorTest(){
     FCF_TEST(vdi1.value() == 1);
     FCF_TEST(vdi1 == vdi2);
 
-    vdi1 = fcf::ContainerAccess<container_type>(c, 1);
+    vdi1 = fcf::ContainerAccess<container_type>(c, 1, false);
     FCF_TEST(vdi1.key() == 1);
     FCF_TEST(vdi1.value() == 2);
   }
@@ -49,7 +49,7 @@ void dynamicIteratorTest(){
     FCF_TEST(vdi1.value() == 1);
     FCF_TEST(vdi1 == vdi2);
 
-    vdi1 = iterator_type(c, 1);
+    vdi1 = iterator_type(c, 1, false);
     FCF_TEST(vdi1.key() == 1, vdi1.key());
     FCF_TEST(vdi1.value() == 2, vdi1.value());
   }
@@ -75,7 +75,7 @@ void dynamicIteratorTest(){
     FCF_TEST(vdi1.value() == 1);
     FCF_TEST(vdi1 == vdi2);
 
-    vdi1 = iterator_type(c, 1);
+    vdi1 = iterator_type(c, 1, false);
     FCF_TEST(vdi1.key() == 1, vdi1.key());
     FCF_TEST(vdi1.value() == 2, vdi1.value());
   }
@@ -101,7 +101,7 @@ void dynamicIteratorTest(){
     FCF_TEST(vdi1.value() == "0");
     FCF_TEST(vdi1 == vdi2);
 
-    vdi1 = iterator_type(c, "1");
+    vdi1 = iterator_type(c, "1", false);
     FCF_TEST(vdi1.key() == "1", vdi1.key());
     FCF_TEST(vdi1.value() == "1", vdi1.value());
   }

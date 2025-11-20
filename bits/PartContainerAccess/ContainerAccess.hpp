@@ -43,14 +43,14 @@ namespace fcf {
         }
       }
 
-      inline ContainerAccess(container_type& a_container, key_type a_position)
+      inline ContainerAccess(container_type& a_container, key_type a_position, bool a_create = false)
         : cursor(a_container)
       {
-        cursor.setPosition(a_position);
+        cursor.setPosition(a_position, a_create);
       }
 
-      inline void setPosition(key_type a_position){
-        cursor.setPosition(a_position);
+      inline void setPosition(key_type a_position, bool a_create = false){
+        cursor.setPosition(a_position, a_create);
       }
 
       inline void setBeginPosition() {
@@ -246,6 +246,14 @@ namespace fcf {
 
       inline bool isEnd() const {
         return cursor.isEnd();
+      }
+
+      inline value_type& resolve(key_type a_key) {
+        return cursor.resolve(a_key);
+      }
+
+      inline void set(key_type a_key, const value_type& a_value) {
+        cursor.set(a_key, a_value);
       }
 
       cursor_type cursor;

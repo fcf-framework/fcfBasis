@@ -3,6 +3,7 @@
 
 #include "../PartVariant/VariantPredefinition.hpp"
 #include "../PartMetaType/MetaTypeSequence.hpp"
+#include "NDetails/SpecificatorRefRegistrar.hpp"
 
 namespace fcf{
 
@@ -104,13 +105,11 @@ namespace fcf{
         fcf::SpecificatorInfo sti;
         sti.universalCall = (UniversalCall)SpecificatorRegistrar::universalCall;
         NDetails::SpecificatorCallRegistrar<TContainer, TSpecificator>()(&sti);
-        //sti.call = (void*)SpecificatorRegistrar::call;
         Type<TContainer>()._info->specificators[specificatorIndex] = sti;
+        NDetails::SpecificatorRefRegistrar<TContainer, std::is_reference<TContainer>::value>()(sti, specificatorIndex);
       }
     protected:
       static Variant universalCall(TContainer* a_container, Variant* a_argv, size_t a_argc);
-      //template <typename ...TArgPack>
-      //static typename TSpecificator::CallType call(TArgPack... a_argPack);
   };
 
 } // fcf namespace

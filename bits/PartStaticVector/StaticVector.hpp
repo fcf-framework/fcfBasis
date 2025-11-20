@@ -128,11 +128,11 @@ namespace fcf{
       }
 
       iterator begin(){
-        return iterator(*this, 0);
+        return iterator(*this, 0, false);
       }
 
       iterator begin() const{
-        return const_iterator(*this, 0);
+        return const_iterator(*this, 0, false);
       }
 
       const_iterator cbegin() const{
@@ -140,7 +140,7 @@ namespace fcf{
       }
 
       iterator end(){
-        return iterator(*this, _sdata);
+        return iterator(*this, _sdata, false);
       }
 
       iterator end() const{
@@ -220,7 +220,7 @@ namespace fcf{
           nextSize = _cdata;
         }
         _insert(nextSize, a_iterator.key(), &a_value, 1);
-        return iterator(*this, a_iterator.key());
+        return iterator(*this, a_iterator.key(), false);
       }
 
       template <typename TInsertIterator>
@@ -228,19 +228,19 @@ namespace fcf{
         size_t insertSize = std::distance(a_begin, a_end);
         size_t nextSize;
         if (!insertSize)  {
-          return iterator(*this, a_iterator.key());
+          return iterator(*this, a_iterator.key(), false);
         } else if (insertSize == 1) {
           nextSize = _getNextSize(_cdata);
         } else {
           nextSize = _getBufferSize(_sdata + insertSize);
         }
         _insert(nextSize, a_iterator.key(), a_begin, std::distance(a_begin, a_end));
-        return iterator(*this, a_iterator.key());
+        return iterator(*this, a_iterator.key(), false);
       }
 
       iterator erase(iterator a_iterator, bool a_notReduce = false){
         if (a_iterator.key() >= _sdata){
-          return iterator(*this, 0);
+          return iterator(*this, 0, false);
         }
         size_t newBufferSize;
         if (a_notReduce) {
@@ -254,12 +254,12 @@ namespace fcf{
           }
         }
         _erase(newBufferSize, a_iterator.key(), 1);
-        return iterator(*this, a_iterator.key());
+        return iterator(*this, a_iterator.key(), false);
       }
 
       iterator erase(iterator a_begin, iterator a_end, bool a_notReduce = false){
         if (a_begin.key() >= _sdata){
-          return iterator(*this, 0);
+          return iterator(*this, 0, false);
         }
         if (a_end.key() > _sdata){
           a_end.cursor.key = _sdata;
@@ -272,7 +272,7 @@ namespace fcf{
           newBufferSize= _getBufferSize(_sdata - eraseSize);
         }
         _erase(newBufferSize, a_begin.key(), eraseSize);
-        return iterator(*this, a_begin.key());
+        return iterator(*this, a_begin.key(), false);
       }
 
     protected:

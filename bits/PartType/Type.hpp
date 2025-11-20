@@ -13,6 +13,7 @@
 #include "../../bits/PartType/TypeWrapper.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/TypeId.hpp"
+#include "../../bits/PartSpecificator/NDetails/SpecificatorRefRegistrarDefinition.hpp"
 
 namespace fcf{
 
@@ -21,6 +22,10 @@ namespace fcf{
 
       template <typename TContainer, typename TSubSpecificator>
       friend class SpecificatorRegistrar;
+
+      template <typename, bool, typename = void>
+      friend struct NDetails::SpecificatorRefRegistrar;
+
 
       template <typename TDestination, typename TSource>
       friend void ::fcf::NDetails::setConverter();
@@ -37,7 +42,7 @@ namespace fcf{
           const unsigned int index = TypeId<Ty>().index();
           TypeInfo initTypeInfo(index, TypeId<Ty>().name());
           _info = typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
-          if ((index & 0xce000000) == 0) { // if not ref and not const
+          if ((index & 0xcc000000) == 0) { // if not right ref and not const
             typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
             ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, simple_type> typeRegistrar(_info, index);
             ::fcf::NDetails::SpecificatorRegistrarCaller<Type, __COUNTER__, simple_type> specificatorsRegistrar;
@@ -51,6 +56,10 @@ namespace fcf{
 
       unsigned int index() {
         return _info->index;
+      }
+
+      unsigned int dataIndex() {
+        return _info->dataIndex;
       }
 
       const TypeInfo* getTypeInfo() {

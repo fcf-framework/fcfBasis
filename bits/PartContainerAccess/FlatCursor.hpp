@@ -20,11 +20,26 @@ namespace fcf {
     }
 
     FlatCursor(TContainer& a_container)
-      : container(&a_container){
+      : container(&a_container)
+      , key(0){
     }
 
-    inline void setPosition(const key_type& a_position) {
-      key = container->size() > a_position ? a_position : container->size();
+    inline void setPosition(const key_type& a_position, bool a_create = false) {
+      size_t s = container->size();
+      if (s > a_position) {
+        key = a_position;
+      } else {
+        if (a_create){
+          if (a_position == s) {
+            (*container).push_back(value_type());
+          } else if (a_position > s) {
+            (*container).resize(a_position + 1);
+          }
+          key = a_position;
+        } else {
+          key = container->size();
+        }
+      }
     }
 
     inline void addPosition(size_t a_position) {
@@ -77,19 +92,6 @@ namespace fcf {
 
     inline bool equal(const self_type& a_cursor) const {
       return key == a_cursor.key;
-    }
-
-    inline void set(key_type a_key, const value_type& a_value){
-      const size_t s = container->size();
-      if (a_key < s){
-        (*container)[a_key] = a_value;
-      } else if (a_key == s) {
-        (*container).push_back(a_value);
-      } else {
-        (*container).resize(a_key + 1);
-        (*container)[a_key] = a_value;
-      }
-      key = a_key;
     }
 
     container_type* container;

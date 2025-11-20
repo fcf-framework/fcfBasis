@@ -8,7 +8,9 @@ namespace fcf{
 
     enum { index = Index };
 
-    enum { rawIndexType = Index & ~( 0x1f << (24 + 1) ) };
+    enum { rawTypeIndex = Index & ~( 0x1f << (24 + 1) ) };
+
+    enum { dataTypeIndex = Index & ~( (1|2|4) << (24 + 1) ) };
 
     enum { isSinglePointerValue = Index & ( 8 << (24 + 1) ) ? 1 : 0 };
 
@@ -31,6 +33,10 @@ namespace fcf{
 
     inline static unsigned int getRawIndex(unsigned int a_typeIndex){
       return a_typeIndex & ~( 0x1f << (24 + 1) );
+    }
+
+    inline static unsigned int getDataIndex(unsigned int a_typeIndex){
+      return a_typeIndex & ~( (1|2|4) << (24 + 1) );
     }
 
   };

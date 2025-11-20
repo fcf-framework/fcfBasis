@@ -27,5 +27,7 @@ add_executable("basis-test" impl.cpp
                            PartVariant/VariantCmpTest.cpp
                            PartVariant/VariantConstructor.cpp
                            PartVariant/VariantArithmeticTest.cpp
+                           PartVariant/VariantPtrTest.cpp
+                           PartVariant/VariantRefTest.cpp
                          )
 

@@ -14,7 +14,7 @@ namespace fcf {
       virtual bool          isFlatContainer() = 0;
       virtual void          setBeginPosition() = 0;
       virtual void          setEndPosition() = 0;
-      virtual void          setPosition(const ::fcf::Variant& a_key) = 0;
+      virtual void          setPosition(const ::fcf::Variant& a_key, bool a_create = false) = 0;
       virtual void          dec() = 0;
       virtual void          inc() = 0;
       virtual void*         getValuePtr() = 0;
