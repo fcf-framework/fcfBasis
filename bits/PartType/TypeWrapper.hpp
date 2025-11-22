@@ -3,9 +3,10 @@
 
 #include "../../macro.hpp"
 #include "BaseTypeWrapper.hpp"
+#include "NDetails/AssigmentWrapper.hpp"
 
 namespace fcf{
-
+  
   template <typename Ty>
   class FCF_BASIS_DECL_EXPORT TypeWrapper : public BaseTypeWrapper {
     public:
@@ -13,8 +14,10 @@ namespace fcf{
       TypeWrapper(); 
       virtual void* ptr();
       virtual size_t size(); 
+      virtual void set(const void* a_source);
       virtual BaseTypeWrapper* clone();
       virtual BaseTypeWrapper* clone(char* a_mem);
+      virtual BaseTypeWrapper* referenceClone(char* a_mem);
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
 
@@ -28,8 +31,10 @@ namespace fcf{
       TypeWrapper(); 
       virtual void* ptr();
       virtual size_t size(); 
+      virtual void set(const void* a_source);
       virtual BaseTypeWrapper* clone();
       virtual BaseTypeWrapper* clone(char* a_mem);
+      virtual BaseTypeWrapper* referenceClone(char* a_mem);
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
 
@@ -57,12 +62,22 @@ namespace fcf{
   }
 
   template <typename Ty>
+  void TypeWrapper<Ty&>::set(const void* a_source){
+    NDetails::AssigmentWrapper<Ty>()(data, a_source);
+  }
+
+  template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty&>::clone(){
     return new TypeWrapper<Ty&>(*data);
   }
 
   template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty&>::clone(char* a_mem){
+    return new (a_mem) TypeWrapper<Ty&>(*data);
+  }
+
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty&>::referenceClone(char* a_mem){
     return new (a_mem) TypeWrapper<Ty&>(*data);
   }
 
@@ -100,6 +115,11 @@ namespace fcf{
   }
 
   template <typename Ty>
+  void TypeWrapper<Ty>::set(const void* a_source){
+    NDetails::AssigmentWrapper<Ty>()(&data, a_source);
+  }
+
+  template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty>::clone(){
     return new TypeWrapper<Ty>(data);
   }
@@ -108,6 +128,12 @@ namespace fcf{
   BaseTypeWrapper* TypeWrapper<Ty>::clone(char* a_mem){
     return new (a_mem) TypeWrapper<Ty>(data);
   }
+
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty>::referenceClone(char* a_mem){
+    return new (a_mem) TypeWrapper<Ty&>(data);
+  }
+
 
   template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty>::create(){

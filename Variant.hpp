@@ -16,9 +16,10 @@ namespace fcf {
   class BasicVariant {
     public:
 
-      enum DataMode {
-        DATA,
-        REF
+      enum DataSetMode {
+        WRITE,
+        RESET,
+        REFERENCE,
       };
 
       template <size_t InputInnerBufferSize>
@@ -30,14 +31,23 @@ namespace fcf {
 
       BasicVariant(const BasicVariant& a_variant);
 
+      BasicVariant(const BasicVariant& a_variant, DataSetMode a_dataMode);
+
       template <typename Ty>
       BasicVariant(const Ty& a_value);
 
       template <typename Ty>
-      BasicVariant(const Ty& a_value, DataMode a_dataMode);
+      BasicVariant(const Ty& a_value, DataSetMode a_dataMode);
+
+      BasicVariant(const char* a_value);
+
+      BasicVariant(const char* a_value, DataSetMode a_dataMode);
 
       template <size_t InputInnerBufferSize>
       BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant);
+
+      template <size_t InputInnerBufferSize>
+      BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode);
 
       template <typename Ty>
       BasicVariant(Type<Ty, Nop> a_type);
@@ -65,14 +75,27 @@ namespace fcf {
       template <typename Ty>
       BasicVariant& operator=(const Ty& a_value);
 
+      BasicVariant& operator=(const char* a_value);
+
       void set(const BasicVariant& a_variant);
+
+      void set(const BasicVariant& a_variant, DataSetMode a_dataMode);
 
       template <typename Ty>
       void set(const Ty& a_value);
 
+      template <typename Ty>
+      void set(const Ty& a_value, DataSetMode a_dataMode);
+
+      void set(const char* a_value);
+
+      void set(const char* a_value, DataSetMode a_dataMode);
+
       void set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       void clear();
+
+      Variant operator[](const Variant& a_key);
 
       operator bool() const;
 
@@ -239,15 +262,19 @@ namespace fcf {
       void _destroy();
 
       template <size_t InputInnerBufferSize>
-      void _clone(const BasicVariant<InputInnerBufferSize>& a_variant);
-
-      void _clone(const BasicVariant& a_variant);
+      void _clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
 
       template <typename Ty>
       void _set(const Ty& a_value);
 
       template <typename Ty>
-      void _set(const Ty& a_value, DataMode a_dataMode);
+      void _reset(const Ty& a_value, DataSetMode a_dataMode);
+
+      template <typename Ty>
+      void _assigment(const Ty& a_value);
+
+      template <typename Ty>
+      void _set(const Ty& a_value, DataSetMode a_dataMode);
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
@@ -303,6 +330,7 @@ namespace fcf {
 #include "bits/PartSpecificator/MulSpecificator.hpp"
 #include "bits/PartSpecificator/DivSpecificator.hpp"
 #include "bits/PartSpecificator/BoolSpecificator.hpp"
+#include "bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 
 
 
@@ -321,30 +349,60 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
+  BasicVariant<innerBufferSize>::BasicVariant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction)
+  : _typeInfo(0) {
     _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant) {
-    _clone(a_variant);
+  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant)
+    : _typeInfo(0) {
+    _clone(a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant) {
-    _clone(a_variant);
+  template <size_t InputInnerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
+    : _typeInfo(0) {
+    _clone(a_variant, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant)
+    : _typeInfo(0) {
+    _clone(a_variant, RESET);
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant, DataSetMode a_dataMode)
+    : _typeInfo(0) {
+    _clone(a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value) {
-    _set(a_value);
+  BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value)
+    : _typeInfo(0) {
+    _set(a_value, RESET);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value, DataMode a_dataMode) {
+  BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value, DataSetMode a_dataMode)
+    : _typeInfo(0) {
+    _set(a_value, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const char* a_value)
+    : _typeInfo(0) {
+    _set(a_value, RESET);
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const char* a_value, DataSetMode a_dataMode)
+    : _typeInfo(0) {
     _set(a_value, a_dataMode);
   }
 
@@ -489,10 +547,7 @@ namespace fcf{
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const BasicVariant<innerBufferSize>& a_variant)
   {
-    _destroy();
-    _ptr = 0;
-    _typeInfo = 0;
-    _clone(a_variant);
+    _clone(a_variant, WRITE);
     return *this;
   }
 
@@ -500,10 +555,7 @@ namespace fcf{
   template <size_t InputInnerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const BasicVariant<InputInnerBufferSize>& a_variant)
   {
-    _destroy();
-    _ptr = 0;
-    _typeInfo = 0;
-    _clone(a_variant);
+    _clone(a_variant, WRITE);
     return *this;
   }
 
@@ -511,30 +563,53 @@ namespace fcf{
   template <typename Ty>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const Ty& a_value)
   {
-    _destroy();
-    _ptr = 0;
-    _typeInfo = 0;
-    _set(a_value);
+    _reset(a_value, WRITE);
+    return *this;
+  }
+
+  template <size_t innerBufferSize>
+  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const char* a_value)
+  {
+    _reset(a_value, WRITE);
     return *this;
   }
 
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::set(const BasicVariant<innerBufferSize>& a_variant)
   {
-    _destroy();
-    _ptr = 0;
-    _typeInfo = 0;
-    _clone(a_variant);
+    _clone(a_variant, WRITE);
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::set(const BasicVariant<innerBufferSize>& a_variant, DataSetMode a_dataMode)
+  {
+    _clone(a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
   void BasicVariant<innerBufferSize>::set(const Ty& a_value)
   {
-    _destroy();
-    _ptr = 0;
-    _typeInfo = 0;
-    _set(a_value);
+    _reset(a_value, WRITE);
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  void BasicVariant<innerBufferSize>::set(const Ty& a_value, DataSetMode a_dataMode)
+  {
+    _reset(a_value, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::set(const char* a_value)
+  {
+    _reset(a_value, WRITE);
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::set(const char* a_value, DataSetMode a_dataMode)
+  {
+    _reset(a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
@@ -550,6 +625,21 @@ namespace fcf{
     _destroy();
     _ptr = 0;
     _typeInfo = 0;
+  }
+
+  template <size_t innerBufferSize>
+  Variant BasicVariant<innerBufferSize>::operator[](const Variant& a_key){
+    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
+    if (!call) {
+      return Variant();
+    }
+    Variant vdca = call(ptr(), 0, 0);
+    DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)vdca.ptr();
+    pdca->setPosition(a_key, true);
+    if (pdca->isEnd()){
+      return Variant();
+    }
+    return pdca->getRefValue();
   }
 
   template <size_t innerBufferSize>
@@ -1041,73 +1131,142 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::_clone(const BasicVariant& a_variant) {
-    if (a_variant._ptr) {
-      BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
-      if (wrp->size() <= innerBufferSize){
-        _ptr = wrp->clone(&_mem[0])->ptr();
-      } else {
-        _ptr = wrp->clone()->ptr();
-      }
-      _typeInfo = a_variant._typeInfo;
-    } else {
-      _ptr = 0;
-      _typeInfo = 0;
-    }
-  }
-
-  template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  void BasicVariant<innerBufferSize>::_clone(const BasicVariant<InputInnerBufferSize>& a_variant) {
-    if (a_variant._typeInfo) {
-      BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
-      if (wrp->size() <= innerBufferSize){
-        _ptr = wrp->clone(&_mem[0])->ptr();
-      } else {
-        _ptr = wrp->clone()->ptr();
+  void BasicVariant<innerBufferSize>::_clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
+    switch (a_dataMode){
+      case WRITE:
+      {
+        if (_typeInfo && TypeIndexConverter<>().isSingleReference(_typeInfo->index)){
+          BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
+          if (!a_variant._typeInfo) {
+            throw std::runtime_error("Source variant object not set");
+          } else if (_typeInfo->dataIndex == a_variant._typeInfo->dataIndex) {
+            wrp->set(a_variant.ptr());
+          } else {
+            Variant buffer(_typeInfo->dataIndex, a_variant.ptr(), a_variant._typeInfo->dataIndex);
+            wrp->set(buffer.ptr());
+          }
+        } else {
+          _destroy();
+          _ptr = 0;
+          _typeInfo = 0;
+          if (a_variant._typeInfo) {
+            BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
+            if (wrp->size() <= innerBufferSize){
+              _ptr = wrp->clone(&_mem[0])->ptr();
+            } else {
+              _ptr = wrp->clone()->ptr();
+            }
+            _typeInfo = a_variant._typeInfo;
+          }
+        }
       }
-      _typeInfo = a_variant._typeInfo;
-    } else {
-      _ptr = 0;
-      _typeInfo = 0;
+      break;
+      case RESET:
+        {
+          _destroy();
+          _ptr = 0;
+          _typeInfo = 0;
+          if (a_variant._typeInfo) {
+            BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
+            if (wrp->size() <= innerBufferSize){
+              _ptr = wrp->clone(&_mem[0])->ptr();
+            } else {
+              _ptr = wrp->clone()->ptr();
+            }
+            _typeInfo = a_variant._typeInfo;
+          }
+        }
+      break;
+      case REFERENCE:
+      {
+          _destroy();
+          _ptr = 0;
+          _typeInfo = 0;
+          if (a_variant._typeInfo) {
+            BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
+            _ptr = wrp->referenceClone(&_mem[0])->ptr();
+            _typeInfo = getTypeInfo(TypeIndexConverter<>().getSingleReferenceIndex(a_variant.typeIndex()));
+          }
+      }
+      break;
     }
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
   void BasicVariant<innerBufferSize>::_set(const Ty& a_value) {
-    typedef typename Type<Ty, StoredDataTypeSpecificator>::type type;
+    typedef typename std::remove_reference< typename Type<Ty, StoredDataTypeSpecificator>::type >::type type;
     _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
-    /*
-    if (sizeof(Details::Basis::Variant::Wrapper<type>) > innerBufferSize){
-      _ptr = new Details::Basis::Variant::Wrapper<type>(a_value);
-    } else {
-      new (&_mem[0]) Details::Basis::Variant::Wrapper<type>(a_value);
-      _ptr = &_mem[0];
-    }
-    */
     _typeInfo = Type<type>().getTypeInfo();
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  void BasicVariant<innerBufferSize>::_set(const Ty& a_value, DataMode a_dataMode) {
-    if (a_dataMode == REF) {
-      typedef typename Type<Ty, StoredDataTypeSpecificator>::type& type;
-      _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
-      _typeInfo = Type<type>().getTypeInfo();
-    } else {
-      typedef typename Type<Ty, StoredDataTypeSpecificator>::type type;
-      _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
-      /*
-      if (sizeof(Details::Basis::Variant::Wrapper<type>) > innerBufferSize){
-        _ptr = new Details::Basis::Variant::Wrapper<type>(a_value);
-      } else {
-        new (&_mem[0]) Details::Basis::Variant::Wrapper<type>(a_value);
-        _ptr = &_mem[0];
-      }
-      */
-      _typeInfo = Type<type>().getTypeInfo();
+  void BasicVariant<innerBufferSize>::_set(const Ty& a_value, DataSetMode a_dataMode) {
+    switch (a_dataMode){
+      case RESET:
+      case WRITE:
+        {
+        typedef typename std::remove_reference< typename Type<Ty, StoredDataTypeSpecificator>::type >::type type;
+        _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
+        _typeInfo = Type<type>().getTypeInfo();
+        }
+        break;
+      case REFERENCE:
+        {
+          typedef typename std::remove_reference< typename Type<Ty, StoredDataTypeSpecificator>::type >::type& type;
+          _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
+          _typeInfo = Type<type>().getTypeInfo();
+        }
+        break;
+    }
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty>
+  void BasicVariant<innerBufferSize>::_reset(const Ty& a_value, DataSetMode a_dataMode) {
+    switch (a_dataMode){
+      case WRITE:
+        {
+          if (_typeInfo && TypeIndexConverter<>().isSingleReference(_typeInfo->index)){
+            BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
+            if (_typeInfo->dataIndex == Type<Ty>().dataIndex()) {
+              wrp->set(&a_value);
+            } else {
+              Variant buffer(_typeInfo->dataIndex, &a_value, Type<Ty>().index());
+              wrp->set(buffer.ptr());
+            }
+          } else {
+            _destroy();
+            _ptr = 0;
+            _typeInfo = 0;
+            typedef typename Type<Ty, StoredDataTypeSpecificator>::type type;
+            _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
+            _typeInfo = Type<type>().getTypeInfo();
+          }
+        }
+        break;
+      case RESET:
+        {
+          typedef typename Type<Ty, StoredDataTypeSpecificator>::type type;
+          _destroy();
+          _ptr = 0;
+          _typeInfo = 0;
+          _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
+          _typeInfo = Type<type>().getTypeInfo();
+        }
+        break;
+      case REFERENCE:
+        {
+          typedef typename Type<Ty, StoredDataTypeSpecificator>::type& type;
+          _destroy();
+          _ptr = 0;
+          _typeInfo = 0;
+          _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->ptr();
+          _typeInfo = Type<type>().getTypeInfo();
+        }
+        break;
     }
   }
 
@@ -1149,11 +1308,15 @@ namespace fcf{
     if (!_typeInfo){
       return 0;
     }
-    char* data = (char*)&((const TypeWrapper<int>*)_ptr)->data;
-    char* wrp  = (char*)_ptr;
-    long  offset  = data - wrp;
-    char* address = wrp - offset;
-    return (BaseTypeWrapper*)address;
+    if (isInnerMemory()) {
+      return (BaseTypeWrapper*)&_mem[0];
+    } else {
+      char* data = (char*)&((const TypeWrapper<int>*)_ptr)->data;
+      char* wrp  = (char*)_ptr;
+      long  offset  = data - wrp;
+      char* address = wrp - offset;
+      return (BaseTypeWrapper*)address;
+    }
   }
 
   template <size_t innerBufferSize>

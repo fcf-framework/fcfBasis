@@ -3,7 +3,7 @@
 
 #include "../../macro.hpp"
 #include "ContainerPosition.hpp"
-#include "../../Variant.hpp"
+#include "../../bits/PartVariant/VariantPredefinition.hpp"
 
 namespace fcf {
 
@@ -19,6 +19,7 @@ namespace fcf {
       virtual void          inc() = 0;
       virtual void*         getValuePtr() = 0;
       virtual const void*   getConstValuePtr() const = 0;
+      virtual Variant       getRefValue() = 0;
       virtual Variant       getValue() const = 0;
       virtual void          setValue(const Variant& a_value) = 0;
       virtual unsigned int  getValueTypeIndex() const = 0;
@@ -47,5 +48,6 @@ namespace fcf {
     };
   #endif
 } // fcf namespace
+
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_BASE_HPP___

@@ -9,6 +9,7 @@ namespace fcf{
     public:
       virtual ~BaseTypeFactory();
       virtual size_t size() = 0;
+      virtual void set(void* a_destination, const void* a_source) = 0;
       virtual BaseTypeWrapper* clone(const void* a_pdata) = 0;
       virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata) = 0;
       virtual BaseTypeWrapper* create() = 0;

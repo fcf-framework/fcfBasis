@@ -12,12 +12,19 @@ namespace fcf{
 
     enum { dataTypeIndex = Index & ~( (1|2|4) << (24 + 1) ) };
 
+    enum { singleReferenceTypeIndex = (Index & ~( (2) << (24 + 1) )) | ( (1) << (24 + 1) ) };
+
     enum { isSinglePointerValue = Index & ( 8 << (24 + 1) ) ? 1 : 0 };
 
     enum { isDoublePointerValue = Index & ( 16 << (24 + 1) ) ? 1 : 0 };
 
     enum { isPointerValue = isSinglePointerValue || isDoublePointerValue ? 1 : 0 };
 
+    enum { isSingleReferenceValue = Index & ( 1 << (24 + 1) ) };
+
+    enum { isDoubleReferenceValue = Index & ( 2 << (24 + 1) ) };
+
+    enum { isReferenceValue = isSingleReferenceValue || isDoubleReferenceValue };
 
     inline static bool isDoublePointer(unsigned int a_typeIndex) {
       return a_typeIndex & ( 16 << (24 + 1) );
@@ -31,12 +38,28 @@ namespace fcf{
       return isSinglePointer(a_typeIndex) || isDoublePointer(a_typeIndex);
     }
 
+    inline static bool isSingleReference(unsigned int a_typeIndex) {
+      return a_typeIndex & ( 1 << (24 + 1) );
+    }
+
+    inline static bool isDoubleReference(unsigned int a_typeIndex) {
+      return a_typeIndex & ( 2 << (24 + 1) );
+    }
+
+    inline static bool isReference(unsigned int a_typeIndex) {
+      return isSingleReference(a_typeIndex) || isDoubleReference(a_typeIndex);
+    }
+
     inline static unsigned int getRawIndex(unsigned int a_typeIndex){
       return a_typeIndex & ~( 0x1f << (24 + 1) );
     }
 
     inline static unsigned int getDataIndex(unsigned int a_typeIndex){
       return a_typeIndex & ~( (1|2|4) << (24 + 1) );
+    }
+
+    inline static unsigned int getSingleReferenceIndex(unsigned int a_typeIndex){
+      return (a_typeIndex & ~( (2) << (24 + 1) ) ) | ( (1) << (24 + 1) );
     }
 
   };

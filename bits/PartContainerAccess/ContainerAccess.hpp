@@ -27,6 +27,7 @@ namespace fcf {
       typedef typename cursor_type::resolve_stored_value_type       resolve_stored_value_type;
 
       friend container_type;
+      enum { constMode = ConstMode };
       enum { is_flat = cursor_type::is_flat };
       enum { is_const_resolve_value = std::is_const<resolve_value_type>::value || ConstMode };
 
@@ -145,6 +146,7 @@ namespace fcf {
       typedef typename cursor_type::resolve_value_type              resolve_value_type;
       typedef typename cursor_type::resolve_stored_value_type       resolve_stored_value_type;
       friend container_type;
+      enum { constMode = true };
       enum { is_flat = cursor_type::is_flat };
 
       inline ContainerAccess(){

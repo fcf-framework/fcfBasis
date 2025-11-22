@@ -3,6 +3,7 @@
 
 #include "BaseTypeWrapper.hpp"
 #include "TypeWrapper.hpp"
+#include "NDetails/AssigmentWrapper.hpp"
 
 namespace fcf {
 
@@ -10,6 +11,7 @@ namespace fcf {
   class FCF_BASIS_DECL_EXPORT TypeFactory : public BaseTypeFactory {
     public:
       virtual size_t size(); 
+      virtual void set(void* a_destination, const void* a_source);
       virtual BaseTypeWrapper* clone(const void* a_pdata);
       virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata);
       virtual BaseTypeWrapper* create();
@@ -19,6 +21,12 @@ namespace fcf {
   template <typename Ty>
   size_t TypeFactory<Ty>::size() {
     return sizeof(TypeWrapper<Ty>);
+  }
+
+
+  template <typename Ty>
+  void TypeFactory<Ty>::set(void* a_destination, const void* a_source){
+    NDetails::AssigmentWrapper<Ty>()(a_destination, a_source);
   }
 
   template <typename Ty>

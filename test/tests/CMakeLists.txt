@@ -26,6 +26,7 @@ add_executable("basis-test" impl.cpp
                            PartForeach/foreach.cpp
                            PartVariant/VariantCmpTest.cpp
                            PartVariant/VariantConstructor.cpp
+                           PartVariant/VariantContainerTest.cpp
                            PartVariant/VariantArithmeticTest.cpp
                            PartVariant/VariantPtrTest.cpp
                            PartVariant/VariantRefTest.cpp
