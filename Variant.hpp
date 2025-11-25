@@ -36,8 +36,14 @@ namespace fcf {
       template <typename Ty>
       BasicVariant(const Ty& a_value);
 
-      template <typename Ty>
-      BasicVariant(const Ty& a_value, DataSetMode a_dataMode);
+      template <typename Ty, typename TSource>
+      BasicVariant(const Type<Ty>& a_type, const TSource& a_value);
+
+      template <typename Ty, typename TSource>
+      BasicVariant(const Type<Ty>& a_type, const TSource& a_value, DataSetMode a_dataMode);
+
+      template <typename TSource>
+      BasicVariant(const TSource& a_value, DataSetMode a_dataMode);
 
       BasicVariant(const char* a_value);
 
@@ -388,10 +394,42 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
+  template <typename Ty, typename TSource>
+  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, const TSource& a_value)
+    : _typeInfo(0) {
+    typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
+    typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
+    if (std::is_same<ResType, SrcType>::value) {
+      _set<Ty>(a_value, RESET);
+    } else {
+      Variant buffer(Type<ResType>().index(), &a_value, Type<SrcType>().index());
+      _clone(buffer, RESET);
+    }
+  }
+
+
+  template <size_t innerBufferSize>
   template <typename Ty>
   BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     _set(a_value, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty, typename TSource>
+  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, const TSource& a_value, DataSetMode a_dataMode)
+    : _typeInfo(0) {
+    typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
+    typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
+    if (std::is_same<ResType, SrcType>::value) {
+      _set<Ty>(a_value, a_dataMode);
+    } else {
+      if (a_dataMode == REFERENCE) {
+        throw std::runtime_error("You cannot link to an inappropriate type");
+      }
+      Variant buffer(Type<ResType>().index(), &a_value, Type<SrcType>().index());
+      _clone(buffer, a_dataMode);
+    }
   }
 
   template <size_t innerBufferSize>
@@ -636,9 +674,6 @@ namespace fcf{
     Variant vdca = call(ptr(), 0, 0);
     DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)vdca.ptr();
     pdca->setPosition(a_key, true);
-    if (pdca->isEnd()){
-      return Variant();
-    }
     return pdca->getRefValue();
   }
 
@@ -801,7 +836,11 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator+=(const BasicVariant<innerBufferSize>& a_value){
-    if (!_typeInfo || !a_value._typeInfo) {
+    if (!_typeInfo) {
+      return *this;
+    } else if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    } else if (!a_value._typeInfo) {
       return *this;
     } else if (_typeInfo->dataIndex == a_value._typeInfo->dataIndex) {
       _typeInfo->getSafeSpecificatorCall<AddSpecificator>()(ptr(), ptr(), a_value.ptr());
@@ -859,7 +898,11 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator-=(const BasicVariant<innerBufferSize>& a_value){
-    if (!_typeInfo || !a_value._typeInfo) {
+    if (!_typeInfo) {
+      return *this;
+    } else if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    } else if (!a_value._typeInfo) {
       return *this;
     } else if (_typeInfo->dataIndex == a_value._typeInfo->dataIndex) {
       _typeInfo->getSafeSpecificatorCall<SubSpecificator>()(ptr(), ptr(), a_value.ptr());
@@ -917,7 +960,11 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator*=(const BasicVariant<innerBufferSize>& a_value){
-    if (!_typeInfo || !a_value._typeInfo) {
+    if (!_typeInfo) {
+      return *this;
+    } else if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    } else if (!a_value._typeInfo) {
       return *this;
     } else if (_typeInfo->dataIndex == a_value._typeInfo->dataIndex) {
       _typeInfo->getSafeSpecificatorCall<MulSpecificator>()(ptr(), ptr(), a_value.ptr());
@@ -978,7 +1025,11 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator/=(const BasicVariant<innerBufferSize>& a_value){
-    if (!_typeInfo || !a_value._typeInfo) {
+    if (!_typeInfo) {
+      return *this;
+    } else if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    } else if (!a_value._typeInfo) {
       return *this;
     } else if (_typeInfo->dataIndex == a_value._typeInfo->dataIndex) {
       _typeInfo->getSafeSpecificatorCall<DivSpecificator>()(ptr(), ptr(), a_value.ptr());
@@ -1059,7 +1110,7 @@ namespace fcf{
   template <typename TResult>
   typename std::remove_const< typename std::remove_reference<TResult>::type >::type& BasicVariant<innerBufferSize>::as() {
     typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
-    if (!_typeInfo){
+    if (!_typeInfo) {
       reset(Type<TResult>());
       return *(result_type*)ptr();
     } else if (dataTypeIndex() == Type<TResult>().dataIndex()){
@@ -1136,6 +1187,9 @@ namespace fcf{
     switch (a_dataMode){
       case WRITE:
       {
+        if (TypeIndexConverter<>().isConst(typeIndex())){
+          throw std::runtime_error("The data in the Variant object is read-only");
+        }
         if (_typeInfo && TypeIndexConverter<>().isSingleReference(_typeInfo->index)){
           BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
           if (!a_variant._typeInfo) {
@@ -1229,6 +1283,9 @@ namespace fcf{
     switch (a_dataMode){
       case WRITE:
         {
+          if (TypeIndexConverter<>().isConst(typeIndex())){
+            throw std::runtime_error("The data in the Variant object is read-only");
+          }
           if (_typeInfo && TypeIndexConverter<>().isSingleReference(_typeInfo->index)){
             BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
             if (_typeInfo->dataIndex == Type<Ty>().dataIndex()) {
@@ -1403,6 +1460,10 @@ namespace fcf{
       return *this;
     }
 
+    if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    }
+
     typedef typename std::remove_reference<Ty>::type ArgType;
 
     unsigned int argTypeIndex = Type<ArgType>().index();
@@ -1457,6 +1518,10 @@ namespace fcf{
       return *this;
     }
 
+    if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    }
+
     typedef typename std::remove_reference<Ty>::type ArgType;
 
     unsigned int argTypeIndex = Type<ArgType>().index();
@@ -1509,6 +1574,10 @@ namespace fcf{
       return *this;
     }
 
+    if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
+    }
+
     typedef typename std::remove_reference<Ty>::type ArgType;
 
     unsigned int argTypeIndex = Type<ArgType>().index();
@@ -1559,6 +1628,10 @@ namespace fcf{
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::_divTo(const Ty& a_value){
     if (!_typeInfo) {
       return *this;
+    }
+
+    if (TypeIndexConverter<>().isConst(typeIndex())){
+      throw std::runtime_error("The data in the Variant object is read-only");
     }
 
     typedef typename std::remove_reference<Ty>::type ArgType;

@@ -26,6 +26,8 @@ namespace fcf{
 
     enum { isReferenceValue = isSingleReferenceValue || isDoubleReferenceValue };
 
+    enum { isConstValue = Index & ( 4 << (24 + 1) ) };
+
     inline static bool isDoublePointer(unsigned int a_typeIndex) {
       return a_typeIndex & ( 16 << (24 + 1) );
     }
@@ -48,6 +50,10 @@ namespace fcf{
 
     inline static bool isReference(unsigned int a_typeIndex) {
       return isSingleReference(a_typeIndex) || isDoubleReference(a_typeIndex);
+    }
+
+    inline static bool isConst(unsigned int a_typeIndex) {
+      return a_typeIndex & ( 4 << (24 + 1) );
     }
 
     inline static unsigned int getRawIndex(unsigned int a_typeIndex){

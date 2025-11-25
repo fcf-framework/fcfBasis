@@ -77,7 +77,6 @@ namespace FcfTest {
         v2.set(1, fcf::Variant::RESET);
         FCF_TEST(v1 == 9, v1);
         FCF_TEST(v2 == 1, v2);
-
       }
     }
 

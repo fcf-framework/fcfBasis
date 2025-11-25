@@ -6,22 +6,36 @@
 namespace fcf{
   namespace NDetails {
 
-    template <typename Ty, bool IsRef, typename>
-    struct SpecificatorRefRegistrar{
+    template <typename Ty, typename>
+    struct SpecificatorRefRegistrarImpl {
       void operator()(fcf::SpecificatorInfo&, unsigned int){
       }
     };
 
     template <typename Ty>
-    struct SpecificatorRefRegistrar<Ty, false, decltype((void)TypeId<Ty&>())>{
+    struct SpecificatorRefRegistrarImpl<Ty, decltype((void)TypeId<Ty>())> {
       void operator()(fcf::SpecificatorInfo& a_sti, unsigned int a_specificatorIndex){
-        typedef Ty& RefType;
-        Type<RefType>()._info->specificators[a_specificatorIndex] = a_sti;
+        Type<Ty>()._info->specificators[a_specificatorIndex] = a_sti;
+      }
+    };
+
+    template <typename Ty, bool Ignore>
+    struct SpecificatorRefRegistrar {
+      void operator()(fcf::SpecificatorInfo&, unsigned int){
       }
     };
 
     template <typename Ty>
-    struct SpecificatorRefRegistrar<Ty, true, decltype((void)TypeId<Ty&>())>{
+    struct SpecificatorRefRegistrar<Ty, false> {
+      void operator()(fcf::SpecificatorInfo& a_sti, unsigned int a_specificatorIndex){
+        SpecificatorRefRegistrarImpl<Ty&>()(a_sti, a_specificatorIndex);
+        SpecificatorRefRegistrarImpl<const Ty&>()(a_sti, a_specificatorIndex);
+        SpecificatorRefRegistrarImpl<const Ty>()(a_sti, a_specificatorIndex);
+      }
+    };
+
+    template <typename Ty>
+    struct SpecificatorRefRegistrar<Ty, true> {
       void operator()(fcf::SpecificatorInfo&, unsigned int){
       }
     };

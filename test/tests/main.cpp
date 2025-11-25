@@ -27,6 +27,7 @@ namespace FcfTest {
     void variantPtrTest();
     void variantRefTest();
     void variantContainerTest();
+    void variantConstTest();
 
   } // BasisTest namespace
 } // FcfTest namespace
@@ -61,6 +62,7 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   */
   variantTest();
   FcfTest::BasisTest::foreachTest();
+  FcfTest::BasisTest::variantConstTest();
   FcfTest::BasisTest::variantPtrTest();
   FcfTest::BasisTest::variantRefTest();
   FcfTest::BasisTest::variantConstructorTest();

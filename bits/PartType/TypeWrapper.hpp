@@ -10,6 +10,8 @@ namespace fcf{
   template <typename Ty>
   class FCF_BASIS_DECL_EXPORT TypeWrapper : public BaseTypeWrapper {
     public:
+      typedef typename std::remove_const<Ty>::type UnconstType;
+
       TypeWrapper(const Ty& a_item);
       TypeWrapper(); 
       virtual void* ptr();
@@ -21,12 +23,14 @@ namespace fcf{
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
 
-      Ty data;
+      UnconstType data;
   };
 
   template <typename Ty>
   class FCF_BASIS_DECL_EXPORT TypeWrapper<Ty&> : public BaseTypeWrapper {
     public:
+      typedef typename std::remove_const<Ty>::type UnconstType;
+
       TypeWrapper(const Ty& a_item);
       TypeWrapper(); 
       virtual void* ptr();
@@ -38,13 +42,13 @@ namespace fcf{
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
 
-      Ty* data;
+      UnconstType* data;
   };
 
 
   template <typename Ty>
   TypeWrapper<Ty&>::TypeWrapper(const Ty& a_item)
-    : data((Ty*)&a_item){
+    : data((UnconstType*)&a_item){
   }
 
   template <typename Ty>
@@ -53,7 +57,7 @@ namespace fcf{
 
   template <typename Ty>
   void* TypeWrapper<Ty&>::ptr(){
-    return data;
+    return (void*)data;
   }
 
   template <typename Ty>
@@ -63,7 +67,7 @@ namespace fcf{
 
   template <typename Ty>
   void TypeWrapper<Ty&>::set(const void* a_source){
-    NDetails::AssigmentWrapper<Ty>()(data, a_source);
+    NDetails::AssigmentWrapper<Ty>()((void*)data, a_source);
   }
 
   template <typename Ty>
@@ -106,7 +110,7 @@ namespace fcf{
 
   template <typename Ty>
   void* TypeWrapper<Ty>::ptr(){
-    return &data;
+    return (void*)&data;
   }
 
   template <typename Ty>
@@ -116,7 +120,7 @@ namespace fcf{
 
   template <typename Ty>
   void TypeWrapper<Ty>::set(const void* a_source){
-    NDetails::AssigmentWrapper<Ty>()(&data, a_source);
+    NDetails::AssigmentWrapper<Ty>()((void*)&data, a_source);
   }
 
   template <typename Ty>
