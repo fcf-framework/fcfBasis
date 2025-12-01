@@ -12,10 +12,11 @@
 #include "MapIteratableCursor.hpp"
 #include "SetIteratableCursor.hpp"
 #include "ListIteratableCursor.hpp"
+#include "VariantCursorDefinition.hpp"
 
 namespace fcf {
 
-  template <typename TContainer, bool ConstMode=false>
+  template <typename TContainer>
   class ContainerAccess {
     public:
       typedef typename ContainerAccessInfo<TContainer>::cursor_type cursor_type;
@@ -27,9 +28,9 @@ namespace fcf {
       typedef typename cursor_type::resolve_stored_value_type       resolve_stored_value_type;
 
       friend container_type;
-      enum { constMode = ConstMode };
-      enum { is_flat = cursor_type::is_flat };
-      enum { is_const_resolve_value = std::is_const<resolve_value_type>::value || ConstMode };
+      enum Mode        { constMode = false };
+      enum MemMode     { is_flat = cursor_type::is_flat };
+      enum ResolveMode { is_const_resolve_value = std::is_const<resolve_value_type>::value };
 
       inline ContainerAccess(){
       }
@@ -60,6 +61,14 @@ namespace fcf {
 
       inline void setEndPosition() {
         cursor.setEndPosition();
+      }
+
+      inline void addPosition(size_t a_offset){
+        cursor.addPosition(a_offset);
+      }
+
+      inline void decPosition(size_t a_offset){
+        cursor.decPosition(a_offset);
       }
 
       inline ContainerAccess& operator--(){
@@ -136,18 +145,19 @@ namespace fcf {
   };
 
   template <typename TContainer>
-  class ContainerAccess<TContainer, true> {
+  class ContainerAccess<const TContainer> {
     public:
-      typedef typename ContainerAccessInfo<TContainer>::cursor_type cursor_type;
-      typedef typename cursor_type::container_type                  container_type;
-      typedef typename cursor_type::key_type                        key_type;
-      typedef typename cursor_type::value_type                      value_type;
-      typedef typename cursor_type::stored_value_type               stored_value_type;
-      typedef typename cursor_type::resolve_value_type              resolve_value_type;
-      typedef typename cursor_type::resolve_stored_value_type       resolve_stored_value_type;
+      typedef typename std::remove_const<TContainer>::type              container_type;
+      typedef typename ContainerAccessInfo<container_type>::cursor_type cursor_type;
+      typedef typename cursor_type::key_type                            key_type;
+      typedef typename cursor_type::value_type                          value_type;
+      typedef typename cursor_type::stored_value_type                   stored_value_type;
+      typedef typename cursor_type::resolve_value_type                  resolve_value_type;
+      typedef typename cursor_type::resolve_stored_value_type           resolve_stored_value_type;
       friend container_type;
-      enum { constMode = true };
-      enum { is_flat = cursor_type::is_flat };
+      enum Mode { constMode = true };
+      enum MemMode { is_flat = cursor_type::is_flat };
+      enum ResolveMode { is_const_resolve_value = true };
 
       inline ContainerAccess(){
       }
@@ -168,8 +178,8 @@ namespace fcf {
         cursor.setPosition(a_position);
       }
 
-      inline void setPosition(key_type a_position){
-        cursor.setPosition(a_position);
+      inline void setPosition(key_type a_position, bool a_create = false){
+        cursor.setPosition(a_position, a_create);
       }
 
       inline void setBeginPosition() {
@@ -178,6 +188,14 @@ namespace fcf {
 
       inline void setEndPosition() {
         cursor.setEndPosition();
+      }
+
+      inline void addPosition(size_t a_offset){
+        cursor.addPosition(a_offset);
+      }
+
+      inline void decPosition(size_t a_offset){
+        cursor.decPosition(a_offset);
       }
 
       inline ContainerAccess& operator--(){
@@ -266,8 +284,8 @@ namespace fcf {
 
 namespace std {
 
-  template <typename TContainer, bool ConstMode=false>
-  size_t distance(const fcf::ContainerAccess<TContainer, ConstMode>& a_begin, const fcf::ContainerAccess<TContainer, ConstMode>& a_end) {
+  template <typename TContainer>
+  size_t distance(const fcf::ContainerAccess<TContainer>& a_begin, const fcf::ContainerAccess<TContainer>& a_end) {
     return a_begin.distance(a_end);
   }
 

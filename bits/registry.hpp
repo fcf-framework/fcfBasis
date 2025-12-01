@@ -351,8 +351,18 @@ FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::MulSpecificator);
 namespace fcf { template<> struct Type<fcf::Variant, DivSpecificator> : public TypeImpl<fcf::Variant, DivSpecificator> {}; }
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::DivSpecificator);
 
-//namespace fcf { template<> struct Type<fcf::Variant, BoolSpecificator> : public TypeImpl<fcf::Variant, BoolSpecificator> {}; }
-//FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::BoolSpecificator);
+namespace fcf {
+  template <size_t InnerBufferSize>
+  struct Type<BasicVariant<InnerBufferSize>, ContainerAccessSpecificator>: public TypeImpl<BasicVariant<InnerBufferSize>, ContainerAccessSpecificator>{
+  };
+
+  template <size_t InnerBufferSize>
+  struct ContainerAccessInfo< BasicVariant<InnerBufferSize> > {
+    typedef VariantCursor<InnerBufferSize> cursor_type;
+  };
+
+} // fcf namespace
+FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::ContainerAccessSpecificator);
 
 
 FCF_TYPEID_REGISTRY(fcf::UniversalArguments,       "fcf::UniversalArguments",         0);
@@ -362,9 +372,9 @@ FCF_TYPEID_REGISTRY(fcf::Nop, "fcf::Nop", 0);
 
 FCF_TEMPLATE_TYPEID_DECLARE((fcf, ContainerAccess),
                             "fcf::ContainerAccess",
-                            (typename Ty, bool ConstMode),
-                            (Ty, ConstMode),
-                            (::fcf::Type<Ty>().name() +","+ (ConstMode ? "true" : "false"))
+                            (typename Ty),
+                            (Ty),
+                            (::fcf::Type<Ty>().name())
                             );
 
 FCF_TEMPLATE_TYPEID_DECLARE((fcf, DynamicContainerAccess),
@@ -379,6 +389,11 @@ FCF_TEMPLATE_TYPEID_DECLARE((std, vector), "std::vector", (typename Ty), (Ty), (
 namespace fcf {
   template <typename Ty>
   struct Type<std::vector<Ty>, ContainerAccessSpecificator>: public TypeImpl<std::vector<Ty>, ContainerAccessSpecificator>{
+  };
+} // fcf namespace
+namespace fcf {
+  template <typename Ty>
+  struct Type<const std::vector<Ty>, ContainerAccessSpecificator>: public TypeImpl<const std::vector<Ty>, ContainerAccessSpecificator>{
   };
 } // fcf namespace
 FCF_TEMPLATE_SPECIFICATOR_REGISTRY((std, vector), ContainerAccessSpecificator);

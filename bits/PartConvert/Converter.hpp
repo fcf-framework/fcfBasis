@@ -7,11 +7,15 @@
 #include "ConvertOptions.hpp"
 #include "../PartType/Type.hpp"
 #include "../PartConvert/DefaultConvertMode.hpp"
+#include "../../Variant.hpp"
 
 namespace fcf {
 
-  template <typename TDestination, typename TSource, typename TSpecificator = DefaultConvertMode>
-  class Converter{
+  template <int Mode, typename TDestination, typename TSource, typename TSpecificator = DefaultConvertMode>
+  class Converter;
+
+  template <typename TDestination, typename TSource, typename TSpecificator>
+  class Converter<0, TDestination, TSource, TSpecificator>{
     public:
       void operator()(TDestination& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
@@ -20,7 +24,7 @@ namespace fcf {
   };
 
   template <typename TSource>
-  class Converter<std::string, TSource>{
+  class Converter<1, std::string, TSource>{
     public:
       void operator()(std::string& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
@@ -29,7 +33,7 @@ namespace fcf {
   };
 
   template <typename TDestination>
-  class Converter<TDestination, std::string>{
+  class Converter<2, TDestination, std::string>{
     public:
       void operator()(TDestination& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
@@ -45,14 +49,14 @@ namespace fcf {
   };
 
   template <>
-  class Converter<std::string, std::string>{
+  class Converter<3, std::string, std::string>{
     public:
       void operator()(std::string& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
         a_destination = a_source;
       }
   };
-
+/*
   template <>
   class Converter<const char*, char*>{
     public:
@@ -61,8 +65,9 @@ namespace fcf {
         a_destination = a_source;
       }
   };
+*/
   template <>
-  class Converter<std::string, const char*>{
+  class Converter<3, std::string, const char*>{
     public:
       void operator()(std::string& a_destination, const char* a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
@@ -71,14 +76,14 @@ namespace fcf {
   };
 
   template <>
-  class Converter<std::string, char*>{
+  class Converter<3, std::string, char*>{
     public:
       void operator()(std::string& a_destination, char* a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
         a_destination = a_source;
       }
   };
-
+/*
   template <>
   class Converter<const char*, const char*>{
     public:
@@ -96,21 +101,17 @@ namespace fcf {
         a_destination = a_source;
       }
   };
-
+*/
   template <typename TDestination>
-  class Converter<TDestination, const char*>{
+  class Converter<2, TDestination, const char*>{
     public:
-      void operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions = 0){
-        Converter<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions);
-      }
+      void operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions = 0);
   };
 
   template <typename TDestination>
-  class Converter<TDestination, char*>{
+  class Converter<2, TDestination, char*>{
     public:
-      void operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions = 0){
-        Converter<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions);
-      }
+      void operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions = 0);
   };
 
 } // fcf namespace
@@ -118,8 +119,11 @@ namespace fcf {
 #include "../../Variant.hpp"
 
 namespace fcf {
+
+ 
+
   template <typename TSource>
-  class Converter<Variant, TSource>{
+  class Converter<1, Variant, TSource>{
     public:
       void operator()(Variant& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
@@ -128,7 +132,7 @@ namespace fcf {
   };
 
   template <typename TDestination>
-  class Converter<TDestination, Variant>{
+  class Converter<2, TDestination, Variant>{
     public:
       void operator()(TDestination& a_destination, const Variant& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
@@ -138,4 +142,20 @@ namespace fcf {
 
 } // fcf namespace
 
+
+#include "ConvertSelector.hpp"
+
+namespace fcf {
+
+  template <typename TDestination>
+  void Converter<2, TDestination, const char*>::operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions){
+    ConvertSelector<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions);
+  };
+
+  template <typename TDestination>
+  void Converter<2, TDestination, char*>::operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions){
+    ConvertSelector<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions);
+  };
+
+} // fcf namespace
 #endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___

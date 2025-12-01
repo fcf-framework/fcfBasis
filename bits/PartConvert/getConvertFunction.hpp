@@ -14,6 +14,8 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex) {
+      a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
+      a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
       do {
         const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
         if (!pti)
@@ -31,6 +33,8 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex, int* a_error) {
+      a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
+      a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
       do {
         const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
         if (!pti)
@@ -54,6 +58,7 @@ namespace fcf {
 
   template <typename TDestination>
   ConvertFunction getConvertFunctionByDestination(unsigned int a_sourceTypeIndex){
+    a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
     const ::fcf::TypeInfo::Converters& converters = Type<TDestination>().backConverters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_sourceTypeIndex);
     if (convIt == converters.end()) {
@@ -64,6 +69,7 @@ namespace fcf {
 
   template <typename TDestination>
   ConvertFunction getConvertFunctionByDestination(unsigned int a_sourceTypeIndex, int* a_error){
+    a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
     const ::fcf::TypeInfo::Converters& converters = Type<TDestination>().backConverters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_sourceTypeIndex);
     if (convIt == converters.end()) {
@@ -77,6 +83,7 @@ namespace fcf {
 
   template <typename TSource>
   ConvertFunction getConvertFunctionBySource(unsigned int a_destinationTypeIndex){
+    a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
     const ::fcf::TypeInfo::Converters& converters = Type<TSource>().converters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
     if (convIt == converters.end()) {
@@ -87,6 +94,7 @@ namespace fcf {
 
   template <typename TSource>
   ConvertFunction getConvertFunctionBySource(unsigned int a_destinationTypeIndex, int* a_error){
+    a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
     const ::fcf::TypeInfo::Converters& converters = Type<TSource>().converters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
     if (convIt == converters.end()) {

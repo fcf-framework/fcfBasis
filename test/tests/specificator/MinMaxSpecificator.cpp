@@ -36,6 +36,11 @@ namespace FcfTest{
           return *this;
         }
 
+        Item& operator=(const Item& a_value){
+          value = a_value.value;
+          return *this;
+        }
+
       };
 
 }}}

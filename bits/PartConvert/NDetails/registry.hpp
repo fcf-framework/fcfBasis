@@ -20,6 +20,7 @@
   FCF_CONVERTERS_REGISTRY_FORCE(double, true, true);
   FCF_CONVERTERS_REGISTRY_FORCE(long double, true, true);
   FCF_CONVERTERS_REGISTRY_FORCE(std::string, true, true);
+  FCF_CONVERTERS_REGISTRY_FORCE(fcf::Variant, true, true);
 #endif
 
 

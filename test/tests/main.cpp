@@ -48,7 +48,7 @@ void tupleTest();
 
 
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
-  /*
+/*
   {
     std::map<int, int> m;
     m[1] = 1;
@@ -60,6 +60,7 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
     return 0;
   }
   */
+
   variantTest();
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();
@@ -80,6 +81,7 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   FcfTest::BasisTest::staticVectorPushTest();
   FcfTest::BasisTest::staticVectorNotReduce();
   FcfTest::BasisTest::staticVectorInsertTest();
+
   FcfTest::BasisTest::staticVectorEraseTest();
 
   FcfTest::BasisTest::declareCall();

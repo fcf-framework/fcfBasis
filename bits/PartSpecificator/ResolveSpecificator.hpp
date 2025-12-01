@@ -17,7 +17,7 @@ namespace fcf{
       return Variant(ResolveData(Type<Ty, ResolveSpecificator>().call(a_object)));
     }
   };
-
+/*
   template <typename TContainer>
   class SpecificatorRegistrar<TContainer, ResolveSpecificator> {
     public:
@@ -37,7 +37,7 @@ namespace fcf{
         return Type<TContainer, ResolveSpecificator>().universalCall(a_container, a_argv, a_argc);
       }
   };
-
+*/
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__RESOLVE_SPECIFICATOR_HPP___

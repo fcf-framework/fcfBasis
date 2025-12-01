@@ -11,13 +11,18 @@
 namespace fcf {
 
   struct ContainerAccessSpecificator{
+    typedef Variant (*CallType)(void*);
   };
 
-
+/*
   template <typename Ty>
   struct Type<Ty, ContainerAccessSpecificator> {
     enum { enable = false };
   };
+*/
+
+  template <typename Ty>
+  struct Type<Ty, ContainerAccessSpecificator>;
 
   template <typename Ty>
   struct TypeImpl<Ty, ContainerAccessSpecificator> {

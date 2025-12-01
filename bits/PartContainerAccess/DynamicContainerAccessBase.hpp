@@ -17,6 +17,8 @@ namespace fcf {
       virtual void          setPosition(const ::fcf::Variant& a_key, bool a_create = false) = 0;
       virtual void          dec() = 0;
       virtual void          inc() = 0;
+      virtual void          addPosition(size_t a_offset) = 0;
+      virtual void          decPosition(size_t a_offset) = 0;
       virtual void*         getValuePtr() = 0;
       virtual const void*   getConstValuePtr() const = 0;
       virtual Variant       getRefValue() = 0;
@@ -26,6 +28,7 @@ namespace fcf {
       virtual Variant       getKey() const = 0;
       virtual unsigned int  getKeyTypeIndex() const = 0;
       virtual size_t        getContainerSize() const = 0;
+      virtual size_t        distance(const DynamicContainerAccessBase& a_iterator) const = 0;
       virtual bool          isEnd() const = 0;
       virtual bool          equal(DynamicContainerAccessBase& a_containerAccess) const = 0;
 

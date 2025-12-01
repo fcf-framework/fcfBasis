@@ -23,8 +23,12 @@ namespace fcf{
       template <typename TContainer, typename TSubSpecificator>
       friend class SpecificatorRegistrar;
 
-      template <typename, typename = void>
+      template <typename, typename TSpecificator, typename = void>
       friend struct NDetails::SpecificatorRefRegistrarImpl;
+
+      template <typename, typename, typename, typename = void>
+      friend struct NDetails::SpecificatorConstRefRegistrarImpl;
+
 
 
       template <typename TDestination, typename TSource>
@@ -44,7 +48,7 @@ namespace fcf{
           _info = typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
           //if ((index & 0xc4000000) == 0) { // if not right ref
           typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
-          ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, simple_type> typeRegistrar(_info, index);
+          ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);
           ::fcf::NDetails::SpecificatorRegistrarCaller<Type, __COUNTER__, simple_type> specificatorsRegistrar;
           //}
         }

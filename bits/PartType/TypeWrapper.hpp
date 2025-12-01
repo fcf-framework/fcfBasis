@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_WRAPPER_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_WRAPPER_HPP___
 
+#include <iostream>
 #include "../../macro.hpp"
 #include "BaseTypeWrapper.hpp"
 #include "NDetails/AssigmentWrapper.hpp"
@@ -14,6 +15,7 @@ namespace fcf{
 
       TypeWrapper(const Ty& a_item);
       TypeWrapper(); 
+      ~TypeWrapper(); 
       virtual void* ptr();
       virtual size_t size(); 
       virtual void set(const void* a_source);
@@ -32,9 +34,10 @@ namespace fcf{
       typedef typename std::remove_const<Ty>::type UnconstType;
 
       TypeWrapper(const Ty& a_item);
-      TypeWrapper(); 
+      TypeWrapper();
+      ~TypeWrapper();
       virtual void* ptr();
-      virtual size_t size(); 
+      virtual size_t size();
       virtual void set(const void* a_source);
       virtual BaseTypeWrapper* clone();
       virtual BaseTypeWrapper* clone(char* a_mem);
@@ -53,6 +56,10 @@ namespace fcf{
 
   template <typename Ty>
   TypeWrapper<Ty&>::TypeWrapper() {
+  }
+
+  template <typename Ty>
+  TypeWrapper<Ty&>::~TypeWrapper() {
   }
 
   template <typename Ty>
@@ -106,6 +113,10 @@ namespace fcf{
 
   template <typename Ty>
   TypeWrapper<Ty>::TypeWrapper() {
+  }
+
+  template <typename Ty>
+  TypeWrapper<Ty>::~TypeWrapper() {
   }
 
   template <typename Ty>

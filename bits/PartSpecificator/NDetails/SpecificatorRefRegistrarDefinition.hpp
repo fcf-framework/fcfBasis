@@ -5,10 +5,13 @@ namespace fcf{
 
   namespace NDetails {
 
-    template <typename Ty, typename = void>
+    template <typename Ty, typename TSpecificator, typename = void>
     struct SpecificatorRefRegistrarImpl;
 
-    template <typename Ty, bool Ignore>
+    template <typename RegTy, typename Ty, typename TSpecificator, typename = void>
+    struct SpecificatorConstRefRegistrarImpl;
+
+    template <typename Ty, typename TSpecificator, bool Ignore>
     struct SpecificatorRefRegistrar;
 
   }

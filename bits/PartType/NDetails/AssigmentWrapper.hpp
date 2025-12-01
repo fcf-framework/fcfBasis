@@ -19,6 +19,7 @@ namespace fcf{
         *(UnconstType*)a_dst = *(const UnconstType*)a_src;
       }
     };
+
   }
 
 } // fcf namespace

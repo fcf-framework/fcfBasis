@@ -68,8 +68,8 @@ namespace fcf{
       typedef StaticVector                                             self_type;
       typedef Ty                                                       value_type;
       typedef size_t                                                   size_type;
-      typedef ContainerAccess<self_type, false>                        iterator;
-      typedef ContainerAccess<self_type, true>                         const_iterator;
+      typedef ContainerAccess<self_type>                               iterator;
+      typedef ContainerAccess<const self_type>                         const_iterator;
 
       enum {
         static_capacity_value = StaticSize

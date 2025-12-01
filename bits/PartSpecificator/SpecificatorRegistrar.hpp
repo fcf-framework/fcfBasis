@@ -78,7 +78,7 @@ namespace fcf{
       }
     };
 
-    template <typename Ty, typename TSpecificator, typename = void>
+    template <typename Ty, typename TSpecificator, typename>
     struct SpecificatorCallRegistrar{
       inline void operator()(fcf::SpecificatorInfo*){
       }
@@ -106,9 +106,8 @@ namespace fcf{
         sti.universalCall = (UniversalCall)SpecificatorRegistrar::universalCall;
         NDetails::SpecificatorCallRegistrar<TContainer, TSpecificator>()(&sti);
         Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-        NDetails::SpecificatorRefRegistrar<TContainer, std::is_reference<TContainer>::value || std::is_const<TContainer>::value >()(sti, specificatorIndex);
+        NDetails::SpecificatorRefRegistrar<TContainer, TSpecificator, std::is_reference<TContainer>::value || std::is_const<TContainer>::value >()(sti, specificatorIndex);
       }
-    protected:
       static Variant universalCall(TContainer* a_container, Variant* a_argv, size_t a_argc);
   };
 
