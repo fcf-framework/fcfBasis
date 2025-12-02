@@ -101,7 +101,7 @@
     #define __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(a_itemName, a_counter) __FCF_SPECIFICATOR_REGISTRY_FORCE__L2(a_itemName, a_counter)
     #define FCF_SPECIFICATOR_REGISTRY_FORCE(a_type, a_specificator) \
       namespace { \
-        ::fcf::SpecificatorRegistrar<a_type, a_specificator> __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(specificatorReg, __COUNTER__);\
+        ::fcf::SpecificatorRegistrarHandler<a_type, a_specificator> __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(specificatorReg, __COUNTER__);\
       }
   #endif // #ifndef FCF_SPECIFICATOR_REGISTRY
 
@@ -313,7 +313,7 @@
               struct PartialSpecificatorRegistrar< PartialSpecificatorRegistrarLast<void, __COUNTER__>::value > {\
                 template <typename Ty>\
                 void registry(){\
-                  ::fcf::SpecificatorRegistrar<Ty, a_specificator> registrar;\
+                  ::fcf::SpecificatorRegistrarHandler<Ty, a_specificator> registrar;\
                 }\
               };\
             FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES(a_template)\

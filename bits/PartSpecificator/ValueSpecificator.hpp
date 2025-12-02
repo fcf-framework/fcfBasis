@@ -2,7 +2,7 @@
 #define ___FCF__BASIS__BITS__PART_SPECIFICATOR__VALUE_SPECIFICATOR_HPP___
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "SpecificatorRegistrar.hpp"
+#include "SpecificatorRegistrarHandler.hpp"
 #include "../PartType/Type.hpp"
 #include "../../Variant.hpp"
 

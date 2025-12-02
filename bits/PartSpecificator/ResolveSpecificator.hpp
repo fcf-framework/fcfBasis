@@ -17,27 +17,16 @@ namespace fcf{
       return Variant(ResolveData(Type<Ty, ResolveSpecificator>().call(a_object)));
     }
   };
-/*
+
   template <typename TContainer>
-  class SpecificatorRegistrar<TContainer, ResolveSpecificator> {
-    public:
-      SpecificatorRegistrar() {
-        unsigned int specificatorIndex = Type<ResolveSpecificator>().index();
-        fcf::SpecificatorInfo sti;
-        sti.universalCall = (UniversalCall)universalCall;
-        Type<TContainer>()._info->specificators[specificatorIndex] = sti;
-        Type<TContainer>()._info->resolver = call;
-      }
-
-      static ResolveData call(void* a_container) {
-        return Type<TContainer, ResolveSpecificator>().call((TContainer*)a_container);
-      }
-
-      static Variant universalCall(TContainer* a_container, Variant* a_argv, size_t a_argc) {
-        return Type<TContainer, ResolveSpecificator>().universalCall(a_container, a_argv, a_argc);
-      }
+  struct SpecificatorRegistrar<TContainer, ResolveSpecificator> {
+    void operator()(const SpecificatorInfo& a_si){
+      unsigned int specificatorIndex = Type<ResolveSpecificator>().index();
+      Type<TContainer>()._info->specificators[specificatorIndex] = a_si;
+      Type<TContainer>()._info->resolver = (ResolveSpecificator::CallType)a_si.call;
+    }
   };
-*/
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_SPECIFICATOR__RESOLVE_SPECIFICATOR_HPP___

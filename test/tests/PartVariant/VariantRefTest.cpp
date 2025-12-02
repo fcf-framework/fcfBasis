@@ -109,8 +109,9 @@ namespace FcfTest {
         std::cout << "vref.get<MapType>().size(): " << vref.get<MapType>().size() << std::endl;
         std::cout << "vref.get<MapType>()[\"1\"]: " << vref.get<MapType>()["1"] << std::endl;
         std::cout << "v[\"2\"].get<MapType>()[\"1\"]: " << v["2"].get<MapType>()["1"] << std::endl;
-        fcf::Variant vref2 = v["2"];
-        std::cout << "v[\"2\"][\"1\"]: " << vref2["1"] << std::endl;
+        //fcf::Variant vref2 = v["2"];
+        //std::cout << "v[\"2\"][\"1\"]: " << vref2["1"] << std::endl;
+        std::cout << "v[\"2\"][\"1\"]: " << v["2"]["1"] << std::endl;
         /*
         for(auto it = m["2"].get<MapType>().begin(); it != m["2"].get<MapType>().end(); ++it){
           std::cout << "key: " << it->first << "; value:" << it->second << std::endl;

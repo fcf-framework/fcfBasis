@@ -1457,6 +1457,13 @@ namespace fcf{
 
 #include "bits/PartSpecificator/ResolveSpecificator.hpp"
 
+namespace std {
+  template <size_t innerBufferSize>
+  std::string to_string(const fcf::BasicVariant<innerBufferSize>& a_variant){
+    return a_variant.template cast<std::string>();
+  }
+}
+
 namespace fcf {
 
   template <size_t innerBufferSize>
