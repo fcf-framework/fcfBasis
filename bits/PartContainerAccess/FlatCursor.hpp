@@ -10,7 +10,7 @@ namespace fcf {
     typedef TKey       key_type;
     typedef TValue     value_type;
     typedef TValue     stored_value_type;
-    typedef TValue     resolve_value_type;
+    typedef TValue&    resolve_value_type;
     typedef TValue     resolve_stored_value_type;
     enum { is_flat = true };
 
@@ -76,6 +76,10 @@ namespace fcf {
 
     inline value_type& getValue() {
       return (*container)[key];
+    }
+
+    inline void* getValuePtr() {
+      return &(*container)[key];
     }
 
     inline resolve_stored_value_type& getStoredValue() {

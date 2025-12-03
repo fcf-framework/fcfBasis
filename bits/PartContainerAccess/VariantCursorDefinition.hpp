@@ -13,7 +13,7 @@ namespace fcf{
     typedef Variant                       key_type;
     typedef Variant                       value_type;
     typedef Variant                       stored_value_type;
-    typedef Variant                       resolve_value_type;
+    typedef Variant                      resolve_value_type;
     typedef Variant                       resolve_stored_value_type;
     enum { is_flat = false };
 
@@ -39,10 +39,9 @@ namespace fcf{
 
     inline key_type getKey() const;
 
-    //
-    // The reference is malid only until a new method call
-    // 
-    inline value_type& getValue();
+    inline resolve_value_type getValue();
+
+    inline void* getValuePtr();
 
     // (this is the stub)!
     inline resolve_stored_value_type& getStoredValue();
@@ -54,7 +53,6 @@ namespace fcf{
     inline bool equal(const self_type& a_cursor) const;
 
     BasicVariant<InnerBufferSize> iterator;
-    BasicVariant<InnerBufferSize> value;
   };
 
 

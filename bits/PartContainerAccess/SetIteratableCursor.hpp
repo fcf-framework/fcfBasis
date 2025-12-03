@@ -10,7 +10,7 @@ namespace fcf {
     typedef TValue                        key_type;
     typedef TValue                        value_type;
     typedef TValue                        stored_value_type;
-    typedef const TValue                  resolve_value_type;
+    typedef const TValue&                 resolve_value_type;
     typedef const TValue                  resolve_stored_value_type;
     typedef typename TContainer::iterator iterator_type;
     enum { is_flat = false };
@@ -73,6 +73,10 @@ namespace fcf {
 
     inline const value_type& getValue() {
       return *iterator;
+    }
+
+    inline const value_type* getValuePtr() {
+      return &(*iterator);
     }
 
     inline resolve_stored_value_type& getStoredValue() {

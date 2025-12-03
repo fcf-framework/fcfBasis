@@ -210,7 +210,7 @@ namespace fcf {
     if (std::is_const< resolve_type >::value) {
       throw std::runtime_error("The type does not support access to modify the stored value.");
     }
-    return (void*)&_containerAccess.value();
+    return _containerAccess.ptr();
   };
 
   template <typename TContainerAccess>
@@ -230,7 +230,7 @@ namespace fcf {
 
   template <typename TContainerAccess>
   const void* DynamicContainerAccess<TContainerAccess>::getConstValuePtr() const {
-    return & ((TContainerAccess&)_containerAccess).value();
+    return ((TContainerAccess&)_containerAccess).ptr();
   };
 
   template <typename TContainerAccess>
@@ -240,7 +240,13 @@ namespace fcf {
 
   template <typename TContainerAccess>
   Variant DynamicContainerAccess<TContainerAccess>::getRefValue(){
-    return Variant(((TContainerAccess&)_containerAccess).value(), Variant::FORCE_REFERENCE);
+    typedef decltype(((TContainerAccess&)_containerAccess).value()) ResultType;
+    typedef typename std::remove_const<ResultType>::type            CheckType;
+    if (std::is_same<CheckType, Variant>::value) {
+      return ((TContainerAccess&)_containerAccess).value();
+    } else {
+      return Variant(((TContainerAccess&)_containerAccess).value(), Variant::FORCE_REFERENCE);
+    }
   }
 
   template <typename TContainerAccess>

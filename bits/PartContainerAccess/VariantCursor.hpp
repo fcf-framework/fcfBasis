@@ -75,10 +75,15 @@ namespace fcf{
   }
 
   template <unsigned int InnerBufferSize>
-  typename VariantCursor<InnerBufferSize>::value_type& VariantCursor<InnerBufferSize>::getValue() {
+  typename VariantCursor<InnerBufferSize>::resolve_value_type VariantCursor<InnerBufferSize>::getValue() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
-    value.set(piterator->getRefValue(), fcf::Variant::REFERENCE);
-    return value;
+    return piterator->getRefValue();
+  }
+
+  template <unsigned int InnerBufferSize>
+  void* VariantCursor<InnerBufferSize>::getValuePtr() {
+    DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
+    return piterator->getRefValue().ptr();
   }
 
   // (this is the stub)!

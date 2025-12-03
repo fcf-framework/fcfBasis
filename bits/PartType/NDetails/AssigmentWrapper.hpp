@@ -7,6 +7,10 @@ namespace fcf{
     template <typename Ty, typename = void>
     struct AssigmentWrapper{
       void operator()(void* a_dst, const void* a_src){
+        /*
+        typedef typename std::remove_const<Ty>::type UnconstType;
+        *(UnconstType*)a_dst = *(const UnconstType*)a_src;
+        */
         ((Ty*)a_dst)->~Ty();
         new (a_dst)Ty(*(const Ty*)a_src);
       }

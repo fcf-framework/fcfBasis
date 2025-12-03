@@ -93,8 +93,12 @@ namespace fcf {
         return result;
       }
 
-      inline resolve_value_type& value(){
+      inline resolve_value_type value(){
         return cursor.getValue();
+      }
+
+      inline void* ptr(){
+        return (void*)cursor.getValuePtr();
       }
 
       inline size_t distance(const ContainerAccess& a_iterator) const {
@@ -222,6 +226,10 @@ namespace fcf {
 
       inline const value_type& value() const{
         return ((cursor_type&)cursor).getValue();
+      }
+
+      inline const void* ptr() const{
+        return (const void*)cursor.getValuePtr();
       }
 
       inline size_t distance(const ContainerAccess& a_iterator) const {
