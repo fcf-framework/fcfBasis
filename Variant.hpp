@@ -908,10 +908,16 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename TResult>
   TResult BasicVariant<innerBufferSize>::cast() const{
+    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const unsigned int variantTypeIndex      = Type<Variant>().index();
     if (!_typeInfo){
       return TResult();
     } if (dataTypeIndex() == Type<TResult>().dataIndex()){
       return *(TResult*)ptr();
+    } else if (_typeInfo->dataIndex == selfVariantTypeIndex) {
+      return ((BasicVariant*)ptr())->cast<TResult>();
+    } else if (_typeInfo->dataIndex == variantTypeIndex) {
+      return ((Variant*)ptr())->cast<TResult>();
     } else {
       TResult result;
       convertRuntimeByDestination(&result, ptr(), dataTypeIndex());
@@ -922,12 +928,18 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename TResult>
   TResult BasicVariant<innerBufferSize>::strict_cast() const{
+    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const unsigned int variantTypeIndex      = Type<Variant>().index();
     if (dataTypeIndex() != Type<TResult>().dataIndex()){
+      if (_typeInfo->dataIndex == selfVariantTypeIndex) {
+        return ((BasicVariant*)ptr())->strict_cast<TResult>();
+      } else if (_typeInfo->dataIndex == variantTypeIndex) {
+        return ((Variant*)ptr())->strict_cast<TResult>();
+      }
       throw std::runtime_error(std::string() + "The type saved in the variant is not '" + Type<TResult>().name() + "' type");
     }
     return *(TResult*)ptr();
   }
-
 
   template <size_t innerBufferSize>
   template <typename TType>
@@ -955,18 +967,24 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
   void BasicVariant<innerBufferSize>::_clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
+    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const unsigned int variantTypeIndex      = Type<Variant>().index();
     switch (a_dataMode){
       case WRITE:
       {
         if (TypeIndexConverter<>().isConst(typeIndex())){
           throw std::runtime_error("The data in the Variant object is read-only");
         }
-        if (_typeInfo && TypeIndexConverter<>().isSingleReference(_typeInfo->index)){
+        if (isReference()){
           BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
           if (!a_variant._typeInfo) {
             throw std::runtime_error("Source variant object not set");
           } else if (_typeInfo->dataIndex == a_variant._typeInfo->dataIndex) {
             wrp->set(a_variant.ptr());
+          } else if (_typeInfo->dataIndex == selfVariantTypeIndex) {
+            *((BasicVariant*)ptr()) = a_variant;
+          } else if (_typeInfo->dataIndex == variantTypeIndex) {
+            *((Variant*)ptr()) = a_variant;
           } else {
             Variant buffer(_typeInfo->dataIndex, a_variant.ptr(), a_variant._typeInfo->dataIndex);
             wrp->set(buffer.ptr());
@@ -975,14 +993,17 @@ namespace fcf{
           _destroy();
           _ptr = 0;
           _typeInfo = 0;
-          if (a_variant._typeInfo) {
-            BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
-            if (wrp->size() <= innerBufferSize){
-              _ptr = wrp->clone(&_mem[0])->ptr();
+          auto ui = a_variant._getUnref();
+          if (ui.typeInfo) {
+            if (ui.wrapper->size() <= innerBufferSize){
+              _ptr = ui.wrapper->cloneData(&_mem[0])->ptr();
             } else {
-              _ptr = wrp->clone()->ptr();
+              _ptr = ui.wrapper->cloneData()->ptr();
             }
-            _typeInfo = a_variant._typeInfo;
+            if (TypeIndexConverter<>::isSingleReference(ui.typeInfo->index)){
+              ui.typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>::getUnreferenceIndex(ui.typeInfo->index));
+            }
+            _typeInfo = ui.typeInfo;
           }
         }
       }
@@ -992,14 +1013,14 @@ namespace fcf{
           _destroy();
           _ptr = 0;
           _typeInfo = 0;
-          if (a_variant._typeInfo) {
-            BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
-            if (wrp->size() <= innerBufferSize){
-              _ptr = wrp->clone(&_mem[0])->ptr();
+          auto ui = a_variant._getUnref();
+          if (ui.typeInfo) {
+            if (ui.wrapper->size() <= innerBufferSize){
+              _ptr = ui.wrapper->clone(&_mem[0])->ptr();
             } else {
-              _ptr = wrp->clone()->ptr();
+              _ptr = ui.wrapper->clone()->ptr();
             }
-            _typeInfo = a_variant._typeInfo;
+            _typeInfo = ui.typeInfo;
           }
         }
       break;
@@ -1053,16 +1074,22 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename Ty>
   void BasicVariant<innerBufferSize>::_reset(const Ty& a_value, DataSetMode a_dataMode) {
+    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const unsigned int variantTypeIndex      = Type<Variant>().index();
     switch (a_dataMode){
       case WRITE:
         {
           if (TypeIndexConverter<>().isConst(typeIndex())){
             throw std::runtime_error("The data in the Variant object is read-only");
           }
-          if (_typeInfo && TypeIndexConverter<>().isSingleReference(_typeInfo->index)){
+          if (isReference()){
             BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
             if (_typeInfo->dataIndex == Type<Ty>().dataIndex()) {
               wrp->set(&a_value);
+            } else if (selfVariantTypeIndex == _typeInfo->dataIndex) {
+              ((BasicVariant*)ptr())->_reset(a_value, WRITE);
+            } else if (variantTypeIndex == _typeInfo->dataIndex){
+              ((Variant*)ptr())->_reset(a_value, WRITE);
             } else {
               Variant buffer(_typeInfo->dataIndex, &a_value, Type<Ty>().index());
               wrp->set(buffer.ptr());
@@ -1135,7 +1162,7 @@ namespace fcf{
 
 
   template <size_t innerBufferSize>
-  const BaseTypeWrapper* BasicVariant<innerBufferSize>::_getWrapper() const{
+  BaseTypeWrapper* BasicVariant<innerBufferSize>::_getWrapper() const{
     if (!_typeInfo){
       return 0;
     }
@@ -1148,6 +1175,35 @@ namespace fcf{
       char* address = wrp - offset;
       return (BaseTypeWrapper*)address;
     }
+  }
+
+  template <size_t innerBufferSize>
+  typename BasicVariant<innerBufferSize>::UnrefInfo BasicVariant<innerBufferSize>::_getUnref() const {
+    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const unsigned int variantTypeIndex      = Type<Variant>().index();
+    if (!_typeInfo){
+      return UnrefInfo{0, 0};
+    }
+    const void* p        = ptr();
+    BaseTypeWrapper* wrp = _getWrapper();
+    const TypeInfo* ti   = _typeInfo;
+    while (ti) {
+      if (TypeIndexConverter<>::isSingleReference(ti->index)){
+        if (ti->dataIndex == selfVariantTypeIndex){
+          p = ((BasicVariant*)p)->ptr();
+          wrp = ((BasicVariant*)p)->_getWrapper();
+          ti  = ((BasicVariant*)p)->_typeInfo;
+          continue;
+        } else if (ti->dataIndex == variantTypeIndex){
+          p = ((Variant*)p)->ptr();
+          wrp = ((Variant*)p)->_getWrapper();
+          ti  = ((Variant*)p)->_typeInfo;
+          continue;
+        }
+      }
+      break;
+    }
+    return UnrefInfo{ti, wrp};
   }
 
   template <size_t innerBufferSize>

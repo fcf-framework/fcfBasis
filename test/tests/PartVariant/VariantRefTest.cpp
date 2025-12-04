@@ -5,6 +5,18 @@
 
 namespace FcfTest {
   namespace BasisTest {
+    namespace VariantRefTest {
+      struct Item{
+        std::string value;
+      };
+    }
+  }
+}
+
+FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::VariantRefTest::Item, "FcfTest::BasisTest::VariantRefTest::Item", 0);
+
+namespace FcfTest {
+  namespace BasisTest {
 
     void variantRefTest(){
       std::cout << "Start variantRefTest()..." << std::endl;
@@ -104,29 +116,53 @@ namespace FcfTest {
         m["1"] = "v-1";
         m["2"] = MapType();
         m["2"]["1"] = "v-2-1";
-        std::cout << fcf::getTypeInfo(v["2"].typeIndex())->name << std::endl;
         fcf::Variant vref = v["2"];
-        std::cout << "vref.get<MapType>().size(): " << vref.get<MapType>().size() << std::endl;
-        std::cout << "vref.get<MapType>()[\"1\"]: " << vref.get<MapType>()["1"] << std::endl;
-        std::cout << "v[\"2\"].get<MapType>()[\"1\"]: " << v["2"].get<MapType>()["1"] << std::endl;
-        //fcf::Variant vref2 = v["2"];
-        //std::cout << "v[\"2\"][\"1\"]: " << vref2["1"] << std::endl;
-        std::cout << "v[\"2\"][\"1\"]: " << v["2"]["1"] << std::endl;
-        /*
-        for(auto it = m["2"].get<MapType>().begin(); it != m["2"].get<MapType>().end(); ++it){
-          std::cout << "key: " << it->first << "; value:" << it->second << std::endl;
-        }
-        for(auto it = v["2"].get<MapType>().begin(); it != v["2"].get<MapType>().end(); ++it){
-          std::cout << "key: " << it->first << "; value:" << it->second << std::endl;
-        }
-        */
         FCF_TEST(v["1"] == "v-1", v[1]);
         FCF_TEST(v["2"]["1"] == "v-2-1", v["2"]["1"]);
-        
         v["2"]["2"] = "v-2-2";
         FCF_TEST(v["2"]["2"] == "v-2-2", v["2"]["2"]);
         FCF_TEST(m["2"]["2"] == "v-2-2", m["2"]["2"]);
-        
+        v["2"]["2"] = "v-2-2-new";
+        FCF_TEST(v["2"]["2"] == "v-2-2-new", v["2"]["2"]);
+        FCF_TEST(m["2"]["2"] == "v-2-2-new", m["2"]["2"]);
+        v["3"] = MapType();
+        v["3"]["1"] = MapType();
+        v["3"]["1"]["1"] = "3-1-1";
+        FCF_TEST(v["3"]["1"]["1"] == "3-1-1", v["3"]["1"]["1"]);
+        FCF_TEST(m["3"]["1"]["1"] == "3-1-1", m["3"]["1"]["1"]);
+      }
+      {
+        typedef std::map<std::string, fcf::Variant> MapType;
+        MapType m1;
+        fcf::Variant v1(fcf::Type<MapType>(), m1, fcf::Variant::REFERENCE);
+        v1["m1-1"] = 1;
+        MapType m2;
+        fcf::Variant v2(fcf::Type<MapType>(), m2, fcf::Variant::REFERENCE);
+        v2["m2-1"] = 1;
+
+        fcf::Variant v3 = VariantRefTest::Item{"v3-1"};
+        v2["m2-2"] = v3;
+        FCF_TEST(v2["m2-2"].cast<VariantRefTest::Item>().value == "v3-1", v2["m2-2"].cast<VariantRefTest::Item>().value);
+        FCF_TEST(m2["m2-2"].cast<VariantRefTest::Item>().value == "v3-1", m2["m2-2"].cast<VariantRefTest::Item>().value);
+
+        v2["m2-2"] = "v3-1-new";
+        FCF_TEST(v2["m2-2"].cast<std::string>() == "v3-1-new", v2["m2-2"].cast<std::string>());
+        FCF_TEST(m2["m2-2"].cast<std::string>() == "v3-1-new", m2["m2-2"].cast<std::string>());
+        FCF_TEST(v3.cast<VariantRefTest::Item>().value == "v3-1", v3.cast<VariantRefTest::Item>().value);
+
+        {
+          VariantRefTest::Item item = VariantRefTest::Item{"v4-1"};
+          fcf::Variant v(item, fcf::Variant::REFERENCE);
+          v2["m2-3"] = v;
+          FCF_TEST(v2["m2-3"].cast<VariantRefTest::Item>().value == "v4-1", v2["m2-3"].cast<VariantRefTest::Item>().value);
+          FCF_TEST(m2["m2-3"].cast<VariantRefTest::Item>().value == "v4-1", m2["m2-3"].cast<VariantRefTest::Item>().value);
+
+          v2["m2-3"] = "v4-1-new";
+          FCF_TEST(v2["m2-3"].cast<std::string>() == "v4-1-new", v2["m2-3"].cast<std::string>());
+          FCF_TEST(m2["m2-3"].cast<std::string>() == "v4-1-new", m2["m2-3"].cast<std::string>());
+          FCF_TEST(v.cast<VariantRefTest::Item>().value == "v4-1", v.cast<VariantRefTest::Item>().value);
+        }
+
       }
     }
 

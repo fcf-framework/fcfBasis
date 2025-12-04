@@ -21,6 +21,8 @@ namespace fcf{
       virtual void set(const void* a_source);
       virtual BaseTypeWrapper* clone();
       virtual BaseTypeWrapper* clone(char* a_mem);
+      virtual BaseTypeWrapper* cloneData();
+      virtual BaseTypeWrapper* cloneData(char* a_mem);
       virtual BaseTypeWrapper* referenceClone(char* a_mem);
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
@@ -41,13 +43,14 @@ namespace fcf{
       virtual void set(const void* a_source);
       virtual BaseTypeWrapper* clone();
       virtual BaseTypeWrapper* clone(char* a_mem);
+      virtual BaseTypeWrapper* cloneData();
+      virtual BaseTypeWrapper* cloneData(char* a_mem);
       virtual BaseTypeWrapper* referenceClone(char* a_mem);
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
 
       UnconstType* data;
   };
-
 
   template <typename Ty>
   TypeWrapper<Ty&>::TypeWrapper(const Ty& a_item)
@@ -88,6 +91,16 @@ namespace fcf{
   }
 
   template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty&>::cloneData(){
+    return new TypeWrapper<Ty>(*data);
+  }
+
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty&>::cloneData(char* a_mem){
+    return new (a_mem) TypeWrapper<Ty>(*data);
+  }
+
+  template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty&>::referenceClone(char* a_mem){
     return new (a_mem) TypeWrapper<Ty&>(*data);
   }
@@ -101,7 +114,6 @@ namespace fcf{
   BaseTypeWrapper* TypeWrapper<Ty&>::create(char* a_mem){
     return new (a_mem) TypeWrapper<Ty&>();
   }
-
 
 
 
@@ -141,6 +153,16 @@ namespace fcf{
 
   template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty>::clone(char* a_mem){
+    return new (a_mem) TypeWrapper<Ty>(data);
+  }
+
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty>::cloneData(){
+    return new TypeWrapper<Ty>(data);
+  }
+
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty>::cloneData(char* a_mem){
     return new (a_mem) TypeWrapper<Ty>(data);
   }
 

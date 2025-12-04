@@ -49,19 +49,6 @@ void tupleTest();
 
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
 
-/*
-  {
-    std::map<int, int> m;
-    m[1] = 1;
-    std::cout << m[1] << std::endl;
-    auto res = m.insert(std::pair<int, int>(1,2));
-    std::cout << m[1] << "|"<< res.second << std::endl;
-    res = m.insert(std::pair<int, int>(2,2));
-    std::cout << m[2] << "|"<< res.second << std::endl;
-    return 0;
-  }
-  */
-
   variantTest();
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();

@@ -7,6 +7,7 @@
 #include "../../macro.hpp"
 #include "../../bits/PartVariant/VariantPredefinition.hpp"
 #include "../../bits/PartType/DynamicType.hpp"
+#include "../../bits/PartType/TypeIndexConverter.hpp"
 
 namespace fcf {
 
@@ -259,6 +260,8 @@ namespace fcf {
 
       inline bool empty() const { return _typeInfo == 0; }
 
+      inline bool isReference() const { return _typeInfo ? TypeIndexConverter<>::isSingleReference(_typeInfo->index) : false; }
+
       template <typename TResult>
       typename std::remove_const< typename std::remove_reference<TResult>::type >::type& as();
 
@@ -285,6 +288,11 @@ namespace fcf {
       }
 
     private:
+      struct UnrefInfo {
+        const TypeInfo*  typeInfo;
+        BaseTypeWrapper* wrapper;
+      };
+
       void _destroy();
 
       template <size_t InputInnerBufferSize>
@@ -304,7 +312,9 @@ namespace fcf {
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
-      const BaseTypeWrapper* _getWrapper() const;
+      BaseTypeWrapper* _getWrapper() const;
+
+      UnrefInfo _getUnref() const;
 
       template <typename Ty>
       bool _less(const Ty& a_value) const;
