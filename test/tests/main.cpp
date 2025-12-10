@@ -47,8 +47,8 @@ void tupleTest();
 
 
 
-int main(int /*a_argc*/, char* /*a_argv*/[]) {
 
+int main(int /*a_argc*/, char* /*a_argv*/[]) {
   variantTest();
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();

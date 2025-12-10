@@ -38,10 +38,10 @@ namespace fcf{
       if (!rightPtr) {
         throw std::runtime_error("Second argument is null");
       }
-      if (Type<Ty>().index() != a_argv->typeIndex()) {
+      if (Type<Ty>().index() != a_argv->getTypeIndex()) {
         throw std::runtime_error("Error sum different types");
       }
-      if (Type<Ty>().index() != (a_argv+1)->typeIndex()) {
+      if (Type<Ty>().index() != (a_argv+1)->getTypeIndex()) {
         throw std::runtime_error("Error sum different types");
       }
       Type<Ty, AddSpecificator>().call(a_object, leftPtr, rightPtr);

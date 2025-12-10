@@ -103,7 +103,7 @@ namespace FcfTest {
           std::cout << "key: " << it->first << "; value:" << it->second << std::endl;
         }
         std::cout << m["2"].get<MapType>().size() << std::endl;
-        std::cout << m["2"]["1"].typeIndex() << std::endl;
+        std::cout << m["2"]["1"].getTypeIndex() << std::endl;
         FCF_TEST(v["1"] == "v-1", v[1]);
         FCF_TEST(v["2"]["1"] == "v-2-1", v["2"]["1"]);
         */

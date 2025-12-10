@@ -248,9 +248,9 @@ namespace fcf {
 
       BasicVariant operator/(const char* a_value) const;
 
-      unsigned int dataTypeIndex() const;
+      unsigned int getDataTypeIndex() const;
 
-      unsigned int typeIndex() const;
+      unsigned int getTypeIndex() const;
 
       const TypeInfo* getTypeInfo() const;
 
@@ -291,15 +291,31 @@ namespace fcf {
       struct UnrefInfo {
         const TypeInfo*  typeInfo;
         BaseTypeWrapper* wrapper;
+        void*            ptr;
+        bool             isConst;
+      };
+
+      struct DataEndpoint {
+        const TypeInfo*  typeInfo;
+        void*            ptr;
+      };
+
+      struct DataEndpointEx {
+        const TypeInfo*  typeInfo;
+        void*            ptr;
+        BaseTypeWrapper* wrapper;
+      };
+
+      struct VariantEndpoint{
+        void* variant;
+        bool  isConst;
+        size_t innerSize;
       };
 
       void _destroy();
 
       template <size_t InputInnerBufferSize>
       void _clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
-
-      template <typename Ty>
-      void _set(const Ty& a_value);
 
       template <typename Ty>
       void _reset(const Ty& a_value, DataSetMode a_dataMode);
@@ -314,7 +330,13 @@ namespace fcf {
 
       BaseTypeWrapper* _getWrapper() const;
 
-      UnrefInfo _getUnref() const;
+      inline UnrefInfo _getUnref();
+
+      inline VariantEndpoint _variantEndpoint();
+
+      inline DataEndpoint _dataEndpoint();
+
+      inline DataEndpointEx _dataEndpointEx();
 
       template <typename Ty>
       bool _less(const Ty& a_value) const;
@@ -349,9 +371,9 @@ namespace fcf {
       template <typename Ty>
       BasicVariant _div(const Ty& a_value) const;
 
-      char            _mem[innerBufferSize];
       const TypeInfo* _typeInfo;
       void*           _ptr;
+      char            _mem[innerBufferSize];
   };
 
 } // fcf namespace

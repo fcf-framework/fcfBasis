@@ -1,8 +1,10 @@
 #ifndef ___FCF_BASIS__BITS__PART_VARIANT__VARIANT_PREDEFINITION_HPP___
 #define ___FCF_BASIS__BITS__PART_VARIANT__VARIANT_PREDEFINITION_HPP___
 
+#include <string>
+#include <map>
 #include "../../bits/PartMetaType/MetaTypeMaxTypeSize.hpp"
-#include "../../bits/PartType/TypeWrapper.hpp"
+#include "../../bits/PartType/TypeWrapperDefinition.hpp"
 
 namespace fcf{
 

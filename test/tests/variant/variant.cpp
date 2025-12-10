@@ -11,6 +11,7 @@ void variantTest(){
     fcf::Variant v("123.1");
     fcf::Variant v2(v);
     fcf::Variant v3;
+    //FCF_TEST(v2 == "123.1", v2.cast<std::string>());
     v3 = v2;
     v2.clear();
     v2 = fcf::convert<fcf::Variant>("999");
@@ -34,23 +35,23 @@ void variantTest(){
   {
     unsigned int intTypeIndex = fcf::Type<int>().index();
     fcf::Variant v1( fcf::DynamicType{intTypeIndex} );
-    FCF_TEST(v1.typeIndex() == intTypeIndex, v1.typeIndex(), intTypeIndex);
+    FCF_TEST(v1.getTypeIndex() == intTypeIndex, v1.getTypeIndex(), intTypeIndex);
 
     unsigned int charTypeIndex = fcf::Type<char>().index();
     v1.reset(fcf::DynamicType{charTypeIndex});
-    FCF_TEST(v1.typeIndex() == charTypeIndex, v1.typeIndex(), charTypeIndex);
+    FCF_TEST(v1.getTypeIndex() == charTypeIndex, v1.getTypeIndex(), charTypeIndex);
 
     v1.clear();
 
-    FCF_TEST(v1.typeIndex() == 0, v1.typeIndex());
+    FCF_TEST(v1.getTypeIndex() == 0, v1.getTypeIndex());
   }
   {
     fcf::Variant v1( fcf::Type<int>{} );
-    FCF_TEST(v1.typeIndex() == fcf::Type<int>().index(), v1.typeIndex(), fcf::Type<int>().index());
+    FCF_TEST(v1.getTypeIndex() == fcf::Type<int>().index(), v1.getTypeIndex(), fcf::Type<int>().index());
 
     unsigned int charTypeIndex = fcf::Type<char>().index();
     v1.reset(fcf::Type<char>{});
-    FCF_TEST(v1.typeIndex() == charTypeIndex, v1.typeIndex(), charTypeIndex);
+    FCF_TEST(v1.getTypeIndex() == charTypeIndex, v1.getTypeIndex(), charTypeIndex);
   }
 
 }

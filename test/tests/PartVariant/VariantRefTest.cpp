@@ -8,12 +8,19 @@ namespace FcfTest {
     namespace VariantRefTest {
       struct Item{
         std::string value;
+        bool operator==(const Item& a_value) const{
+          return value == a_value.value;
+        }
       };
     }
   }
 }
 
+
 FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::VariantRefTest::Item, "FcfTest::BasisTest::VariantRefTest::Item", 0);
+namespace fcf { template<> struct Type<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecificator> : public TypeImpl<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecificator> {}; }
+FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::VariantRefTest::Item,  fcf::EqualSpecificator);
+
 
 namespace FcfTest {
   namespace BasisTest {
@@ -161,6 +168,143 @@ namespace FcfTest {
           FCF_TEST(v2["m2-3"].cast<std::string>() == "v4-1-new", v2["m2-3"].cast<std::string>());
           FCF_TEST(m2["m2-3"].cast<std::string>() == "v4-1-new", m2["m2-3"].cast<std::string>());
           FCF_TEST(v.cast<VariantRefTest::Item>().value == "v4-1", v.cast<VariantRefTest::Item>().value);
+        }
+        {
+          int          i   = 1;
+          fcf::Variant vs1(i, fcf::Variant::REFERENCE);
+          fcf::Variant vs2(vs1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant vs3(vs2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant vs4(vs3, fcf::Variant::REFERENCE);
+          {
+            fcf::Variant v = vs4;
+            FCF_TEST(v == 1, v);
+            FCF_TEST(v.getTypeInfo()->name == "int", v.getTypeInfo()->name);
+          }
+        }
+        {
+          int          i1   = 1;
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::REFERENCE);
+
+          int          i2   = 1;
+          fcf::Variant v2s1(i2, fcf::Variant::REFERENCE);
+          fcf::Variant v2s2(v2s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s3(v2s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s4(v2s3, fcf::Variant::REFERENCE);
+
+          FCF_TEST(v1s4 == v2s4, v1s4, v2s4);
+          FCF_TEST(!(v1s4 < v2s4), v1s4, v2s4);
+          i2 = 2;
+          FCF_TEST(v1s4 != v2s4, v1s4, v2s4);
+          FCF_TEST(v1s4 < v2s4, v1s4, v2s4);
+        }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::REFERENCE);
+
+          VariantRefTest::Item i2{"1"};
+          fcf::Variant v2s1(i2, fcf::Variant::REFERENCE);
+          fcf::Variant v2s2(v2s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s3(v2s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s4(v2s3, fcf::Variant::REFERENCE);
+
+          FCF_TEST(v1s4 == v2s4, v1s4, v2s4);
+          i2.value = "2";
+          FCF_TEST(v1s4 != v2s4, v1s4, v2s4);
+          i1.value = "2";
+          FCF_TEST(v1s4 == v2s4, v1s4, v2s4);
+
+          FCF_TEST(v1s4.cast<VariantRefTest::Item>().value == "2", v1s4);
+
+          v1s4 = VariantRefTest::Item{"3"};
+          FCF_TEST(i1.value == "3", i1.value);
+
+          //FCF_TEST(v1s4 < v2s4, v1s4, v2s4);
+        }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::REFERENCE);
+
+          VariantRefTest::Item i2{"1"};
+          fcf::Variant v2s1(i2, fcf::Variant::REFERENCE);
+          fcf::Variant v2s3(v2s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s4(v2s3, fcf::Variant::REFERENCE);
+
+          FCF_TEST(v1s4 == v2s4, v1s4.cast<VariantRefTest::Item>().value, v2s4.cast<VariantRefTest::Item>().value);
+          i2.value = "2";
+          FCF_TEST(v1s4 != v2s4, v1s4.cast<VariantRefTest::Item>().value, v2s4.cast<VariantRefTest::Item>().value);
+          i1.value = "2";
+          FCF_TEST(v1s4 == v2s4, v1s4.cast<VariantRefTest::Item>().value, v2s4.cast<VariantRefTest::Item>().value);
+
+          FCF_TEST(v1s4.cast<VariantRefTest::Item>().value == "2", v1s4.cast<VariantRefTest::Item>().value);
+        }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s5(v1s4, fcf::Variant::REFERENCE);
+
+          VariantRefTest::Item i2{"2"};
+          fcf::Variant v2s1(i2, fcf::Variant::REFERENCE);
+          fcf::Variant v2s3(v2s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s4(v2s3, fcf::Variant::REFERENCE);
+
+          v2s4 = v1s5;
+          FCF_TEST(i1.value == "1", i1.value);
+          FCF_TEST(i2.value == "1", i2.value);
+          FCF_TEST(v1s5.cast<VariantRefTest::Item>().value == "1", v1s5.cast<VariantRefTest::Item>().value);
+          FCF_TEST(v2s4.cast<VariantRefTest::Item>().value == "1", v2s4.cast<VariantRefTest::Item>().value);
+        }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s5(v1s4, fcf::Variant::REFERENCE);
+
+          VariantRefTest::Item i2{"2"};
+          fcf::Variant v2s1(i2, fcf::Variant::REFERENCE);
+          fcf::Variant v2s3(v2s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v2s4(v2s3, fcf::Variant::REFERENCE);
+
+          v1s5 = v2s4;
+          FCF_TEST(i1.value == "2", i1.value);
+          FCF_TEST(i2.value == "2", i2.value);
+          FCF_TEST(v1s5.cast<VariantRefTest::Item>().value == "2", v1s5.cast<VariantRefTest::Item>().value);
+          FCF_TEST(v2s4.cast<VariantRefTest::Item>().value == "2", v2s4.cast<VariantRefTest::Item>().value);
+        }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1(v1s4, fcf::Variant::REFERENCE);
+
+          fcf::Variant v2(v1);
+          FCF_TEST(v2.getTypeInfo()->name == "FcfTest::BasisTest::VariantRefTest::Item", v2.getTypeInfo()->name);
+        }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1(v1s4, fcf::Variant::REFERENCE);
+
+          fcf::Variant v2(v1, fcf::Variant::RESET);
+          FCF_TEST(v2.getTypeInfo()->name == "FcfTest::BasisTest::VariantRefTest::Item", v2.getTypeInfo()->name);
         }
 
       }

@@ -2,8 +2,6 @@
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_HPP___
 
 #include "BaseTypeWrapper.hpp"
-#include "TypeWrapper.hpp"
-#include "NDetails/AssigmentWrapper.hpp"
 
 namespace fcf {
 
@@ -29,7 +27,12 @@ namespace fcf {
       virtual BaseTypeWrapper* create(char* a_mem);
   };
 
+} // fcf namespace
 
+#include "NDetails/AssigmentWrapper.hpp"
+#include "TypeWrapper.hpp"
+
+namespace fcf {
   template <typename Ty>
   size_t TypeFactory<Ty>::size() {
     return sizeof(TypeWrapper<Ty>);

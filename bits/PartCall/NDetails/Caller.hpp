@@ -44,7 +44,7 @@ namespace fcf {
                 if (currentArgType == variantTypeIndex) {
                   Variant* variant = (Variant*)args[cc.index];
                   args[cc.index] = variant->ptr();
-                  currentArgType = variant->typeIndex();
+                  currentArgType = variant->getTypeIndex();
                 } else {
                   ResolveSpecificator::CallFunctionType converter = (ResolveSpecificator::CallFunctionType)cc.converter;
                   args[cc.index] = converter((arg_type*)args[cc.index]).data;
@@ -85,7 +85,7 @@ namespace fcf {
 
                 Variant* callResults;
                 size_t   callResultsSize;
-                if (callResult.typeIndex() == Type<UniversalArguments>().index()){
+                if (callResult.getTypeIndex() == Type<UniversalArguments>().index()){
                   callResult = call(aptr, 0, 0);
                   UniversalArguments& ua = *(UniversalArguments*)callResult.ptr();
                   callResults = &ua[0];
@@ -107,7 +107,7 @@ namespace fcf {
                     throw std::runtime_error("The function of the specificator returned an insufficient number of arguments");
                   }
 
-                  argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].typeIndex());
+                  argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].getTypeIndex());
                   args[phae.argument] = argBuffer[argBufferIndex].ptr();
                 }
               }

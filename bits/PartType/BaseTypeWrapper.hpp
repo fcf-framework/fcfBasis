@@ -8,16 +8,17 @@ namespace fcf{
   class FCF_BASIS_DECL_EXPORT BaseTypeWrapper {
     public:
       virtual ~BaseTypeWrapper();
-      virtual size_t size() = 0;
-      virtual void set(const void* a_source) = 0;
-      virtual BaseTypeWrapper* clone() = 0;
-      virtual BaseTypeWrapper* clone(char* a_mem) = 0;
-      virtual BaseTypeWrapper* cloneData() = 0;
-      virtual BaseTypeWrapper* cloneData(char* a_mem) = 0;
-      virtual BaseTypeWrapper* referenceClone(char* a_mem) = 0;
-      virtual BaseTypeWrapper* create() = 0;
-      virtual BaseTypeWrapper* create(char* a_mem) = 0;
-      virtual void* ptr() = 0;
+      virtual size_t            size() = 0;
+      virtual void              set(const void* a_source) = 0;
+      virtual BaseTypeWrapper*  clone() = 0;
+      virtual BaseTypeWrapper*  clone(char* a_mem) = 0;
+      virtual BaseTypeWrapper*  cloneData() = 0;
+      virtual BaseTypeWrapper*  cloneData(char* a_mem) = 0;
+      virtual BaseTypeWrapper*  referenceClone(char* a_mem) = 0;
+      virtual BaseTypeWrapper*  create() = 0;
+      virtual BaseTypeWrapper*  create(char* a_mem) = 0;
+      virtual void*             rootPtr() = 0;
+      virtual BaseTypeWrapper*  rootWrapper() = 0;
   };
 
   #ifdef FCF_BASIS_IMPLEMENTATION

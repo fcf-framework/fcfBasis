@@ -30,7 +30,7 @@ namespace fcf{
       if (!ptr) {
         std::runtime_error("Second argument is null");
       }
-      if (Type<Ty>().index() != a_argv->typeIndex()) {
+      if (Type<Ty>().index() != a_argv->getTypeIndex()) {
         std::runtime_error("Error comparing different types");
       }
       return (bool)Type<Ty, EqualSpecificator>().call(a_object, ptr);
