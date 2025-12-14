@@ -105,6 +105,9 @@ namespace fcf {
       void set(const Ty& a_value);
 
       template <typename Ty>
+      void set(Ty& a_value, DataSetMode a_dataMode);
+
+      template <typename Ty>
       void set(const Ty& a_value, DataSetMode a_dataMode);
 
       void set(const char* a_value);
@@ -288,16 +291,14 @@ namespace fcf {
       }
 
     private:
-      struct UnrefInfo {
-        const TypeInfo*  typeInfo;
-        BaseTypeWrapper* wrapper;
-        void*            ptr;
-        bool             isConst;
-      };
-
       struct DataEndpoint {
         const TypeInfo*  typeInfo;
         void*            ptr;
+      };
+      struct ConstDataEndpoint {
+        const TypeInfo*  typeInfo;
+        void*            ptr;
+        bool             isConst;
       };
 
       struct DataEndpointEx {
@@ -317,24 +318,24 @@ namespace fcf {
       template <size_t InputInnerBufferSize>
       void _clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
 
-      template <typename Ty>
+      template <typename DataType, typename ReferenceType, typename Ty>
       void _reset(const Ty& a_value, DataSetMode a_dataMode);
 
       template <typename Ty>
       void _assigment(const Ty& a_value);
 
-      template <typename Ty>
-      void _set(const Ty& a_value, DataSetMode a_dataMode);
+      template <typename DataType, typename ReferenceType, typename ArgTy>
+      void _init(const ArgTy& a_value, DataSetMode a_dataMode);
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       BaseTypeWrapper* _getWrapper() const;
 
-      inline UnrefInfo _getUnref();
-
       inline VariantEndpoint _variantEndpoint();
 
       inline DataEndpoint _dataEndpoint();
+
+      inline ConstDataEndpoint _constDataEndpoint();
 
       inline DataEndpointEx _dataEndpointEx();
 
@@ -347,29 +348,18 @@ namespace fcf {
       template <typename Ty>
       bool _equal(const Ty& a_value) const;
 
-      template <typename Ty>
-      BasicVariant& _appendTo(const Ty& a_value);
+      template <typename TSpecificator, size_t InputInnerBufferSize>
+      inline BasicVariant& _selfCalcTo(const BasicVariant<InputInnerBufferSize>& a_value);
 
-      template <typename Ty>
-      BasicVariant _append(const Ty& a_value) const;
+      template <typename TSpecificator, size_t InputInnerBufferSize>
+      inline BasicVariant _selfCalc(const BasicVariant<InputInnerBufferSize>& a_value) const;
 
-      template <typename Ty>
-      BasicVariant& _subTo(const Ty& a_value);
+      template <typename TSpecificator, typename Ty>
+      inline BasicVariant& _calcTo(const Ty& a_value);
 
-      template <typename Ty>
-      BasicVariant _sub(const Ty& a_value) const;
+      template <typename TSpecificator, typename Ty>
+      inline BasicVariant _calc(const Ty& a_value) const;
 
-      template <typename Ty>
-      BasicVariant& _mulTo(const Ty& a_value);
-
-      template <typename Ty>
-      BasicVariant _mul(const Ty& a_value) const;
-
-      template <typename Ty>
-      BasicVariant& _divTo(const Ty& a_value);
-
-      template <typename Ty>
-      BasicVariant _div(const Ty& a_value) const;
 
       const TypeInfo* _typeInfo;
       void*           _ptr;

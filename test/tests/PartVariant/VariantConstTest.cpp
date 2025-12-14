@@ -84,29 +84,99 @@ namespace FcfTest {
         bool error = false;
         const std::vector<int> vec={1,2,3};
         try {
-          fcf::Variant v(fcf::Type<std::vector<int> >(), vec, fcf::Variant::REFERENCE);
+          fcf::Variant v(fcf::Type< std::vector<int> >(), vec, fcf::Variant::REFERENCE);
+        } catch(std::exception& e){
+          error = true;
+        }
+        FCF_TEST(error == true);
+      }
+
+      {
+        bool error = false;
+        std::vector<int> vec={1,2,3};
+        fcf::Variant v1(vec, fcf::Variant::REFERENCE);
+        fcf::Variant v2(v1, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v3(v2, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v4(v3, fcf::Variant::REFERENCE);
+        fcf::Variant v(v4, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v[0] = 1;
+        } catch(std::exception&){
+          error = true;
+        }
+        FCF_TEST(error == false);
+      }
+      {
+        bool error = false;
+        const std::vector<int> vec={1,2,3};
+        fcf::Variant v1(vec, fcf::Variant::REFERENCE);
+        fcf::Variant v2(v1, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v3(v2, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v4(v3, fcf::Variant::REFERENCE);
+        fcf::Variant v(v4, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v[0] = 1;
+        } catch(std::exception&){
+          error = true;
+        }
+        FCF_TEST(error == true);
+      }
+
+      {
+        bool error = false;
+        std::vector<int> vec={1,2,3};
+        fcf::Variant v1;
+        v1.set(vec, fcf::Variant::REFERENCE);
+        fcf::Variant v2(v1, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v3(v2, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v4(v3, fcf::Variant::REFERENCE);
+        fcf::Variant v(v4, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v[0] = 1;
+        } catch(std::exception&){
+          error = true;
+        }
+        FCF_TEST(error == false);
+      }
+      {
+        bool error = false;
+        const std::vector<int> vec={1,2,3};
+        fcf::Variant v1;
+        v1.set(vec, fcf::Variant::REFERENCE);
+        fcf::Variant v2(v1, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v3(v2, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v4(v3, fcf::Variant::REFERENCE);
+        fcf::Variant v(v4, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v[0] = 1;
         } catch(std::exception&){
           error = true;
         }
         FCF_TEST(error == true);
       }
       {
-        typedef std::map<std::string, fcf::Variant> MapType;
-        MapType m;
-        fcf::Variant v(fcf::Type<MapType>(), m, fcf::Variant::REFERENCE);
-        m["1"] = "v-1";
-        m["2"] = MapType();
-        /*
-        m["2"]["1"] = "v-2-1";
-
-        for(auto it = m["2"].get<MapType>().begin(); it != m["2"].get<MapType>().end(); ++it){
-          std::cout << "key: " << it->first << "; value:" << it->second << std::endl;
+        bool error = false;
+        int i = 1;
+        fcf::Variant v11(i, fcf::Variant::REFERENCE);
+        fcf::Variant v12(v11, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v13(v12, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v1(fcf::Type<const fcf::Variant>(), v13, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v1 = 2;
+        } catch(std::exception&){
+          error = true;
         }
-        std::cout << m["2"].get<MapType>().size() << std::endl;
-        std::cout << m["2"]["1"].getTypeIndex() << std::endl;
-        FCF_TEST(v["1"] == "v-1", v[1]);
-        FCF_TEST(v["2"]["1"] == "v-2-1", v["2"]["1"]);
-        */
+        FCF_TEST(v1 == 1, v1);
+        FCF_TEST(error == true);
+
+        try {
+          v1 *= 2;
+        } catch(std::exception&){
+          error = true;
+        }
+        FCF_TEST(v1 == 1, v1);
+        FCF_TEST(error == true);
+        
       }
 
     }
