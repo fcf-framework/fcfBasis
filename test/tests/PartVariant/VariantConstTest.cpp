@@ -176,7 +176,82 @@ namespace FcfTest {
         }
         FCF_TEST(v1 == 1, v1);
         FCF_TEST(error == true);
-        
+      }
+      {
+        bool error = false;
+        int i = 1;
+        fcf::Variant v11(i, fcf::Variant::REFERENCE);
+        fcf::Variant v12(v11, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v1(v12, fcf::Variant::FORCE_REFERENCE);
+
+        fcf::Variant v2((const fcf::Variant&) v1, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v2 = 2;
+        } catch(std::exception&){
+          error = true;
+        }
+
+        FCF_TEST(v2.get<fcf::Variant>().get<fcf::Variant>().get<fcf::Variant>().get<int>() == 1, v2.get<fcf::Variant>().get<fcf::Variant>().get<fcf::Variant>().get<int>());
+        FCF_TEST(error == true);
+        FCF_TEST(v1 == 1, v1);
+        FCF_TEST(v2 == 1, v2);
+      }
+      {
+        bool error = false;
+        int i = 1;
+        fcf::Variant v11(i, fcf::Variant::REFERENCE);
+        fcf::Variant v12(v11, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v1(v12, fcf::Variant::FORCE_REFERENCE);
+
+        fcf::Variant v2(fcf::Type<const fcf::Variant>(), v1, fcf::Variant::FORCE_REFERENCE);
+        try {
+          v2 = 2;
+        } catch(std::exception&){
+          error = true;
+        }
+
+        FCF_TEST(v2.get<const fcf::Variant>().get<fcf::Variant>().get<fcf::Variant>().get<int>() == 1, v2.get<fcf::Variant>().get<fcf::Variant>().get<fcf::Variant>().get<int>());
+        FCF_TEST(error == true);
+        FCF_TEST(v1 == 1, v1);
+        FCF_TEST(v2 == 1, v2);
+      }
+      {
+        bool error = false;
+        int i = 1;
+        fcf::Variant v11(i, fcf::Variant::REFERENCE);
+        fcf::Variant v12(v11, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v1(v12, fcf::Variant::FORCE_REFERENCE);
+
+        fcf::Variant v2((const fcf::Variant&) v1, fcf::Variant::REFERENCE);
+        try {
+          v2 = 2;
+        } catch(std::exception&){
+          error = true;
+        }
+
+        FCF_TEST(error == true);
+        FCF_TEST(v2.get<const fcf::Variant>().get<fcf::Variant>().get<int>() == 1, v2.get<const fcf::Variant>().get<fcf::Variant>().get<int>());
+        FCF_TEST(v1 == 1, v1);
+        FCF_TEST(v2 == 1, v2);
+      }
+      {
+        bool error = false;
+        int i = 1;
+        fcf::Variant v11(i, fcf::Variant::REFERENCE);
+        fcf::Variant v12(v11, fcf::Variant::FORCE_REFERENCE);
+        fcf::Variant v1(v12, fcf::Variant::FORCE_REFERENCE);
+
+        fcf::Variant v2(fcf::Type<const fcf::Variant>(), v1, fcf::Variant::REFERENCE);
+        try {
+          v2 = 2;
+        } catch(std::exception&){
+          error = true;
+        }
+
+        FCF_TEST(v2.get<const fcf::Variant>().get<fcf::Variant>().get<int>() == 1, v2.get<const fcf::Variant>().get<fcf::Variant>().get<int>());
+        FCF_TEST(error == true);
+        FCF_TEST(v1 == 1, v1);
+        FCF_TEST(v2 == 1, v2);
       }
 
     }

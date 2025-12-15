@@ -98,7 +98,6 @@ namespace FcfTest {
         FCF_TEST(v.getTypeIndex() == fcf::Type<type>().index(), v.getTypeIndex(), fcf::Type<type>().index());
         FCF_TEST(v.isInnerMemory() == false);
       }
-
     }
   }
 

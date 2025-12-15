@@ -330,6 +330,27 @@ namespace FcfTest {
           v2 = v1;
           FCF_TEST(v2.getTypeInfo()->name == "FcfTest::BasisTest::VariantRefTest::Item", v2.getTypeInfo()->name);
         }
+        {
+          VariantRefTest::Item i1{"1"};
+          fcf::Variant v1s1(i1, fcf::Variant::REFERENCE);
+          fcf::Variant v1s2(v1s1, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s3(v1s2, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1s4(v1s3, fcf::Variant::FORCE_REFERENCE);
+          fcf::Variant v1(v1s4, fcf::Variant::REFERENCE);
+
+          {
+            fcf::Variant v2(v1, fcf::Variant::WRITE);
+            FCF_TEST(v2.getTypeInfo()->name == "FcfTest::BasisTest::VariantRefTest::Item", v2.getTypeInfo()->name);
+          }
+          {
+            fcf::Variant v2(v1, fcf::Variant::RESET);
+            FCF_TEST(v2.getTypeInfo()->name == "FcfTest::BasisTest::VariantRefTest::Item", v2.getTypeInfo()->name);
+          }
+          {
+            fcf::Variant v2(fcf::Type<fcf::Variant>(), v1, fcf::Variant::RESET);
+            FCF_TEST(v2.getTypeInfo()->name == "FcfTest::BasisTest::VariantRefTest::Item", v2.getTypeInfo()->name);
+          }
+        }
 
       }
     }

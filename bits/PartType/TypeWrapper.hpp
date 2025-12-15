@@ -66,6 +66,11 @@ namespace fcf {
     return new (a_mem) TypeWrapper<Ty&>(data);
   }
 
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty>::constReferenceClone(char* a_mem){
+    typedef const typename std::remove_const<Ty>::type ResType;
+    return new (a_mem) TypeWrapper<ResType&>(data);
+  }
 
   template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty>::create(){
@@ -135,6 +140,12 @@ namespace fcf {
   template <typename Ty>
   BaseTypeWrapper* TypeWrapper<Ty&>::referenceClone(char* a_mem){
     return new (a_mem) TypeWrapper<Ty&>(*data);
+  }
+
+  template <typename Ty>
+  BaseTypeWrapper* TypeWrapper<Ty&>::constReferenceClone(char* a_mem){
+    typedef const typename std::remove_const<Ty>::type ResType;
+    return new (a_mem) TypeWrapper<ResType&>(*data);
   }
 
   template <typename Ty>

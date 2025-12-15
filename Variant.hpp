@@ -43,97 +43,67 @@ namespace fcf{
   template <size_t InputInnerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant)
     : _typeInfo(0) {
-    _clone(a_variant, RESET);
+    _clone<BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(BasicVariant<InputInnerBufferSize>& a_variant)
     : _typeInfo(0) {
-    _clone(a_variant, RESET);
+    _clone<BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    if (a_dataMode == FORCE_REFERENCE) {
-      _init< BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(a_variant, a_dataMode);
-    } else {
-      _clone(a_variant, a_dataMode);
-    }
+    _clone<BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    if (a_dataMode == FORCE_REFERENCE) {
-      _init< BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(a_variant, a_dataMode);
-    } else {
-      _clone(a_variant, a_dataMode);
-    }
+    _clone<BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant)
     : _typeInfo(0) {
-    _clone(a_variant, RESET);
+    _clone<BasicVariant, const BasicVariant >(std::false_type(), a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    if (a_dataMode == FORCE_REFERENCE) {
-      _init< BasicVariant, const BasicVariant >(a_variant, a_dataMode);
-    } else {
-      _clone(a_variant, a_dataMode);
-    }
+    _clone<BasicVariant, const BasicVariant >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(BasicVariant& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    if (a_dataMode == FORCE_REFERENCE) {
-      _init<BasicVariant, BasicVariant>(a_variant, a_dataMode);
-    } else {
-      _clone(a_variant, a_dataMode);
-    }
+    _clone<BasicVariant, BasicVariant>(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
   BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value)
     : _typeInfo(0) {
-    _init<Ty, Ty>(a_value, RESET);
-  }
-
-  template <size_t innerBufferSize>
-  template <typename Ty, typename TSource>
-  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, const TSource& a_value)
-    : _typeInfo(0) {
-    typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
-    typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
-    if (std::is_same<ResType, SrcType>::value) {
-      _init<Ty, Ty>(a_value, RESET);
-    } else {
-      Variant buffer(Type<ResType>().index(), &a_value, Type<SrcType>().index());
-      _clone(buffer, RESET);
-    }
+    _init<Ty, Ty>(std::false_type(), a_value, RESET);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
   BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _init<Ty, const Ty>(a_value, a_dataMode);
+    _init<Ty, const Ty>(std::false_type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
   BasicVariant<innerBufferSize>::BasicVariant(Ty& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _init<Ty, Ty>(a_value, a_dataMode);
+    _init<Ty, Ty>(std::false_type(), a_value, a_dataMode);
   }
 
 
@@ -143,15 +113,7 @@ namespace fcf{
     : _typeInfo(0) {
     typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
     typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
-    if (std::is_same<ResType, SrcType>::value) {
-      _init<Ty, Ty>(a_value, a_dataMode);
-    } else {
-      if (a_dataMode & (REFERENCE|FORCE_REFERENCE)) {
-        throw std::runtime_error("You cannot link to an inappropriate type");
-      }
-      Variant buffer(Type<ResType>().index(), &a_value, Type<SrcType>().index());
-      _clone(buffer, a_dataMode);
-    }
+    _init<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, SrcType>::value >::Type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
@@ -160,30 +122,35 @@ namespace fcf{
     : _typeInfo(0) {
     typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
     typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
-    if (std::is_same<ResType, SrcType>::value) {
-      if (!std::is_const<Ty>::value && a_dataMode & (REFERENCE|FORCE_REFERENCE)){
-        throw std::runtime_error("It is impossible to establish a non-constant reference to constant data");
-      }
-      _init<Ty, Ty>(a_value, a_dataMode);
-    } else {
-      if (a_dataMode & (REFERENCE|FORCE_REFERENCE)) {
-        throw std::runtime_error("You cannot link to an inappropriate type");
-      }
-      Variant buffer(Type<ResType>().index(), &a_value, Type<SrcType>().index());
-      _clone(buffer, a_dataMode);
-    }
+    _init<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, SrcType>::value >::Type(), a_value, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty, size_t InputInnerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode)
+    : _typeInfo(0) {
+    typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
+    _clone<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, BasicVariant<InputInnerBufferSize> >::value >::Type(), a_value, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  template <typename Ty, size_t InputInnerBufferSize>
+  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, const BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode)
+    : _typeInfo(0) {
+    typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
+    _clone<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, BasicVariant<InputInnerBufferSize> >::value >::Type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(const char* a_value)
     : _typeInfo(0) {
-    _init<const char*, const char*>(a_value, RESET);
+    _init<const char*, const char*>(std::false_type(), a_value, RESET);
   }
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(const char* a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _init<const char*, const char*>(a_value, a_dataMode);
+    _init<const char*, const char*>(std::false_type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
@@ -235,29 +202,6 @@ namespace fcf{
   BasicVariant<innerBufferSize>::~BasicVariant(){
     _destroy();
   }
-/*
-  template <typename TDestinationType, typename TSourceType>
-  BasicVariant::convert_function_type BasicVariant::getConverter(){
-    return static_cast<ConvertFunction>(::fcf::convert<TDestinationType, TSourceType>);
-      Details::Basis::Convert::ConvertIndex ci{ Type<TSourceType>().index(), Type<TDestinationType>().index()};
-      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
-      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
-        return 0;
-      }
-      return (convert_function_type)it->second;
-  }
-
-  #ifdef FCF_BASIS_IMPLEMENTATION
-    BasicVariant::convert_function_type BasicVariant::getConverter(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex){
-      Details::Basis::Convert::ConvertIndex ci{ a_sourceTypeIndex, a_destinationTypeIndex};
-      auto it = fcf::Details::Basis::Convert::getStorage().functions.find(ci);
-      if (it == fcf::Details::Basis::Convert::getStorage().functions.end()){
-        return 0;
-      }
-      return (convert_function_type)it->second;
-    }
-  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
-*/
 
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::reset(DynamicType a_dynamicType)
@@ -327,7 +271,7 @@ namespace fcf{
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const BasicVariant<innerBufferSize>& a_variant)
   {
-    _clone(a_variant, WRITE);
+    _clone<BasicVariant<innerBufferSize>, const BasicVariant<innerBufferSize> >(std::false_type(), a_variant, WRITE);
     return *this;
   }
 
@@ -335,7 +279,7 @@ namespace fcf{
   template <size_t InputInnerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const BasicVariant<InputInnerBufferSize>& a_variant)
   {
-    _clone(a_variant, WRITE);
+    _clone<BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, WRITE);
     return *this;
   }
 
@@ -357,13 +301,19 @@ namespace fcf{
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::set(const BasicVariant<innerBufferSize>& a_variant)
   {
-    _clone(a_variant, WRITE);
+    _clone<BasicVariant<innerBufferSize>, const BasicVariant<innerBufferSize> >(std::false_type(), a_variant, WRITE);
   }
 
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::set(const BasicVariant<innerBufferSize>& a_variant, DataSetMode a_dataMode)
   {
-    _clone(a_variant, a_dataMode);
+    _clone<BasicVariant<innerBufferSize>, const BasicVariant<innerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::set(BasicVariant<innerBufferSize>& a_variant, DataSetMode a_dataMode)
+  {
+    _clone<BasicVariant<innerBufferSize>, BasicVariant<innerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
@@ -384,11 +334,7 @@ namespace fcf{
   template <typename Ty>
   void BasicVariant<innerBufferSize>::set(const Ty& a_value, DataSetMode a_dataMode)
   {
-    if (a_dataMode & (REFERENCE|FORCE_REFERENCE)) {
-      _reset<Ty, const Ty>(a_value, a_dataMode);
-    } else {
-      _reset<Ty, const Ty>(a_value, a_dataMode);
-    }
+    _reset<Ty, const Ty>(a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
@@ -862,21 +808,43 @@ namespace fcf{
     if (_typeInfo) {
       if (isInnerMemory()){
         ((BaseTypeWrapper*)&_mem[0])->~BaseTypeWrapper();
-      } else {
+  } else {
         delete (BaseTypeWrapper*)_getWrapper();
       }
     }
   }
 
   template <size_t innerBufferSize>
-  template <size_t InputInnerBufferSize>
-  void BasicVariant<innerBufferSize>::_clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
+  template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
+  void BasicVariant<innerBufferSize>::_clone(std::true_type /*a_enableConvert*/, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
+    if (a_dataMode & FORCE_REFERENCE) {
+      throw std::runtime_error("You cannot link to an inappropriate type");
+    }
+    if (a_dataMode & REFERENCE) {
+      if (a_variant._typeInfo && a_variant._typeInfo->dataIndex == Type<ReferenceType>().dataIndex() ){
+        if (TypeIndexConverter<>::isConst(Type<ReferenceType>().index())) {
+          _clone< const BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+        } else {
+          _clone< BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+        }
+        return;
+      } else {
+        throw std::runtime_error("You cannot link to an inappropriate type");
+      }
+    }
+    DataType source = a_variant.template cast<DataType>();
+    _reset<DataType, DataType>(source, a_dataMode);
+  }
+
+  template <size_t innerBufferSize>
+  template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
+  void BasicVariant<innerBufferSize>::_clone(std::false_type /*a_enableConvert*/, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
     switch (a_dataMode){
       case WRITE:
       {
         VariantEndpoint                                             selfEndpoint   = _variantEndpoint();
         typename BasicVariant<InputInnerBufferSize>::DataEndpointEx sourceEndpoint = ((BasicVariant<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
- 
+
         if (selfEndpoint.isConst){
           throw std::runtime_error("The data in the Variant object is read-only");
         }
@@ -941,13 +909,25 @@ namespace fcf{
               _ptr = ui.wrapper->cloneData()->rootPtr();
             }
             if (ui.typeInfo->index != ui.typeInfo->dataIndex){
-              ui.typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>::getUnreferenceIndex(ui.typeInfo->dataIndex));
+              ui.typeInfo = ::fcf::getTypeInfo(ui.typeInfo->dataIndex);
             }
             _typeInfo = ui.typeInfo;
           }
         }
       break;
       case FORCE_REFERENCE:
+      {
+        if (this == (void*)&a_variant){
+          return;
+        }
+        _destroy();
+        _ptr = 0;
+        _typeInfo = 0;
+        typedef ReferenceType& EndpointType;
+        _ptr = NDetails::VariantAllocator<EndpointType, innerBufferSize>()(&_mem[0], a_variant)->rootPtr();
+        _typeInfo = Type<EndpointType>().getTypeInfo();
+      }
+      break;
       case REFERENCE:
       {
         if (this == (void*)&a_variant){
@@ -958,8 +938,13 @@ namespace fcf{
         _typeInfo = 0;
         if (a_variant._typeInfo) {
           BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
-          _ptr = wrp->referenceClone(&_mem[0])->rootPtr();
-          _typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>().getSingleReferenceIndex(a_variant.getTypeIndex()));
+          if (std::is_const<ReferenceType>::value) {
+            _ptr = wrp->constReferenceClone(&_mem[0])->rootPtr();
+            _typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>().getConstSingleReferenceIndex(a_variant.getTypeIndex()));
+          } else {
+            _ptr = wrp->referenceClone(&_mem[0])->rootPtr();
+            _typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>().getSingleReferenceIndex(a_variant.getTypeIndex()));
+          }
         }
       }
       break;
@@ -968,7 +953,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename DataType, typename ReferenceType, typename ArgTy>
-  void BasicVariant<innerBufferSize>::_init(const ArgTy& a_value, DataSetMode a_dataMode) {
+  void BasicVariant<innerBufferSize>::_init(std::false_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
     switch (a_dataMode){
       case RESET:
       case WRITE:
@@ -981,12 +966,25 @@ namespace fcf{
       case FORCE_REFERENCE:
       case REFERENCE:
         {
+          if (!std::is_const<ReferenceType>::value && std::is_const<ArgTy>::value){
+            throw std::runtime_error("It is impossible to establish a non-constant reference to constant data");
+          }
           typedef typename std::remove_reference< ReferenceType >::type& EndpointType;
           _ptr = NDetails::VariantAllocator<EndpointType, innerBufferSize>()(&_mem[0], a_value)->rootPtr();
           _typeInfo = Type<EndpointType>().getTypeInfo();
         }
         break;
     }
+  }
+
+  template <size_t innerBufferSize>
+  template <typename DataType, typename ReferenceType, typename ArgTy>
+  void BasicVariant<innerBufferSize>::_init(std::true_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
+    if (a_dataMode & (REFERENCE|FORCE_REFERENCE)) {
+      throw std::runtime_error("You cannot link to an inappropriate type");
+    }
+    Variant buffer(Type<DataType>().index(), &a_value, Type<ArgTy>().index());
+    _init<DataType, DataType>(std::false_type(), *(DataType*)buffer.ptr(), a_dataMode);
   }
 
   template <size_t innerBufferSize>

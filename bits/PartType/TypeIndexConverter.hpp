@@ -14,6 +14,8 @@ namespace fcf{
 
     enum { singleReferenceTypeIndex = (Index & ~( (2) << (24 + 1) )) | ( (1) << (24 + 1) ) };
 
+    enum { constSingleReferenceTypeIndex = (Index & ~( (2) << (24 + 1) )) | ( (1) << (24 + 1) ) | ( (4) << (24 + 1) ) };
+
     enum { unreferenceTypeIndex = (Index & ~( (1|2) << (24 + 1) )) };
 
     enum { isSinglePointerValue = Index & ( 8 << (24 + 1) ) ? 1 : 0 };
@@ -72,6 +74,10 @@ namespace fcf{
 
     inline static unsigned int getSingleReferenceIndex(unsigned int a_typeIndex){
       return (a_typeIndex & ~( (2) << (24 + 1) ) ) | ( (1) << (24 + 1) );
+    }
+
+    inline static unsigned int getConstSingleReferenceIndex(unsigned int a_typeIndex){
+      return (a_typeIndex & ~( (2) << (24 + 1) ) ) | ( (1) << (24 + 1) ) | ( (4) << (24 + 1) );
     }
 
   };

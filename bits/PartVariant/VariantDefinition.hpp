@@ -8,6 +8,7 @@
 #include "../../bits/PartVariant/VariantPredefinition.hpp"
 #include "../../bits/PartType/DynamicType.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
+#include "../../bits/PartMetaType/MetaTypeBoolean.hpp"
 
 namespace fcf {
 
@@ -39,13 +40,16 @@ namespace fcf {
       BasicVariant(const Ty& a_value);
 
       template <typename Ty, typename TSource>
-      BasicVariant(const Type<Ty>& a_type, const TSource& a_value);
+      BasicVariant(const Type<Ty>& a_type, TSource& a_value, DataSetMode a_dataMode = WRITE);
 
       template <typename Ty, typename TSource>
-      BasicVariant(const Type<Ty>& a_type, TSource& a_value, DataSetMode a_dataMode);
+      BasicVariant(const Type<Ty>& a_type, const TSource& a_value, DataSetMode a_dataMode = WRITE);
 
-      template <typename Ty, typename TSource>
-      BasicVariant(const Type<Ty>& a_type, const TSource& a_value, DataSetMode a_dataMode);
+      template <typename Ty, size_t InputInnerBufferSize>
+      BasicVariant(const Type<Ty>& a_type, BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode = WRITE);
+
+      template <typename Ty, size_t InputInnerBufferSize>
+      BasicVariant(const Type<Ty>& a_type, const BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode = WRITE);
 
       template <typename TSource>
       BasicVariant(const TSource& a_value, DataSetMode a_dataMode);
@@ -100,6 +104,8 @@ namespace fcf {
       void set(const BasicVariant& a_variant);
 
       void set(const BasicVariant& a_variant, DataSetMode a_dataMode);
+
+      void set(BasicVariant& a_variant, DataSetMode a_dataMode);
 
       template <typename Ty>
       void set(const Ty& a_value);
@@ -315,8 +321,11 @@ namespace fcf {
 
       void _destroy();
 
-      template <size_t InputInnerBufferSize>
-      void _clone(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
+      template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
+      void _clone(std::false_type a_enableConvert, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
+
+      template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
+      void _clone(std::true_type a_enableConvert, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
 
       template <typename DataType, typename ReferenceType, typename Ty>
       void _reset(const Ty& a_value, DataSetMode a_dataMode);
@@ -325,7 +334,10 @@ namespace fcf {
       void _assigment(const Ty& a_value);
 
       template <typename DataType, typename ReferenceType, typename ArgTy>
-      void _init(const ArgTy& a_value, DataSetMode a_dataMode);
+      void _init(std::false_type a_enableConvert, ArgTy& a_value, DataSetMode a_dataMode);
+
+      template <typename DataType, typename ReferenceType, typename ArgTy>
+      void _init(std::true_type a_enableConvert, ArgTy& a_value, DataSetMode a_dataMode);
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
