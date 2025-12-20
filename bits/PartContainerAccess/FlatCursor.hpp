@@ -3,15 +3,16 @@
 
 namespace fcf {
 
-  template <typename TContainer, typename TKey, typename TValue>
+  template <typename TContainer>
   struct FlatCursor {
     typedef FlatCursor self_type;
     typedef TContainer container_type;
-    typedef TKey       key_type;
-    typedef TValue     value_type;
-    typedef TValue     stored_value_type;
-    typedef TValue&    resolve_value_type;
-    typedef TValue     resolve_stored_value_type;
+    typedef size_t                                                    key_type;
+    typedef decltype( (*((TContainer*)0x01))[0] )                     resolve_value_type;
+    typedef typename std::remove_reference<resolve_value_type>::type  value_type;
+    typedef value_type                                                stored_value_type;
+    typedef resolve_value_type                                        resolve_stored_value_type;
+
     enum { is_flat = true };
 
     FlatCursor(){
@@ -74,7 +75,7 @@ namespace fcf {
       return key;
     }
 
-    inline value_type& getValue() {
+    inline resolve_value_type getValue() {
       return (*container)[key];
     }
 
@@ -82,7 +83,7 @@ namespace fcf {
       return &(*container)[key];
     }
 
-    inline resolve_stored_value_type& getStoredValue() {
+    inline resolve_stored_value_type getStoredValue() {
       return (*container)[key];
     }
 

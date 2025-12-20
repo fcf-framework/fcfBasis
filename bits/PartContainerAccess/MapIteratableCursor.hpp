@@ -3,16 +3,17 @@
 
 namespace fcf {
 
-  template <typename TContainer, typename TKey, typename TValue>
+  template <typename TContainer>
   struct MapIteratableCursor {
-    typedef MapIteratableCursor                 self_type;
-    typedef TContainer                          container_type;
-    typedef TKey                                key_type;
-    typedef TValue                              value_type;
-    typedef typename container_type::value_type stored_value_type;
-    typedef TValue&                             resolve_value_type;
-    typedef typename container_type::value_type resolve_stored_value_type;
-    typedef typename TContainer::iterator       iterator_type;
+    typedef MapIteratableCursor                                             self_type;
+    typedef TContainer                                                      container_type;
+    typedef decltype( ((TContainer*)0xff)->begin()->first )                 key_type;
+    typedef decltype( ((TContainer*)0xff)->begin()->second )                value_type;
+    typedef value_type&                                                     resolve_value_type;
+    typedef decltype( *((TContainer*)0xff)->begin() )                       resolve_stored_value_type;
+    typedef typename std::remove_reference<resolve_stored_value_type>::type stored_value_type;
+    typedef decltype( ((TContainer*)0xff)->begin() )                        iterator_type;
+
     enum { is_flat = false };
 
     MapIteratableCursor(){
@@ -71,7 +72,7 @@ namespace fcf {
       return iterator->first;
     }
 
-    inline value_type& getValue() {
+    inline resolve_value_type getValue() {
       return iterator->second;
     }
 
@@ -79,7 +80,7 @@ namespace fcf {
       return &iterator->second;
     }
 
-    inline resolve_stored_value_type& getStoredValue() {
+    inline resolve_stored_value_type getStoredValue() {
       return *iterator;
     }
 

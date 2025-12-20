@@ -25,7 +25,7 @@ namespace fcf{
       friend struct NDetails::SpecificatorRefRegistrarImpl;
 
       template <typename, typename, typename, typename = void>
-      friend struct NDetails::SpecificatorConstRefRegistrarImpl;
+      friend struct NDetails::SpecificatorRegistrarIfTypeDeclaredImpl;
 
 
 

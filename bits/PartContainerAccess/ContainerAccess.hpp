@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <set>
 
 #include "ContainerPosition.hpp"
@@ -26,6 +27,8 @@ namespace fcf {
       typedef typename cursor_type::stored_value_type               stored_value_type;
       typedef typename cursor_type::resolve_value_type              resolve_value_type;
       typedef typename cursor_type::resolve_stored_value_type       resolve_stored_value_type;
+      typedef decltype(cursor_type().getStoredValue())              resolve_stored_ref_type;
+      typedef decltype(cursor_type().getValue())                    resolve_value_ret_type;
 
       friend container_type;
       enum Mode        { constMode = false };
@@ -93,7 +96,7 @@ namespace fcf {
         return result;
       }
 
-      inline resolve_value_type value(){
+      inline resolve_value_ret_type value(){
         return cursor.getValue();
       }
 
@@ -105,11 +108,11 @@ namespace fcf {
         return cursor.getDistance(a_iterator.cursor);
       }
 
-      resolve_stored_value_type& operator*() {
+      resolve_stored_ref_type operator*() {
         return cursor.getStoredValue();
       }
 
-      resolve_stored_value_type* operator->() {
+      stored_value_type* operator->() {
         return &cursor.getStoredValue();
       }
 
@@ -137,7 +140,15 @@ namespace fcf {
         return cursor.equal(a_iterator.cursor);
       }
 
+      inline bool operator==(const ContainerAccess<const TContainer>& a_iterator) const {
+        return cursor.equal(a_iterator.cursor);
+      }
+
       inline bool operator!=(const ContainerAccess& a_iterator) const {
+        return !cursor.equal(a_iterator.cursor);
+      }
+
+      inline bool operator!=(const ContainerAccess<const TContainer>& a_iterator) const {
         return !cursor.equal(a_iterator.cursor);
       }
 
@@ -158,6 +169,9 @@ namespace fcf {
       typedef typename cursor_type::stored_value_type                   stored_value_type;
       typedef typename cursor_type::resolve_value_type                  resolve_value_type;
       typedef typename cursor_type::resolve_stored_value_type           resolve_stored_value_type;
+      typedef const decltype(cursor_type().getStoredValue())            resolve_stored_ref_type;
+      typedef const decltype(cursor_type().getValue())                  resolve_value_ret_type;
+
       friend container_type;
       enum Mode { constMode = true };
       enum MemMode { is_flat = cursor_type::is_flat };
@@ -224,19 +238,19 @@ namespace fcf {
         return result;
       }
 
-      inline const value_type& value() const{
+      inline resolve_value_ret_type value() const{
         return ((cursor_type&)cursor).getValue();
       }
 
       inline const void* ptr() const{
-        return (const void*)cursor.getValuePtr();
+        return (const void*)((cursor_type&)cursor).getValuePtr();
       }
 
       inline size_t distance(const ContainerAccess& a_iterator) const {
         return cursor.getDistance(a_iterator.cursor);
       }
 
-      inline const stored_value_type& operator*() const {
+      inline const resolve_stored_ref_type operator*() const {
         return ((cursor_type&)cursor).getStoredValue();
       }
 
@@ -268,7 +282,15 @@ namespace fcf {
         return cursor.equal(a_iterator.cursor);
       }
 
+      inline bool operator==(const ContainerAccess<TContainer>& a_iterator) const {
+        return cursor.equal(a_iterator.cursor);
+      }
+
       inline bool operator!=(const ContainerAccess& a_iterator) const {
+        return !cursor.equal(a_iterator.cursor);
+      }
+
+      inline bool operator!=(const ContainerAccess<TContainer>& a_iterator) const {
         return !cursor.equal(a_iterator.cursor);
       }
 
@@ -302,22 +324,32 @@ namespace std {
 namespace fcf {
   template <typename Ty>
   struct ContainerAccessInfo< std::vector<Ty> > {
-    typedef FlatCursor<std::vector<Ty>, typename std::vector<Ty>::size_type, typename std::vector<Ty>::value_type> cursor_type;
+    typedef FlatCursor< std::vector<Ty> > cursor_type;
+  };
+
+  template <typename Ty>
+  struct ContainerAccessInfo< const std::vector<Ty> > {
+    typedef FlatCursor< const std::vector<Ty> > cursor_type;
   };
 
   template <typename Ty>
   struct ContainerAccessInfo< std::list<Ty> > {
-    typedef ListIteratableCursor<std::list<Ty>, size_t, typename std::list<Ty>::value_type> cursor_type;
+    typedef ListIteratableCursor< std::list<Ty> > cursor_type;
   };
 
   template <typename TKey, typename TValue>
   struct ContainerAccessInfo< std::map<TKey, TValue> > {
-    typedef MapIteratableCursor<std::map<TKey, TValue>, TKey, TValue> cursor_type;
+    typedef MapIteratableCursor< std::map<TKey, TValue> > cursor_type;
+  };
+
+  template <typename TKey, typename TValue>
+  struct ContainerAccessInfo< std::unordered_map<TKey, TValue> > {
+    typedef MapIteratableCursor< std::unordered_map<TKey, TValue> > cursor_type;
   };
 
   template <typename TKey>
   struct ContainerAccessInfo< std::set<TKey> > {
-    typedef SetIteratableCursor<std::set<TKey>, TKey> cursor_type;
+    typedef SetIteratableCursor< std::set<TKey> > cursor_type;
   };
 } // fcf namespace
 

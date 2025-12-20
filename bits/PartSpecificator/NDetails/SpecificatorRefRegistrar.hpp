@@ -5,6 +5,7 @@
 #include "SpecificatorRefRegistrarDefinition.hpp"
 #include "SpecificatorCallRegistrarGetter.hpp"
 #include "SpecificatorRegistrarSelector.hpp"
+#include "../SpecificatorRegistrarGetter.hpp"
 
 namespace fcf{
 
@@ -27,32 +28,44 @@ namespace fcf{
     };
 
     template <typename Ty, typename TSpecificator, typename = void>
-    struct SpecificatorConstRefRegistrarImplResolver {
+    struct SpecificatorRegistrarGetterResolverImpl {
       fcf::SpecificatorInfo operator()(fcf::SpecificatorInfo& a_sti){
         return a_sti;
       }
     };
 
     template <typename Ty, typename TSpecificator>
-    struct SpecificatorConstRefRegistrarImplResolver<Ty, TSpecificator, decltype((void)Type<Ty, TSpecificator>().universalCall(0, 0, 0))> {
+    struct SpecificatorRegistrarGetterResolverImpl<Ty, TSpecificator, decltype((void)Type<Ty, TSpecificator>().universalCall(0, 0, 0))> {
       fcf::SpecificatorInfo operator()(fcf::SpecificatorInfo& /*a_sti*/){
-        fcf::SpecificatorInfo sti;
-        sti.universalCall = (UniversalCall)SpecificatorRegistrarHandler<Ty, TSpecificator>::universalCall;
-        sti.call = SpecificatorCallRegistrarGetter<Ty, TSpecificator>()();
-        return sti;
+        return fcf::SpecificatorRegistrarGetter<Ty, TSpecificator>()();
       }
     };
 
+    template <typename Ty, typename TSpecificator, typename = void>
+    struct SpecificatorRegistrarGetterIfDefaultGetterImpl {
+      fcf::SpecificatorInfo operator()(fcf::SpecificatorInfo&){
+        return fcf::SpecificatorRegistrarGetter<Ty, TSpecificator>()();
+      }
+    };
+
+    template <typename Ty, typename TSpecificator>
+    struct SpecificatorRegistrarGetterIfDefaultGetterImpl<Ty, TSpecificator, decltype((void)::fcf::SpecificatorRegistrarGetter<Ty, TSpecificator>::defaultImplementationMarker)> {
+      fcf::SpecificatorInfo operator()(fcf::SpecificatorInfo& a_sti){
+        return SpecificatorRegistrarGetterResolverImpl<Ty, TSpecificator>()(a_sti);
+      }
+    };
+
+
     template <typename RegTy, typename Ty, typename TSpecificator, typename>
-    struct SpecificatorConstRefRegistrarImpl {
+    struct SpecificatorRegistrarIfTypeDeclaredImpl {
       void operator()(fcf::SpecificatorInfo&){
       }
     };
 
     template <typename RegTy, typename Ty, typename TSpecificator>
-    struct SpecificatorConstRefRegistrarImpl<RegTy, Ty, TSpecificator, decltype((void)TypeId<RegTy>())> {
+    struct SpecificatorRegistrarIfTypeDeclaredImpl<RegTy, Ty, TSpecificator, decltype((void)TypeId<RegTy>())> {
       void operator()(fcf::SpecificatorInfo& a_sti){
-        SpecificatorInfo sti = SpecificatorConstRefRegistrarImplResolver<Ty, TSpecificator>()(a_sti);
+        SpecificatorInfo sti = SpecificatorRegistrarGetterIfDefaultGetterImpl<Ty, TSpecificator>()(a_sti);
         SpecificatorRegistrarSelector<RegTy, TSpecificator>()(sti);
       }
     };
@@ -67,8 +80,8 @@ namespace fcf{
     struct SpecificatorRefRegistrar<Ty, TSpecificator, false> {
       void operator()(fcf::SpecificatorInfo& a_sti){
         SpecificatorRefRegistrarImpl<Ty&, TSpecificator>()(a_sti);
-        SpecificatorConstRefRegistrarImpl<const Ty&, const Ty, TSpecificator>()(a_sti);
-        SpecificatorConstRefRegistrarImpl<const Ty, const Ty, TSpecificator>()(a_sti);
+        SpecificatorRegistrarIfTypeDeclaredImpl<const Ty&, const Ty, TSpecificator>()(a_sti);
+        SpecificatorRegistrarIfTypeDeclaredImpl<const Ty, const Ty, TSpecificator>()(a_sti);
       }
     };
 

@@ -9,7 +9,7 @@ namespace fcf{
     struct SpecificatorRefRegistrarImpl;
 
     template <typename RegTy, typename Ty, typename TSpecificator, typename = void>
-    struct SpecificatorConstRefRegistrarImpl;
+    struct SpecificatorRegistrarIfTypeDeclaredImpl;
 
     template <typename Ty, typename TSpecificator, bool Ignore>
     struct SpecificatorRefRegistrar;

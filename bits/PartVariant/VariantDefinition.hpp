@@ -9,6 +9,8 @@
 #include "../../bits/PartType/DynamicType.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartMetaType/MetaTypeBoolean.hpp"
+#include "../../bits/PartContainerAccess/VariantCursorDefinition.hpp"
+#include "../../bits/PartContainerAccess/ContainerAccess.hpp"
 
 namespace fcf {
 
@@ -27,6 +29,9 @@ namespace fcf {
       friend class BasicVariant;
 
       typedef void (*convert_function_type)(void*, const void*);
+
+      typedef ContainerAccess< BasicVariant<innerBufferSize> >        iterator;
+      typedef ContainerAccess< const BasicVariant<innerBufferSize> >  const_iterator;
 
       BasicVariant();
 
@@ -123,6 +128,30 @@ namespace fcf {
       void set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       void clear();
+
+      inline iterator begin() {
+        return iterator(*this);
+      }
+
+      inline iterator end() {
+        return iterator(*this, CP_END);
+      }
+
+      inline const_iterator begin() const {
+        return const_iterator(*this);
+      }
+
+      inline const_iterator end() const{
+        return const_iterator(*this, CP_END);
+      }
+
+      inline const_iterator cbegin() const {
+        return const_iterator(*this);
+      }
+
+      const_iterator cend() const{
+        return const_iterator(*this, CP_END);
+      }
 
       Variant operator[](const Variant& a_key);
 

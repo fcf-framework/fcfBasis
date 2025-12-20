@@ -253,6 +253,40 @@ namespace FcfTest {
         FCF_TEST(v1 == 1, v1);
         FCF_TEST(v2 == 1, v2);
       }
+      {
+        std::vector<int> vector{1,2,3};
+        fcf::Variant variant(fcf::Type< const std::vector<int> >(), vector, fcf::Variant::REFERENCE);
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const int&", (*variant.cbegin()).getTypeInfo()->name);
+      }
+      {
+        const std::vector<int> vector{1,2,3};
+        fcf::Variant variant(vector, fcf::Variant::REFERENCE);
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const int&", (*variant.cbegin()).getTypeInfo()->name);
+      }
+      {
+        std::vector<int> vector{1,2,3};
+        fcf::Variant variant(vector, fcf::Variant::REFERENCE);
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "int&", (*variant.cbegin()).getTypeInfo()->name);
+      }
+      {
+        std::vector<int> vector{1,2,3};
+        fcf::Variant variant(fcf::Type< const std::vector<int> >(), vector, fcf::Variant::REFERENCE);
+        fcf::Variant element = *variant.cbegin();
+        FCF_TEST(element.getTypeInfo()->name == "const int&", element.getTypeInfo()->name);
+        bool error = false;
+        try {
+          element = 2;
+        } catch (...){
+          error = true;
+        }
+        FCF_TEST(error == true, error);
+        FCF_TEST(vector[0] == 1, vector[0]);
+      }
+      {
+        std::map<int, std::string> obj{{1, "001"}, {2, "002"}};
+        fcf::Variant variant(fcf::Type< const std::map<int, std::string> >(), obj, fcf::Variant::REFERENCE);
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const std::string&", (*variant.cbegin()).getTypeInfo()->name);
+      }
 
     }
 

@@ -3,16 +3,16 @@
 
 namespace fcf {
 
-  template <typename TContainer, typename TKey, typename TValue>
+  template <typename TContainer>
   struct ListIteratableCursor {
-    typedef ListIteratableCursor         self_type;
-    typedef TContainer                    container_type;
-    typedef TKey                          key_type;
-    typedef TValue                        value_type;
-    typedef TValue                        stored_value_type;
-    typedef TValue&                       resolve_value_type;
-    typedef TValue                        resolve_stored_value_type;
-    typedef typename TContainer::iterator iterator_type;
+    typedef ListIteratableCursor                                      self_type;
+    typedef TContainer                                                container_type;
+    typedef size_t                                                    key_type;
+    typedef decltype(std::begin(*((TContainer*)0x01)))                iterator_type;
+    typedef decltype(*(*(iterator_type*)0x01))                        resolve_value_type;
+    typedef typename std::remove_reference<resolve_value_type>::type  value_type;
+    typedef value_type                                                stored_value_type;
+    typedef resolve_value_type                                        resolve_stored_value_type;
     enum { is_flat = false };
 
     ListIteratableCursor(){
@@ -106,7 +106,7 @@ namespace fcf {
       return key;
     }
 
-    inline value_type& getValue() {
+    inline resolve_value_type getValue() {
       return *iterator;
     }
 
@@ -114,7 +114,7 @@ namespace fcf {
       return &(*iterator);
     }
 
-    inline resolve_stored_value_type& getStoredValue() {
+    inline resolve_stored_value_type getStoredValue() {
       return *iterator;
     }
 

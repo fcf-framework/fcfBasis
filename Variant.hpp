@@ -758,18 +758,20 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename TResult>
   TResult BasicVariant<innerBufferSize>::cast() const{
+    typedef typename std::remove_const<TResult>::type ResultType;
+
     static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
     static const unsigned int variantTypeIndex      = Type<Variant>().index();
     if (!_typeInfo){
-      return TResult();
-    } if (getDataTypeIndex() == Type<TResult>().dataIndex()){
-      return *(TResult*)ptr();
+      return ResultType();
+    } if (getDataTypeIndex() == Type<ResultType>().dataIndex()){
+      return *(ResultType*)ptr();
     } else if (_typeInfo->dataIndex == selfVariantTypeIndex) {
-      return ((BasicVariant*)ptr())->cast<TResult>();
+      return ((BasicVariant*)ptr())->cast<ResultType>();
     } else if (_typeInfo->dataIndex == variantTypeIndex) {
-      return ((Variant*)ptr())->cast<TResult>();
+      return ((Variant*)ptr())->cast<ResultType>();
     } else {
-      TResult result;
+      ResultType result;
       convertRuntimeByDestination(&result, ptr(), getDataTypeIndex());
       return result;
     }

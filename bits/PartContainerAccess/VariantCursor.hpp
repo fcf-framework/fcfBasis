@@ -7,59 +7,59 @@
 
 namespace fcf{
 
-  template <unsigned int InnerBufferSize>
-  VariantCursor<InnerBufferSize>::VariantCursor() {
+  template <typename TContainer>
+  VariantCursor<TContainer>::VariantCursor() {
   }
 
-  template <unsigned int InnerBufferSize>
-  VariantCursor<InnerBufferSize>::VariantCursor(BasicVariant<InnerBufferSize>& a_variant) {
-    iterator = a_variant.getTypeInfo()->template getSpecificatorCall<ContainerAccessSpecificator>()(a_variant.ptr());
+  template <typename TContainer>
+  VariantCursor<TContainer>::VariantCursor(TContainer& a_variant) {
+    iterator = a_variant.getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>()(a_variant.ptr(), 0, 0);
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::setPosition(const key_type& a_position, bool a_create) {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::setPosition(const key_type& a_position, bool a_create) {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     return piterator->setPosition(a_position, a_create);
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::addPosition(size_t a_position) {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::addPosition(size_t a_position) {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     piterator->addPosition(a_position);
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::decPosition(size_t a_position) {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::decPosition(size_t a_position) {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     piterator->decPosition(a_position);
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::decPosition() {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::decPosition() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     --(*piterator);
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::incPosition() {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::incPosition() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     ++(*piterator);
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::setBeginPosition() {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::setBeginPosition() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     piterator->setBeginPosition();
   }
 
-  template <unsigned int InnerBufferSize>
-  void VariantCursor<InnerBufferSize>::setEndPosition() {
+  template <typename TContainer>
+  void VariantCursor<TContainer>::setEndPosition() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     piterator->setEndPosition();
   }
 
-  template <unsigned int InnerBufferSize>
-  size_t VariantCursor<InnerBufferSize>::getDistance(const self_type& a_cursor) const{
+  template <typename TContainer>
+  size_t VariantCursor<TContainer>::getDistance(const self_type& a_cursor) const{
     DynamicContainerAccessBase* selfIterator = (DynamicContainerAccessBase*)iterator.ptr();
     DynamicContainerAccessBase* argIterator  = (DynamicContainerAccessBase*)a_cursor.iterator.ptr();
     if (!selfIterator || !argIterator){
@@ -68,44 +68,44 @@ namespace fcf{
     return selfIterator->distance(*argIterator);
   }
 
-  template <unsigned int InnerBufferSize>
-  typename VariantCursor<InnerBufferSize>::key_type VariantCursor<InnerBufferSize>::getKey() const {
+  template <typename TContainer>
+  typename VariantCursor<TContainer>::key_type VariantCursor<TContainer>::getKey() const {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     return piterator->getKey();
   }
 
-  template <unsigned int InnerBufferSize>
-  typename VariantCursor<InnerBufferSize>::resolve_value_type VariantCursor<InnerBufferSize>::getValue() {
+  template <typename TContainer>
+  typename VariantCursor<TContainer>::resolve_value_type VariantCursor<TContainer>::getValue() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     return piterator->getRefValue();
   }
 
-  template <unsigned int InnerBufferSize>
-  void* VariantCursor<InnerBufferSize>::getValuePtr() {
+  template <typename TContainer>
+  void* VariantCursor<TContainer>::getValuePtr() {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     return piterator->getRefValue().ptr();
   }
 
   // (this is the stub)!
-  template <unsigned int InnerBufferSize>
-  typename VariantCursor<InnerBufferSize>::resolve_stored_value_type& VariantCursor<InnerBufferSize>::getStoredValue() {
+  template <typename TContainer>
+  typename VariantCursor<TContainer>::resolve_stored_value_type VariantCursor<TContainer>::getStoredValue() {
     return getValue();
   }
 
-  template <unsigned int InnerBufferSize>
-  size_t VariantCursor<InnerBufferSize>::getContainerSize() const{
+  template <typename TContainer>
+  size_t VariantCursor<TContainer>::getContainerSize() const{
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     return piterator->getContainerSize();
   }
 
-  template <unsigned int InnerBufferSize>
-  bool VariantCursor<InnerBufferSize>::isEnd() const {
+  template <typename TContainer>
+  bool VariantCursor<TContainer>::isEnd() const {
     DynamicContainerAccessBase* piterator = (DynamicContainerAccessBase*)iterator.ptr();
     return piterator->isEnd();
   }
 
-  template <unsigned int InnerBufferSize>
-  bool VariantCursor<InnerBufferSize>::equal(const self_type& a_cursor) const {
+  template <typename TContainer>
+  bool VariantCursor<TContainer>::equal(const self_type& a_cursor) const {
     DynamicContainerAccessBase* sourceIterator = (DynamicContainerAccessBase*)a_cursor.iterator.ptr();
     DynamicContainerAccessBase* selfIterator = (DynamicContainerAccessBase*)iterator.ptr();
     if (!sourceIterator){

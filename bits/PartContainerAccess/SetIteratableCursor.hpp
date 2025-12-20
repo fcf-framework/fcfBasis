@@ -3,16 +3,16 @@
 
 namespace fcf {
 
-  template <typename TContainer, typename TValue>
+  template <typename TContainer>
   struct SetIteratableCursor {
-    typedef SetIteratableCursor         self_type;
-    typedef TContainer                    container_type;
-    typedef TValue                        key_type;
-    typedef TValue                        value_type;
-    typedef TValue                        stored_value_type;
-    typedef const TValue&                 resolve_value_type;
-    typedef const TValue                  resolve_stored_value_type;
-    typedef typename TContainer::iterator iterator_type;
+    typedef SetIteratableCursor                                                                 self_type;
+    typedef TContainer                                                                          container_type;
+    typedef typename std::remove_reference<decltype( *((container_type*)0xff)->begin() )>::type key_type;
+    typedef key_type                                                                            value_type;
+    typedef key_type                                                                            stored_value_type;
+    typedef key_type&                                                                           resolve_value_type;
+    typedef key_type&                                                                           resolve_stored_value_type;
+    typedef decltype( ((container_type*)0xff)->begin() )                                        iterator_type;
     enum { is_flat = false };
 
     SetIteratableCursor(){
@@ -71,15 +71,15 @@ namespace fcf {
       return *iterator;
     }
 
-    inline const value_type& getValue() {
+    inline resolve_value_type getValue() {
       return *iterator;
     }
 
-    inline const value_type* getValuePtr() {
+    inline value_type* getValuePtr() {
       return &(*iterator);
     }
 
-    inline resolve_stored_value_type& getStoredValue() {
+    inline resolve_stored_value_type getStoredValue() {
       return *iterator;
     }
 

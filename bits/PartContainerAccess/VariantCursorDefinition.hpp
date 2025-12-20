@@ -6,20 +6,20 @@
 
 namespace fcf{
 
-  template <unsigned int InnerBufferSize>
+  template <typename TContainer>
   struct VariantCursor {
     typedef VariantCursor                 self_type;
-    typedef BasicVariant<InnerBufferSize> container_type;
-    typedef Variant                       key_type;
-    typedef Variant                       value_type;
-    typedef Variant                       stored_value_type;
-    typedef Variant                      resolve_value_type;
-    typedef Variant                       resolve_stored_value_type;
+    typedef TContainer                    container_type;
+    typedef TContainer                    key_type;
+    typedef TContainer                    value_type;
+    typedef TContainer                    stored_value_type;
+    typedef TContainer                    resolve_value_type;
+    typedef TContainer                    resolve_stored_value_type;
     enum { is_flat = false };
 
     VariantCursor();
 
-    VariantCursor(BasicVariant<InnerBufferSize>& a_variant);
+    VariantCursor(TContainer& a_variant);
 
     inline void setPosition(const key_type& a_position, bool a_create = false);
 
@@ -43,8 +43,7 @@ namespace fcf{
 
     inline void* getValuePtr();
 
-    // (this is the stub)!
-    inline resolve_stored_value_type& getStoredValue();
+    inline resolve_stored_value_type getStoredValue();
 
     inline size_t getContainerSize() const;
 
@@ -52,7 +51,7 @@ namespace fcf{
 
     inline bool equal(const self_type& a_cursor) const;
 
-    BasicVariant<InnerBufferSize> iterator;
+    TContainer iterator;
   };
 
 

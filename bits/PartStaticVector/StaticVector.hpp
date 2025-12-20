@@ -21,8 +21,9 @@ namespace fcf{
 
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow>
   struct ContainerAccessInfo< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> > {
-    typedef FlatCursor<StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>  , 
-                       size_t, Ty> cursor_type;
+    typedef FlatCursor<
+                      StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>
+                      > cursor_type;
   };
 
 
