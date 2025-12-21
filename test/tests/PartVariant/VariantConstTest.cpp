@@ -266,7 +266,8 @@ namespace FcfTest {
       {
         std::vector<int> vector{1,2,3};
         fcf::Variant variant(vector, fcf::Variant::REFERENCE);
-        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "int&", (*variant.cbegin()).getTypeInfo()->name);
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const int&", (*variant.cbegin()).getTypeInfo()->name);
+        FCF_TEST((*variant.begin()).getTypeInfo()->name == "int&", (*variant.begin()).getTypeInfo()->name);
       }
       {
         std::vector<int> vector{1,2,3};
@@ -284,8 +285,31 @@ namespace FcfTest {
       }
       {
         std::map<int, std::string> obj{{1, "001"}, {2, "002"}};
+        fcf::Variant variant(fcf::Type<std::map<int, std::string> >(), obj, fcf::Variant::REFERENCE);
+        {
+          bool error = false;
+          fcf::Variant variantItem = *variant.cbegin();
+          try {
+            variantItem = "001-1";
+          } catch(...){
+            error = true;
+          }
+          FCF_TEST(error == true, error);
+        }
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const std::string&", (*variant.cbegin()).getTypeInfo()->name);
+        FCF_TEST((*variant.begin()).getTypeInfo()->name == "std::string&", (*variant.begin()).getTypeInfo()->name);
+      }
+      {
+        std::map<int, std::string> obj{{1, "001"}, {2, "002"}};
         fcf::Variant variant(fcf::Type< const std::map<int, std::string> >(), obj, fcf::Variant::REFERENCE);
         FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const std::string&", (*variant.cbegin()).getTypeInfo()->name);
+        FCF_TEST((*variant.begin()).getTypeInfo()->name == "const std::string&", (*variant.begin()).getTypeInfo()->name);
+      }
+      {
+        std::map<int, std::string> obj{{1, "001"}, {2, "002"}};
+        fcf::Variant variant(obj, fcf::Variant::REFERENCE);
+        FCF_TEST((*variant.cbegin()).getTypeInfo()->name == "const std::string&", (*variant.cbegin()).getTypeInfo()->name);
+        FCF_TEST((*variant.begin()).getTypeInfo()->name == "std::string&", (*variant.begin()).getTypeInfo()->name);
       }
 
     }

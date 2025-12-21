@@ -275,7 +275,8 @@ namespace fcf {
 
   template <typename TContainerAccess>
   bool DynamicContainerAccess<TContainerAccess>::equal(DynamicContainerAccessBase& a_containerAccess) const{
-    DynamicContainerAccess<TContainerAccess>* arg = dynamic_cast<DynamicContainerAccess<TContainerAccess>*>(&a_containerAccess);
+    //DynamicContainerAccess<TContainerAccess>* arg = dynamic_cast<DynamicContainerAccess<TContainerAccess>*>(&a_containerAccess);
+    DynamicContainerAccess<TContainerAccess>* arg = (DynamicContainerAccess*)&a_containerAccess;
     return _containerAccess == arg->_containerAccess;
   }
 
@@ -400,7 +401,8 @@ namespace fcf {
 
   template <typename TContainer>
   bool DynamicContainerAccess< ContainerAccess<const TContainer> >::equal(DynamicContainerAccessBase& a_containerAccess) const{
-    DynamicContainerAccess* arg = dynamic_cast<DynamicContainerAccess*>(&a_containerAccess);
+    //DynamicContainerAccess* arg = dynamic_cast<DynamicContainerAccess*>(&a_containerAccess);
+    DynamicContainerAccess* arg = (DynamicContainerAccess*)&a_containerAccess;
     return _containerAccess == arg->_containerAccess;
   }
 

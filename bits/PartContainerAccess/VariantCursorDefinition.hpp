@@ -8,13 +8,13 @@ namespace fcf{
 
   template <typename TContainer>
   struct VariantCursor {
-    typedef VariantCursor                 self_type;
-    typedef TContainer                    container_type;
-    typedef TContainer                    key_type;
-    typedef TContainer                    value_type;
-    typedef TContainer                    stored_value_type;
-    typedef TContainer                    resolve_value_type;
-    typedef TContainer                    resolve_stored_value_type;
+    typedef VariantCursor                                 self_type;
+    typedef typename std::remove_const<TContainer>::type  container_type;
+    typedef container_type                                key_type;
+    typedef container_type                                value_type;
+    typedef container_type                                stored_value_type;
+    typedef container_type                                resolve_value_type;
+    typedef container_type                                resolve_stored_value_type;
     enum { is_flat = false };
 
     VariantCursor();
@@ -49,11 +49,11 @@ namespace fcf{
 
     inline bool isEnd() const;
 
-    inline bool equal(const self_type& a_cursor) const;
+    template <typename TCursor>
+    inline bool equal(const TCursor& a_cursor) const;
 
-    TContainer iterator;
+    container_type iterator;
   };
-
 
 } // fcf namespace
 

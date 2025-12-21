@@ -163,7 +163,7 @@ namespace fcf {
   class ContainerAccess<const TContainer> {
     public:
       typedef typename std::remove_const<TContainer>::type              container_type;
-      typedef typename ContainerAccessInfo<container_type>::cursor_type cursor_type;
+      typedef typename ContainerAccessInfo<const TContainer>::cursor_type cursor_type;
       typedef typename cursor_type::key_type                            key_type;
       typedef typename cursor_type::value_type                          value_type;
       typedef typename cursor_type::stored_value_type                   stored_value_type;
@@ -340,6 +340,11 @@ namespace fcf {
   template <typename TKey, typename TValue>
   struct ContainerAccessInfo< std::map<TKey, TValue> > {
     typedef MapIteratableCursor< std::map<TKey, TValue> > cursor_type;
+  };
+
+  template <typename TKey, typename TValue>
+  struct ContainerAccessInfo< const std::map<TKey, TValue> > {
+    typedef MapIteratableCursor< const std::map<TKey, TValue> > cursor_type;
   };
 
   template <typename TKey, typename TValue>

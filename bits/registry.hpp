@@ -367,6 +367,11 @@ namespace fcf {
     typedef VariantCursor< BasicVariant<InnerBufferSize> > cursor_type;
   };
 
+  template <size_t InnerBufferSize>
+  struct ContainerAccessInfo< const BasicVariant<InnerBufferSize> > {
+    typedef VariantCursor< const BasicVariant<InnerBufferSize> > cursor_type;
+  };
+
 } // fcf namespace
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::ContainerAccessSpecificator);
 

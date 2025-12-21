@@ -6,9 +6,9 @@ namespace fcf {
   template <typename TContainer>
   struct MapIteratableCursor {
     typedef MapIteratableCursor                                             self_type;
-    typedef TContainer                                                      container_type;
+    typedef typename std::remove_const<TContainer>::type                    container_type;
     typedef decltype( ((TContainer*)0xff)->begin()->first )                 key_type;
-    typedef decltype( ((TContainer*)0xff)->begin()->second )                value_type;
+    typedef decltype( (*std::begin(*((TContainer*)0xff))).second )          value_type;
     typedef value_type&                                                     resolve_value_type;
     typedef decltype( *((TContainer*)0xff)->begin() )                       resolve_stored_value_type;
     typedef typename std::remove_reference<resolve_stored_value_type>::type stored_value_type;
@@ -21,7 +21,7 @@ namespace fcf {
     }
 
     MapIteratableCursor(TContainer& a_container)
-      : container(&a_container)
+      : container((container_type*)&a_container)
       , iterator(std::begin(a_container)){
     }
 
@@ -73,11 +73,11 @@ namespace fcf {
     }
 
     inline resolve_value_type getValue() {
-      return iterator->second;
+      return (resolve_value_type)iterator->second;
     }
 
     inline value_type* getValuePtr() {
-      return &iterator->second;
+      return (value_type*)&iterator->second;
     }
 
     inline resolve_stored_value_type getStoredValue() {
@@ -88,7 +88,8 @@ namespace fcf {
       return container->size();
     }
 
-    inline bool equal(const self_type& a_cursor) const {
+    template <typename TCursor>
+    inline bool equal(const TCursor& a_cursor) const {
       return iterator == a_cursor.iterator;
     }
 

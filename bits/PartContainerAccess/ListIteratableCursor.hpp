@@ -6,7 +6,7 @@ namespace fcf {
   template <typename TContainer>
   struct ListIteratableCursor {
     typedef ListIteratableCursor                                      self_type;
-    typedef TContainer                                                container_type;
+    typedef typename std::remove_const<TContainer>::type              container_type;
     typedef size_t                                                    key_type;
     typedef decltype(std::begin(*((TContainer*)0x01)))                iterator_type;
     typedef decltype(*(*(iterator_type*)0x01))                        resolve_value_type;
@@ -21,7 +21,7 @@ namespace fcf {
     }
 
     ListIteratableCursor(TContainer& a_container)
-      : container(&a_container)
+      : container((container_type*)&a_container)
       , key(0)
       , iterator(std::begin(*container)){
     }
@@ -126,7 +126,8 @@ namespace fcf {
       return iterator == container->end();
     }
 
-    inline bool equal(const self_type& a_cursor) const {
+    template <typename TCursor>
+    inline bool equal(const TCursor& a_cursor) const {
       return iterator == a_cursor.iterator;
     }
 

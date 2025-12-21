@@ -6,7 +6,7 @@ namespace fcf {
   template <typename TContainer>
   struct FlatCursor {
     typedef FlatCursor self_type;
-    typedef TContainer container_type;
+    typedef typename std::remove_const<TContainer>::type                       container_type;
     typedef size_t                                                    key_type;
     typedef decltype( (*((TContainer*)0x01))[0] )                     resolve_value_type;
     typedef typename std::remove_reference<resolve_value_type>::type  value_type;
@@ -21,7 +21,7 @@ namespace fcf {
     }
 
     FlatCursor(TContainer& a_container)
-      : container(&a_container)
+      : container((container_type*)&a_container)
       , key(0){
     }
 
@@ -95,7 +95,8 @@ namespace fcf {
       return key >= container->size();
     }
 
-    inline bool equal(const self_type& a_cursor) const {
+    template <typename TCursor>
+    inline bool equal(const TCursor& a_cursor) const {
       return key == a_cursor.key;
     }
 

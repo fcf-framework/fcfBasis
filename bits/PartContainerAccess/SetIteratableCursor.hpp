@@ -6,7 +6,7 @@ namespace fcf {
   template <typename TContainer>
   struct SetIteratableCursor {
     typedef SetIteratableCursor                                                                 self_type;
-    typedef TContainer                                                                          container_type;
+    typedef typename std::remove_const<TContainer>::type                                        container_type;
     typedef typename std::remove_reference<decltype( *((container_type*)0xff)->begin() )>::type key_type;
     typedef key_type                                                                            value_type;
     typedef key_type                                                                            stored_value_type;
@@ -20,7 +20,7 @@ namespace fcf {
     }
 
     SetIteratableCursor(TContainer& a_container)
-      : container(&a_container)
+      : container((container_type*)&a_container)
       , iterator(std::begin(a_container)){
     }
 
@@ -91,7 +91,8 @@ namespace fcf {
       return iterator == container->end();
     }
 
-    inline bool equal(const self_type& a_cursor) const {
+    template <typename TCursor>
+    inline bool equal(const TCursor& a_cursor) const {
       return iterator == a_cursor.iterator;
     }
 

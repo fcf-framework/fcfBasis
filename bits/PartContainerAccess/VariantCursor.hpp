@@ -13,7 +13,19 @@ namespace fcf{
 
   template <typename TContainer>
   VariantCursor<TContainer>::VariantCursor(TContainer& a_variant) {
-    iterator = a_variant.getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>()(a_variant.ptr(), 0, 0);
+    if (std::is_const<TContainer>::value) {
+      if (TypeIndexConverter<>::isConst(a_variant.getTypeInfo()->index)){
+        this->iterator = a_variant.getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>()((void*)a_variant.ptr(), 0, 0);
+      } else {
+        const TypeInfo* ti = getTypeInfo(TypeIndexConverter<>::getConstIndex(a_variant.getTypeInfo()->index));
+        if (!ti){
+          throw std::runtime_error("Cannot get type info for const type");
+        }
+        this->iterator = ti->template getSpecificator<ContainerAccessSpecificator>()((void*)a_variant.ptr(), 0, 0);
+      }
+    } else {
+      iterator = a_variant.getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>()((void*)a_variant.ptr(), 0, 0);
+    }
   }
 
   template <typename TContainer>
@@ -105,7 +117,8 @@ namespace fcf{
   }
 
   template <typename TContainer>
-  bool VariantCursor<TContainer>::equal(const self_type& a_cursor) const {
+  template <typename TCursor>
+  bool VariantCursor<TContainer>::equal(const TCursor& a_cursor) const {
     DynamicContainerAccessBase* sourceIterator = (DynamicContainerAccessBase*)a_cursor.iterator.ptr();
     DynamicContainerAccessBase* selfIterator = (DynamicContainerAccessBase*)iterator.ptr();
     if (!sourceIterator){
