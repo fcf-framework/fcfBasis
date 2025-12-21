@@ -29,6 +29,7 @@ namespace FcfTest {
     void variantRefTest();
     void variantContainerTest();
     void variantConstTest();
+    void variantEraseTest();
 
   } // BasisTest namespace
 } // FcfTest namespace
@@ -45,11 +46,9 @@ void dynamicIteratorTest();
 void deepIndexContainerCaller();
 void tupleTest();
 
-
-
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
- 
   
+ 
   variantTest();
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();
@@ -60,6 +59,7 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   FcfTest::BasisTest::variantCmpTest();
   FcfTest::BasisTest::variantContainerTest();
   FcfTest::BasisTest::variantArithmeticTest();
+  FcfTest::BasisTest::variantEraseTest();
   FcfTest::BasisTest::sequenceTest();
 
   FcfTest::BasisTest::minMaxSpecificatorTest();

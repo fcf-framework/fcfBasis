@@ -1,6 +1,10 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__SET_ITERATABLE_CURSOR_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__SET_ITERATABLE_CURSOR_HPP___
 
+#include <set>
+#include <unordered_set>
+#include "Cursor.hpp"
+
 namespace fcf {
 
   template <typename TContainer>
@@ -96,8 +100,25 @@ namespace fcf {
       return iterator == a_cursor.iterator;
     }
 
+    template <typename TCursor>
+    inline void erase(const TCursor& a_endCursor){
+      container->erase(iterator, a_endCursor.iterator);
+    }
+
     container_type* container;
     iterator_type   iterator;
+  };
+
+  template <typename Ty>
+  struct Cursor< std::set<Ty> > : public SetIteratableCursor< std::set<Ty> >{
+    typedef SetIteratableCursor< std::set<Ty> > BaseType;
+    using BaseType::SetIteratableCursor;
+  };
+
+  template <typename Ty>
+  struct Cursor< std::unordered_set<Ty> > : public SetIteratableCursor< std::unordered_set<Ty> >{
+    typedef SetIteratableCursor< std::unordered_set<Ty> > BaseType;
+    using BaseType::SetIteratableCursor;
   };
 
 } // fcf namespace

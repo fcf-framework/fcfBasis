@@ -1,6 +1,9 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__LIST_ITERATABLE_CURSOR_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__LIST_ITERATABLE_CURSOR_HPP___
 
+#include <list>
+#include "Cursor.hpp"
+
 namespace fcf {
 
   template <typename TContainer>
@@ -131,6 +134,12 @@ namespace fcf {
       return iterator == a_cursor.iterator;
     }
 
+    template <typename TCursor>
+    inline void erase(const TCursor& a_endCursor){
+      container->erase(iterator,  a_endCursor.iterator);
+    }
+
+/*
     inline value_type& resolve(key_type a_key){
       const size_t s = container->size();
       if (a_key < s){
@@ -152,10 +161,17 @@ namespace fcf {
       }
       return *iterator;
     }
-
+*/
     container_type* container;
     iterator_type   iterator;
     key_type        key;
+  };
+
+
+  template <typename Ty>
+  struct Cursor< std::list<Ty> > : public ListIteratableCursor< std::list<Ty> >{
+    typedef ListIteratableCursor< std::list<Ty> > BaseType;
+    using BaseType::ListIteratableCursor;
   };
 
 } // fcf namespace

@@ -1,6 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 
+#include <stdexcept>
 #include <vector>
 #include <list>
 #include <map>
@@ -8,7 +9,8 @@
 #include <set>
 
 #include "ContainerPosition.hpp"
-#include "ContainerAccessInfo.hpp"
+#include "CursorSelector.hpp"
+
 #include "FlatCursor.hpp"
 #include "MapIteratableCursor.hpp"
 #include "SetIteratableCursor.hpp"
@@ -20,7 +22,7 @@ namespace fcf {
   template <typename TContainer>
   class ContainerAccess {
     public:
-      typedef typename ContainerAccessInfo<TContainer>::cursor_type cursor_type;
+      typedef Cursor<TContainer>                                    cursor_type;
       typedef typename cursor_type::container_type                  container_type;
       typedef typename cursor_type::key_type                        key_type;
       typedef typename cursor_type::value_type                      value_type;
@@ -156,14 +158,20 @@ namespace fcf {
         return cursor.isEnd();
       }
 
+      template <typename TContainerAccess>
+      inline void erase(const TContainerAccess& a_endAccess){
+        cursor.erase(a_endAccess.cursor);
+      }
+
+
       cursor_type cursor;
   };
 
   template <typename TContainer>
   class ContainerAccess<const TContainer> {
     public:
+      typedef typename CursorSelector<const TContainer>::Type           cursor_type;
       typedef typename std::remove_const<TContainer>::type              container_type;
-      typedef typename ContainerAccessInfo<const TContainer>::cursor_type cursor_type;
       typedef typename cursor_type::key_type                            key_type;
       typedef typename cursor_type::value_type                          value_type;
       typedef typename cursor_type::stored_value_type                   stored_value_type;
@@ -306,6 +314,12 @@ namespace fcf {
         cursor.set(a_key, a_value);
       }
 
+      template <typename TContainerAccess>
+      inline void erase(const TContainerAccess& a_endAccess){
+        throw ::std::runtime_error("The object is only available for reading");
+      }
+
+
       cursor_type cursor;
   };
 
@@ -320,43 +334,6 @@ namespace std {
   }
 
 }
-
-namespace fcf {
-  template <typename Ty>
-  struct ContainerAccessInfo< std::vector<Ty> > {
-    typedef FlatCursor< std::vector<Ty> > cursor_type;
-  };
-
-  template <typename Ty>
-  struct ContainerAccessInfo< const std::vector<Ty> > {
-    typedef FlatCursor< const std::vector<Ty> > cursor_type;
-  };
-
-  template <typename Ty>
-  struct ContainerAccessInfo< std::list<Ty> > {
-    typedef ListIteratableCursor< std::list<Ty> > cursor_type;
-  };
-
-  template <typename TKey, typename TValue>
-  struct ContainerAccessInfo< std::map<TKey, TValue> > {
-    typedef MapIteratableCursor< std::map<TKey, TValue> > cursor_type;
-  };
-
-  template <typename TKey, typename TValue>
-  struct ContainerAccessInfo< const std::map<TKey, TValue> > {
-    typedef MapIteratableCursor< const std::map<TKey, TValue> > cursor_type;
-  };
-
-  template <typename TKey, typename TValue>
-  struct ContainerAccessInfo< std::unordered_map<TKey, TValue> > {
-    typedef MapIteratableCursor< std::unordered_map<TKey, TValue> > cursor_type;
-  };
-
-  template <typename TKey>
-  struct ContainerAccessInfo< std::set<TKey> > {
-    typedef SetIteratableCursor< std::set<TKey> > cursor_type;
-  };
-} // fcf namespace
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 

@@ -127,6 +127,14 @@ namespace fcf{
     return selfIterator->equal(*sourceIterator);
   }
 
+  template <typename TContainer>
+  template <typename TCursor>
+  void VariantCursor<TContainer>::erase(const TCursor& a_cursor) {
+    DynamicContainerAccessBase* sourceIterator = (DynamicContainerAccessBase*)a_cursor.iterator.ptr();
+    DynamicContainerAccessBase* selfIterator = (DynamicContainerAccessBase*)iterator.ptr();
+    return selfIterator->erase(*sourceIterator);
+  }
+
 
 } // fcf namespace
 

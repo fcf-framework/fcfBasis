@@ -31,6 +31,7 @@ namespace fcf {
       virtual size_t        distance(const DynamicContainerAccessBase& a_iterator) const = 0;
       virtual bool          isEnd() const = 0;
       virtual bool          equal(DynamicContainerAccessBase& a_containerAccess) const = 0;
+      virtual void          erase(DynamicContainerAccessBase& a_endAccess) = 0;
 
       inline operator bool(){
         return !isEnd();

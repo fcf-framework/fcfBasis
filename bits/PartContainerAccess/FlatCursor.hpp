@@ -1,12 +1,15 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
 
+#include <vector>
+#include "Cursor.hpp"
+
 namespace fcf {
 
   template <typename TContainer>
   struct FlatCursor {
     typedef FlatCursor self_type;
-    typedef typename std::remove_const<TContainer>::type                       container_type;
+    typedef typename std::remove_const<TContainer>::type              container_type;
     typedef size_t                                                    key_type;
     typedef decltype( (*((TContainer*)0x01))[0] )                     resolve_value_type;
     typedef typename std::remove_reference<resolve_value_type>::type  value_type;
@@ -100,8 +103,25 @@ namespace fcf {
       return key == a_cursor.key;
     }
 
+    template <typename TCursor>
+    inline void erase(const TCursor& a_endCursor){
+      const key_type s = container->size();
+      if (key + 1 == s && a_endCursor.key >= s){
+        container->pop_back();
+      } else {
+        container->erase(container->begin() + key,  this->container->begin() + a_endCursor.key);
+      }
+    }
+
     container_type* container;
     key_type        key;
+  };
+
+
+  template <typename Ty>
+  struct Cursor< std::vector<Ty> >: public FlatCursor< std::vector<Ty> > {
+    typedef FlatCursor< std::vector<Ty> > BaseType;
+    using BaseType::FlatCursor;
   };
 
 } // fcf namespace

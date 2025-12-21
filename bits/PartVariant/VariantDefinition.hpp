@@ -129,6 +129,14 @@ namespace fcf {
 
       void clear();
 
+      size_t containerSize();
+
+      void erase(const BasicVariant& a_key);
+
+      void erase(const iterator& a_iterator);
+
+      void erase(const iterator& a_begin, const iterator& a_end);
+
       inline iterator begin() {
         return iterator(*this);
       }

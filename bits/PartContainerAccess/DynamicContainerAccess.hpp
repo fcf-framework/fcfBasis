@@ -79,6 +79,8 @@ namespace fcf {
 
       virtual bool equal(DynamicContainerAccessBase& a_containerAccess) const;
 
+      virtual void erase(DynamicContainerAccessBase& a_endAccess);
+
     protected:
       TContainerAccess _containerAccess;
   };
@@ -140,6 +142,8 @@ namespace fcf {
       virtual bool isEnd() const;
 
       virtual bool equal(DynamicContainerAccessBase& a_containerAccess) const;
+
+      virtual void erase(DynamicContainerAccessBase& a_endAccess);
 
     protected:
       ContainerAccessType _containerAccess;
@@ -280,6 +284,12 @@ namespace fcf {
     return _containerAccess == arg->_containerAccess;
   }
 
+  template <typename TContainerAccess>
+  void DynamicContainerAccess<TContainerAccess>::erase(DynamicContainerAccessBase& a_endAccess){
+    DynamicContainerAccess* arg = (DynamicContainerAccess*)&a_endAccess;
+    _containerAccess.erase(arg->_containerAccess);
+  }
+  
 
   ///
   ///   DynamicContainerAccess<const TContainerAccess> class
@@ -406,6 +416,10 @@ namespace fcf {
     return _containerAccess == arg->_containerAccess;
   }
 
+  template <typename TContainer>
+  void DynamicContainerAccess< ContainerAccess<const TContainer> >::erase(DynamicContainerAccessBase& /*a_endAccess*/){
+    throw std::runtime_error("The object is only available for reading");
+  }
 
 } // fcf namespace
 #endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___

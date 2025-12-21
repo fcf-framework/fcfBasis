@@ -358,19 +358,17 @@ namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<I
 FCF_TEMPLATE_SPECIFICATOR_REGISTRY((fcf, BasicVariant),  DivSpecificator);
 
 namespace fcf {
+
+  template <size_t InnerBufferSize>
+  struct Cursor< BasicVariant<InnerBufferSize> > : public VariantCursor< BasicVariant<InnerBufferSize> >{
+    typedef VariantCursor< BasicVariant<InnerBufferSize> > BaseType;
+    using BaseType::VariantCursor;
+  };
+
   template <size_t InnerBufferSize>
   struct Type<BasicVariant<InnerBufferSize>, ContainerAccessSpecificator>: public TypeImpl<BasicVariant<InnerBufferSize>, ContainerAccessSpecificator>{
   };
 
-  template <size_t InnerBufferSize>
-  struct ContainerAccessInfo< BasicVariant<InnerBufferSize> > {
-    typedef VariantCursor< BasicVariant<InnerBufferSize> > cursor_type;
-  };
-
-  template <size_t InnerBufferSize>
-  struct ContainerAccessInfo< const BasicVariant<InnerBufferSize> > {
-    typedef VariantCursor< const BasicVariant<InnerBufferSize> > cursor_type;
-  };
 
 } // fcf namespace
 FCF_SPECIFICATOR_REGISTRY(fcf::Variant,  fcf::ContainerAccessSpecificator);

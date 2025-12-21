@@ -365,6 +365,73 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
+  size_t BasicVariant<innerBufferSize>::containerSize(){
+    if (!_typeInfo){
+      return 0;
+    }
+    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
+    if (!call) {
+      return 0;
+    }
+
+    Variant vdca = call(ptr(), 0, 0);
+    DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)vdca.ptr();
+    return pdca->getContainerSize();
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::erase(const BasicVariant& a_key){
+    if (!_typeInfo){
+      return;
+    }
+    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
+    if (!call) {
+      return;
+    }
+    Variant vdca = call(ptr(), 0, 0);
+    DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)vdca.ptr();
+    pdca->setPosition(a_key, false);
+    if (pdca->isEnd()){
+      return;
+    }
+    Variant vdcaEnd(vdca);
+    DynamicContainerAccessBase* pdcaEnd = (DynamicContainerAccessBase*)vdcaEnd.ptr();
+    pdcaEnd->inc();
+    pdca->erase(*pdcaEnd);
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::erase(const iterator& a_iterator){
+    if (!_typeInfo){
+      return;
+    }
+    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
+    if (!call) {
+      return;
+    }
+    DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)a_iterator.cursor.iterator.ptr();
+    Variant vdcaEnd(a_iterator.cursor.iterator);
+    DynamicContainerAccessBase* pdcaEnd = (DynamicContainerAccessBase*)vdcaEnd.ptr();
+    pdcaEnd->inc();
+
+    pdca->erase(*pdcaEnd);
+  }
+
+  template <size_t innerBufferSize>
+  void BasicVariant<innerBufferSize>::erase(const iterator& a_begin, const iterator& a_end){
+    if (!_typeInfo){
+      return;
+    }
+    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
+    if (!call) {
+      return;
+    }
+    DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)a_begin.cursor.iterator.ptr();
+    DynamicContainerAccessBase* pdcaEnd = (DynamicContainerAccessBase*)a_end.cursor.iterator.ptr();
+    pdca->erase(*pdcaEnd);
+  }
+
+  template <size_t innerBufferSize>
   Variant BasicVariant<innerBufferSize>::operator[](const Variant& a_key){
     UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
     if (!call) {

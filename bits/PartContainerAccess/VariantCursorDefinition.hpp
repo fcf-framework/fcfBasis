@@ -52,6 +52,9 @@ namespace fcf{
     template <typename TCursor>
     inline bool equal(const TCursor& a_cursor) const;
 
+    template <typename TCursor>
+    inline void erase(const TCursor& a_cursor);
+
     container_type iterator;
   };
 

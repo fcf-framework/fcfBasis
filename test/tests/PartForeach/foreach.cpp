@@ -62,8 +62,9 @@ namespace FcfTest {
 namespace fcf {
 
   template <>
-  struct ContainerAccessInfo< FcfTest::BasisTest::ForeachTest::Container > {
-    typedef FlatCursor<FcfTest::BasisTest::ForeachTest::Container> cursor_type;
+  struct Cursor< FcfTest::BasisTest::ForeachTest::Container > : public FlatCursor<FcfTest::BasisTest::ForeachTest::Container> {
+    typedef FlatCursor<FcfTest::BasisTest::ForeachTest::Container> BaseType;
+    using BaseType::FlatCursor;
   };
 
 } // fcf namespace

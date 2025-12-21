@@ -1,7 +1,9 @@
 #ifndef ___FCF_BASIS__BITS__PART_FOREACH__NDETAILS__DEFAULT_FOREACH_HPP___
 #define ___FCF_BASIS__BITS__PART_FOREACH__NDETAILS__DEFAULT_FOREACH_HPP___
 
+
 #include "../../../bits/PartContainerAccess/ContainerAccess.hpp"
+#include "../../../bits/PartContainerAccess/Cursor.hpp"
 
 namespace fcf {
   namespace NDetails {
@@ -19,7 +21,7 @@ namespace fcf {
     };
 
     template <typename TContainer>
-    struct DefaultForeach<TContainer,  decltype(void(::fcf::ContainerAccessInfo<TContainer>())) > {
+    struct DefaultForeach<TContainer,  decltype(void(::fcf::Cursor<TContainer>())) > {
       template <typename TInputContainer, typename TFunctor, typename ...TArgPack>
       inline void operator()(TInputContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         typedef typename std::remove_reference<TInputContainer>::type container_type;

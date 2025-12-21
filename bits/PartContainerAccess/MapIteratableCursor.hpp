@@ -1,6 +1,10 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__MAP_ITERATABLE_CURSOR_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__MAP_ITERATABLE_CURSOR_HPP___
 
+#include <map>
+#include <unordered_map>
+#include "Cursor.hpp"
+
 namespace fcf {
 
   template <typename TContainer>
@@ -93,20 +97,35 @@ namespace fcf {
       return iterator == a_cursor.iterator;
     }
 
+    /*
     inline MapIteratableCursor insert(const key_type& a_key, const value_type& a_value) {
       return MapIteratableCursor{container, container->insert({a_key, a_value}).first};
     }
+    */
 
     inline bool isEnd() const {
       return iterator == container->end();
     }
 
-    inline MapIteratableCursor erase() {
-      return MapIteratableCursor{container, container->erase(iterator)};
+    template <typename TCursor>
+    inline void erase(const TCursor& a_endCursor){
+      container->erase(iterator,  a_endCursor.iterator);
     }
 
     container_type* container;
     iterator_type   iterator;
+  };
+
+  template <typename TKey, typename TValue>
+  struct Cursor< std::map<TKey, TValue> > : public MapIteratableCursor< std::map<TKey, TValue> >{
+    typedef MapIteratableCursor< std::map<TKey, TValue> > BaseType;
+    using BaseType::MapIteratableCursor;
+  };
+
+  template <typename TKey, typename TValue>
+  struct Cursor< std::unordered_map<TKey, TValue> > : public MapIteratableCursor< std::unordered_map<TKey, TValue> >{
+    typedef MapIteratableCursor< std::unordered_map<TKey, TValue> > BaseType;
+    using BaseType::MapIteratableCursor;
   };
 
 } // fcf namespace
