@@ -12,13 +12,6 @@ namespace fcf {
       }
     }
 
-    template <typename ...TPackArg>
-    void fill(TPackArg&&... a_packArg){
-      fcf::Call dc;
-      fcf::CallSeeker<void, TPackArg...>()("fill", &dc, a_packArg...);
-      fcf::call(&dc, a_packArg...);
-    }
-
 } // fcf namespace
 
 
