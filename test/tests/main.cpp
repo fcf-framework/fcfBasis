@@ -19,6 +19,8 @@ namespace FcfTest {
     void declareCall();
     void placeHolderCall();
 
+    void callInvariantArgumentsTest();
+
     void minMaxSpecificatorTest();
     void foreachTest();
     void variantCmpTest();
@@ -47,9 +49,12 @@ void deepIndexContainerCaller();
 void tupleTest();
 
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
-  
- 
+
+
   variantTest();
+
+  FcfTest::BasisTest::callInvariantArgumentsTest();
+
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();
   FcfTest::BasisTest::variantPtrTest();

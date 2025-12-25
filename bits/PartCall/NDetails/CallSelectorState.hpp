@@ -9,13 +9,17 @@ namespace fcf {
   namespace NDetails {
 
     struct CallSelectorState {
+      struct PlaceHolderSource{
+        unsigned int specificatorIndex;
+        unsigned int argumentNumber;
+      };
       const char*                                       name;
       Call*                                             result;
       CallStorageSelectionFunctionGroups::iterator      groupIterator;
       BaseFunctionSignature&                            functionSignature;
       BaseFunctionSignature*                            ptrFunctionSignature;
       StaticVector<void*, 8>*                           arguments;
-      std::vector<unsigned int>                         placeHolderVec;
+      std::vector<PlaceHolderSource>                    placeHolderVec;
       std::vector<std::vector<unsigned int> >*          placeHolderSpecificators;
       bool                                              strictSource;
       bool                                              dynamicCaller;

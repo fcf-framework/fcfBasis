@@ -10,7 +10,7 @@
 #include "CallConversionNode.hpp"
 #include "CallSelectorState.hpp"
 
-namespace fcf { 
+namespace fcf {
   namespace NDetails {
 
     struct CallSelectorHandler {
@@ -19,7 +19,7 @@ namespace fcf {
         unsigned int                                        typeIndex;
         unsigned int                                        clearTypeIndex;
         ResolveSpecificator::CallFunctionType               resolver;
-        ResolveData                                         resolveData; 
+        ResolveData                                         resolveData;
         UniversalCall                                       containerAccessResolver;
         void*                                               ptrArg;
         const std::map<unsigned int, SpecificatorInfo>*     specificators;
@@ -80,7 +80,10 @@ namespace fcf {
               a_node->next = &curnode;
               curnode.prev = a_node;
             }
-            state.placeHolderVec.push_back(specificatorTypeIndex);
+            CallSelectorState::PlaceHolderSource phs;
+            phs.specificatorIndex = specificatorTypeIndex;
+            phs.argumentNumber = a_argumentIndex;
+            state.placeHolderVec.push_back(phs);
           }
         }
 
@@ -365,20 +368,24 @@ namespace fcf {
           std::pair<CallStorageSelectionFunctions::iterator, CallStorageSelectionFunctions::iterator> range =
               state.groupIterator->second.callers.equal_range(*state.ptrFunctionSignature);
           for(; range.first != range.second; ++range.first) {
-            size_t i = 0;
-            for(; i < range.first->second.placeHolder.size(); ++i) {
+            bool found = true;
+            for(size_t i = 0; i < range.first->second.placeHolder.size(); ++i) {
               const unsigned int specificatorIndex = range.first->second.placeHolder[i].specificatorIndex;
-              size_t j = 0;
-              for(; j < state.placeHolderVec.size(); ++j) {
-                if (specificatorIndex == state.placeHolderVec[j]){
-                  break;
+              const unsigned int placeHolderSourceArgIndex = range.first->second.placeHolder[i].argSourceIndex-1;
+              bool subFound = false;
+              for(size_t j = 0; j < state.placeHolderVec.size(); ++j) {
+                if (specificatorIndex == state.placeHolderVec[j].specificatorIndex) {
+                  if (placeHolderSourceArgIndex == state.placeHolderVec[j].argumentNumber){
+                    subFound = true;
+                    break;
+                  }
                 }
               }
-              if (j != state.placeHolderVec.size()) {
-                break;
+              if (!subFound) {
+                found = false;
               }
             }
-            if (i != range.first->second.placeHolder.size() || range.first->second.placeHolder.size() == 0) {
+            if (found) {
               break;
             }
           }
@@ -412,92 +419,101 @@ namespace fcf {
               state.result->complete = true;
               state.result->dynamicCaller = true;
               state.result->name = state.name;
+              return;
             }
           }
         }
 
         if (state.result->complete) {
-          if (!state.dynamicCaller) {
-            state.result->argsMap.resize(state.result->argCount);
-          } else {
-            state.result->argsMap.clear();
-          }
-          unsigned int argMapIndex = 0;
-          unsigned int argMapCounter = 0;
+          state.result->argsMap.resize(state.functionSignature.asize);
           if (a_node) {
-            unsigned int phaoffset = 0;
             CallConversionNode* begNode = a_node;
             while(begNode->prev){
               begNode = begNode->prev;
             }
-            ::fcf::CallPlaceHolderArg* pha = pCall ? _getNextPlaceHolder(pCall, -1) : 0;
-            while(begNode){
-              bool ignore = begNode->conversion.mode == CCM_NONE;
-              if (pCall) {
-                while (pha && pha->argument <= (begNode->conversion.index + phaoffset) ) {
-                  CallConversion cc;
-                  cc.mode = CCM_SKIP;
-                  cc.index = pha->argument;
-                  state.result->conversions.push_back(cc);
-                  pha = _getNextPlaceHolder(pCall, pha->argument);
-                  ++phaoffset;
-                  ++argMapCounter;
+
+            unsigned int phmapIndex = 0;
+            unsigned int phmapOffset = 0;
+            unsigned int phmapArgCounter = 0;
+            StaticVector<unsigned int, 16> phmap(state.result->argCount, 0);
+            for(size_t i = 0; i < pCall->placeHolder.size(); ++i) {
+              for(const CallPlaceHolderArg& pha : pCall->placeHolder[i].placeHolders){
+                phmap[pha.argument] = UINT_MAX;
+              }
+            }
+
+
+            CallConversionNode* node = begNode;
+
+
+            while(node){
+              bool ignore = false;
+
+              node->conversion.index += phmapOffset;
+              while(phmapIndex <= node->conversion.index){
+                if (phmapIndex >= phmap.size()){
+                  throw std::runtime_error("Invalid logic into CallSelectorHandler (complete step filling flags)");
                 }
-                if (begNode->conversion.mode == CCM_PLACE_HOLDER) {
-                  std::vector<::fcf::CallPlaceHolderInfo>::iterator it =
-                    std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [begNode](::fcf::CallPlaceHolderInfo& a_itm){
-                      return a_itm.specificatorIndex == begNode->conversion.specificatorIndex;
-                    });
-                  if (it == pCall->placeHolder.end()){
-                    ignore = true;
-                  } else {
-                    for(auto ph : it->placeHolders) {
-                      ::fcf::CallPlaceHolderArgEx phe;
-                      phe.argument = ph.argument;
-                      phe.placeHolderArgument = ph.placeHolderArgument;
-                      phe.type = pCall->callerSignature.pacodes[ph.argument];
-                      begNode->conversion.placeHolders.push_back(phe);
-                    }
+                if (phmap[phmapIndex] == UINT_MAX){
+                  ++phmapOffset;
+                  ++node->conversion.index;
+                  ++phmapIndex;
+                } else if (phmap[phmapIndex] == (UINT_MAX - 1)) {
+                  ++phmapIndex;
+                } else {
+                  phmap[phmapIndex] = phmapArgCounter;
+                  ++phmapArgCounter;
+                  ++phmapIndex;
+                }
+              }
+
+              if (node->conversion.mode == CCM_FLAT_ITERATOR) {
+                if (phmap[phmapIndex] == UINT_MAX){
+                  throw std::runtime_error("Invalid logic into CallSelectorHandler (Placeholder overflow (pos1))");
+                }
+                if (phmapIndex >= phmap.size()){
+                  throw std::runtime_error("Invalid logic into CallSelectorHandler (Placeholder overflow (pos2))");
+                }
+                phmap[phmapIndex] = (UINT_MAX - 1);
+              } else if (node->conversion.mode == CCM_PLACE_HOLDER) {
+                std::vector<::fcf::CallPlaceHolderInfo>::iterator it =
+                  std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [node, phmapOffset](::fcf::CallPlaceHolderInfo& a_itm){
+                    return a_itm.specificatorIndex == node->conversion.specificatorIndex &&
+                           ((unsigned int)a_itm.argSourceIndex - 1) == node->conversion.index;
+                  });
+                if (it != pCall->placeHolder.end()) {
+                  for(auto ph : it->placeHolders) {
+                    ::fcf::CallPlaceHolderArgEx phe;
+                    phe.argument = ph.argument;
+                    phe.placeHolderArgument = ph.placeHolderArgument;
+                    phe.type = pCall->callerSignature.pacodes[ph.argument];
+                    node->conversion.placeHolders.push_back(phe);
                   }
+                } else {
+                  ignore = true;
                 }
               }
               if (!ignore) {
-                if (!state.dynamicCaller) {
-                  for(; argMapIndex <= begNode->conversion.index;){
-                    if (argMapIndex >= state.result->argsMap.size()){
-                      throw std::runtime_error("Logic_error");
-                    }
-                    state.result->argsMap[argMapIndex] = argMapCounter;
-                    ++argMapIndex;
-                    ++argMapCounter;
-                    if (begNode->conversion.mode == CCM_FLAT_ITERATOR) {
-                      ++argMapCounter;
-                    }
-                  }
-                }
-                begNode->conversion.index += phaoffset;
-                state.result->conversions.push_back(begNode->conversion);
+                state.result->conversions.push_back(node->conversion);
               }
-              begNode = begNode->next;
+              node = node->next;
             }
 
-            while (pha) {
-              CallConversion cc;
-              cc.mode = CCM_SKIP;
-              cc.index = pha->argument;
-              state.result->conversions.push_back(cc);
-              pha = _getNextPlaceHolder(pCall, pha->argument);
-              ++phaoffset;
+            unsigned int srcArgCounter = 0;
+            for(unsigned int i = 0; i < phmap.size(); ++i){
+              if (phmap[i] < (UINT_MAX - 1)) {
+                if (srcArgCounter >= state.result->argsMap.size()){
+                  throw std::runtime_error("Invalid logic into CallSelectorHandler (argument map overflow)");
+                }
+                state.result->argsMap[srcArgCounter] = i;
+                ++srcArgCounter;
+              }
+            }
+          } else { // if (a_node) else
+            for(unsigned int i = 0; i < state.result->argsMap.size(); ++i){
+              state.result->argsMap[i] = i;
             }
           } // if (a_node) end
-
-          if (!state.dynamicCaller) {
-            for(; argMapIndex < state.result->argsMap.size(); ++argMapIndex){
-              state.result->argsMap[argMapIndex] = argMapCounter;
-              ++argMapCounter;
-            }
-          }
-
         }
 
       }

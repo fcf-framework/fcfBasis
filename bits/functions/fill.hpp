@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__FUNCTIONS__FILL_HPP___
 
 #include "../../ArgPlaceHolder.hpp"
-
+#include "../../call.hpp"
 namespace fcf {
 
     template <typename TIterator, typename TValue>
@@ -12,7 +12,16 @@ namespace fcf {
       }
     }
 
+    template <typename ...TPackArg>
+    void fill(TPackArg&&... a_packArg){
+      fcf::Call dc;
+      fcf::CallSeeker<void, TPackArg...>()("fill", &dc, a_packArg...);
+      fcf::call(&dc, a_packArg...);
+    }
+
 } // fcf namespace
+
+
 
 
 #ifdef FCF_BASIS_IMPLEMENTATION
