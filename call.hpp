@@ -19,7 +19,7 @@ namespace fcf {
   inline void call(const char* a_functionName, const TArgPack& ... a_argPack) {
     Call dc;
     CallSeeker<void, TArgPack...>()(a_functionName, &dc, a_argPack...);
-    NDetails::Caller()(dc, a_argPack...);
+    NDetails::Caller().call(dc, a_argPack...);
   }
 
   template <typename... TArgPack>
@@ -27,7 +27,7 @@ namespace fcf {
     if (a_dc->dynamicCaller) {
       call(a_dc->name.c_str(), a_argPack...);
     } else {
-      NDetails::Caller()(*a_dc, a_argPack...);
+      NDetails::Caller().call(*a_dc, a_argPack...);
     }
   }
 

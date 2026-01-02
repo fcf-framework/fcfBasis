@@ -134,8 +134,8 @@ namespace fcf{
         return iterator(*this, 0, false);
       }
 
-      iterator begin() const{
-        return const_iterator(*this, 0, false);
+      const_iterator begin() const{
+        return const_iterator(*this, 0);
       }
 
       const_iterator cbegin() const{
@@ -146,7 +146,7 @@ namespace fcf{
         return iterator(*this, _sdata, false);
       }
 
-      iterator end() const{
+      const_iterator end() const{
         return const_iterator(*this, _sdata);
       }
 
@@ -180,6 +180,22 @@ namespace fcf{
         } else {
           _realloc(0, 0);
         }
+      }
+
+      Ty& back(){
+        return _pdata[_sdata-1];
+      }
+
+      const Ty& back() const{
+        return _pdata[_sdata-1];
+      }
+
+      Ty& front(){
+        return _pdata[0];
+      }
+
+      const Ty& front() const{
+        return _pdata[0];
       }
 
       void push_back(const Ty& a_value){

@@ -69,6 +69,7 @@ namespace fcf {
             curnode.prev = 0;
             curnode.next = 0;
             curnode.conversion.index = a_argumentIndex;
+            curnode.conversion.sourceIndex = a_inputArgumentIndex;
             curnode.conversion.specificatorIndex = specificatorTypeIndex;
             curnode.conversion.pointerCounter    = TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex) ? 1 :
                                                    TypeIndexConverter<>::isDoublePointer(currentInputArgument->typeIndex) ? 2 :
@@ -97,6 +98,7 @@ namespace fcf {
           curnode.prev = 0;
           curnode.next = 0;
           curnode.conversion.index = a_argumentIndex;
+          curnode.conversion.sourceIndex = a_inputArgumentIndex;
           curnode.conversion.type = currentInputArgument->resolveData.typeIndex;
           curnode.conversion.mode = CCM_RESOLVE;
           curnode.conversion.converter = (void*)currentInputArgument->resolver;
@@ -145,6 +147,7 @@ namespace fcf {
                 curnode.prev = 0;
                 curnode.next = 0;
                 curnode.conversion.index = a_argumentIndex;
+                curnode.conversion.sourceIndex = a_inputArgumentIndex;
                 curnode.conversion.type = rtypeSimpleIndex;
                 curnode.conversion.mode = CCM_CONVERT;
                 curnode.conversion.converter = (void*)convertFunction;
@@ -178,6 +181,7 @@ namespace fcf {
                   curnode.prev = 0;
                   curnode.next = 0;
                   curnode.conversion.index = a_argumentIndex;
+                  curnode.conversion.sourceIndex = a_inputArgumentIndex;
                   curnode.conversion.type = rtypeSimpleIndex;
                   curnode.conversion.mode = CCM_CONVERT;
                   curnode.conversion.converter = (void*)convertFunction;
@@ -210,6 +214,7 @@ namespace fcf {
           curnode.prev = 0;
           curnode.next = 0;
           curnode.conversion.index = a_argumentIndex;
+          curnode.conversion.sourceIndex = a_inputArgumentIndex;
           curnode.conversion.type = 0;
           curnode.conversion.mode = CCM_DYNAMIC_RESOLVE;
           curnode.conversion.converter = (void*)0;
@@ -268,10 +273,11 @@ namespace fcf {
               CallConversionNode curnode;
               curnode.prev = 0;
               curnode.next = 0;
-              curnode.conversion.index     = a_argumentIndex;
-              curnode.conversion.type      = ptrTypeIndex;
-              curnode.conversion.mode      = CCM_FLAT_ITERATOR;
-              curnode.conversion.converter = (void*)currentInputArgument->containerAccessResolver;
+              curnode.conversion.index        = a_argumentIndex;
+              curnode.conversion.sourceIndex  = a_inputArgumentIndex;
+              curnode.conversion.type         = ptrTypeIndex;
+              curnode.conversion.mode         = CCM_FLAT_ITERATOR;
+              curnode.conversion.converter    = (void*)currentInputArgument->containerAccessResolver;
               if (a_node) {
                 a_node->next = &curnode;
                 curnode.prev = a_node;

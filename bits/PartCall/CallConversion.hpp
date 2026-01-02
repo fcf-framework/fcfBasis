@@ -11,6 +11,7 @@ namespace fcf{
     CallConversionMode                                mode;
     unsigned int                                      type;
     unsigned int                                      index;
+    unsigned int                                      sourceIndex;
     void*                                             converter;
     unsigned int                                      specificatorIndex;
     unsigned int                                      pointerCounter;

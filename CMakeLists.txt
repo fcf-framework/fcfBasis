@@ -13,6 +13,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+  #set(CMAKE_CXX_FLAGS_RELEASE "-O4")
 endif()
 
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/test/libraries)

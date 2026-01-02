@@ -3,21 +3,95 @@
 
 #include <stddef.h>
 #include <type_traits>
+#include <map>
 #include "../../../FunctionSignature.hpp"
 #include "../../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "../CallConversionMode.hpp"
 #include "CallArgsTypeIndexes.hpp"
 
-namespace fcf { 
+namespace fcf {
   namespace NDetails {
 
     struct Caller {
+
+      struct KeyNode{
+        unsigned int argument;
+        unsigned int conversion;
+        bool operator<(const KeyNode& a_item) const{
+          return argument < a_item.argument  ? true :
+                 argument == a_item.argument ? conversion < a_item.conversion :
+                                               false;
+        }
+      };
+
+      struct TypeNode;
+
+      struct ConversionsNode {
+        std::map<KeyNode, TypeNode> conversions;
+        Call                        call;
+      };
+
+      struct TypeNode{
+        std::map<unsigned int, ConversionsNode> types;
+      };
+
+      struct CallGraph {
+        ConversionsNode  conversions;
+      };
+/*
       template <typename... TArgPack>
-      inline void operator()(const Call& a_callInfo, const TArgPack& ... a_argPack){
+      inline void call(bool& a_complete, const CallGraph& a_graph, const TArgPack& ... a_argPack){
+        void* inputArgs[sizeof...(a_argPack)];
+        _initArgs<0>(inputArgs, a_argPack...);
+
+        const size_t maxArgCount = sizeof...(TArgPack)*2 + 8;
+        void* args[maxArgCount];
+
+        StaticVector<
+          std::pair<
+            std::map<KeyNode, TypeNode>::const_iterator,
+            std::map<KeyNode, TypeNode>::const_iterator
+            >,
+          16
+          > stack;
+
+        const ConversionsNode* pnode     = &a_graph.conversions;
+        const Call*            pcall     = pnode->call.complete ? &pnode->call : 0;
+        unsigned int           numberArg = 0;
+        unsigned int           srcNumberArg = 0;
+        while(!pcall){
+          stack.push_back({pnode->conversions.cbegin(), pnode->conversions.cend()});
+          std::map<KeyNode, TypeNode>::const_iterator& it = stack.back().first;
+          std::map<KeyNode, TypeNode>::const_iterator& endIt = stack.back().second;
+
+          if (it == endIt){
+            break;
+          }
+
+          while (numberArg <= it->first.argument) {
+            args[numberArg] = inputArgs[srcNumberArg];
+            ++numberArg;
+            ++srcNumberArg;
+          }
+          
+          
+          ++it;
+          
+        }
+
+        if (pcall){
+          a_complete = true;
+        } else {
+          a_complete = false;
+        }
+      }
+*/
+      template <typename... TArgPack>
+      inline void call(const Call& a_callInfo, const TArgPack& ... a_argPack){
         typedef int arg_type;
 
-        const size_t maxArgCount = 10;
+        const size_t maxArgCount = sizeof...(TArgPack)*2 + 8;
 
         if (a_callInfo.argCount > maxArgCount){
           throw std::runtime_error("Argument buffer overflow");
@@ -144,14 +218,24 @@ namespace fcf {
         }
       }
 
-      template <size_t Index, typename TDynamicCallInfo, typename TBuffer, typename TFirstArg, typename ...TArgPack>
-      inline void _initArgs(const TDynamicCallInfo& a_callInfo, TBuffer& a_args, const TFirstArg& a_firstArg, const TArgPack&... a_argPack) {
+      template <size_t Index, typename TBuffer, typename TFirstArg, typename ...TArgPack>
+      inline void _initArgs(const Call& a_callInfo, TBuffer& a_args, const TFirstArg& a_firstArg, const TArgPack&... a_argPack) {
         a_args[a_callInfo.argsMap[Index]] = (void*)&a_firstArg;
         _initArgs<Index+1>(a_callInfo, a_args, a_argPack...);
       }
 
-      template <size_t Index, typename TDynamicCallInfo, typename TBuffer>
-      inline void _initArgs(const TDynamicCallInfo& /*a_callInfo*/, TBuffer& /*a_args*/) {
+      template <size_t Index, typename TBuffer>
+      inline void _initArgs(const Call& /*a_callInfo*/, TBuffer& /*a_args*/) {
+      }
+
+      template <size_t Index, typename TBuffer, typename TFirstArg, typename ...TArgPack>
+      inline void _initArgs(TBuffer& a_args, const TFirstArg& a_firstArg, const TArgPack&... a_argPack) {
+        a_args[Index] = (void*)&a_firstArg;
+        _initArgs<Index+1>(a_args, a_argPack...);
+      }
+
+      template <size_t Index, typename TBuffer>
+      inline void _initArgs(TBuffer& /*a_args*/) {
       }
 
     };
