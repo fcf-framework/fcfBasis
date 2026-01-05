@@ -315,7 +315,7 @@ namespace fcf {
       }
 
       template <typename TContainerAccess>
-      inline void erase(const TContainerAccess& a_endAccess){
+      inline void erase(const TContainerAccess& /*a_endAccess*/){
         throw ::std::runtime_error("The object is only available for reading");
       }
 

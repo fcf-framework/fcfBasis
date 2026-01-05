@@ -17,10 +17,13 @@ namespace fcf {
 
       struct KeyNode{
         unsigned int argument;
+        unsigned int sourceArgument;
         unsigned int conversion;
         bool operator<(const KeyNode& a_item) const{
           return argument < a_item.argument  ? true :
-                 argument == a_item.argument ? conversion < a_item.conversion :
+                 argument == a_item.argument ? ( sourceArgument < a_item.sourceArgument  ? true : 
+                                                 sourceArgument == a_item.sourceArgument ? conversion < a_item.conversion :
+                                                                                           false ) :
                                                false;
         }
       };
@@ -39,7 +42,7 @@ namespace fcf {
       struct CallGraph {
         ConversionsNode  conversions;
       };
-/*
+
       template <typename... TArgPack>
       inline void call(bool& a_complete, const CallGraph& a_graph, const TArgPack& ... a_argPack){
         void* inputArgs[sizeof...(a_argPack)];
@@ -58,8 +61,7 @@ namespace fcf {
 
         const ConversionsNode* pnode     = &a_graph.conversions;
         const Call*            pcall     = pnode->call.complete ? &pnode->call : 0;
-        unsigned int           numberArg = 0;
-        unsigned int           srcNumberArg = 0;
+        unsigned int           currentNumberArg = 0;
         while(!pcall){
           stack.push_back({pnode->conversions.cbegin(), pnode->conversions.cend()});
           std::map<KeyNode, TypeNode>::const_iterator& it = stack.back().first;
@@ -69,15 +71,12 @@ namespace fcf {
             break;
           }
 
-          while (numberArg <= it->first.argument) {
-            args[numberArg] = inputArgs[srcNumberArg];
-            ++numberArg;
-            ++srcNumberArg;
+          if (currentNumberArg != it->first.argument) {
+            args[currentNumberArg] = inputArgs[it->first.sourceArgument];
+            currentNumberArg = it->first.argument;
           }
-          
-          
+
           ++it;
-          
         }
 
         if (pcall){
@@ -86,7 +85,7 @@ namespace fcf {
           a_complete = false;
         }
       }
-*/
+
       template <typename... TArgPack>
       inline void call(const Call& a_callInfo, const TArgPack& ... a_argPack){
         typedef int arg_type;
@@ -129,7 +128,7 @@ namespace fcf {
             case CCM_CONVERT:
               {
                 if (currentArgIndex != cc.index)  {
-                  currentArgType = callerArgsResolver.indexes[cc.index];
+                  currentArgType = callerArgsResolver.indexes[cc.sourceIndex];
                   currentArgIndex = cc.index;
                 }
                 const size_t argBufferIndex = argBuffer.size();
@@ -143,18 +142,12 @@ namespace fcf {
               break;
             case CCM_PLACE_HOLDER:
               {
-                const std::map<unsigned int, SpecificatorInfo>& s = typeStorage.get(cc.type)->specificators;
-                const std::map<unsigned int, SpecificatorInfo>::const_iterator si = s.find(cc.specificatorIndex);
-                if (si == s.end()){
-                  throw std::runtime_error("Invalid specificator");
-                }
-
                 int* aptr = (int*)args[cc.index];
                 for(unsigned int i = 0; i < cc.pointerCounter; ++i){
                   aptr = *(int**) aptr;
                 }
 
-                UniversalCall call = (UniversalCall)si->second.universalCall;
+                UniversalCall call = (UniversalCall)cc.converter;
                 fcf::Variant callResult = call(aptr, 0, 0);
 
                 Variant* callResults;

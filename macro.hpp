@@ -339,16 +339,16 @@
   #endif // #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
 
   #ifndef FCF_CONVERTERS_REGISTRY_FORCE
-    #define FCF_CONVERTERS_REGISTRY_FORCE(a_type, a_enableToConversion, a_enableFromConversion) \
+    #define FCF_CONVERTERS_REGISTRY_FORCE(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion) \
       namespace fcf { \
         namespace NDetails { \
           template <>\
-          struct ConvertersRegistrarMarker< ConvertersRegistrarMarkerEnd<__COUNTER__>::value > {\
+          struct ConvertersRegistrarMarker<a_crossGroup, ConvertersRegistrarMarkerEnd<a_crossGroup, __COUNTER__>::value > {\
             typedef a_type type;\
             enum { fromConversion = a_enableFromConversion };\
             enum { toConversion = a_enableToConversion };\
           };\
-          ConvertersRegistrarInitializer<__COUNTER__, a_type, ConvertersRegistrarMarkerEnd<__COUNTER__>::value, a_enableToConversion, a_enableFromConversion> FCF_BASIS_VARNAME(_g_converters_registrar, __COUNTER__);\
+          ConvertersRegistrarInitializer<a_crossGroup, __COUNTER__, a_type, ConvertersRegistrarMarkerEnd<a_crossGroup, __COUNTER__>::value, a_enableToConversion, a_enableFromConversion> FCF_BASIS_VARNAME(_g_converters_registrar, __COUNTER__);\
         }\
       }
   #endif

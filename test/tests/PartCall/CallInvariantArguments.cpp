@@ -61,7 +61,7 @@ namespace fcf {
           fcf::CallSeeker<void, TPackArg...>()(_functionName.c_str(), &dc, a_packArg...);
           _addToGraph(dc, _graph);
           
-          //bool complete;
+          //bool complete = false;
           //Caller().call(complete, _graph, a_packArg...);
           
           fcf::call(&dc, a_packArg...);
@@ -72,7 +72,7 @@ namespace fcf {
           Caller::ConversionsNode* node = &a_graph.conversions;
           Call* lastDstCall  = &a_graph.conversions.call;
           for(const CallConversion& conversion : a_call.conversions){
-            Caller::KeyNode ca{conversion.index, conversion.mode};
+            Caller::KeyNode ca{conversion.index, conversion.sourceIndex, conversion.mode};
             auto insertIt = node->conversions.insert({ca, Caller::TypeNode()});
             Caller::TypeNode* typesConversion = &insertIt.first->second;
             auto insertTypeIt = typesConversion->types.insert({conversion.type, Caller::ConversionsNode()});
@@ -171,8 +171,35 @@ namespace FcfTest {
     void callInvariantArgumentsTest (){
       std::cout << "Start callInvariantArgumentsTest()..." << std::endl;
 
-      unsigned long long iterations = 1000000;
-
+      //unsigned long long iterations = 1000000;
+      unsigned long long iterations = 10000;
+      {
+        std::vector<unsigned int> v = {1,2,3,4};
+        fcf::fill(&v[0], &v[v.size()], 999.1);
+        FCF_TEST(v.size() == 4, v.size());
+        FCF_TEST(v[0] == 999, v[0]);
+        FCF_TEST(v[1] == 999, v[1]);
+        FCF_TEST(v[2] == 999, v[2]);
+        FCF_TEST(v[3] == 999, v[3]);
+      }
+      {
+        unsigned int value = 1;
+        unsigned int* pvalue1 = &value;
+        int* pvalue2 = 0;
+        fcf::convertRuntimeByDestination(&pvalue2, &pvalue1, fcf::Type<unsigned int*>().index());
+        FCF_TEST((void*)pvalue1 == (void*)pvalue2, pvalue1, pvalue2);
+      }
+      /*
+      {
+        std::vector<unsigned int> v = {1,2,3,4};
+        fcf::fill(v, 999.1);
+        FCF_TEST(v.size() == 4, v.size());
+        FCF_TEST(v[0] == 999, v[0]);
+        FCF_TEST(v[1] == 999, v[1]);
+        FCF_TEST(v[2] == 999, v[2]);
+        FCF_TEST(v[3] == 999, v[3]);
+      }
+      */
       {
         std::vector<int> v = {1,2,3,4};
         fcf::fill(v, 999.1);

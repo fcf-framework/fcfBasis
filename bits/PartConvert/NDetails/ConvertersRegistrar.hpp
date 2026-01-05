@@ -8,66 +8,76 @@
 namespace fcf {
   namespace NDetails {
 
-  template <int Index>
+  template <typename TCrossConvert, int Index>
   struct ConvertersRegistrarMarker;
 
-  template <int UnstaticCounter, int Index, typename = void>
+  template <typename TCrossConvert, int UnstaticCounter, int Index, typename = void>
   struct ConvertersRegistrarMarkerExists{
     enum { value = false };
   };
 
-  template <int UnstaticCounter, int Index>
-  struct ConvertersRegistrarMarkerExists<UnstaticCounter, Index, decltype(void(ConvertersRegistrarMarker<Index>()))>{
+  template <typename TCrossConvert, int UnstaticCounter, int Index>
+  struct ConvertersRegistrarMarkerExists<TCrossConvert, UnstaticCounter, Index, decltype(void(ConvertersRegistrarMarker<TCrossConvert, Index>()))>{
     enum { value = true };
   };
 
-  template <int UnstaticCounter, int Index = -1, bool Exists = true>
+  template <typename TCrossConvert, int UnstaticCounter, int Index = -1, bool Exists = true>
   struct ConvertersRegistrarMarkerEnd {
-    enum { value = ConvertersRegistrarMarkerEnd<UnstaticCounter, Index + 1, ConvertersRegistrarMarkerExists<UnstaticCounter, Index+1>::value  >::value } ;
+    enum { value = ConvertersRegistrarMarkerEnd<TCrossConvert, UnstaticCounter, Index + 1, ConvertersRegistrarMarkerExists<TCrossConvert, UnstaticCounter, Index+1>::value  >::value } ;
   };
 
-  template <int UnstaticCounter, int Index>
-  struct ConvertersRegistrarMarkerEnd<UnstaticCounter, Index, false> {
+  template <typename TCrossConvert, int UnstaticCounter, int Index>
+  struct ConvertersRegistrarMarkerEnd<TCrossConvert, UnstaticCounter, Index, false> {
     enum { value = Index } ;
   };
 
-  template <typename TCurrent, bool EnableToConvertion, bool EnableFromConversion>
+  template <typename TCrossConvert, typename TCurrent, bool EnableToConvertion, bool EnableFromConversion>
   struct ConvertersRegistrarItem;
 
-  template <typename TCurrent>
-  struct ConvertersRegistrarItem<TCurrent, true, true> {
+  template <typename TCrossConvert, typename TCurrent>
+  struct ConvertersRegistrarItem<TCrossConvert, TCurrent, true, true> {
     void operator()(const TCurrent&){
     }
 
     template <typename TItem>
     void operator()(const TItem&){
+      if (Type<TCurrent>().name() == "int*"){
+        std::cout << "---------------------" << std::endl;
+      }
+      if (Type<TItem>().name() == "int*"){
+        std::cout << "---------------------" << std::endl;
+      }
+      std::cout << Type<TCurrent>().name() << " <-> " << Type<TItem>().name() << std::endl;
       setConverter<TCurrent, TItem>();
+      std::cout << Type<TItem>().name() << " <-> " << Type<TCurrent>().name() << std::endl;
       setConverter<TItem, TCurrent>();
     }
   };
 
-  template <typename TCurrent>
-  struct ConvertersRegistrarItem<TCurrent, true, false> {
+  template <typename TCrossConvert, typename TCurrent>
+  struct ConvertersRegistrarItem<TCrossConvert, TCurrent, true, false> {
     void operator()(const TCurrent&){
     }
     template <typename TItem>
     void operator()(const TItem&){
+      std::cout << Type<TItem>().name() << " <-> " << Type<TCurrent>().name() << std::endl;
       setConverter<TItem, TCurrent>();
     }
   };
 
-  template <typename TCurrent>
-  struct ConvertersRegistrarItem<TCurrent, false, true> {
+  template <typename TCrossConvert, typename TCurrent>
+  struct ConvertersRegistrarItem<TCrossConvert, TCurrent, false, true> {
     void operator()(const TCurrent&){
     }
     template <typename TItem>
     void operator()(const TItem&){
+      std::cout << Type<TCurrent>().name() << " <-> " << Type<TItem>().name() << std::endl;
       setConverter<TCurrent, TItem>();
     }
   };
 
-  template <typename TCurrent>
-  struct ConvertersRegistrarItem<TCurrent, false, false> {
+  template <typename TCrossConvert, typename TCurrent>
+  struct ConvertersRegistrarItem<TCrossConvert, TCurrent, false, false> {
     void operator()(const TCurrent&){
     }
     template <typename TItem>
@@ -75,27 +85,28 @@ namespace fcf {
     }
   };
 
-  template <int Index, int Size, typename TCurrent, bool EnableFront, bool EnableBack, typename ... TPack>
+  template <typename TCrossConvert, int Index, int Size, typename TCurrent, bool EnableFront, bool EnableBack, typename ... TPack>
   struct ConvertersRegistrarWalker {
     void operator()(){
-      enum { toConvertion = EnableFront && ConvertersRegistrarMarker<Index>::fromConversion };
-      enum { fromConvertion = EnableBack && ConvertersRegistrarMarker<Index>::toConversion };
-      ConvertersRegistrarItem<TCurrent, toConvertion, fromConvertion>()( *((typename ConvertersRegistrarMarker<Index>::type*)0)  );
-      ConvertersRegistrarWalker<Index+1, Size, TCurrent, EnableFront, EnableBack,  TPack..., typename ConvertersRegistrarMarker<Index>::type>()();
+      enum { toConvertion = EnableFront && ConvertersRegistrarMarker<TCrossConvert, Index>::fromConversion };
+      enum { fromConvertion = EnableBack && ConvertersRegistrarMarker<TCrossConvert, Index>::toConversion };
+      ConvertersRegistrarItem<TCrossConvert, TCurrent, toConvertion, fromConvertion>()( *((typename ConvertersRegistrarMarker<TCrossConvert, Index>::type*)0)  );
+      ConvertersRegistrarWalker<TCrossConvert, Index+1, Size, TCurrent, EnableFront, EnableBack,  TPack..., typename ConvertersRegistrarMarker<TCrossConvert, Index>::type>()();
     }
   };
 
-  template <int Size, typename TCurrent, bool EnableFront, bool EnableBack, typename ... TPack>
-  struct ConvertersRegistrarWalker<Size, Size, TCurrent, EnableFront, EnableBack, TPack...> {
+  template <typename TCrossConvert, int Size, typename TCurrent, bool EnableFront, bool EnableBack, typename ... TPack>
+  struct ConvertersRegistrarWalker<TCrossConvert, Size, Size, TCurrent, EnableFront, EnableBack, TPack...> {
     void operator()(){
       //ConvertersRegistrar<TCurrent, EnableFront, EnableBack, TPack...>()();
     }
   };
 
-  template <int UnstaticCounter, typename TCurrent, int Size, bool EnableFront, bool EnableBack>
+  template <typename TCrossConvert, int UnstaticCounter, typename TCurrent, int Size, bool EnableFront, bool EnableBack>
   struct ConvertersRegistrarInitializer {
     ConvertersRegistrarInitializer(){
       ConvertersRegistrarWalker<
+        TCrossConvert,
         0,
         Size,
         TCurrent,
