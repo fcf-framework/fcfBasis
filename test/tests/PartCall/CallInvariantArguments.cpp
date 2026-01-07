@@ -189,7 +189,7 @@ namespace FcfTest {
         fcf::convertRuntimeByDestination(&pvalue2, &pvalue1, fcf::Type<unsigned int*>().index());
         FCF_TEST((void*)pvalue1 == (void*)pvalue2, pvalue1, pvalue2);
       }
-      /*
+
       {
         std::vector<unsigned int> v = {1,2,3,4};
         fcf::fill(v, 999.1);
@@ -199,7 +199,7 @@ namespace FcfTest {
         FCF_TEST(v[2] == 999, v[2]);
         FCF_TEST(v[3] == 999, v[3]);
       }
-      */
+
       {
         std::vector<int> v = {1,2,3,4};
         fcf::fill(v, 999.1);

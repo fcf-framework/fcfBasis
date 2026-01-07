@@ -27,6 +27,7 @@ namespace fcf {
         unsigned int                                        pairCounter;
         bool                                                ignoreConvertSeeker;
         bool                                                enablePtrSpecificators;
+        InputArgument*                                      nextArgument;
       };
 
       FCF_FOREACH_METHOD_WRAPPER(ArgInitializerForeachWrapper, CallSelectorHandler, _argInit)
@@ -295,6 +296,9 @@ namespace fcf {
               _fillCurrentInputArgument(*currentInputArgument, ptrTypeIndex, 0, true);
               currentInputArgument->pairCounter = 1;
 
+              InputArgument nextArgument(*currentInputArgument);
+              currentInputArgument->nextArgument = &nextArgument;
+
               state.ptrFunctionSignature = &fs;
 
               (*this)(&curnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
@@ -340,6 +344,7 @@ namespace fcf {
         _fillCurrentInputArgument(a_destinationInputArgument, a_type, a_ptrArg, a_enablePtrSpecificators);
         a_destinationInputArgument.pairCounter = a_sourceInputArgument.pairCounter;
         a_destinationInputArgument.ignoreConvertSeeker = a_sourceInputArgument.ignoreConvertSeeker;
+        a_destinationInputArgument.nextArgument = a_sourceInputArgument.nextArgument;
       }
 
       void _fillCurrentInputArgument(InputArgument& a_inputArgument, unsigned int a_type, void* a_ptrArg, bool a_enablePtrSpecificators){
@@ -353,6 +358,7 @@ namespace fcf {
         a_inputArgument.specificators           = &typeInfo->specificators;
         a_inputArgument.ignoreConvertSeeker     = false;
         a_inputArgument.enablePtrSpecificators  = a_enablePtrSpecificators;
+        a_inputArgument.nextArgument            = 0;
 
         if (a_enablePtrSpecificators && TypeIndexConverter<>::isPointer(a_type)) {
           unsigned int rawTypeIndex     =  TypeIndexConverter<>::getRawIndex(a_type);
@@ -372,9 +378,8 @@ namespace fcf {
       }
 
       inline void _processingNextArg(CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
-        if (a_currentInputArgument->pairCounter) {
-          a_argumentIndex      += 2;
-          a_inputArgumentIndex += 1;
+        if (a_currentInputArgument->pairCounter && a_currentInputArgument->nextArgument) {
+          a_argumentIndex      += 1;
         } else {
           a_inputArgumentIndex += 1;
           a_argumentIndex      += 1;
@@ -385,7 +390,7 @@ namespace fcf {
           return;
         }
 
-        (*this)(a_node, 0, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+        (*this)(a_node, a_currentInputArgument->nextArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
       }
 
       void _complete(CallConversionNode* a_node, bool /*a_dynamicCaller*/) {
@@ -578,6 +583,7 @@ namespace fcf {
           ia.pairCounter             = 0;
           ia.enablePtrSpecificators  = false;
           ia.rawSpecificators        = 0;
+          ia.nextArgument            = 0;
           if (ia.resolver) {
             ia.resolveData = ia.resolver(ia.ptrArg);
           } else {

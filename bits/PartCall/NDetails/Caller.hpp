@@ -108,6 +108,9 @@ namespace fcf {
 
         _initArgs<0>(a_callInfo, args, a_argPack...);
 
+        unsigned int nextFlatArgumentIndex = UINT_MAX;
+        unsigned int nextFlatArgumentType  = 0;
+
         const size_t conversionsSize = a_callInfo.conversions.size();
         for(size_t conversionIndex = 0; conversionIndex < conversionsSize; ++conversionIndex){
           const CallConversion& cc = a_callInfo.conversions[conversionIndex];
@@ -128,7 +131,9 @@ namespace fcf {
             case CCM_CONVERT:
               {
                 if (currentArgIndex != cc.index)  {
-                  currentArgType = callerArgsResolver.indexes[cc.sourceIndex];
+                  currentArgType = nextFlatArgumentIndex == cc.index
+                                      ? nextFlatArgumentType 
+                                      :  callerArgsResolver.indexes[cc.sourceIndex];
                   currentArgIndex = cc.index;
                 }
                 const size_t argBufferIndex = argBuffer.size();
@@ -199,6 +204,9 @@ namespace fcf {
 
                 argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
                 args[cc.index+1] = argBuffer[argBuffer.size()-1].ptr();
+
+                nextFlatArgumentIndex = cc.index+1;
+                nextFlatArgumentType  = iterator->getValueTypeIndex();
               }
               break;
             default:
