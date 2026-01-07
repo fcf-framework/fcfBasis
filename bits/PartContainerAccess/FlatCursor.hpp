@@ -121,7 +121,7 @@ namespace fcf {
   template <typename Ty>
   struct Cursor< std::vector<Ty> >: public FlatCursor< std::vector<Ty> > {
     typedef FlatCursor< std::vector<Ty> > BaseType;
-    using BaseType::FlatCursor;
+    using FlatCursor< std::vector<Ty> >::FlatCursor;
   };
 
 } // fcf namespace

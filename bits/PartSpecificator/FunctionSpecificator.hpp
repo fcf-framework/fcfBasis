@@ -25,11 +25,11 @@ namespace fcf{
     typedef std::tuple<TArgPack...> arguments_type;
     typedef TResult                 result_type;
 
-    inline Variant universalCall(type* a_object, Variant* a_argv, size_t a_argc) const {
+    inline Variant universalCall(type* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
       return Variant(Type<type>().call(a_object));
     }
 
-    inline UniversalArguments call(type* a_container) const {
+    inline UniversalArguments call(type* /*a_container*/) const {
       UniversalArguments result(sizeof...(TArgPack) + 1);
       result[0] = Type<TResult>().index();
 
@@ -42,7 +42,7 @@ namespace fcf{
 
     struct Filler{
       template <typename TTuple, typename Ty>
-      inline void operator()(const TTuple&, size_t a_index, const Ty& a_item){
+      inline void operator()(const TTuple&, size_t a_index, const Ty& /*a_item*/){
         ua[a_index + 1] = Type<Ty>().index();
       }
       UniversalArguments& ua;

@@ -38,8 +38,8 @@ namespace fcf {
     template <typename TResult, typename ...TArgPack>
     struct CallWrapper<TResult (*)(TArgPack...)> : public CallWrapper<TResult (TArgPack...)> {
       typedef CallWrapper<TResult (TArgPack...)> base_type;
-      using base_type::wrapper_type;
-      using base_type::function_type;
+      using typename base_type::wrapper_type;
+      using typename base_type::function_type;
     };
 
   } // NDetails namespace

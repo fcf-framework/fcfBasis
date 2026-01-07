@@ -21,10 +21,10 @@ namespace fcf{
       template <typename TContainer, typename TSubSpecificator>
       friend class SpecificatorRegistrar;
 
-      template <typename, typename TSpecificator, typename = void>
+      template <typename, typename, typename>
       friend struct NDetails::SpecificatorRefRegistrarImpl;
 
-      template <typename, typename, typename, typename = void>
+      template <typename, typename, typename, typename>
       friend struct NDetails::SpecificatorRegistrarIfTypeDeclaredImpl;
 
 

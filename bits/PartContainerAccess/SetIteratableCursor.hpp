@@ -112,13 +112,13 @@ namespace fcf {
   template <typename Ty>
   struct Cursor< std::set<Ty> > : public SetIteratableCursor< std::set<Ty> >{
     typedef SetIteratableCursor< std::set<Ty> > BaseType;
-    using BaseType::SetIteratableCursor;
+    using SetIteratableCursor< std::set<Ty> >::SetIteratableCursor;
   };
 
   template <typename Ty>
   struct Cursor< std::unordered_set<Ty> > : public SetIteratableCursor< std::unordered_set<Ty> >{
     typedef SetIteratableCursor< std::unordered_set<Ty> > BaseType;
-    using BaseType::SetIteratableCursor;
+    using SetIteratableCursor< std::unordered_set<Ty> >::SetIteratableCursor;
   };
 
 } // fcf namespace

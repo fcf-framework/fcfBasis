@@ -15,7 +15,7 @@ namespace fcf {
         namespace FunctionSignature { 
           template <size_t Index, size_t IndexEnd, typename... TPack>
           struct TypeInitializer {
-            void operator()(unsigned int* a_codes){
+            void operator()(unsigned int* /*a_codes*/){
             }
           };
 

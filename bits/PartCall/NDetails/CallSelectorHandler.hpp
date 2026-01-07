@@ -519,7 +519,7 @@ namespace fcf {
                 phmap[phmapIndex] = (UINT_MAX - 1);
               } else if (node->conversion.mode == CCM_PLACE_HOLDER) {
                 std::vector<::fcf::CallPlaceHolderInfo>::iterator it =
-                  std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [node, phmapOffset](::fcf::CallPlaceHolderInfo& a_itm){
+                  std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [node](::fcf::CallPlaceHolderInfo& a_itm){
                     return a_itm.specificatorIndex == node->conversion.specificatorIndex &&
                            ((unsigned int)a_itm.argSourceIndex - 1) == node->conversion.index;
                   });

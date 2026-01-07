@@ -362,7 +362,7 @@ namespace fcf {
   template <size_t InnerBufferSize>
   struct Cursor< BasicVariant<InnerBufferSize> > : public VariantCursor< BasicVariant<InnerBufferSize> >{
     typedef VariantCursor< BasicVariant<InnerBufferSize> > BaseType;
-    using BaseType::VariantCursor;
+    using VariantCursor< BasicVariant<InnerBufferSize> >::VariantCursor;
   };
 
   template <size_t InnerBufferSize>

@@ -41,15 +41,7 @@ namespace fcf {
 
     template <typename TItem>
     void operator()(const TItem&){
-      if (Type<TCurrent>().name() == "int*"){
-        std::cout << "---------------------" << std::endl;
-      }
-      if (Type<TItem>().name() == "int*"){
-        std::cout << "---------------------" << std::endl;
-      }
-      std::cout << Type<TCurrent>().name() << " <-> " << Type<TItem>().name() << std::endl;
       setConverter<TCurrent, TItem>();
-      std::cout << Type<TItem>().name() << " <-> " << Type<TCurrent>().name() << std::endl;
       setConverter<TItem, TCurrent>();
     }
   };
@@ -60,7 +52,6 @@ namespace fcf {
     }
     template <typename TItem>
     void operator()(const TItem&){
-      std::cout << Type<TItem>().name() << " <-> " << Type<TCurrent>().name() << std::endl;
       setConverter<TItem, TCurrent>();
     }
   };
@@ -71,7 +62,6 @@ namespace fcf {
     }
     template <typename TItem>
     void operator()(const TItem&){
-      std::cout << Type<TCurrent>().name() << " <-> " << Type<TItem>().name() << std::endl;
       setConverter<TCurrent, TItem>();
     }
   };
@@ -90,7 +80,7 @@ namespace fcf {
     void operator()(){
       enum { toConvertion = EnableFront && ConvertersRegistrarMarker<TCrossConvert, Index>::fromConversion };
       enum { fromConvertion = EnableBack && ConvertersRegistrarMarker<TCrossConvert, Index>::toConversion };
-      ConvertersRegistrarItem<TCrossConvert, TCurrent, toConvertion, fromConvertion>()( *((typename ConvertersRegistrarMarker<TCrossConvert, Index>::type*)0)  );
+      ConvertersRegistrarItem<TCrossConvert, TCurrent, toConvertion, fromConvertion>()( *((typename ConvertersRegistrarMarker<TCrossConvert, Index>::type*)0xffffffff/*stub address*/)  );
       ConvertersRegistrarWalker<TCrossConvert, Index+1, Size, TCurrent, EnableFront, EnableBack,  TPack..., typename ConvertersRegistrarMarker<TCrossConvert, Index>::type>()();
     }
   };

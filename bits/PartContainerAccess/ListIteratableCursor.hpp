@@ -171,7 +171,7 @@ namespace fcf {
   template <typename Ty>
   struct Cursor< std::list<Ty> > : public ListIteratableCursor< std::list<Ty> >{
     typedef ListIteratableCursor< std::list<Ty> > BaseType;
-    using BaseType::ListIteratableCursor;
+    using ListIteratableCursor< std::list<Ty> >::ListIteratableCursor;
   };
 
 } // fcf namespace

@@ -26,7 +26,7 @@ namespace fcf{
                                 >{
     typedef FlatCursor< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>
                        > BaseType;
-    using BaseType::FlatCursor;
+    using FlatCursor< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> >::FlatCursor;
   };
 
   /*

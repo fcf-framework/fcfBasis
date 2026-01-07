@@ -119,13 +119,13 @@ namespace fcf {
   template <typename TKey, typename TValue>
   struct Cursor< std::map<TKey, TValue> > : public MapIteratableCursor< std::map<TKey, TValue> >{
     typedef MapIteratableCursor< std::map<TKey, TValue> > BaseType;
-    using BaseType::MapIteratableCursor;
+    using MapIteratableCursor< std::map<TKey, TValue> >::MapIteratableCursor;
   };
 
   template <typename TKey, typename TValue>
   struct Cursor< std::unordered_map<TKey, TValue> > : public MapIteratableCursor< std::unordered_map<TKey, TValue> >{
     typedef MapIteratableCursor< std::unordered_map<TKey, TValue> > BaseType;
-    using BaseType::MapIteratableCursor;
+    using MapIteratableCursor< std::unordered_map<TKey, TValue> >::MapIteratableCursor;
   };
 
 } // fcf namespace
