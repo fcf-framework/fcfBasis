@@ -1423,7 +1423,6 @@ namespace fcf{
     return result;
   }
 
-
 }  // fcf namespace
 
 #include "bits/PartSpecificator/ResolveSpecificator.hpp"

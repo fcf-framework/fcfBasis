@@ -12,6 +12,7 @@
 #include "bits/PartCall/CallSeeker.hpp"
 #include "bits/PartCall/NDetails/Caller.hpp"
 
+#include "bits/PartCall/CallCache.hpp"
 
 namespace fcf {
 
