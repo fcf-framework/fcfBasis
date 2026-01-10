@@ -10,56 +10,6 @@ namespace fcf {
     static CallCache<TPackArg...> builder("fill", a_packArg...);
     builder(a_packArg...);
   }
-
-  namespace Test {
-
-    class Duration {
-      public:
-        Duration(unsigned long long a_iterations)
-          : _iterations(a_iterations){
-        }
-
-        Duration()
-          : _iterations(1){
-        }
-
-        unsigned long long iterations(){
-          return _iterations;
-        }
-
-        void begin(){
-          _start = std::chrono::high_resolution_clock::now();
-        }
-
-        void end(){
-          _end = std::chrono::high_resolution_clock::now();
-        }
-
-        template <typename TFunctor>
-        void operator()(TFunctor&& a_functor){
-          begin();
-          for(unsigned long long i = 0; i < _iterations; ++i) {
-            a_functor();
-          }
-          end();
-        }
-
-        std::chrono::nanoseconds totalDuration(){
-          return std::chrono::duration_cast<std::chrono::nanoseconds>(_end - _start);
-        }
-
-        std::chrono::nanoseconds duration(){
-          return std::chrono::duration_cast<std::chrono::nanoseconds>(_end - _start) / _iterations;
-        }
-
-      private:
-        unsigned long long                              _iterations;
-        std::chrono::high_resolution_clock::time_point _start;
-        std::chrono::high_resolution_clock::time_point _end;
-    };
-
-  }
-
 } // fcf namespace
 
 //void filling(int* a_begin, int* a_end, int a_value);
@@ -121,7 +71,7 @@ namespace FcfTest {
 
       {
         std::vector<int> v = {1,2,3,4};
-        fcf::Test::Duration duration(iterations);
+        fcf::NTest::Duration duration(iterations);
         duration.begin();
         for(size_t i = 0; i < duration.iterations(); ++i) {
           fcf::fill(v, 999);
@@ -139,7 +89,7 @@ namespace FcfTest {
         fcf::Variant variant(v, fcf::Variant::REFERENCE);
         fcf::fill(variant, 999.1);
 
-        fcf::Test::Duration duration(iterations);
+        fcf::NTest::Duration duration(iterations);
         duration([&variant](){
           fcf::fill(variant, 999.1);
         });
@@ -157,7 +107,7 @@ namespace FcfTest {
         std::vector<int> v = {1,2,3,4};
         fcf::Variant variant(v, fcf::Variant::REFERENCE);
 
-        fcf::Test::Duration duration(iterations);
+        fcf::NTest::Duration duration(iterations);
         duration.begin();
           for(size_t i = 0; i < duration.iterations(); ++i) {
             fcf::fill(variant, 999.1);
