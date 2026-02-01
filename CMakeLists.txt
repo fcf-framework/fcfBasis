@@ -11,10 +11,18 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
   message("MSVC")
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fno-inline-functions -O0")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+  endif()
   #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
   #set(CMAKE_CXX_FLAGS_RELEASE "-O4")
 endif()
+
+
+
+
 
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/test/libraries)
 

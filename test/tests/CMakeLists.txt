@@ -24,6 +24,7 @@ add_executable("basis-test" impl.cpp
                            StaticVector/StaticVectorNotReduce.cpp
                            StaticVector/StaticVectorErase.cpp
                            PartCall/CallInvariantArguments.cpp
+                           PartCall/CallWithIterations.cpp
                            PartForeach/foreach.cpp
                            PartVariant/VariantCmpTest.cpp
                            PartVariant/VariantConstructor.cpp

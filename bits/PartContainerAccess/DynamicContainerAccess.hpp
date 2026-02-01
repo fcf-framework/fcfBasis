@@ -61,6 +61,8 @@ namespace fcf {
 
       virtual unsigned int getValueTypeIndex() const;
 
+      virtual const TypeInfo* getValueTypeInfo() const;
+
       virtual unsigned int getKeyTypeIndex() const;
 
       virtual const void* getConstValuePtr() const;
@@ -124,6 +126,8 @@ namespace fcf {
       virtual void setValue(const Variant& a_value);
 
       virtual unsigned int getValueTypeIndex() const;
+
+      virtual const TypeInfo* getValueTypeInfo() const;
 
       virtual unsigned int getKeyTypeIndex() const;
 
@@ -225,6 +229,11 @@ namespace fcf {
   template <typename TContainerAccess>
   unsigned int DynamicContainerAccess<TContainerAccess>::getValueTypeIndex() const {
     return Type<typename TContainerAccess::value_type>().index();
+  }
+
+  template <typename TContainerAccess>
+  const TypeInfo* DynamicContainerAccess<TContainerAccess>::getValueTypeInfo() const {
+    return Type<typename TContainerAccess::value_type>().getTypeInfo();
   }
 
   template <typename TContainerAccess>
@@ -362,6 +371,11 @@ namespace fcf {
   template <typename TContainer>
   unsigned int DynamicContainerAccess< ContainerAccess<const TContainer> >::getValueTypeIndex() const {
     return Type<typename ContainerAccessType::value_type>().index();
+  }
+
+  template <typename TContainer>
+  const TypeInfo* DynamicContainerAccess< ContainerAccess<const TContainer> >::getValueTypeInfo() const {
+    return Type<typename ContainerAccessType::value_type>().getTypeInfo();
   }
 
   template <typename TContainer>

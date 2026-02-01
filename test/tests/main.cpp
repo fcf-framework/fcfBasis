@@ -20,6 +20,7 @@ namespace FcfTest {
     void placeHolderCall();
 
     void callInvariantArgumentsTest();
+    void callIterationsTest();
 
     void minMaxSpecificatorTest();
     void foreachTest();
@@ -48,12 +49,19 @@ void dynamicIteratorTest();
 void deepIndexContainerCaller();
 void tupleTest();
 
+
+
+template <typename TClass, typename Ty, void (TClass::*Method)(Ty)>
+struct Test{
+};
+
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
 
 
   variantTest();
 
   FcfTest::BasisTest::callInvariantArgumentsTest();
+  FcfTest::BasisTest::callIterationsTest();
 
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();

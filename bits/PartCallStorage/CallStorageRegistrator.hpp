@@ -6,6 +6,8 @@
 #include "CallStorageSpace.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartCallPlaceHolder/NDetails/CallPlaceHolderSignatureGetter.hpp"
+#include "../../bits/PartCall/CallOptions.hpp"
+#include "../../bits/PartCall/CallArgumentOptions.hpp"
 #include "../PartCall/NDetails/CallWrapper.hpp"
 #include "CallStorageFunctionInfo.hpp"
 #include "CallStorage.hpp"
@@ -128,7 +130,21 @@ namespace fcf {
         template <typename TSignatures>
         void registry(TSignatures& a_signatures){
           _specificatorsData.clear();
+          _argumentOptions.clear();
           fcf::foreach(a_signatures, *this);
+
+          for(const std::pair<unsigned int, unsigned int>& options : _argumentOptions){
+            if (options.first >= groupIt->second.argumentOptions.size()){
+              groupIt->second.argumentOptions.resize(options.first+1, 0);
+            }
+            groupIt->second.argumentOptions[options.first] |= options.second;
+
+            std::pair<std::map<unsigned int, unsigned int>::iterator, bool> argumentOptionsInsertInfo
+              = getCallStorage().functions[index].argumentOptions.insert({options.first, options.second});
+            if (!argumentOptionsInsertInfo.second){
+              argumentOptionsInsertInfo.first->second |= options.second;
+            }
+          }
 
           std::list<::fcf::CallPlaceHolderInfo> specDataState;
           invariantMapRegistry(_specificatorsData.begin(), specDataState);
@@ -185,23 +201,40 @@ namespace fcf {
                                 } );
         }
 
+        template <typename Tuple, typename TIndex, unsigned int Flags>
+        void _argOptionInitialize(Tuple& /*a_tuple*/, TIndex /*a_index*/, const CallArgumentOptions<Flags>& /*a_options*/, unsigned int a_argumentNumber) {
+          _argumentOptions.push_back( {a_argumentNumber, Flags} );
+        }
+
+        template <typename Tuple, typename TIndex, typename TArg>
+        void _argOptionInitialize(Tuple& /*a_tuple*/, TIndex /*a_index*/, const TArg& /*a_arg*/, unsigned int /*a_argumentNumber*/) {
+        }
+
+        FCF_FOREACH_METHOD_WRAPPER(ArgOptionInitializer, PlaceHolderRegistrator, _argOptionInitialize);
+
         template <typename Tuple, typename TIndex, typename TSignature>
-        void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TSignature& /*a_signature*/) {
+        void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TSignature& /*a_signatureGetter*/) {
           unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
-          if (specificatorIndex == Type<Nop>().index()){
-            specificatorIndex = 0;
-          }
+          if (specificatorIndex == Type<CallOptions>().index()){
+            typename TSignature::short_function_signature_type::args_type tuple;
+            ArgOptionInitializer argOptionInitializer(this);
+            foreach(tuple, argOptionInitializer, (unsigned int) std::max((int)TSignature::ArgIndex-1, (int)0));
+          } else {
+            if (specificatorIndex == Type<Nop>().index()){
+              specificatorIndex = 0;
+            }
 
-          if (!TSignature::ArgIndex) {
-            return;
-          }
+            if (!TSignature::ArgIndex) {
+              return;
+            }
 
-          _specificatorsData.push_back(TSignature::getPlaceHolderInfo());
+            _specificatorsData.push_back(TSignature::getPlaceHolderInfo());
 
-          if (TSignature::ArgIndex > groupIt->second.specificatorsByArgIndex.size()){
-            groupIt->second.specificatorsByArgIndex.resize(TSignature::ArgIndex);
+            if (TSignature::ArgIndex > groupIt->second.specificatorsByArgIndex.size()){
+              groupIt->second.specificatorsByArgIndex.resize(TSignature::ArgIndex);
+            }
+            groupIt->second.specificatorsByArgIndex[TSignature::ArgIndex-1].push_back(specificatorIndex);
           }
-          groupIt->second.specificatorsByArgIndex[TSignature::ArgIndex-1].push_back(specificatorIndex);
 
         }
 
@@ -211,6 +244,7 @@ namespace fcf {
         BaseFunctionSignature                                 scs;
         CallStorageSelectionFunctionGroups::iterator          groupIt;
         std::list<::fcf::CallPlaceHolderInfo>                 _specificatorsData;
+        std::list< std::pair<unsigned int, unsigned int> >    _argumentOptions;
       };
 
       template <typename TFunction>

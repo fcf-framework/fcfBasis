@@ -877,7 +877,7 @@ namespace fcf{
     if (_typeInfo) {
       if (isInnerMemory()){
         ((BaseTypeWrapper*)&_mem[0])->~BaseTypeWrapper();
-  } else {
+      } else {
         delete (BaseTypeWrapper*)_getWrapper();
       }
     }

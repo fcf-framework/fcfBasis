@@ -11,7 +11,7 @@ namespace fcf{
   struct StoredDataTypeSpecificator { };
 
 
-  template <typename Ty, typename TSpecificator>
+  template <typename Ty, typename TSpecificator, typename TArg1 = Nop>
   struct TypeImpl;
 
   template <typename Ty>

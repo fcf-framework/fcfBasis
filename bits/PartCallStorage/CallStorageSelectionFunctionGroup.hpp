@@ -16,6 +16,7 @@ namespace fcf {
     std::vector< std::vector<unsigned int> >  specificatorsByArgIndex;
     CallStorageSelectionFunctions             callers;
     CallStorageSelectionFunctionsByArgNumber  callersTree;
+    std::vector<unsigned int>                 argumentOptions;
   };
 
   typedef std::unordered_map<std::string, CallStorageSelectionFunctionGroup >               CallStorageSelectionFunctionGroups;

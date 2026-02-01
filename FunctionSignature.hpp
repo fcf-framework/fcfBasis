@@ -151,6 +151,7 @@ namespace fcf {
       struct FunctionSignature<TResult (TArgs...)> : public BaseFunctionSignature{
         typedef TResult result_type;
         typedef TResult(*value_type)(TArgs...);
+        typedef std::tuple<TArgs...> args_type;
         FunctionSignature()
           : BaseFunctionSignature(sizeof...( TArgs) ) {
           rcode = Type<TResult>().index();
@@ -162,6 +163,7 @@ namespace fcf {
       struct FunctionSignature<TResult (*)(TArgs...)> : public BaseFunctionSignature{
         typedef TResult result_type;
         typedef TResult(*value_type)(TArgs...);
+        typedef std::tuple<TArgs...> args_type;
         FunctionSignature()
           : BaseFunctionSignature(sizeof...( TArgs) ) {
           rcode = Type<TResult>().index();

@@ -27,6 +27,7 @@ namespace fcf {
     bool                                                          isVariantRef;
     bool                                                          isVariant;
     size_t                                                        innerSize;
+    size_t                                                        size;
     unsigned int                                                  dataIndex;
     ResolveSpecificator::CallFunctionType                         resolver;
     Converters                                                    converters;
@@ -34,12 +35,13 @@ namespace fcf {
     std::map<unsigned int, SpecificatorInfo>                      specificators;
     std::shared_ptr< BaseTypeFactory >                            initializer;
 
-    TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize)
+    TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize, size_t a_size)
       : index(a_index)
       , name(a_name)
       , isVariantRef(a_isVariantRef)
       , isVariant(a_isVariant)
       , innerSize(a_innerSize)
+      , size(a_size)
       , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
       , resolver(0) {
 

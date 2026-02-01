@@ -25,6 +25,7 @@ namespace fcf {
       virtual Variant       getValue() const = 0;
       virtual void          setValue(const Variant& a_value) = 0;
       virtual unsigned int  getValueTypeIndex() const = 0;
+      virtual const TypeInfo* getValueTypeInfo() const = 0;
       virtual Variant       getKey() const = 0;
       virtual unsigned int  getKeyTypeIndex() const = 0;
       virtual size_t        getContainerSize() const = 0;

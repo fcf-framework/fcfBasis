@@ -22,8 +22,21 @@ namespace fcf {
                        "engine_cpu",
                        fcf::fill,
                        void(*) (int*, int*, int),
-                       ,
+                       (
+                         (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER>),
+                       ),
                       );
+
+  FCF_DECLARE_FUNCTION(fill, 
+                   "engine_cpu", 
+                   fcf::fill, 
+                   void(*) (std::string*, std::string*, std::string),
+                   (
+                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER>),
+                     (fcf::ValueSpecificator, 1, std::string*, std::string*, fcf::Arg1)
+                   ),
+                  );
+
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 

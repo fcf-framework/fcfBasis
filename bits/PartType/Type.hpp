@@ -70,6 +70,20 @@ namespace fcf{
 #include "../../bits/PartVariant/NDetails/VariantInnerSize.hpp"
 
 namespace fcf {
+  namespace NDetails{
+    template <typename Ty>
+    struct TypeSize{
+      enum { value = sizeof( typename std::remove_reference<Ty>::type ) };
+    };
+    template <>
+    struct TypeSize<void>{
+      enum { value = 0 };
+    };
+
+  }
+}
+
+namespace fcf {
   template <typename Ty>
   Type<Ty, Nop>::Type(){
     if (!_info) {
@@ -79,7 +93,7 @@ namespace fcf {
         baseTypeIndex = Type<basic_type>().index();
       }
       const unsigned int index = TypeId<Ty>().index();
-      TypeInfo initTypeInfo(index, TypeId<Ty>().name(), NDetails::IsVariantRef<Ty>::value, NDetails::IsVariant<Ty>::value, NDetails::VariantInnerSize<Ty>::value );
+      TypeInfo initTypeInfo(index, TypeId<Ty>().name(), NDetails::IsVariantRef<Ty>::value, NDetails::IsVariant<Ty>::value, NDetails::VariantInnerSize<Ty>::value, NDetails::TypeSize<Ty>::value );
       _info = typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
       //if ((index & 0xc4000000) == 0) { // if not right ref
       typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;

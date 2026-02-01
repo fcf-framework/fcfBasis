@@ -18,7 +18,13 @@
 #include "../bits/PartType/NDetails/TypeRegistrar.hpp"
 #include "../bits/PartTypes/UniversalArguments.hpp"
 #include "../bits/PartSpecificator/PartSpecificator.hpp"
+#include "../bits/PartCall/CallOptions.hpp"
+#include "../bits/PartCall/CallArgumentOptions.hpp"
 
+
+
+
+FCF_TYPEID_REGISTRY(fcf::CallOptions, "fcf::CallOptions", 0);
 
 FCF_TYPEID_REGISTRY(fcf::ContainerAccessSpecificator, "fcf::ContainerAccessSpecificator", 0);
 FCF_TYPEID_REGISTRY(fcf::MinMaxSpecificator,          "fcf::MinMaxSpecificator", 0);
@@ -33,7 +39,16 @@ FCF_TYPEID_REGISTRY(fcf::SubSpecificator,             "fcf::SubSpecificator",  0
 FCF_TYPEID_REGISTRY(fcf::MulSpecificator,             "fcf::MulSpecificator",  0);
 FCF_TYPEID_REGISTRY(fcf::DivSpecificator,             "fcf::DivSpecificator",  0);
 FCF_TYPEID_REGISTRY(fcf::BoolSpecificator,            "fcf::BoolSpecificator",  0);
+FCF_TYPEID_REGISTRY(fcf::InheritanceSpecificator,     "fcf::InheritanceSpecificator",  0);
 
+
+FCF_TEMPLATE_TYPEID_DECLARE((fcf, CallArgumentOptions), "fcf::CallArgumentOptions", (unsigned int Flags), (Flags), ( std::to_string(Flags) ));
+namespace fcf {
+  template<unsigned int Flags> 
+  struct Type<CallArgumentOptions<Flags>, InheritanceSpecificator> : public TypeImpl<CallArgumentOptions<Flags>, InheritanceSpecificator, BaseCallArgumentOptions> {
+  };
+}
+FCF_TEMPLATE_SPECIFICATOR_REGISTRY((fcf, CallArgumentOptions), InheritanceSpecificator);
 
 FCF_TYPEID_REGISTRY(char,               "char",               FCF_INT8_TYPE_INDEX);
 namespace fcf { template<> struct Type<char, LessSpecificator> : public TypeImpl<char, LessSpecificator> {}; }

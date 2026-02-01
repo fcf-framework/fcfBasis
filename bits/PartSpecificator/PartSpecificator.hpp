@@ -14,6 +14,7 @@
 #include "MulSpecificator.hpp"
 #include "DivSpecificator.hpp"
 #include "BoolSpecificator.hpp"
+#include "InheritanceSpecificator.hpp"
 
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_SPECIFICATOR__PART_SPECIFICATOR_HPP___

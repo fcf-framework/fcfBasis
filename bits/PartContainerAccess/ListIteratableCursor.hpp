@@ -25,8 +25,8 @@ namespace fcf {
 
     ListIteratableCursor(TContainer& a_container)
       : container((container_type*)&a_container)
-      , key(0)
-      , iterator(std::begin(*container)){
+      , iterator(std::begin(*container))
+      , key(0) {
     }
 
     inline void setPosition(const key_type& a_position, bool a_create) {
@@ -114,7 +114,7 @@ namespace fcf {
     }
 
     inline void* getValuePtr() {
-      return &(*iterator);
+      return (void*)iterator.operator->();
     }
 
     inline resolve_stored_value_type getStoredValue() {

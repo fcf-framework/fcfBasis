@@ -83,7 +83,7 @@ namespace fcf {
     }
 
     inline void* getValuePtr() {
-      return &(*container)[key];
+      return (void*)&(*container)[key];
     }
 
     inline resolve_stored_value_type getStoredValue() {

@@ -2,17 +2,20 @@
 #define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_FUNCTION_INFO_HPP___
 
 #include <string>
+#include <vector>
+#include <map>
 #include "../../FunctionSignature.hpp"
 #include "CallStorageSpace.hpp"
 
 namespace fcf {
  
   struct CallStorageFunctionInfo {
-    std::string                   name;
-    BaseFunctionSignature         signature;
-    std::string                   sourceName;
-    void*                         function;
-    std::vector<CallStorageSpace> spaces;
+    std::string                           name;
+    BaseFunctionSignature                 signature;
+    std::string                           sourceName;
+    void*                                 function;
+    std::vector<CallStorageSpace>         spaces;
+    std::map<unsigned int, unsigned int>  argumentOptions;
 
     template <typename TSpaceNames>
     std::vector<CallStorageSpace>::const_iterator getSpace(const TSpaceNames& a_spaces) const{

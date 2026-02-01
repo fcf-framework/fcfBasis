@@ -9,6 +9,12 @@
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "../CallConversionMode.hpp"
 #include "CallArgsTypeIndexes.hpp"
+#include "CallPairArgumentNode.hpp"
+#include "../CallSeeker.hpp"
+
+#ifndef FCF_ITERATOR_CONVERSION_BUFFER_SIZE
+  #define FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE 16
+#endif
 
 namespace fcf {
   namespace NDetails {
@@ -45,6 +51,23 @@ namespace fcf {
       };
 
 
+      struct IterationState {
+        Variant         iterator;
+        unsigned int    beginArgIndex;
+        unsigned int    endArgIndex;
+        unsigned int    currentIteratorConversionsEndIndex;
+        const CallConversion* currentIteratorConversions[FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE];
+        IterationState(Variant&& a_iterator, unsigned int a_beginArgIndex, unsigned int a_endArgIndex, unsigned int a_currentIteratorConversionsEndIndex)
+          : iterator(std::move(a_iterator))
+          , beginArgIndex(a_beginArgIndex)
+          , endArgIndex(a_endArgIndex)
+          , currentIteratorConversionsEndIndex(a_currentIteratorConversionsEndIndex)
+        {
+        }
+        IterationState(){
+        }
+      };
+
       template <typename... TArgPack>
       struct ConversionState {
         ConversionState()
@@ -53,17 +76,20 @@ namespace fcf {
           , currentArgIndex(SIZE_MAX)
           , currentArgType(0)
           , maxArgCount(sizeof...(TArgPack)*2 + 8)
-          , argBufferCapacity(sizeof...(TArgPack) * 10){
+          , argBufferCapacity(sizeof...(TArgPack) * 10)
+          , currentIteratorArgumentIndex(INT_MAX) {
         }
-        unsigned int nextFlatArgumentIndex;
-        unsigned int nextFlatArgumentType;
-        size_t       currentArgIndex;
-        unsigned int currentArgType;
-        static const CallArgsTypeIndexes<TArgPack...> callerArgsResolver;
-        const size_t maxArgCount;
-        void*        args[sizeof...(TArgPack)*2 + 8];
-        const size_t argBufferCapacity;
+        unsigned int                                         nextFlatArgumentIndex;
+        unsigned int                                         nextFlatArgumentType;
+        size_t                                               currentArgIndex;
+        unsigned int                                         currentArgType;
+        static const CallArgsTypeIndexes<TArgPack...>        callerArgsResolver;
+        const size_t                                         maxArgCount;
+        void*                                                args[sizeof...(TArgPack)*2 + 8];
+        const size_t                                         argBufferCapacity;
+        int                                                  currentIteratorArgumentIndex;
         StaticVector<fcf::Variant, sizeof...(TArgPack) * 10> argBuffer;
+        StaticVector<IterationState>                         iterations;
       };
 
       struct GraphPosition {
@@ -128,33 +154,148 @@ namespace fcf {
 
       template <typename... TArgPack>
       inline void call(const Call& a_callInfo, const TArgPack& ... a_argPack){
+        _call(a_callInfo, 0, 0, a_argPack...);
+      }
+
+      template <typename... TArgPack>
+      inline void _call(const Call& a_callInfo, CallPairArgumentNode* a_rnode, CallPairArgumentNode* a_rlnode, const TArgPack& ... a_argPack){
         typedef void (*wrapper_type)(void*, void**);
         ConversionState<TArgPack...> state;
 
         if (a_callInfo.argCount > state.maxArgCount){
           throw std::runtime_error("Argument buffer overflow");
         }
-        _initArgs<0>(a_callInfo, state.args, a_argPack...);
+
+        _initArgs<0>(a_callInfo, a_rnode, state.args, a_argPack...);
 
         const size_t conversionsSize = a_callInfo.conversions.size();
         for(size_t conversionIndex = 0; conversionIndex < conversionsSize; ++conversionIndex){
           _processConversion(a_callInfo.conversions[conversionIndex], state);
         }
+        if (state.iterations.size()){
+          for(size_t i = 0; i < state.iterations.size(); ++i){
+            IterationState& ist = state.iterations[i];
+            DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)ist.iterator.ptr();
+            while(!iterator->isEnd()){
+              void* begin = (void*)iterator->getValuePtr();
+              void* end = (char*)begin + iterator->getValueTypeInfo()->size;
+              state.args[ ist.beginArgIndex ] = &begin;
+              state.args[ ist.endArgIndex ] = &end;
 
-        ((wrapper_type)a_callInfo.caller)(a_callInfo.function, state.args);
+              if (ist.currentIteratorConversionsEndIndex && ist.currentIteratorConversions[ist.currentIteratorConversionsEndIndex-1]->invariantIteration ) {
+                CallPairArgumentNode* rnode = a_rnode;
+                CallPairArgumentNode* rlnode = a_rlnode;
+                CallPairArgumentNode currentNode;
+                currentNode.index    = ist.currentIteratorConversions[0]->sourceIndex;
+                //  ~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+                currentNode.typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>::getSinglePointerIndex(iterator->getValueTypeInfo()->index));
+                currentNode.begin    = &begin;
+                currentNode.end      = &end;
+                currentNode.next     = 0;
+                if (rnode) {
+                  rlnode->next = &currentNode;
+                } else {
+                  rnode = &currentNode;
+                }
+                rlnode = &currentNode;
+
+                std::tuple<TArgPack...> tuple;
+                CallPairArgumentNode* node = rnode;
+                size_t index=0;
+                size_t nodeCount = 0;
+                while(node){
+                  ++nodeCount;
+                  node = node->next;
+                }
+                node = rnode;
+                BaseFunctionSignature funcSignature(nodeCount + sizeof...(TArgPack));
+                funcSignature.rcode = Type<void>().index();
+                fcf::foreach(tuple, FunctionSugnatureInitializer(this), &index, &node, &funcSignature);
+                funcSignature.applySimpleCallSignature();
+                Call subcallInfo;
+                subcallInfo.complete = false;
+                CallSeeker<void, TArgPack...> seeker;
+                seeker(a_callInfo.name.c_str(), rnode, &funcSignature, &subcallInfo, a_argPack...);
+                if (!subcallInfo.complete){
+                  throw std::runtime_error("Iteratable function not found");
+                }
+                _call(subcallInfo, rnode, rlnode, a_argPack...);
+                if (a_rlnode) {
+                  a_rlnode->next = 0;
+                }
+              } else {
+                size_t argBufferSize = state.argBuffer.size();
+                if (ist.currentIteratorConversionsEndIndex) {
+                  state.nextFlatArgumentIndex  = ist.endArgIndex;
+                  state.nextFlatArgumentType   = iterator->getValueTypeInfo()->index;
+                  state.currentArgIndex        = ist.beginArgIndex;
+                  state.currentArgType         = iterator->getValueTypeInfo()->index;
+                  for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
+                    _processConversion(*ist.currentIteratorConversions[i], state, true);
+                  }
+                }
+                ((wrapper_type)a_callInfo.caller)(a_callInfo.function, state.args);
+                if (argBufferSize != state.argBuffer.size()){
+                  state.argBuffer.resize(argBufferSize);
+                }
+              }
+              iterator->inc();
+            }
+          }
+        } else {
+          ((wrapper_type)a_callInfo.caller)(a_callInfo.function, state.args);
+        }
       }
 
     protected:
 
+      FCF_FOREACH_METHOD_WRAPPER(FunctionSugnatureInitializer, Caller, _fillFunctionSignature);
+      template <typename TTuple, typename Ty>
+      void _fillFunctionSignature(const TTuple&, size_t a_tupleIndex, const Ty&, size_t* a_currentIndex, CallPairArgumentNode** a_ppnode, BaseFunctionSignature* a_functionSignature){
+        if (*a_ppnode && (*a_ppnode)->index == a_tupleIndex){
+          a_functionSignature->pacodes[*a_currentIndex]   = (*a_ppnode)->typeInfo->index;
+          a_functionSignature->pacodes[++*a_currentIndex] = (*a_ppnode)->typeInfo->index;
+          *a_ppnode = (*a_ppnode)->next;
+        } else {
+          a_functionSignature->pacodes[*a_currentIndex] = Type<Ty>().index();
+        }
+        ++*a_currentIndex;
+      }
+
       template <typename... TArgPack>
-      inline void _processConversion(const CallConversion& a_cc, ConversionState<TArgPack...>& a_state){
+      inline void _processConversion(const CallConversion& a_cc, ConversionState<TArgPack...>& a_state, bool a_isIteratableCall = false){
         typedef int arg_type;
+        if (!a_isIteratableCall &&
+            (
+              a_state.currentIteratorArgumentIndex == (int)a_cc.index || (a_state.currentIteratorArgumentIndex+1) == (int)a_cc.index
+            )
+          ){
+          if (a_state.iterations.back().currentIteratorConversionsEndIndex >= FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE){
+            throw std::runtime_error("Iteration conversion buffer overflow (FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE macro)");
+          }
+          a_state.iterations.back().currentIteratorConversions[a_state.iterations.back().currentIteratorConversionsEndIndex] = &a_cc;
+          ++a_state.iterations.back().currentIteratorConversionsEndIndex;
+          return;
+        }
         switch(a_cc.mode) {
           case CCM_RESOLVE:
             {
               ResolveSpecificator::CallFunctionType converter = (ResolveSpecificator::CallFunctionType)a_cc.converter;
               a_state.args[a_cc.index] = converter((arg_type*)a_state.args[a_cc.index]).data;
               a_state.currentArgType = a_cc.type;
+            }
+            break;
+          case CCM_POINTER_RESOLVE:
+            {
+              ResolveSpecificator::CallFunctionType converter = (ResolveSpecificator::CallFunctionType)a_cc.converter;
+              ResolveData rd = converter(*(arg_type**)a_state.args[a_cc.index]);
+              const size_t argBufferIndex = a_state.argBuffer.size();
+              if ((argBufferIndex) >= a_state.argBufferCapacity){
+                throw std::runtime_error("Argument buffer overflow");
+              }
+              a_state.argBuffer.push_back(::fcf::Variant((arg_type*)rd.data));
+              a_state.args[a_cc.index] = a_state.argBuffer.back().ptr();
+              a_state.currentArgType = rd.typeIndex;
             }
             break;
           case CCM_CONVERT:
@@ -239,19 +380,37 @@ namespace fcf {
               a_state.currentArgType        = a_cc.type;
             }
             break;
+          case CCM_ITERATOR:
+            {
+              UniversalCall converter = (UniversalCall)a_cc.converter;
+              a_state.iterations.push_back(IterationState(converter(a_state.args[a_cc.index], 0, 0), a_cc.index, a_cc.index+1, 0));
+              DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)a_state.iterations.back().iterator.ptr();
+              if (!iterator){
+                throw std::runtime_error("Failed to get left bound of argument");
+              }
+              a_state.currentIteratorArgumentIndex = a_cc.index;
+            }
+            break;
           default:
             break;
         } // switch(a_cc.mode) end
       }
 
       template <size_t Index, typename TBuffer, typename TFirstArg, typename ...TArgPack>
-      inline void _initArgs(const Call& a_callInfo, TBuffer& a_args, const TFirstArg& a_firstArg, const TArgPack&... a_argPack) {
-        a_args[a_callInfo.argsMap[Index]] = (void*)&a_firstArg;
-        _initArgs<Index+1>(a_callInfo, a_args, a_argPack...);
+      inline void _initArgs(const Call& a_callInfo, CallPairArgumentNode* a_rnode, TBuffer& a_args, const TFirstArg& a_firstArg, const TArgPack&... a_argPack) {
+        if (a_rnode && a_callInfo.argsMap[Index] == a_rnode->index){
+          a_args[a_callInfo.argsMap[Index]] = (void*)a_rnode->begin;
+          a_args[a_callInfo.argsMap[Index]+1] = (void*)a_rnode->end;
+          a_rnode = a_rnode->next;
+          _initArgs<Index + 2>(a_callInfo, a_rnode, a_args, a_argPack...);
+        } else {
+          a_args[a_callInfo.argsMap[Index]] = (void*)&a_firstArg;
+          _initArgs<Index + 1>(a_callInfo, a_rnode, a_args, a_argPack...);
+        }
       }
 
       template <size_t Index, typename TBuffer>
-      inline void _initArgs(const Call& /*a_callInfo*/, TBuffer& /*a_args*/) {
+      inline void _initArgs(const Call& /*a_callInfo*/, CallPairArgumentNode* /*a_rnode*/, TBuffer& /*a_args*/) {
       }
 
       template <size_t Index, typename TBuffer, typename TFirstArg, typename ...TArgPack>

@@ -23,6 +23,8 @@ namespace fcf {
       std::vector<std::vector<unsigned int> >*          placeHolderSpecificators;
       bool                                              strictSource;
       bool                                              dynamicCaller;
+      StaticVector<unsigned int, 8>                     ptrResolveVector;
+      bool                                              invariantIteration;
     };
 
   } // NDetails namespace

@@ -15,6 +15,7 @@ namespace fcf{
     void*                                             converter;
     unsigned int                                      specificatorIndex;
     unsigned int                                      pointerCounter;
+    bool                                              invariantIteration;
     StaticVector<CallPlaceHolderArgEx, 2>             placeHolders;
   };
 
