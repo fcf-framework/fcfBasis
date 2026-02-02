@@ -96,11 +96,9 @@ namespace fcf {
       const unsigned int index = TypeId<Ty>().index();
       TypeInfo initTypeInfo(index, TypeId<Ty>().name(), NDetails::IsVariantRef<Ty>::value, NDetails::IsVariant<Ty>::value, NDetails::VariantInnerSize<Ty>::value, NDetails::TypeSize<Ty>::value );
       _info = typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
-      //if ((index & 0xc4000000) == 0) { // if not right ref
       typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
       ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);
       ::fcf::NDetails::SpecificatorRegistrarCaller<Type, __COUNTER__, simple_type> specificatorsRegistrar;
-      //}
       if (TypeId<Ty>().isTemplate()) {
         TypeGroupInitializer<Ty> groupInitializer;
       }

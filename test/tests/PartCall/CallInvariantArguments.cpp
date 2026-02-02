@@ -68,7 +68,6 @@ namespace FcfTest {
         FCF_TEST(v[2] == 999, v[2]);
         FCF_TEST(v[3] == 999, v[3]);
       }
-
       {
         std::vector<int> v = {1,2,3,4};
         fcf::NTest::Duration duration(iterations);

@@ -104,6 +104,7 @@ namespace fcf {
           item.first = a_name;
           groupIt = getCallStorage().groups.insert(item).first;
         }
+        groupIt->second.maxArgumentCount = std::max(groupIt->second.maxArgumentCount, (unsigned int)sizeof...(TArgPack));
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
         groupIt->second.callers.insert({scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(), CallStorageSelectionFunctionInfo::PlaceHolderType()}});

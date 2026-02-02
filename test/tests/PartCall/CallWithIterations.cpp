@@ -67,6 +67,11 @@ namespace FcfTest {
         }
       }
       {
+        std::list<unsigned int> list;
+        fcf::call("fill", list, (int)999);
+        FCF_TEST(list.size() == 0, list.size());
+      }
+      {
         std::list<FcfTest::BasisTest::CallIterationsTest::Item> list;
         list.push_back({0, 1});
         list.push_back({0, 2});

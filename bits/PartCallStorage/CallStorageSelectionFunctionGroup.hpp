@@ -17,6 +17,9 @@ namespace fcf {
     CallStorageSelectionFunctions             callers;
     CallStorageSelectionFunctionsByArgNumber  callersTree;
     std::vector<unsigned int>                 argumentOptions;
+    unsigned int                              maxArgumentCount;
+    CallStorageSelectionFunctionGroup()
+      : maxArgumentCount(0){}
   };
 
   typedef std::unordered_map<std::string, CallStorageSelectionFunctionGroup >               CallStorageSelectionFunctionGroups;

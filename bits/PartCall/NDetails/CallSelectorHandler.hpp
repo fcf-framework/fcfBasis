@@ -502,7 +502,7 @@ namespace fcf {
           state.result->complete = true;
           state.result->caller   = 0;
           state.result->function = 0;
-          state.result->argCount = 10; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+          state.result->argCount = state.groupIterator->second.maxArgumentCount;
           state.result->name = state.name;
         } else if (!state.dynamicCaller) {
 /*
