@@ -68,6 +68,7 @@ namespace fcf{
 #include "../../bits/PartVariant/NDetails/IsVariantRef.hpp"
 #include "../../bits/PartVariant/NDetails/IsVariant.hpp"
 #include "../../bits/PartVariant/NDetails/VariantInnerSize.hpp"
+#include "../../bits/PartType/TypeGroupInitializer.hpp"
 
 namespace fcf {
   namespace NDetails{
@@ -100,6 +101,9 @@ namespace fcf {
       ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);
       ::fcf::NDetails::SpecificatorRegistrarCaller<Type, __COUNTER__, simple_type> specificatorsRegistrar;
       //}
+      if (TypeId<Ty>().isTemplate()) {
+        TypeGroupInitializer<Ty> groupInitializer;
+      }
     }
   }
 

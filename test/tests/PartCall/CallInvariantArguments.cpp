@@ -125,13 +125,6 @@ namespace FcfTest {
 
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
-        std::cout << fcf::Type< std::vector<fcf::Variant> >().name() << ": " << fcf::Type< std::vector<fcf::Variant> >().index() << std::endl;
-        std::cout << fcf::Type< fcf::Variant >().name() << ": " << fcf::Type< fcf::Variant  >().index() << std::endl;
-        std::cout << fcf::Type< fcf::Variant* >().name() << ": " << fcf::Type< fcf::Variant*  >().index() << std::endl;
-        std::cout << fcf::Type< const fcf::Variant*& >().name() << ": " << fcf::Type< const fcf::Variant*&  >().index() << std::endl;
-        std::cout << fcf::Type< const fcf::Variant* >().name() << ": " << fcf::Type< const fcf::Variant*  >().index() << std::endl;
-        std::cout << fcf::Type< fcf::Variant*& >().name() << ": " << fcf::Type< fcf::Variant*&  >().index() << std::endl;
-        std::cout << fcf::Type< const fcf::Variant& >().name() << ": " << fcf::Type< const fcf::Variant&  >().index() << std::endl;
         fcf::NTest::Duration duration(iterations);
         duration.begin();
           for(size_t i = 0; i < duration.iterations(); ++i) {
@@ -143,13 +136,6 @@ namespace FcfTest {
       }
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
-        std::cout << fcf::Type< std::vector<fcf::Variant> >().name() << ": " << fcf::Type< std::vector<fcf::Variant> >().index() << std::endl;
-        std::cout << fcf::Type< fcf::Variant >().name() << ": " << fcf::Type< fcf::Variant  >().index() << std::endl;
-        std::cout << fcf::Type< fcf::Variant* >().name() << ": " << fcf::Type< fcf::Variant*  >().index() << std::endl;
-        std::cout << fcf::Type< const fcf::Variant*& >().name() << ": " << fcf::Type< const fcf::Variant*&  >().index() << std::endl;
-        std::cout << fcf::Type< const fcf::Variant* >().name() << ": " << fcf::Type< const fcf::Variant*  >().index() << std::endl;
-        std::cout << fcf::Type< fcf::Variant*& >().name() << ": " << fcf::Type< fcf::Variant*&  >().index() << std::endl;
-        std::cout << fcf::Type< const fcf::Variant& >().name() << ": " << fcf::Type< const fcf::Variant&  >().index() << std::endl;
         fcf::NTest::Duration duration(iterations);
         duration.begin();
           for(size_t i = 0; i < duration.iterations(); ++i) {
@@ -157,7 +143,6 @@ namespace FcfTest {
           }
         duration.end();
         std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
-
       }
 
     } // void callInvariantArgumentsTest() end
