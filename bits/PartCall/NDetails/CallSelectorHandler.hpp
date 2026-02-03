@@ -333,7 +333,10 @@ namespace fcf {
           }
         }
 
-        if (currentInputArgument->containerAccessResolver && !currentInputArgument->pairCounter) {
+        if (currentInputArgument->containerAccessResolver && 
+            !currentInputArgument->pairCounter &&
+            state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER
+            ) {
           Variant viterator = currentInputArgument->containerAccessResolver(0, 0, 0);
           DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
           if (iterator) {
@@ -366,7 +369,12 @@ namespace fcf {
             curnode.conversion.index              = a_argumentIndex;
             curnode.conversion.sourceIndex        = a_inputArgumentIndex;
             curnode.conversion.type               = ptrTypeIndex;
-            curnode.conversion.mode               = iterator->isFlatContainer() ? CCM_FLAT_ITERATOR : CCM_ITERATOR;
+            if (iterator->isFlatContainer()) {
+              curnode.conversion.mode = CCM_FLAT_ITERATOR;
+            } else {
+              state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_PAIR_SEGMENTATION});
+              curnode.conversion.mode = CCM_ITERATOR;
+            }
             curnode.conversion.invariantIteration = false;
             curnode.conversion.converter          = (void*)currentInputArgument->containerAccessResolver;
             if (a_node) {
@@ -381,6 +389,8 @@ namespace fcf {
             currentInputArgument->nextArgument = &nextArgument;
 
             state.ptrFunctionSignature = &fs;
+
+            state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_PAIR_ITERATION_POINTER});
 
             (*this)(&curnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
 
@@ -521,7 +531,6 @@ namespace fcf {
 */
           std::pair<CallStorageSelectionFunctions::iterator, CallStorageSelectionFunctions::iterator> range =
               state.groupIterator->second.callers.equal_range(*state.ptrFunctionSignature);
-          //std::cout << "RES: " << (range.first != range.second ? "Found" : "Not Found") << std::endl;
           for(; range.first != range.second; ++range.first) {
             bool found = true;
             for(size_t i = 0; i < range.first->second.placeHolder.size(); ++i) {
@@ -544,6 +553,16 @@ namespace fcf {
                   std::map<unsigned int, unsigned int>::const_iterator it    = functionInfo->argumentOptions.find(resolveArgumentIndex);
                   std::map<unsigned int, unsigned int>::const_iterator itEnd = functionInfo->argumentOptions.cend();
                   if (it == itEnd || !(it->second & CAO_RESOLVE_POINTER) ){
+                    subFound = false;
+                  }
+                }
+                for(size_t reqIndex = 0; reqIndex <  state.requiredArgumentsFlags.size(); ++reqIndex){
+                  unsigned int reqArgIndex = state.requiredArgumentsFlags[reqIndex].first;
+                  unsigned int reqArgFlags = state.requiredArgumentsFlags[reqIndex].second;
+                  std::map<unsigned int, unsigned int>::const_iterator it    = functionInfo->argumentOptions.find(reqArgIndex);
+                  std::map<unsigned int, unsigned int>::const_iterator itEnd = functionInfo->argumentOptions.cend();
+                  unsigned currentMask = it->second & reqArgFlags;
+                  if (it == itEnd || currentMask != reqArgFlags){
                     subFound = false;
                   }
                 }
@@ -610,6 +629,7 @@ namespace fcf {
                 currentPHIndex = begNode->conversion.index;
               } else if (begNode->conversion.mode == CCM_FLAT_ITERATOR && currentPHIndex == begNode->conversion.index){
                 begNode->conversion.mode = CCM_ITERATOR;
+                state.requiredArgumentsFlags.push_back({begNode->conversion.index, CAO_PAIR_SEGMENTATION});
               }
               if (begNode->conversion.mode == CCM_ITERATOR && currentIIIndex == begNode->conversion.index) {
                 begNode->prev = 0;
@@ -618,6 +638,7 @@ namespace fcf {
             }
             if (begNode->conversion.mode == CCM_FLAT_ITERATOR && currentPHIndex == begNode->conversion.index){
               begNode->conversion.mode = CCM_ITERATOR;
+              state.requiredArgumentsFlags.push_back({begNode->conversion.index, CAO_PAIR_SEGMENTATION});
             }
 
             unsigned int phmapIndex = 0;

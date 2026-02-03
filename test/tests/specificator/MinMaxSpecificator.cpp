@@ -65,7 +65,10 @@ FCF_DECLARE_FUNCTION(random,
                      "engine_cpu",
                      fcf::random,
                      void(*) (int*, int*, const int&, const int&),
-                     ((fcf::MinMaxSpecificator, 1, int*, int*, fcf::Arg1, fcf::Arg2)),
+                     (
+                      (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
+                      (fcf::MinMaxSpecificator, 1, int*, int*, fcf::Arg1, fcf::Arg2)
+                     ),
                     );
 
 typedef FcfTest::BasisTest::MinMaxSpecificatorTest::Item Item;
@@ -74,7 +77,10 @@ FCF_DECLARE_FUNCTION(random,
                      "engine_cpu",
                      fcf::random,
                      void(*) (Item*, Item*, const int&, const int&),
-                     ((fcf::MinMaxSpecificator, 1, Item*, Item*, fcf::Arg1, fcf::Arg2)),
+                     (
+                       (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
+                       (fcf::MinMaxSpecificator, 1, Item*, Item*, fcf::Arg1, fcf::Arg2)
+                     ),
                     );
 
 namespace FcfTest {

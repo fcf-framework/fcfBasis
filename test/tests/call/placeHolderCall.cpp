@@ -44,7 +44,10 @@ FCF_DECLARE_FUNCTION(fill,
                    "engine_cpu", 
                    fcf::fill, 
                    void(*) (FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, int),
-                   ((fcf::ValueSpecificator, 1, FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, fcf::Arg1)),
+                   (
+                    (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
+                    (fcf::ValueSpecificator, 1, FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, fcf::Arg1)
+                   ),
                   );
 
 namespace FcfTest {
