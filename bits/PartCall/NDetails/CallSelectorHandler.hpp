@@ -7,6 +7,7 @@
 #include "../../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../../bits/PartType/getTypeInfo.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
+#include "../../../bits/PartMetaType/MetaTypeRemoveDeepConst.hpp"
 #include "CallConversionNode.hpp"
 #include "CallSelectorState.hpp"
 #include "CallPairArgumentNode.hpp"
@@ -230,7 +231,7 @@ namespace fcf {
 
         if ( state.strictSource &&
              a_argumentIndex < state.groupIterator->second.argumentOptions.size() &&
-             (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER) &&
+             (state.groupIterator->second.argumentOptions[a_argumentIndex] & (CAO_RESOLVE_POINTER | CAO_PAIR_ITERATION_POINTER)) &&
              TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex)
            ){
           unsigned int typeIndex = TypeIndexConverter<>::getUnpointerSingleIndex(currentInputArgument->typeIndex);
@@ -240,8 +241,7 @@ namespace fcf {
           if (resolver) {
             ResolveData rd  = resolver(ptr);
 
-            int  stubValue    = 0;
-            int* stubValuePtr = &stubValue;
+            int* stubValuePtr = 0;
             if (!rd.typeIndex || !rd.data) {
               rd.typeIndex = Type<int*>().index();
               rd.data = &stubValuePtr;
@@ -382,10 +382,13 @@ namespace fcf {
               curnode.prev = a_node;
             }
 
-            _fillCurrentInputArgument(*currentInputArgument, ptrTypeIndex, 0, true);
+            void* leftValue = 0;
+            _fillCurrentInputArgument(*currentInputArgument, ptrTypeIndex, &leftValue, true);
             currentInputArgument->pairCounter = 1;
 
             InputArgument nextArgument(*currentInputArgument);
+            void* rightValue = 0;
+            nextArgument.ptrArg = &rightValue;
             currentInputArgument->nextArgument = &nextArgument;
 
             state.ptrFunctionSignature = &fs;
@@ -750,10 +753,10 @@ namespace fcf {
         template <typename TContainer, typename TItem>
         void _argInit(TContainer& /*a_container*/, size_t a_index, const TItem& /*a_item*/){
           typedef
-            typename std::remove_cv<
+            typename MetaTypeRemoveDeepConst<
               typename std::remove_pointer<
-                typename std::remove_pointer<
-                  TItem
+                typename std::remove_reference<
+                   TItem
                 >::type
               >::type
             >::type current_arg_type;

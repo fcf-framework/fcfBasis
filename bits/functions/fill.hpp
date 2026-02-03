@@ -23,7 +23,7 @@ namespace fcf {
                        fcf::fill,
                        void(*) (int*, int*, int),
                        (
-                         (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
+                         (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                          (fcf::ValueSpecificator, 1, int*, int*, fcf::Arg1)
                        ),
                       );
@@ -33,7 +33,7 @@ namespace fcf {
                    fcf::fill,
                    void(*) (std::string*, std::string*, std::string),
                    (
-                    (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
+                    (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                     (fcf::ValueSpecificator, 1, std::string*, std::string*, fcf::Arg1)
                    ),
                   );

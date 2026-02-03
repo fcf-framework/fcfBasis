@@ -21,6 +21,7 @@ namespace FcfTest {
 
     void callInvariantArgumentsTest();
     void callIterationsTest();
+    void callZeroIterationsTest();
 
     void minMaxSpecificatorTest();
     void foreachTest();
@@ -62,6 +63,7 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
 
   FcfTest::BasisTest::callInvariantArgumentsTest();
   FcfTest::BasisTest::callIterationsTest();
+  FcfTest::BasisTest::callZeroIterationsTest();
 
   FcfTest::BasisTest::foreachTest();
   FcfTest::BasisTest::variantConstTest();

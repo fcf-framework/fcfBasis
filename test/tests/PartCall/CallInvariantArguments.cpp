@@ -133,6 +133,15 @@ namespace FcfTest {
         std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
 
       }
+      /*
+      {
+        unsigned int* begin = 0;
+        unsigned int* end   = 0;
+        fcf::call("fill",begin, end, 999.1);
+      }
+      */
+
+
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
         fcf::NTest::Duration duration(iterations);
