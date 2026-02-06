@@ -12,7 +12,9 @@ namespace fcf{
     CCM_DYNAMIC_RESOLVE = 5,
     CCM_FLAT_ITERATOR   = 6,
     CCM_ITERATOR        = 7,
-    CCM_PLACE_HOLDER    = 8,
+    CCM_FLAT_PAIR       = 8,
+    CCM_SEPARATE_PAIR   = 9,
+    CCM_PLACE_HOLDER    = 10,
   };
 
 } // fcf namespace

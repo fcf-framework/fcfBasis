@@ -88,6 +88,14 @@ namespace fcf{
       return a_typeIndex & ~( 8 << (24 + 1) );
     }
 
+    inline static unsigned int removeLevelPointer(unsigned int a_typeIndex){
+      if ( a_typeIndex & (16 << (24 + 1) ) ){
+        return (a_typeIndex & (~( 16 << (24 + 1) ))) | ( 8 << (24 + 1) );
+      } else {
+        return a_typeIndex & (~( (16|8) << (24 + 1) ));
+      }
+    }
+
     inline static unsigned int getSinglePointerIndex(unsigned int a_typeIndex){
       return (a_typeIndex & ~( 16 << (24 + 1) ) ) | ( (8) << (24 + 1) );
     }

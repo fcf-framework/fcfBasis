@@ -8,6 +8,7 @@ namespace fcf{
 
     struct CallPairArgumentNode {
       unsigned int           index;
+      bool                   pack;
       const TypeInfo*        typeInfo;
       void*                  begin;
       void*                  end;

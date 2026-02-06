@@ -153,6 +153,30 @@ namespace FcfTest {
         std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
       }
 
+      {
+        std::vector<int> values({1,2,3});
+        fcf::call("fill", (unsigned int*)values.begin().operator->(), (unsigned int*)values.end().operator->(), 999);
+        FCF_TEST(values.size() == 3, values.size());
+        for(int& val : values){
+          FCF_TEST(val == 999, val);
+        }
+      }
+      {
+        std::vector<int> values({1,2,3});
+        fcf::call("fill", values.begin().operator->(), values.end().operator->(), 999);
+        FCF_TEST(values.size() == 3, values.size());
+        for(int& val : values){
+          FCF_TEST(val == 999, val);
+        }
+      }
+      {
+        std::vector<fcf::Variant> values({1,1,1});
+        fcf::call("fill", values.begin().operator->(), values.end().operator->(), 999);
+        FCF_TEST(values.size() == 3, values.size());
+        for(fcf::Variant& val : values){
+          FCF_TEST(val == 999, val);
+        }
+      }
     } // void callInvariantArgumentsTest() end
 
   }

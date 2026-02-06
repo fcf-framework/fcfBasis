@@ -25,7 +25,12 @@ namespace FcfTest {
       {
         unsigned int* begin = 0;
         unsigned int* end   = 0;
-        fcf::call("fill",begin, end, 999.1);
+        fcf::call("fill", begin, end, 999.1);
+      }
+      {
+        std::vector<fcf::Variant> values;
+        fcf::call("fill", values.begin().operator->(), values.end().operator->(), 999);
+        FCF_TEST(values.size() == 0, values.size());
       }
 
     }
