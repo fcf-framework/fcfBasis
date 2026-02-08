@@ -14,6 +14,7 @@ namespace fcf {
         unsigned int argumentNumber;
       };
       const char*                                       name;
+      BaseFunctionSignature*                            resultFunctionSignature;
       Call*                                             result;
       CallStorageSelectionFunctionGroups::iterator      groupIterator;
       BaseFunctionSignature&                            functionSignature;

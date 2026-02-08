@@ -10,9 +10,13 @@ namespace fcf {
     template <int Index, int Size, typename TPtrTuple, bool IgnoreIterator = false, unsigned int MaxCount = 0>
     struct CallSelector {
       inline void operator()(CallSelectorState& a_state, CallPairArgumentNode* a_pairNode = 0) {
+        (void)a_state;
+        (void)a_pairNode;
+        /*
         CallSelectorHandler csh(a_state);
         csh.initialize<TPtrTuple>(a_pairNode);
         csh(0, 0, 0, 0, false);
+        */
       }
     };
 

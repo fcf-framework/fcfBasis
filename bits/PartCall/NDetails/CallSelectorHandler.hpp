@@ -11,6 +11,7 @@
 #include "CallConversionNode.hpp"
 #include "CallSelectorState.hpp"
 #include "CallPairArgumentNode.hpp"
+#include "CallArguments.hpp"
 
 namespace fcf {
   namespace NDetails {
@@ -33,16 +34,50 @@ namespace fcf {
         InputArgument*                                      nextArgument;
       };
 
-      FCF_FOREACH_METHOD_WRAPPER(ArgInitializerForeachWrapper, CallSelectorHandler, _argInit)
 
-      template <typename TTuple>
-      void initialize(CallPairArgumentNode* a_pairNode = 0) {
-        TTuple tuple;
-        _initIndex = 0;
-        _initPairNode = a_pairNode;
-        inputArguments.resize(std::tuple_size<TTuple>::value);
+      void initialize(CallArguments& a_callArguments, CallPairArgumentNode* a_pairNode) {
+        inputArguments.resize(a_callArguments.types.size());
         bool skipNextItem = false;
-        foreach(tuple, ArgInitializerForeachWrapper(this), skipNextItem);
+        unsigned int argIndex = 0;
+        for(size_t i = 0; i < a_callArguments.types.size(); ++i) {
+          if (a_pairNode && a_pairNode->index == argIndex){
+            _fillCurrentInputArgument(inputArguments[argIndex], a_pairNode->typeInfo->index, a_pairNode->begin, false, true);
+            inputArguments[argIndex].pairCounter = 1;
+            ++argIndex;
+            inputArguments.push_back(InputArgument());
+            _fillCurrentInputArgument(inputArguments[argIndex], a_pairNode->typeInfo->index, a_pairNode->end, false);
+            inputArguments[argIndex].pairCounter = 1;
+            if (!a_pairNode->pack){
+              skipNextItem = true;
+            }
+            a_pairNode = a_pairNode->next;
+          } else if (!skipNextItem) {
+            const TypeInfo* ti = a_callArguments.types[i];
+
+            InputArgument& ia          = inputArguments[argIndex];
+            ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.arguments[i] : (void*)0;
+            ia.typeIndex               = ti->index;
+            ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(ti->index);
+            ia.resolver                = ti->resolver;
+            ia.containerAccessResolver = ti->template getSpecificator<ContainerAccessSpecificator>();
+            ia.specificators           = &ti->specificators;
+            ia.pairCounter             = 0;
+            ia.enablePtrSpecificators  = false;
+            ia.rawSpecificators        = 0;
+            ia.nextArgument            = 0;
+            ia.singleStepIteration     = false;
+            if (ia.resolver) {
+              ia.resolveData = ia.resolver(ia.ptrArg);
+            } else {
+              ia.resolveData.data      = 0;
+              ia.resolveData.typeIndex = 0;
+              ia.resolveData.invariant = false;
+            }
+          } else {
+            skipNextItem = false;
+          }
+          ++argIndex;
+        }
       }
 
       CallSelectorHandler(CallSelectorState& a_state)
@@ -680,6 +715,9 @@ namespace fcf {
           state.result->function = getCallStorage().functions[range.first->second.index].function;
           state.result->argCount = range.first->second.callerSignature.asize;
           state.result->name = state.name;
+          if (state.resultFunctionSignature){
+            *state.resultFunctionSignature = *state.ptrFunctionSignature;
+          }
         } else {
           CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
           if (treeIt != state.groupIterator->second.callersTree.end()) {
@@ -838,57 +876,6 @@ namespace fcf {
 
       }
 
-      protected:
-        unsigned int          _initIndex;
-        CallPairArgumentNode* _initPairNode;
-
-        template <typename TContainer, typename TItem>
-        void _argInit(TContainer& /*a_container*/, size_t a_index, const TItem& /*a_item*/, bool& a_skipNextItem){
-          typedef
-            typename MetaTypeRemoveDeepConst<
-              typename std::remove_pointer<
-                typename std::remove_reference<
-                   TItem
-                >::type
-              >::type
-            >::type current_arg_type;
-
-          if (_initPairNode && _initPairNode->index == _initIndex){
-            _fillCurrentInputArgument(inputArguments[_initIndex], _initPairNode->typeInfo->index, _initPairNode->begin, false, true);
-            inputArguments[_initIndex].pairCounter = 1;
-            ++_initIndex;
-            inputArguments.push_back(InputArgument());
-            _fillCurrentInputArgument(inputArguments[_initIndex], _initPairNode->typeInfo->index, _initPairNode->end, false);
-            inputArguments[_initIndex].pairCounter = 1;
-            if (!_initPairNode->pack){
-              a_skipNextItem = true;
-            }
-            _initPairNode = _initPairNode->next;
-          } else if (!a_skipNextItem) {
-            InputArgument& ia          = inputArguments[_initIndex];
-            ia.ptrArg                  = state.strictSource ? (current_arg_type*) (*state.arguments)[a_index] : (current_arg_type*)0;
-            ia.typeIndex               = Type<current_arg_type>().index();
-            ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(Type<current_arg_type>().index());
-            ia.resolver                = Type<current_arg_type>().getTypeInfo()->resolver;
-            ia.containerAccessResolver = Type<current_arg_type>().getTypeInfo()->template getSpecificator<ContainerAccessSpecificator>();
-            ia.specificators           = &Type<current_arg_type>().specificators();
-            ia.pairCounter             = 0;
-            ia.enablePtrSpecificators  = false;
-            ia.rawSpecificators        = 0;
-            ia.nextArgument            = 0;
-            ia.singleStepIteration     = false;
-            if (ia.resolver) {
-              ia.resolveData = ia.resolver(ia.ptrArg);
-            } else {
-              ia.resolveData.data      = 0;
-              ia.resolveData.typeIndex = 0;
-              ia.resolveData.invariant = false;
-            }
-          } else {
-            a_skipNextItem = false;
-          }
-          ++_initIndex;
-        }
     };
 
   } // NDetails namespace

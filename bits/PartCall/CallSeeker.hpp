@@ -3,6 +3,7 @@
 
 #include "NDetails/CallSelector.hpp"
 #include "NDetails/CallPairArgumentNode.hpp"
+#include "NDetails/CallArguments.hpp"
 
 namespace fcf{
 
@@ -18,34 +19,60 @@ namespace fcf{
       };
 
     public:
+
       template <typename... TCurrentArgPack>
       void operator()(const char* a_functionName, Call* a_result, const TCurrentArgPack&... a_argPack){
-        State state;
-        state.init = true;
-        state.strictSource = !!sizeof...(TCurrentArgPack);
-        this->call(a_functionName, 0, 0, a_result, state, a_argPack...);
+        return (*this)(a_functionName, (NDetails::CallPairArgumentNode*)0, (BaseFunctionSignature*)0, (BaseFunctionSignature*)0, a_result, a_argPack...);
       }
 
       template <typename... TCurrentArgPack>
-      void operator()(const char* a_functionName, NDetails::CallPairArgumentNode* a_pairNode, BaseFunctionSignature* a_functionSignature, Call* a_result, const TCurrentArgPack&... a_argPack){
+      void operator()(const char* a_functionName, NDetails::CallPairArgumentNode* a_pairNode, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, const TCurrentArgPack&... a_argPack){
         State state;
         state.init = true;
         state.strictSource = !!sizeof...(TCurrentArgPack);
-        this->call(a_functionName, a_pairNode, a_functionSignature, a_result, state, a_argPack...);
+        if (sizeof...(TArgPack) == sizeof...(TCurrentArgPack)) {
+          NDetails::CallArguments ca(a_argPack...);
+          this->_call(a_functionName, a_pairNode, a_functionSignature, a_resultFunctionSignature, a_result, state, ca);
+        } else {
+          std::tuple< typename std::remove_reference<TArgPack>::type*...> tuple{ ((typename std::remove_reference<TArgPack>::type*)0)... };
+          NDetails::CallArguments ca(tuple);
+          this->_call(a_functionName, a_pairNode, a_functionSignature, a_resultFunctionSignature, a_result, state, ca);
+        }
       }
+
+      void packSearch(const char* a_functionName,
+                      NDetails::CallPairArgumentNode* a_pairNode,
+                      BaseFunctionSignature* a_functionSignature,
+                      BaseFunctionSignature* a_resultFunctionSignature,
+                      Call* a_result,
+                      NDetails::CallArguments& a_arguments){
+        State state;
+        state.init = true;
+        state.strictSource = true;
+        this->_call(a_functionName, a_pairNode, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
+      }
+
 
     protected:
       template <typename... TCurrentArgPack>
-      void call(const char* a_functionName, NDetails::CallPairArgumentNode* a_pairNode, BaseFunctionSignature* a_functionSignature, Call* a_result, State& a_state, const TCurrentArgPack&... a_argPack){
+      void _call(const char* a_functionName, NDetails::CallPairArgumentNode* a_pairNode, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments){
         CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);
         if (groupIt == getCallStorage().groups.end()) {
           throw std::runtime_error("Function not found.");
         }
 
-        FunctionSignature<TRes (TArgPack...)> functionSignature;
-        functionSignature.applySimpleCallSignature();
-
-        BaseFunctionSignature* currentFunctionSignature = a_functionSignature ? a_functionSignature : &functionSignature;
+        BaseFunctionSignature functionSignature(a_callArguments.types.size());
+        BaseFunctionSignature* currentFunctionSignature;
+        if (!a_functionSignature){
+          functionSignature.rcode = Type<void>().index();
+          for(unsigned int i = 0; i < a_callArguments.types.size() ; ++i){
+            functionSignature.pacodes[i] = a_callArguments.types[i]->index;
+          }
+          functionSignature.applySimpleCallSignature();
+          currentFunctionSignature = &functionSignature;
+        } else {
+          currentFunctionSignature = a_functionSignature;
+        }
 
         if (a_state.init) {
           a_state.init = false;
@@ -56,12 +83,11 @@ namespace fcf{
           a_result->conversions.clear();
         }
 
-        typedef std::tuple<const typename std::remove_cv< typename std::remove_reference<TArgPack>::type >::type *...> ptr_tuple_type;
-        StaticVector<void*, 8> arguments = {(void*)&a_argPack...};
-        ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_result, groupIt, *currentFunctionSignature, currentFunctionSignature, &arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource, false, {}, {}, false};
+        ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_resultFunctionSignature, a_result, groupIt, *currentFunctionSignature, currentFunctionSignature, &a_callArguments.arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource, false, {}, {}, false};
         {
-          typedef ::fcf::NDetails::CallSelector<sizeof...(a_argPack), sizeof...(a_argPack), ptr_tuple_type> selector_type;
-          selector_type()(iasd, a_pairNode);
+          NDetails::CallSelectorHandler csh(iasd);
+          csh.initialize(a_callArguments, a_pairNode);
+          csh(0, 0, 0, 0, false);
           if (iasd.result->caller){
             return;
           }
