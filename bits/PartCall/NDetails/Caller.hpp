@@ -441,7 +441,6 @@ namespace fcf {
               Variant* callResults;
               size_t   callResultsSize;
               if (callResult.getTypeIndex() == Type<UniversalArguments>().index()){
-                callResult = call(aptr, 0, 0);
                 UniversalArguments& ua = *(UniversalArguments*)callResult.ptr();
                 callResults = &ua[0];
                 callResultsSize = ua.size();

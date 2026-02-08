@@ -36,10 +36,10 @@ namespace fcf {
 
 
       void initialize(CallArguments& a_callArguments, CallPairArgumentNode* a_pairNode) {
-        inputArguments.resize(a_callArguments.types.size());
+        inputArguments.resize(a_callArguments.size());
         bool skipNextItem = false;
         unsigned int argIndex = 0;
-        for(size_t i = 0; i < a_callArguments.types.size(); ++i) {
+        for(size_t i = 0; i < a_callArguments.size(); ++i) {
           if (a_pairNode && a_pairNode->index == argIndex){
             _fillCurrentInputArgument(inputArguments[argIndex], a_pairNode->typeInfo->index, a_pairNode->begin, false, true);
             inputArguments[argIndex].pairCounter = 1;
@@ -52,10 +52,10 @@ namespace fcf {
             }
             a_pairNode = a_pairNode->next;
           } else if (!skipNextItem) {
-            const TypeInfo* ti = a_callArguments.types[i];
+            const TypeInfo* ti = a_callArguments.getTypeInfo(i);
 
             InputArgument& ia          = inputArguments[argIndex];
-            ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.arguments[i] : (void*)0;
+            ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.getArgument(i) : (void*)0;
             ia.typeIndex               = ti->index;
             ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(ti->index);
             ia.resolver                = ti->resolver;

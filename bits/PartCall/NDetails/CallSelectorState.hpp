@@ -19,7 +19,7 @@ namespace fcf {
       CallStorageSelectionFunctionGroups::iterator      groupIterator;
       BaseFunctionSignature&                            functionSignature;
       BaseFunctionSignature*                            ptrFunctionSignature;
-      StaticVector<void*, 8>*                           arguments;
+      /*StaticVector<void*, 8>*                           arguments;*/
       std::vector<PlaceHolderSource>                    placeHolderVec;
       std::vector<std::vector<unsigned int> >*          placeHolderSpecificators;
       bool                                              strictSource;

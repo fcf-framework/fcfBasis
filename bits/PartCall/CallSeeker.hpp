@@ -61,12 +61,12 @@ namespace fcf{
           throw std::runtime_error("Function not found.");
         }
 
-        BaseFunctionSignature functionSignature(a_callArguments.types.size());
+        BaseFunctionSignature functionSignature(a_callArguments.size());
         BaseFunctionSignature* currentFunctionSignature;
         if (!a_functionSignature){
           functionSignature.rcode = Type<void>().index();
-          for(unsigned int i = 0; i < a_callArguments.types.size() ; ++i){
-            functionSignature.pacodes[i] = a_callArguments.types[i]->index;
+          for(unsigned int i = 0; i < a_callArguments.size() ; ++i){
+            functionSignature.pacodes[i] = a_callArguments.getTypeIndex(i);
           }
           functionSignature.applySimpleCallSignature();
           currentFunctionSignature = &functionSignature;
@@ -83,7 +83,7 @@ namespace fcf{
           a_result->conversions.clear();
         }
 
-        ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_resultFunctionSignature, a_result, groupIt, *currentFunctionSignature, currentFunctionSignature, &a_callArguments.arguments, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource, false, {}, {}, false};
+        ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_resultFunctionSignature, a_result, groupIt, *currentFunctionSignature, currentFunctionSignature, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource, false, {}, {}, false};
         {
           NDetails::CallSelectorHandler csh(iasd);
           csh.initialize(a_callArguments, a_pairNode);
