@@ -22,26 +22,24 @@ namespace fcf{
 
       template <typename... TCurrentArgPack>
       void operator()(const char* a_functionName, Call* a_result, const TCurrentArgPack&... a_argPack){
-        return (*this)(a_functionName, (NDetails::CallPairArgumentNode*)0, (BaseFunctionSignature*)0, (BaseFunctionSignature*)0, a_result, a_argPack...);
+        NDetails::CallArguments ca(Nop(), a_argPack...);
+        return (*this)(a_functionName, (BaseFunctionSignature*)0, (BaseFunctionSignature*)0, a_result, ca);
       }
 
-      template <typename... TCurrentArgPack>
-      void operator()(const char* a_functionName, NDetails::CallPairArgumentNode* a_pairNode, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, const TCurrentArgPack&... a_argPack){
+      void operator()(const char* a_functionName, Call* a_result){
+        std::tuple<TArgPack*...> tuple={((TArgPack*)0)...};
+        NDetails::CallArguments ca(tuple);
+        return (*this)(a_functionName, (BaseFunctionSignature*)0, (BaseFunctionSignature*)0, a_result, ca);
+      }
+
+      void operator()(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, NDetails::CallArguments& a_arguments){
         State state;
         state.init = true;
-        state.strictSource = !!sizeof...(TCurrentArgPack);
-        if (sizeof...(TArgPack) == sizeof...(TCurrentArgPack)) {
-          NDetails::CallArguments ca(a_argPack...);
-          this->_call(a_functionName, a_pairNode, a_functionSignature, a_resultFunctionSignature, a_result, state, ca);
-        } else {
-          std::tuple< typename std::remove_reference<TArgPack>::type*...> tuple{ ((typename std::remove_reference<TArgPack>::type*)0)... };
-          NDetails::CallArguments ca(tuple);
-          this->_call(a_functionName, a_pairNode, a_functionSignature, a_resultFunctionSignature, a_result, state, ca);
-        }
+        state.strictSource = true;
+        this->_call(a_functionName, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
       }
 
       void packSearch(const char* a_functionName,
-                      NDetails::CallPairArgumentNode* a_pairNode,
                       BaseFunctionSignature* a_functionSignature,
                       BaseFunctionSignature* a_resultFunctionSignature,
                       Call* a_result,
@@ -49,13 +47,12 @@ namespace fcf{
         State state;
         state.init = true;
         state.strictSource = true;
-        this->_call(a_functionName, a_pairNode, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
+        this->_call(a_functionName, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
       }
 
 
     protected:
-      template <typename... TCurrentArgPack>
-      void _call(const char* a_functionName, NDetails::CallPairArgumentNode* a_pairNode, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments){
+      void _call(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments){
         CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);
         if (groupIt == getCallStorage().groups.end()) {
           throw std::runtime_error("Function not found.");
@@ -86,7 +83,7 @@ namespace fcf{
         ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_resultFunctionSignature, a_result, groupIt, *currentFunctionSignature, currentFunctionSignature, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource, false, {}, {}, false};
         {
           NDetails::CallSelectorHandler csh(iasd);
-          csh.initialize(a_callArguments, a_pairNode);
+          csh.initialize(a_callArguments);
           csh(0, 0, 0, 0, false);
           if (iasd.result->caller){
             return;

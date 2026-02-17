@@ -35,48 +35,29 @@ namespace fcf {
       };
 
 
-      void initialize(CallArguments& a_callArguments, CallPairArgumentNode* a_pairNode) {
+      void initialize(CallArguments& a_callArguments) {
         inputArguments.resize(a_callArguments.size());
-        bool skipNextItem = false;
-        unsigned int argIndex = 0;
         for(size_t i = 0; i < a_callArguments.size(); ++i) {
-          if (a_pairNode && a_pairNode->index == argIndex){
-            _fillCurrentInputArgument(inputArguments[argIndex], a_pairNode->typeInfo->index, a_pairNode->begin, false, true);
-            inputArguments[argIndex].pairCounter = 1;
-            ++argIndex;
-            inputArguments.push_back(InputArgument());
-            _fillCurrentInputArgument(inputArguments[argIndex], a_pairNode->typeInfo->index, a_pairNode->end, false);
-            inputArguments[argIndex].pairCounter = 1;
-            if (!a_pairNode->pack){
-              skipNextItem = true;
-            }
-            a_pairNode = a_pairNode->next;
-          } else if (!skipNextItem) {
-            const TypeInfo* ti = a_callArguments.getTypeInfo(i);
-
-            InputArgument& ia          = inputArguments[argIndex];
-            ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.getArgument(i) : (void*)0;
-            ia.typeIndex               = ti->index;
-            ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(ti->index);
-            ia.resolver                = ti->resolver;
-            ia.containerAccessResolver = ti->template getSpecificator<ContainerAccessSpecificator>();
-            ia.specificators           = &ti->specificators;
-            ia.pairCounter             = 0;
-            ia.enablePtrSpecificators  = false;
-            ia.rawSpecificators        = 0;
-            ia.nextArgument            = 0;
-            ia.singleStepIteration     = false;
-            if (ia.resolver) {
-              ia.resolveData = ia.resolver(ia.ptrArg);
-            } else {
-              ia.resolveData.data      = 0;
-              ia.resolveData.typeIndex = 0;
-              ia.resolveData.invariant = false;
-            }
+          const TypeInfo* ti = a_callArguments.getTypeInfo(i);
+          InputArgument& ia          = inputArguments[i];
+          ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.getArgument(i) : (void*)0;
+          ia.typeIndex               = ti->index;
+          ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(ti->index);
+          ia.resolver                = ti->resolver;
+          ia.containerAccessResolver = ti->template getSpecificator<ContainerAccessSpecificator>();
+          ia.specificators           = &ti->specificators;
+          ia.pairCounter             = 0;
+          ia.enablePtrSpecificators  = false;
+          ia.rawSpecificators        = 0;
+          ia.nextArgument            = 0;
+          ia.singleStepIteration     = false;
+          if (ia.resolver) {
+            ia.resolveData = ia.resolver(ia.ptrArg);
           } else {
-            skipNextItem = false;
+            ia.resolveData.data      = 0;
+            ia.resolveData.typeIndex = 0;
+            ia.resolveData.invariant = false;
           }
-          ++argIndex;
         }
       }
 
@@ -544,11 +525,27 @@ namespace fcf {
       }
 
       inline void _processingNextArg(CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller, bool a_isIterationMode = false){
+
+        bool isSinglePair = false;
+
         if (!a_isIterationMode && 
             !a_currentInputArgument->singleStepIteration && 
             !a_currentInputArgument->pairCounter && 
             state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER
           ) {
+
+          if (a_inputArgumentIndex + 1 < inputArguments.size()) {
+            if (inputArguments[a_inputArgumentIndex].ptrArg) {
+              if (inputArguments[a_inputArgumentIndex].clearTypeIndex == inputArguments[a_inputArgumentIndex+1].clearTypeIndex &&
+                  TypeIndexConverter<>::isPointer(inputArguments[a_inputArgumentIndex].typeIndex)
+                  ) {
+                unsigned int    tix = TypeIndexConverter<>::removeLevelPointer(inputArguments[a_inputArgumentIndex].typeIndex);
+                const TypeInfo* ti  = getTypeInfo(tix);
+                void* nextPtr = *((char**)inputArguments[a_inputArgumentIndex].ptrArg) + ti->size;
+                isSinglePair = nextPtr == *((void**)inputArguments[a_inputArgumentIndex+1].ptrArg);
+              }
+            }
+          }
 
           CallConversionNode pairNode;
           pairNode.prev = 0;
@@ -556,15 +553,14 @@ namespace fcf {
           pairNode.conversion.index = a_argumentIndex;
           pairNode.conversion.sourceIndex = a_inputArgumentIndex;
           pairNode.conversion.type = inputArguments[a_inputArgumentIndex].typeIndex;
-          pairNode.conversion.mode = CCM_SEPARATE_PAIR;
+          pairNode.conversion.mode = !isSinglePair ? CCM_SEPARATE_PAIR : CCM_SINGLE_PAIR;
           pairNode.conversion.invariantIteration = false;
           pairNode.conversion.converter = (void*)0;
 
           bool restoreNode = false;
           CallConversionNode* node = a_node;
-          if (node){
-            if (node->conversion.index == a_argumentIndex) {
-              bool enableSeparate = false;
+          if (node && node->conversion.index == a_argumentIndex){
+              bool enableSeparate = isSinglePair;
               CallConversionNode* cnode = node;
               while (true) {
                 if ((cnode->conversion.mode == CCM_RESOLVE || cnode->conversion.mode == CCM_POINTER_RESOLVE) && cnode->conversion.invariantIteration){
@@ -595,12 +591,40 @@ namespace fcf {
 
                 restoreNode = true;
               }
-            }
+          } else if (node) {
+            node->next = &pairNode;
+            pairNode.prev = node;
+            node = &pairNode;
+            restoreNode = true;
+          } else {
+            node = &pairNode;
+            restoreNode = true;
+          }
+
+          CallConversionNode fillPairNode;
+          fillPairNode.prev = 0;
+          fillPairNode.next = 0;
+          fillPairNode.conversion.index = a_argumentIndex;
+          fillPairNode.conversion.sourceIndex = a_inputArgumentIndex;
+          fillPairNode.conversion.type = a_currentInputArgument->typeIndex;
+          fillPairNode.conversion.mode = CCM_SINGLE_PAIR_COPY;
+          fillPairNode.conversion.invariantIteration = false;
+          fillPairNode.conversion.converter = (void*)0;
+
+          if (isSinglePair) {
+            node->next = &fillPairNode;
+            fillPairNode.prev = node;
+            node = &fillPairNode;
           }
 
          _processingNextArg(node, a_currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller, true);
+
           if (state.result->complete) {
             return;
+          }
+          if (isSinglePair){
+            node = node->prev;
+            node->next = 0;
           }
           if (restoreNode){
             if (pairNode.prev){
@@ -751,8 +775,17 @@ namespace fcf {
             unsigned int currentPHIndex = UINT_MAX;
             unsigned int currentIIIndex = UINT_MAX;
             CallConversionNode* begNode = a_node;
+
+            unsigned int singleIterationLastIndex = UINT_MAX;
             while(begNode->prev){
-              if ((begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE) && begNode->conversion.invariantIteration){
+              if (begNode->conversion.mode == CCM_SINGLE_PAIR_COPY){
+                singleIterationLastIndex = begNode->conversion.index;
+              }
+              if (
+                   (begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE) && 
+                   begNode->conversion.invariantIteration &&
+                   singleIterationLastIndex != begNode->conversion.index
+                  ){
                 begNode->next = 0;
                 currentPHIndex = begNode->conversion.index;
                 currentIIIndex = begNode->conversion.index;
