@@ -591,12 +591,12 @@ namespace fcf {
 
                 restoreNode = true;
               }
-          } else if (node) {
+          } else if (node && isSinglePair) {
             node->next = &pairNode;
             pairNode.prev = node;
             node = &pairNode;
             restoreNode = true;
-          } else {
+          } else if (isSinglePair) {
             node = &pairNode;
             restoreNode = true;
           }
