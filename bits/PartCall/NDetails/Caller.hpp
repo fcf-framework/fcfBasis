@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <type_traits>
 #include <map>
+#include <memory>
 #include "../../../FunctionSignature.hpp"
 #include "../../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
@@ -38,17 +39,37 @@ namespace fcf {
 
       struct ConversionInfoNode;
 
-      struct ConversionsNode {
-        std::map<KeyNode, ConversionInfoNode> conversions;
-        Call                                  call;
-      };
-
-      struct ConversionInfoNode {
-        CallConversion                          conversion;
-        std::map<unsigned int, ConversionsNode> types;
-      };
+      struct CallGraph;
 
       struct CallGraph {
+        struct ConversionsNode;
+
+        struct ConversionInfoNode {
+          CallConversion                          conversion;
+          std::map<unsigned int, ConversionsNode> types;
+        };
+
+        struct ConversionsNode {
+          std::map<KeyNode, ConversionInfoNode> conversions;
+          Call                                  call;
+          std::shared_ptr<CallGraph>            graph;
+        };
+
+        void add(const Call& a_call){
+          Caller::CallGraph::ConversionsNode* node = &conversions;
+          Call* lastDstCall  = &conversions.call;
+          for(const CallConversion& conversion : a_call.conversions){
+            Caller::KeyNode ca{conversion.index, conversion.sourceIndex, conversion.mode};
+            auto insertIt = node->conversions.insert({ca, ConversionInfoNode()});
+            ConversionInfoNode* typesConversion = &insertIt.first->second;
+            typesConversion->conversion =  conversion;
+            auto insertTypeIt = typesConversion->types.insert({conversion.type, ConversionsNode()});
+            lastDstCall = &insertTypeIt.first->second.call;
+            node = &insertTypeIt.first->second;
+          }
+          *lastDstCall = a_call;
+        }
+
         ConversionsNode  conversions;
       };
 
@@ -92,23 +113,28 @@ namespace fcf {
       };
 
       struct GraphPosition {
-        std::map<KeyNode, ConversionInfoNode>::const_iterator             conversionBegin;
-        std::map<KeyNode, ConversionInfoNode>::const_iterator             conversionEnd;
+        std::map<KeyNode, CallGraph::ConversionInfoNode>::iterator             conversionBegin;
+        std::map<KeyNode, CallGraph::ConversionInfoNode>::iterator             conversionEnd;
       };
 
       template <typename... TArgPack>
-      inline void call(bool& a_complete, const CallGraph& a_graph, const TArgPack& ... a_argPack){
+      inline void call(bool& a_complete, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
         CallArgumentsExtended argumentsEx(arguments);
+        callWithArguments(a_complete, a_graph, argumentsEx);
+      }
 
+      template <typename... TArgPack>
+      inline void callWithArguments(bool& a_complete, CallGraph& a_graph, CallArgumentsExtended& a_argumentsEx){
         StaticVector<GraphPosition, 16> stack;
 
         ConversionState state;
 
-        const ConversionsNode* pnode     = &a_graph.conversions;
-        const Call*            pcall     = pnode->call.complete ? &pnode->call : 0;
+        CallGraph::ConversionsNode*            pnode     = &a_graph.conversions;
+        const Call*                 pcall     = pnode->call.complete ? &pnode->call : 0;
+        std::shared_ptr<CallGraph>* psubgraph = pnode->call.complete ? &pnode->graph : 0;
         while(!pcall){
-          stack.push_back({pnode->conversions.cbegin(), pnode->conversions.cend() });
+          stack.push_back({pnode->conversions.begin(), pnode->conversions.end() });
 
           GraphPosition& position = stack.back();
 
@@ -116,10 +142,12 @@ namespace fcf {
             break;
           }
 
-          _conversion(position.conversionBegin->second.conversion, state, argumentsEx, -1);
+          bool isNotIterationMode = _conversion(position.conversionBegin->second.conversion, state, a_argumentsEx, -1);
 
-          std::map<unsigned int, ConversionsNode>::const_iterator typeIt    = position.conversionBegin->second.types.find( argumentsEx.getTypeIndex(position.conversionBegin->first.argument) );
-          std::map<unsigned int, ConversionsNode>::const_iterator typeItEnd = position.conversionBegin->second.types.cend();
+          std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeIt    = isNotIterationMode
+                                              ? position.conversionBegin->second.types.find( a_argumentsEx.getTypeIndex(position.conversionBegin->first.argument) )
+                                              : position.conversionBegin->second.types.begin();
+          std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeItEnd = position.conversionBegin->second.types.end();
 
           if (typeIt == typeItEnd){
             break;
@@ -128,7 +156,8 @@ namespace fcf {
           pnode = &typeIt->second;
 
           if (pnode->call.complete){
-            pcall = &pnode->call;
+            pcall     = &pnode->call;
+            psubgraph = &pnode->graph;
           }
 
           ++position.conversionBegin;
@@ -136,8 +165,8 @@ namespace fcf {
 
         if (pcall){
           a_complete = true;
-          argumentsEx.prepare();
-         ((wrapper_type)pcall->caller)(pcall->function, argumentsEx.getArguments());
+          a_argumentsEx.prepare();
+          _execution(state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
         } else {
           a_complete = false;
         }
@@ -153,7 +182,9 @@ namespace fcf {
        inline void _execution(ConversionState& a_state,
                              const Call& a_callInfo, 
                              int a_lastIterationArgumentIndex,
-                             CallArguments& a_arguments) {
+                             CallArguments& a_arguments,
+                             std::shared_ptr<CallGraph>* a_graph = 0) {
+        (void)a_graph;
 
         if (a_state.iterations.size() && (!a_state.iterations.back().currentIteratorConversionsEndIndex 
              || (a_lastIterationArgumentIndex < (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex) )){
@@ -171,22 +202,56 @@ namespace fcf {
                 a_arguments.setTypeIndex(ist.endArgIndex, TypeIndexConverter<>::addLevelPointer(iterator->getValueTypeInfo()->index));
 
                 if (ist.currentIteratorConversionsEndIndex && ist.currentIteratorConversions[ist.currentIteratorConversionsEndIndex-1]->invariantIteration ) {
-                  BaseFunctionSignature funcSignature(a_arguments.size());
-                  funcSignature.rcode = Type<void>().index();
-                  for(size_t i = 0; i < a_arguments.size(); ++i){
-                    funcSignature.pacodes[i] = a_arguments.getTypeIndex(i);
-                  }
-                  funcSignature.applySimpleCallSignature();
-
                   Call subcallInfo;
                   subcallInfo.complete = false;
                   CallSeeker<void> seeker;
-                  CallArguments arguments(a_arguments);
-                  seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments);
-                  if (!subcallInfo.complete){
-                    throw std::runtime_error("Iteratable function not found");
+                  CallArgumentsExtended arguments(a_arguments);
+
+                  size_t argBufferSize = a_state.argBuffer.size();
+                  if (ist.currentIteratorConversionsEndIndex) {
+                    for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
+                      _conversion(*ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+                    }
+                    CallConversion cc;
+                    cc.mode        = CCM_SINGLE_PAIR_COPY;
+                    cc.type        = arguments.getTypeIndex(ist.beginArgIndex);
+                    cc.index       = ist.beginArgIndex;
+                    _conversion(cc, a_state, arguments, INT_MAX);
                   }
-                  _call(subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments);
+
+                  arguments.prepare();
+
+                  bool callComplete = false;
+                  if (a_graph && a_graph->get()) {
+                    callWithArguments(callComplete, *a_graph->get(), arguments);
+                  }
+
+                  if (!callComplete) {
+                    BaseFunctionSignature funcSignature(arguments.size());
+                    funcSignature.rcode = Type<void>().index();
+                    for(size_t i = 0; i < arguments.size(); ++i){
+                      funcSignature.pacodes[i] = arguments.getTypeIndex(i);
+                    }
+                    funcSignature.applySimpleCallSignature();
+
+                    seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
+                    if (!subcallInfo.complete){
+                      throw std::runtime_error("Iteratable function not found");
+                    }
+
+                    if (a_graph){
+                      if (!a_graph->get()){
+                        a_graph->reset(new CallGraph());
+                      }
+                      (*a_graph)->add(subcallInfo);
+                    }
+                    _call(subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments.getCallArguments());
+                  }
+
+
+                  if (argBufferSize != a_state.argBuffer.size()){
+                    a_state.argBuffer.resize(argBufferSize);
+                  }
                 } else {
                   size_t argBufferSize = a_state.argBuffer.size();
                   if (ist.currentIteratorConversionsEndIndex) {
@@ -210,12 +275,14 @@ namespace fcf {
               const TypeInfo* valueTypeInfo = fcf::getTypeInfo(valueTypeIndex);
               while(ptrSource < endSource) {
                 _iterationSeparatePair(a_state,
-                           a_callInfo,
-                           ist,
-                           valueTypeIndex,
-                           ptrSource, 
-                           (void*)((char*)ptrSource + valueTypeInfo->size),
-                           a_arguments.getCallArguments());
+                            a_callInfo,
+                            ist,
+                            valueTypeIndex,
+                            ptrSource, 
+                            (void*)((char*)ptrSource + valueTypeInfo->size),
+                            a_arguments.getCallArguments(),
+                            a_graph
+                          );
                 ptrSource = (char*)ptrSource + valueTypeInfo->size;
               }
 
@@ -250,28 +317,60 @@ namespace fcf {
                                           unsigned int /*a_valueTypeIndex*/, 
                                           void* a_begin, 
                                           void* a_end, 
-                                          CallArguments& a_arguments){
-        CallArguments arguments(a_arguments);
+                                          CallArguments& a_arguments,
+                                          std::shared_ptr<CallGraph>* a_graph = 0){
+        CallArgumentsExtended arguments(a_arguments);
         arguments.setArgument(a_ist.beginArgIndex, &a_begin);
         arguments.setArgument(a_ist.endArgIndex, &a_end);
 
         if (a_ist.currentIteratorConversionsEndIndex && a_ist.currentIteratorConversions[a_ist.currentIteratorConversionsEndIndex-1]->invariantIteration ) {
-          BaseFunctionSignature funcSignature(arguments.size());
-          funcSignature.rcode = Type<void>().index();
-          for(size_t i = 0; i < arguments.size(); ++i){
-            funcSignature.pacodes[i] = arguments.getTypeIndex(i);
-          }
-          funcSignature.applySimpleCallSignature();
 
-          Call subcallInfo;
-          subcallInfo.complete = false;
-          CallSeeker<void> seeker;
-          arguments.prepare();
-          seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
-          if (!subcallInfo.complete){
-            throw std::runtime_error("Iteratable function not found");
+
+          size_t argBufferSize = a_state.argBuffer.size();
+          if (a_ist.currentIteratorConversionsEndIndex) {
+            for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
+              _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+            }
+            CallConversion cc;
+            cc.mode        = CCM_SINGLE_PAIR_COPY;
+            cc.type        = arguments.getTypeIndex(a_ist.beginArgIndex);
+            cc.index       = a_ist.beginArgIndex;
+            _conversion(cc, a_state, arguments, INT_MAX);
           }
-          _call(subcallInfo, a_ist.currentIteratorConversions[0]->sourceIndex, arguments.getCallArguments());
+
+          bool callComplete = false;
+          if (a_graph && a_graph->get()) {
+            callWithArguments(callComplete, *a_graph->get(), arguments);
+          }
+  
+          if (!callComplete) {
+            BaseFunctionSignature funcSignature(arguments.size());
+            funcSignature.rcode = Type<void>().index();
+            for(size_t i = 0; i < arguments.size(); ++i){
+              funcSignature.pacodes[i] = arguments.getTypeIndex(i);
+            }
+            funcSignature.applySimpleCallSignature();
+
+            Call subcallInfo;
+            subcallInfo.complete = false;
+            CallSeeker<void> seeker;
+            arguments.prepare();
+            seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
+            if (!subcallInfo.complete){
+              throw std::runtime_error("Iteratable function not found");
+            }
+            if (a_graph){
+              if (!a_graph->get()){
+                a_graph->reset(new CallGraph());
+              }
+              (*a_graph)->add(subcallInfo);
+            }
+            _call(subcallInfo, a_ist.currentIteratorConversions[0]->sourceIndex, arguments.getCallArguments());
+          }
+
+          if (argBufferSize != a_state.argBuffer.size()){
+            a_state.argBuffer.resize(argBufferSize);
+          }
         } else {
           size_t argBufferSize = a_state.argBuffer.size();
           if (a_ist.currentIteratorConversionsEndIndex) {
@@ -301,7 +400,7 @@ namespace fcf {
       }
 
       template <typename TCallArguments>
-      inline void _conversion(const CallConversion& a_cc, ConversionState& a_state, TCallArguments& a_arguments, int a_iteratorIndex = -1){
+      inline bool _conversion(const CallConversion& a_cc, ConversionState& a_state, TCallArguments& a_arguments, int a_iteratorIndex = -1){
         typedef int arg_type;
         if (a_iteratorIndex < (int)a_cc.index &&
             (
@@ -313,7 +412,7 @@ namespace fcf {
           }
           a_state.iterations.back().currentIteratorConversions[a_state.iterations.back().currentIteratorConversionsEndIndex] = &a_cc;
           ++a_state.iterations.back().currentIteratorConversionsEndIndex;
-          return;
+          return false;
         }
         a_arguments.prepare(a_cc.index);
         switch(a_cc.mode) {
@@ -454,9 +553,9 @@ namespace fcf {
           default:
             break;
         } // switch(a_cc.mode) end
+
+        return true;
       }
-
-
     };
 
 

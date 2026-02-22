@@ -253,6 +253,14 @@ namespace FcfTest {
           FCF_TEST(val == 999, val);
         }
       }
+      {
+        std::vector<fcf::Variant> values({1,1,1});
+        fcf::fill(values, 999);
+        FCF_TEST(values.size() == 3, values.size());
+        for(fcf::Variant& val : values){
+          FCF_TEST(val == 999, val);
+        }
+      }
     } // void callInvariantArgumentsTest() end
 
   }

@@ -20,6 +20,8 @@ namespace fcf {
   struct TypeImpl<Ty, ContainerAccessSpecificator> {
     enum { enable = true };
 
+    typedef typename ContainerAccess<Ty>::key_type        KeyType;
+    typedef typename ContainerAccess<Ty>::value_type      ValueType;
     typedef DynamicContainerAccess< ContainerAccess<Ty> > DynamicContainerAccessType;
 
     inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {

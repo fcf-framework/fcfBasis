@@ -11,13 +11,34 @@ namespace fcf{
   namespace NDetails {
 
     template <typename Ty, typename = void>
-    struct CallCacheIsInvariantItem {
+    struct CallCacheIsInvariantType {
       enum { value = false };
     };
 
     template <typename Ty>
-    struct CallCacheIsInvariantItem<Ty, decltype((void)::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariant_value )> {
+    struct CallCacheIsInvariantType<Ty, decltype((void)::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariant_value )> {
       enum { value = ::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariant_value };
+    };
+
+    template <typename Ty, typename = void>
+    struct CallCacheIsInvariantContainer {
+      enum { value = false };
+    };
+
+    template <typename Ty>
+    struct CallCacheIsInvariantContainer<Ty, decltype((void)typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecificator>::KeyType() )> {
+      enum { 
+        value = CallCacheIsInvariantType<typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecificator>::KeyType >::value ||
+                CallCacheIsInvariantType<typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecificator>::ValueType >::value,
+      };
+    };
+
+    template <typename Ty>
+    struct CallCacheIsInvariantItem {
+      enum { 
+        value = CallCacheIsInvariantType<Ty>::value ||
+                CallCacheIsInvariantContainer<Ty>::value
+      };
     };
 
 
@@ -72,14 +93,14 @@ namespace fcf{
       private:
 
         void _addToGraph(const Call& a_call, Caller::CallGraph& a_graph){
-          Caller::ConversionsNode* node = &a_graph.conversions;
+          Caller::CallGraph::ConversionsNode* node = &a_graph.conversions;
           Call* lastDstCall  = &a_graph.conversions.call;
           for(const CallConversion& conversion : a_call.conversions){
             Caller::KeyNode ca{conversion.index, conversion.sourceIndex, conversion.mode};
-            auto insertIt = node->conversions.insert({ca, Caller::ConversionInfoNode()});
-            Caller::ConversionInfoNode* typesConversion = &insertIt.first->second;
+            auto insertIt = node->conversions.insert({ca, Caller::CallGraph::ConversionInfoNode()});
+            Caller::CallGraph::ConversionInfoNode* typesConversion = &insertIt.first->second;
             typesConversion->conversion =  conversion;
-            auto insertTypeIt = typesConversion->types.insert({conversion.type, Caller::ConversionsNode()});
+            auto insertTypeIt = typesConversion->types.insert({conversion.type, Caller::CallGraph::ConversionsNode()});
             lastDstCall = &insertTypeIt.first->second.call;
             node = &insertTypeIt.first->second;
           }
