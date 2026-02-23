@@ -838,6 +838,7 @@ namespace fcf {
                 } else if (phmap[phmapIndex] == (UINT_MAX - 1)) { // if CCM_FLAT_ITERATOR insertion
                   ++phmapIndex;
                 } else {
+                  /*
                   if (phmapIndex != node->conversion.index) {     // if insertion without converter
                     CallConversion conversion;
                     conversion.index        = phmapIndex;
@@ -848,6 +849,7 @@ namespace fcf {
                     conversion.converter    = 0;
                     state.result->conversions.push_back(conversion);
                   }
+                  */
                   phmap[phmapIndex] = phmapArgCounter;
                   ++phmapArgCounter;
                   ++phmapIndex;

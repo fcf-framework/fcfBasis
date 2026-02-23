@@ -77,6 +77,10 @@ namespace fcf{
 
         std::tuple<TArgPack*...>  tuple{(TArgPack*)&a_argPack...};
         foreach(tuple, ArgFiller(this));
+        /*
+        ArgumentInfo* infoPtr =  (ArgumentInfo*)(((void**)_ptr) + _capacity);
+        _argFill<0>(infoPtr, a_argPack...);
+        */
       }
 
       template <typename ...TArgPack>
@@ -191,6 +195,22 @@ namespace fcf{
         infoPtr->typeInfo = Type<TArg>().getTypeInfo();
         infoPtr->typeIndex = infoPtr->typeInfo->index;
       }
+
+      /*
+      template <size_t Index, typename ArgumentInfo, typename TArg, typename ... TPackArg>
+      inline void _argFill(ArgumentInfo* a_infoPtr, const TArg& a_arg, TPackArg&... a_packArg) {
+        ((void**)_ptr)[Index] = (void*)&a_arg;
+        ArgumentInfo* infoPtr = a_infoPtr + Index;
+        infoPtr->typeInfo = Type<TArg>().getTypeInfo();
+        infoPtr->typeIndex = infoPtr->typeInfo->index;
+        _argFill<Index+1>(a_infoPtr, a_packArg...);
+      }
+
+      template <size_t Index, typename ArgumentInfo>
+      inline void _argFill(ArgumentInfo*) {
+      }
+      */
+
     };
 
 
