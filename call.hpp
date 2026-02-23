@@ -24,11 +24,27 @@ namespace fcf {
   }
 
   template <typename... TArgPack>
+  inline Variant rcall(const char* a_functionName, const TArgPack& ... a_argPack) {
+    Call dc;
+    CallSeeker<void, TArgPack...>()(a_functionName, &dc, a_argPack...);
+    return NDetails::Caller().rcall(dc, a_argPack...);
+  }
+
+  template <typename... TArgPack>
   inline void call(const Call* a_dc, const TArgPack& ... a_argPack) {
     if (a_dc->dynamicCaller) {
       call(a_dc->name.c_str(), a_argPack...);
     } else {
       NDetails::Caller().call(*a_dc, a_argPack...);
+    }
+  }
+
+  template <typename... TArgPack>
+  inline void rcall(const Call* a_dc, const TArgPack& ... a_argPack) {
+    if (a_dc->dynamicCaller) {
+      return rcall(a_dc->name.c_str(), a_argPack...);
+    } else {
+      return NDetails::Caller().rcall(*a_dc, a_argPack...);
     }
   }
 

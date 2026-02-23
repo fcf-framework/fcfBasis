@@ -23,6 +23,7 @@ namespace fcf {
     struct Caller {
 
       typedef void (*wrapper_type)(void*, void**);
+      typedef Variant (*rwrapper_type)(void*, void**);
 
       struct KeyNode{
         unsigned int argument;
@@ -73,6 +74,25 @@ namespace fcf {
         ConversionsNode  conversions;
       };
 
+      struct CallExecutor {
+        inline void operator()(const Call& a_callInfo, void** a_args){
+          ((wrapper_type)a_callInfo.caller)(a_callInfo.function, a_args);
+        }
+        inline void result(){
+        }
+      };
+
+      struct RCallExecutor {
+        Variant value;
+
+        inline void operator()(const Call& a_callInfo, void** a_args){
+          value = ((rwrapper_type)a_callInfo.rcaller)(a_callInfo.function, a_args);
+        }
+
+        inline Variant& result(){
+          return value;
+        }
+      };
 
       struct IterationState {
         Variant               iterator;
@@ -121,11 +141,37 @@ namespace fcf {
       inline void call(bool& a_complete, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
         CallArgumentsExtended argumentsEx(arguments);
-        callWithArguments(a_complete, a_graph, argumentsEx);
+        CallExecutor callExecutor;
+        callWithArguments(callExecutor, a_complete, a_graph, argumentsEx);
       }
 
       template <typename... TArgPack>
-      inline void callWithArguments(bool& a_complete, CallGraph& a_graph, CallArgumentsExtended& a_argumentsEx){
+      inline Variant rcall(bool& a_complete, CallGraph& a_graph, const TArgPack& ... a_argPack){
+        CallArguments arguments(Nop(), a_argPack...);
+        CallArgumentsExtended argumentsEx(arguments);
+        RCallExecutor callExecutor;
+        callWithArguments(callExecutor, a_complete, a_graph, argumentsEx);
+        return callExecutor.result();
+      }
+
+      template <typename... TArgPack>
+      inline void call(const Call& a_callInfo, const TArgPack& ... a_argPack){
+        CallExecutor callExecutor;
+        CallArguments arguments(Nop(), a_argPack...);
+        _call(callExecutor, a_callInfo, -1, arguments);
+      }
+
+      template <typename... TArgPack>
+      inline Variant rcall(const Call& a_callInfo, const TArgPack& ... a_argPack){
+        RCallExecutor callExecutor;
+        CallArguments arguments(Nop(), a_argPack...);
+        _call(callExecutor, a_callInfo, -1, arguments);
+        return callExecutor.result();
+      }
+
+    protected:
+      template <typename TCallExecutor, typename... TArgPack>
+      inline void callWithArguments(TCallExecutor& a_callExecutor, bool& a_complete, CallGraph& a_graph, CallArgumentsExtended& a_argumentsEx){
         StaticVector<GraphPosition, 16> stack;
 
         ConversionState state;
@@ -166,27 +212,23 @@ namespace fcf {
         if (pcall){
           a_complete = true;
           a_argumentsEx.prepare();
-          _execution(state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
+          _execution(a_callExecutor, state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
         } else {
           a_complete = false;
         }
       }
 
-      template <typename... TArgPack>
-      inline void call(const Call& a_callInfo, const TArgPack& ... a_argPack){
-        CallArguments arguments(Nop(), a_argPack...);
-        _call(a_callInfo, -1, arguments);
-      }
-
-    protected:
-       inline void _execution(ConversionState& a_state,
-                             const Call& a_callInfo, 
-                             int a_lastIterationArgumentIndex,
-                             CallArguments& a_arguments,
-                             std::shared_ptr<CallGraph>* a_graph = 0) {
+      template <typename TCallExecutor>
+      inline void _execution(
+                              TCallExecutor& a_callExecutor,
+                              ConversionState& a_state,
+                              const Call& a_callInfo,
+                              int a_lastIterationArgumentIndex,
+                              CallArguments& a_arguments,
+                              std::shared_ptr<CallGraph>* a_graph = 0) {
         (void)a_graph;
 
-        if (a_state.iterations.size() && (!a_state.iterations.back().currentIteratorConversionsEndIndex 
+        if (a_state.iterations.size() && (!a_state.iterations.back().currentIteratorConversionsEndIndex
              || (a_lastIterationArgumentIndex < (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex) )){
           for(size_t i = 0; i < a_state.iterations.size(); ++i){
             IterationState& ist = a_state.iterations[i];
@@ -223,7 +265,7 @@ namespace fcf {
 
                   bool callComplete = false;
                   if (a_graph && a_graph->get()) {
-                    callWithArguments(callComplete, *a_graph->get(), arguments);
+                    callWithArguments(a_callExecutor, callComplete, *a_graph->get(), arguments);
                   }
 
                   if (!callComplete) {
@@ -245,7 +287,7 @@ namespace fcf {
                       }
                       (*a_graph)->add(subcallInfo);
                     }
-                    _call(subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments.getCallArguments());
+                    _call(a_callExecutor, subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments.getCallArguments());
                   }
 
 
@@ -260,25 +302,27 @@ namespace fcf {
                     }
                   }
                   a_arguments.prepare();
-                  ((wrapper_type)a_callInfo.caller)(a_callInfo.function, a_arguments.getArguments());
+                  a_callExecutor(a_callInfo, a_arguments.getArguments());
                   if (argBufferSize != a_state.argBuffer.size()){
                     a_state.argBuffer.resize(argBufferSize);
                   }
                 }
                 iterator->inc();
               }
-            } else { // if (ist.iterator.ptr()) 
+            } else { // if (ist.iterator.ptr())
               a_arguments.prepare();
               void* ptrSource               = *(void**)a_arguments.getArgument(ist.beginArgIndex);
               void* endSource               = *(void**)a_arguments.getArgument(ist.endArgIndex);
               unsigned int valueTypeIndex   = TypeIndexConverter<>::removeLevelPointer(ist.typeIndex);
               const TypeInfo* valueTypeInfo = fcf::getTypeInfo(valueTypeIndex);
               while(ptrSource < endSource) {
-                _iterationSeparatePair(a_state,
+                _iterationSeparatePair(
+                            a_callExecutor,
+                            a_state,
                             a_callInfo,
                             ist,
                             valueTypeIndex,
-                            ptrSource, 
+                            ptrSource,
                             (void*)((char*)ptrSource + valueTypeInfo->size),
                             a_arguments.getCallArguments(),
                             a_graph
@@ -290,12 +334,12 @@ namespace fcf {
           }
         } else {
           a_arguments.prepare();
-          ((wrapper_type)a_callInfo.caller)(a_callInfo.function, a_arguments.getArguments());
+          a_callExecutor(a_callInfo, a_arguments.getArguments());
         }
       }
 
-      template <typename ... TArgPack>
-      inline void _call(const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments){
+      template <typename TCallExecutor, typename ... TArgPack>
+      inline void _call(TCallExecutor& a_callExecutor, const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments){
         ConversionState state;
 
         CallArgumentsExtended eargs(a_arguments);
@@ -306,17 +350,19 @@ namespace fcf {
         }
 
         eargs.prepare();
-        _execution(state, a_callInfo, a_lastIterationArgumentIndex, eargs.getCallArguments());
+        _execution(a_callExecutor, state, a_callInfo, a_lastIterationArgumentIndex, eargs.getCallArguments());
       }
 
 
-      template <typename... TArgPack>
-      inline void _iterationSeparatePair( ConversionState& a_state, 
-                                          const Call& a_callInfo, 
-                                          IterationState& a_ist, 
-                                          unsigned int /*a_valueTypeIndex*/, 
-                                          void* a_begin, 
-                                          void* a_end, 
+      template <typename TCallExecutor, typename... TArgPack>
+      inline void _iterationSeparatePair(
+                                          TCallExecutor& a_callExecutor,
+                                          ConversionState& a_state,
+                                          const Call& a_callInfo,
+                                          IterationState& a_ist,
+                                          unsigned int /*a_valueTypeIndex*/,
+                                          void* a_begin,
+                                          void* a_end,
                                           CallArguments& a_arguments,
                                           std::shared_ptr<CallGraph>* a_graph = 0){
         CallArgumentsExtended arguments(a_arguments);
@@ -340,9 +386,9 @@ namespace fcf {
 
           bool callComplete = false;
           if (a_graph && a_graph->get()) {
-            callWithArguments(callComplete, *a_graph->get(), arguments);
+            callWithArguments(a_callExecutor, callComplete, *a_graph->get(), arguments);
           }
-  
+
           if (!callComplete) {
             BaseFunctionSignature funcSignature(arguments.size());
             funcSignature.rcode = Type<void>().index();
@@ -365,7 +411,7 @@ namespace fcf {
               }
               (*a_graph)->add(subcallInfo);
             }
-            _call(subcallInfo, a_ist.currentIteratorConversions[0]->sourceIndex, arguments.getCallArguments());
+            _call(a_callExecutor, subcallInfo, a_ist.currentIteratorConversions[0]->sourceIndex, arguments.getCallArguments());
           }
 
           if (argBufferSize != a_state.argBuffer.size()){
@@ -379,7 +425,7 @@ namespace fcf {
             }
           }
           arguments.prepare();
-          ((wrapper_type)a_callInfo.caller)(a_callInfo.function, a_arguments.getArguments());
+          a_callExecutor(a_callInfo, a_arguments.getArguments());
           if (argBufferSize != a_state.argBuffer.size()){
             a_state.argBuffer.resize(argBufferSize);
           }

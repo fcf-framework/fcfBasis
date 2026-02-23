@@ -2,6 +2,7 @@
 #define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SELECTION_FUNCTION_INFO_HPP___
 
 #include "../../FunctionSignature.hpp"
+#include "../../Variant.hpp"
 #include "../../bits/PartCallPlaceHolder/CallPlaceHolderInfo.hpp"
 
 namespace fcf {
@@ -12,6 +13,7 @@ namespace fcf {
     BaseFunctionSignature                   callerSignature;
     unsigned int                            index;
     void                                    (*lcaller)(void*, void**);
+    Variant                                 (*rcaller)(void*, void**);
     PlaceHolderType                         placeHolder;
   };
 

@@ -11,6 +11,7 @@ namespace fcf{
     bool                            dynamicCaller;
     void*                           function;
     void*                           caller;
+    void*                           rcaller;
     StaticVector<CallConversion, 8> conversions;
     StaticVector<unsigned short, 8> argsMap;
     std::string                     name;

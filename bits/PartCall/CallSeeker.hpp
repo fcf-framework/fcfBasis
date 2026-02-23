@@ -50,7 +50,6 @@ namespace fcf{
         this->_call(a_functionName, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
       }
 
-
     protected:
       void _call(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments){
         CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);

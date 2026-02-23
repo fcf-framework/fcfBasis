@@ -107,12 +107,30 @@ namespace fcf {
         groupIt->second.maxArgumentCount = std::max(groupIt->second.maxArgumentCount, (unsigned int)sizeof...(TArgPack));
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
-        groupIt->second.callers.insert({scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(), CallStorageSelectionFunctionInfo::PlaceHolderType()}});
+        groupIt->second.callers.insert({
+            scs, 
+            CallStorageSelectionFunctionInfo{
+              scs, 
+              index, 
+              NDetails::CallWrapper<function_type>::getWrapper(),
+              NDetails::CallWrapper<function_type>::getRWrapper(),
+              CallStorageSelectionFunctionInfo::PlaceHolderType()
+            }
+          });
         CallStorageSelectionFunctionsByArgNumber::iterator itTree = groupIt->second.callersTree.find(scs.asize);
         if (itTree == groupIt->second.callersTree.end()) {
           itTree = groupIt->second.callersTree.insert({scs.asize, {}});
         }
-        itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{scs, index, NDetails::CallWrapper<function_type>::getWrapper(), CallStorageSelectionFunctionInfo::PlaceHolderType() } });
+        itTree->second.insert({ 
+                    scs, 
+                    CallStorageSelectionFunctionInfo{
+                      scs, 
+                      index, 
+                      NDetails::CallWrapper<function_type>::getWrapper(),
+                      NDetails::CallWrapper<function_type>::getRWrapper(),
+                      CallStorageSelectionFunctionInfo::PlaceHolderType()
+                    } 
+                  });
 
         typename TPlaceHolderSignatures::signatures_type signatures;
         PlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
@@ -185,6 +203,7 @@ namespace fcf {
                                       scs,
                                       index,
                                       NDetails::CallWrapper<TFunction>::getWrapper(),
+                                      NDetails::CallWrapper<TFunction>::getRWrapper(),
                                       placeHolder
                                       }
                                     });
@@ -197,6 +216,7 @@ namespace fcf {
                                                                       scs,
                                                                       index,
                                                                       NDetails::CallWrapper<TFunction>::getWrapper(),
+                                                                      NDetails::CallWrapper<TFunction>::getRWrapper(),
                                                                       placeHolder
                                                                       }
                                 } );

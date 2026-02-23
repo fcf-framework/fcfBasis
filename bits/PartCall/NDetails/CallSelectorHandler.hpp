@@ -679,6 +679,7 @@ namespace fcf {
         if (!state.dynamicCaller && state.invariantIteration) {
           state.result->complete = true;
           state.result->caller   = 0;
+          state.result->rcaller   = 0;
           state.result->function = 0;
           state.result->argCount = state.groupIterator->second.maxArgumentCount;
           state.result->name = state.name;
@@ -736,6 +737,7 @@ namespace fcf {
           pCall = &range.first->second;
           state.result->complete = true;
           state.result->caller   = (void*)range.first->second.lcaller;
+          state.result->rcaller  = (void*)range.first->second.rcaller;
           state.result->function = getCallStorage().functions[range.first->second.index].function;
           state.result->argCount = range.first->second.callerSignature.asize;
           state.result->name = state.name;
