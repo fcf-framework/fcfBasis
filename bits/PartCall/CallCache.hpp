@@ -16,9 +16,15 @@ namespace fcf{
       }
 
       template <typename ...TInputPackArg>
-      inline void operator()(TInputPackArg&&... a_packArg){
-        _handler(a_packArg...);
+      inline void call(TInputPackArg&&... a_packArg){
+        _handler.call(a_packArg...);
       }
+
+      template <typename ...TInputPackArg>
+      inline Variant rcall(TInputPackArg&&... a_packArg){
+        return _handler.rcall(a_packArg...);
+      }
+
     private:
       NDetails::CallCacheHandler< invariant_value, TPackArg... > _handler;
   };

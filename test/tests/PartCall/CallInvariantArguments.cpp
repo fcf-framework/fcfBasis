@@ -8,7 +8,7 @@ namespace fcf {
   template <typename ...TPackArg>
   void fill(TPackArg&&... a_packArg){
     static CallCache<TPackArg...> builder("fill", a_packArg...);
-    builder(a_packArg...);
+    builder.call(a_packArg...);
   }
 } // fcf namespace
 

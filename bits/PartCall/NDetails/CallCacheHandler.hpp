@@ -62,8 +62,13 @@ namespace fcf{
         }
 
         template <typename ...TInputPackArg>
-        inline void operator()(TInputPackArg&&... a_argPack){
+        inline void call(TInputPackArg&&... a_argPack){
           NDetails::Caller().call(_call, a_argPack...);
+        }
+
+        template <typename ...TInputPackArg>
+        inline Variant rcall(TInputPackArg&&... a_argPack){
+          return NDetails::Caller().rcall(_call, a_argPack...);
         }
 
       private:
@@ -79,7 +84,7 @@ namespace fcf{
         }
 
         template <typename ...TInputPackArg>
-        inline void operator()(TInputPackArg&&... a_argPack){
+        inline void call(TInputPackArg&&... a_argPack){
           bool complete = false;
           Caller().call(complete, _graph, a_argPack...);
 
@@ -89,6 +94,21 @@ namespace fcf{
             _addToGraph(dc, _graph);
             NDetails::Caller().call(dc, a_argPack...);
           }
+        }
+
+        template <typename ...TInputPackArg>
+        inline Variant rcall(TInputPackArg&&... a_argPack){
+          bool complete = false;
+          Variant res = Caller().rcall(complete, _graph, a_argPack...);
+
+          if (!complete) {
+            fcf::Call dc;
+            fcf::CallSeeker<void, TPackArg...>()(_functionName.c_str(), &dc, a_argPack...);
+            _addToGraph(dc, _graph);
+            res = NDetails::Caller().rcall(dc, a_argPack...);
+          }
+
+          return res;
         }
       private:
 
