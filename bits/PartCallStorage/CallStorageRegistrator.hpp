@@ -107,8 +107,10 @@ namespace fcf {
         groupIt->second.maxArgumentCount = std::max(groupIt->second.maxArgumentCount, (unsigned int)sizeof...(TArgPack));
 
         BaseFunctionSignature scs = fs.getSimpleCallSignature();
+        BaseFunctionSignature sscs = scs;
+        sscs.rcode = Type<void>().index();
         groupIt->second.callers.insert({
-            scs, 
+            sscs, 
             CallStorageSelectionFunctionInfo{
               scs, 
               index, 
@@ -122,7 +124,7 @@ namespace fcf {
           itTree = groupIt->second.callersTree.insert({scs.asize, {}});
         }
         itTree->second.insert({ 
-                    scs, 
+                    sscs, 
                     CallStorageSelectionFunctionInfo{
                       scs, 
                       index, 
@@ -148,14 +150,15 @@ namespace fcf {
 
         template <typename TSignatures>
         void registry(TSignatures& a_signatures){
+          if (fs.asize >= groupIt->second.argumentOptions.size()){
+            groupIt->second.argumentOptions.resize(fs.asize, 0);
+          }
+
           _specificatorsData.clear();
           _argumentOptions.clear();
           fcf::foreach(a_signatures, *this);
 
           for(const std::pair<unsigned int, unsigned int>& options : _argumentOptions){
-            if (options.first >= groupIt->second.argumentOptions.size()){
-              groupIt->second.argumentOptions.resize(options.first+1, 0);
-            }
             groupIt->second.argumentOptions[options.first] |= options.second;
 
             std::pair<std::map<unsigned int, unsigned int>::iterator, bool> argumentOptionsInsertInfo
@@ -189,6 +192,7 @@ namespace fcf {
         void mapRegistry(const std::list<::fcf::CallPlaceHolderInfo>& a_specDataState){
           BaseFunctionSignature phs = fs.getPlaceHolderSignature(a_specDataState.begin(), a_specDataState.end());
           phs.applySimpleCallSignature();
+          phs.rcode = Type<void>().index();
 
           std::vector<::fcf::CallPlaceHolderInfo> placeHolder(a_specDataState.size());
           size_t i = 0;
@@ -212,7 +216,9 @@ namespace fcf {
           if (itTree == groupIt->second.callersTree.end()) {
             itTree = groupIt->second.callersTree.insert({phs.asize, {}});
           }
-          itTree->second.insert({ scs, CallStorageSelectionFunctionInfo{
+          BaseFunctionSignature sscs = scs;
+          sscs.rcode = Type<void>().index();
+          itTree->second.insert({ sscs, CallStorageSelectionFunctionInfo{
                                                                       scs,
                                                                       index,
                                                                       NDetails::CallWrapper<TFunction>::getWrapper(),

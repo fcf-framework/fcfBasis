@@ -594,6 +594,7 @@ namespace fcf {
               void* ptr = (*(char**)a_arguments.getArgument(a_cc.index)) + ti->size;
               a_state.argBuffer.push_back( Variant((int*)ptr)  );
               a_arguments.setArgument(a_cc.index+1, a_state.argBuffer.back().ptr());
+              a_arguments.setArgumentInfo(a_cc.index+1, a_arguments.getArgumentInfo(a_cc.index));
             }
             break;
           default:

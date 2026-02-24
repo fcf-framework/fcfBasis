@@ -1,0 +1,95 @@
+#include <iostream>
+#include <exception>
+#include <chrono>
+#include "../../libraries/fcfTest/test.hpp"
+#include "../../../basis.hpp"
+
+
+namespace FcfTest {
+  namespace BasisTest {
+
+    int sum(int a_left, int a_right){
+      return a_left + a_right;
+    }
+
+    int sum(int* a_left, int* a_right){
+      int res = 0;
+      while(a_left != a_right){
+        res += *a_left;
+        ++a_left;
+      }
+      return res;
+    }
+
+    int sum(int* a_res, int* a_left, int* a_right){
+      while(a_left != a_right){
+        *a_res += *a_left;
+        ++a_left;
+      }
+      return *a_res;
+    }
+
+  } // namespace BasisTest
+} // namespace FcfTest
+
+FCF_DECLARE_FUNCTION(sum,
+                     "engine_cpu",
+                     FcfTest::BasisTest::sum,
+                     int (*) (int, int),
+                     (),
+                    );
+
+FCF_DECLARE_FUNCTION(sum,
+                     "engine_cpu",
+                     FcfTest::BasisTest::sum,
+                     int (*) (int*, int*),
+                     (
+                       (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER>),
+                     ),
+                    );
+
+FCF_DECLARE_FUNCTION(sum,
+                     "engine_cpu",
+                     FcfTest::BasisTest::sum,
+                     int (*) (int*, int*, int*),
+                     (
+                       (fcf::CallOptions, 2, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER | fcf::CAO_PAIR_SEGMENTATION>),
+                     ),
+                    );
+
+
+
+namespace FcfTest {
+  namespace BasisTest {
+
+
+    void callResultTest(){
+      std::cout << "Start callResultTest()..." << std::endl;
+      {
+        fcf::Variant res = fcf::rcall("sum", 1, 2);
+        FCF_TEST(res == 3, res);
+      }
+      {
+        std::vector<int> v = {1,2,3,4};
+        fcf::Variant res = fcf::rcall("sum", v);
+        FCF_TEST(res == 10, res);
+      }
+      {
+        int buffer = 0;
+        std::vector<fcf::Variant> v = {fcf::Variant(1), fcf::Variant(2), fcf::Variant(3), fcf::Variant(4)};
+        fcf::Variant res = fcf::rcall("sum", (int*)&buffer, v);
+        FCF_TEST(res == 10, res);
+      }
+      /*
+      {
+        int buffer = 0;
+        std::vector<fcf::Variant> v = {fcf::Variant(1), fcf::Variant(2.1), fcf::Variant("3"), fcf::Variant("4.1")};
+        fcf::Variant res = fcf::rcall("sum", (int*)&buffer, v);
+        FCF_TEST(res == 10, res);
+      }
+      */
+    }
+
+  } // namespace BasisTest
+} // namespace FcfTest
+

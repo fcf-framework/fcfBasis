@@ -20,6 +20,7 @@ namespace FcfTest {
     void placeHolderCall();
 
     void callInvariantArgumentsTest();
+    void callResultTest();
     void callSpeedTest();
     void callIterationsTest();
     void callZeroIterationsTest();
@@ -63,7 +64,8 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   variantTest();
 
   FcfTest::BasisTest::callInvariantArgumentsTest();
-   FcfTest::BasisTest::callSpeedTest();
+  FcfTest::BasisTest::callResultTest();
+  FcfTest::BasisTest::callSpeedTest();
   FcfTest::BasisTest::callIterationsTest();
   FcfTest::BasisTest::callZeroIterationsTest();
 

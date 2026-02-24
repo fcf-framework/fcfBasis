@@ -18,7 +18,7 @@ namespace FcfTest {
     void callSpeedTest(){
       std::cout << "Start callSpeedTest()..." << std::endl;
 
-      const size_t iterationCount = 10*1024*1024;
+      const size_t iterationCount = 1024*1024;
 
 
       // OLD DURTION: 120ns
@@ -47,7 +47,7 @@ namespace FcfTest {
         fcf::NTest::Duration duration(iterationCount);
         duration.begin();
         for(size_t i = 0; i < duration.iterations(); ++i) {
-          fcf::fill(v, 999);
+          fcf::fill(v, 999.1);
         }
         duration.end();
         std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;

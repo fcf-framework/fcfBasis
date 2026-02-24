@@ -531,7 +531,10 @@ namespace fcf {
         if (!a_isIterationMode && 
             !a_currentInputArgument->singleStepIteration && 
             !a_currentInputArgument->pairCounter && 
-            state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER
+            state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER &&
+            a_inputArgumentIndex+1 < inputArguments.size() &&
+            inputArguments[a_inputArgumentIndex].clearTypeIndex == inputArguments[a_inputArgumentIndex+1].clearTypeIndex &&
+            TypeIndexConverter<>::isPointer(inputArguments[a_inputArgumentIndex].typeIndex)
           ) {
 
           if (a_inputArgumentIndex + 1 < inputArguments.size()) {
