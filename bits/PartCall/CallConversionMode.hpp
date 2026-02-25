@@ -9,14 +9,15 @@ namespace fcf{
     CCM_RESOLVE          = 2,
     CCM_POINTER_RESOLVE  = 3,
     CCM_CONVERT          = 4,
-    CCM_DYNAMIC_RESOLVE  = 5,
-    CCM_FLAT_ITERATOR    = 6,
-    CCM_ITERATOR         = 7,
-    CCM_FLAT_PAIR        = 8,
-    CCM_SEPARATE_PAIR    = 9,
-    CCM_PLACE_HOLDER     = 10,
-    CCM_SINGLE_PAIR      = 11,
-    CCM_SINGLE_PAIR_COPY = 12,
+    CCM_PTR_CONVERT      = 5,
+    CCM_DYNAMIC_RESOLVE  = 6,
+    CCM_FLAT_ITERATOR    = 7,
+    CCM_ITERATOR         = 8,
+    CCM_FLAT_PAIR        = 9,
+    CCM_SEPARATE_PAIR    = 10,
+    CCM_PLACE_HOLDER     = 11,
+    CCM_SINGLE_PAIR      = 12,
+    CCM_SINGLE_PAIR_COPY = 13,
   };
 
 } // fcf namespace

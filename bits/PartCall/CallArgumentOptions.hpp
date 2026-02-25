@@ -9,8 +9,9 @@ namespace fcf{
 
   enum {
     CAO_RESOLVE_POINTER        = 1,
-    CAO_PAIR_ITERATION_POINTER = 2,
-    CAO_PAIR_SEGMENTATION      = 4,
+    CAO_CONVERT_POINTER        = 2,
+    CAO_PAIR_ITERATION_POINTER = 4,
+    CAO_PAIR_SEGMENTATION      = 8,
   };
 
   template <unsigned int Flags>

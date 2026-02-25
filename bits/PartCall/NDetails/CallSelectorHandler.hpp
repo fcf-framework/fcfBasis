@@ -69,7 +69,6 @@ namespace fcf {
       CallSelectorState&              state;
 
       void operator()(CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
-        unsigned int sourceTypeIndex       = state.ptrFunctionSignature->pacodes[a_argumentIndex];
         InputArgument* currentInputArgument = a_currentInputArgument ? a_currentInputArgument : &inputArguments[a_inputArgumentIndex];
 
         size_t originPlaceHolderVecSize = state.placeHolderVec.size();
@@ -160,126 +159,23 @@ namespace fcf {
         }
 
        if (state.strictSource && !currentInputArgument->ignoreConvertSeeker) {
-          CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
-          if (treeIt != state.groupIterator->second.callersTree.end()){
-            BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
-            for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
-              shortSign.pacodes[i] = 0;
+          _convertOperation(false, currentInputArgument->clearTypeIndex, a_node, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+          if (state.result->complete) {
+            return;
+          }
+          if (
+              TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex) &&
+              state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_CONVERT_POINTER
+             ) {
+            unsigned unptrTypeIndex = TypeIndexConverter<>::removeLevelPointer(currentInputArgument->clearTypeIndex);
+            state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_CONVERT_POINTER});
+            _convertOperation(true, unptrTypeIndex, a_node, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+            if (state.result->complete) {
+              return;
             }
-            CallStorageSelectionFunctionsMap::iterator rightIt = treeIt->second.lower_bound(shortSign);
-            CallStorageSelectionFunctionsMap::iterator leftIt = rightIt;
-            if (rightIt != treeIt->second.end()) {
-              if (leftIt != treeIt->second.end()) {
-                --leftIt;
-              }
-
-              // right side
-              unsigned int rtypeIndex = rightIt->first.pacodes[a_argumentIndex];
-              unsigned int rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
-              ConvertFunction convertFunction = getConvertFunction(rtypeSimpleIndex, currentInputArgument->clearTypeIndex, 0);
-              if (convertFunction){
-
-                bool popReqArgFlag = false;
-                bool ignore = false;
-
-                if (TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex)) {
-                  if (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER){
-                    state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_RESOLVE_POINTER});
-                    popReqArgFlag = true;
-                  } else {
-                    ignore = true;
-                  }
-                }
-
-                if (!ignore) {
-                  CallConversionNode curnode;
-                  curnode.prev = 0;
-                  curnode.next = 0;
-                  curnode.conversion.index = a_argumentIndex;
-                  curnode.conversion.sourceIndex = a_inputArgumentIndex;
-                  curnode.conversion.type = rtypeSimpleIndex;
-                  curnode.conversion.mode = CCM_CONVERT;
-                  curnode.conversion.invariantIteration = false;
-                  curnode.conversion.converter = (void*)convertFunction;
-                  if (a_node){
-                    a_node->next = &curnode;
-                    curnode.prev = a_node;
-                  }
-                  state.ptrFunctionSignature->pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(rtypeIndex);
-
-                  InputArgument nextTypeInputArgument;
-                  _createCurrentInputArgument(nextTypeInputArgument, *currentInputArgument, rtypeSimpleIndex, 0, currentInputArgument->enablePtrSpecificators);
-                  nextTypeInputArgument.ignoreConvertSeeker = true;
-
-                  (*this)(&curnode, &nextTypeInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
-                  state.ptrFunctionSignature->pacodes[a_argumentIndex] = sourceTypeIndex;
-                  if (state.result->complete) {
-                    return;
-                  }
-                  if (a_node) {
-                    a_node->next = 0;
-                  }
-                  if (popReqArgFlag){
-                    state.requiredArgumentsFlags.pop_back();
-                  }
-                }
-              }
-
-              // left side
-              if (leftIt != treeIt->second.end()) {
-                unsigned int rtypeIndex = leftIt->first.pacodes[a_argumentIndex];
-                unsigned int rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
-                ConvertFunction convertFunction = getConvertFunction(rtypeSimpleIndex, currentInputArgument->clearTypeIndex, 0);
-                if (convertFunction){
-                  bool popReqArgFlag = false;
-                  bool ignore = false;
-
-                  if (TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex)) {
-                    if (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER){
-                      state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_RESOLVE_POINTER});
-                      popReqArgFlag = true;
-                    } else {
-                      ignore = true;
-                    }
-                  }
-
-                  if (!ignore) {
-                    CallConversionNode curnode;
-                    curnode.prev = 0;
-                    curnode.next = 0;
-                    curnode.conversion.index = a_argumentIndex;
-                    curnode.conversion.sourceIndex = a_inputArgumentIndex;
-                    curnode.conversion.type = rtypeSimpleIndex;
-                    curnode.conversion.mode = CCM_CONVERT;
-                    curnode.conversion.invariantIteration = false;
-                    curnode.conversion.converter = (void*)convertFunction;
-                    if (a_node){
-                      a_node->next = &curnode;
-                      curnode.prev = a_node;
-                    }
-                    state.ptrFunctionSignature->pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(rtypeIndex);
-
-                    InputArgument nextTypeInputArgument;
-                    _createCurrentInputArgument(nextTypeInputArgument, *currentInputArgument, rtypeSimpleIndex, 0, currentInputArgument->enablePtrSpecificators);
-                    nextTypeInputArgument.ignoreConvertSeeker = true;
-
-                    (*this)(&curnode, &nextTypeInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
-                    state.ptrFunctionSignature->pacodes[a_argumentIndex] = sourceTypeIndex;
-                    if (state.result->complete) {
-                      return;
-                    }
-                    if (a_node) {
-                      a_node->next = 0;
-                    }
-                    if (popReqArgFlag){
-                      state.requiredArgumentsFlags.pop_back();
-                    }
-                  }
-                }
-              }
-            } // if (leftIt != treeIt->second.end()) end
-          } // if (treeIt != state.groupIterator->second.callersTree.end()) end
-        } // if (a_iasd.strictSource) end
+            state.requiredArgumentsFlags.pop_back();
+          }
+       } // if (state.strictSource && !currentInputArgument->ignoreConvertSeeker) end
 
         if ( state.strictSource &&
              a_argumentIndex < state.groupIterator->second.argumentOptions.size() &&
@@ -463,6 +359,127 @@ namespace fcf {
         state.placeHolderVec.resize(originPlaceHolderVecSize);
       }
 
+      void _convertOperation(bool a_isPointerMode, unsigned int a_clearTypeIndex, CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
+        unsigned int sourceTypeIndex       = state.ptrFunctionSignature->pacodes[a_argumentIndex];
+        CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
+        if (treeIt != state.groupIterator->second.callersTree.end()){
+          BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
+          for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
+            shortSign.pacodes[i] = 0;
+          }
+          CallStorageSelectionFunctionsMap::iterator rightIt = treeIt->second.lower_bound(shortSign);
+          CallStorageSelectionFunctionsMap::iterator leftIt = rightIt;
+          if (rightIt != treeIt->second.end()) {
+            // right side
+            unsigned int rtypeIndex       = rightIt->first.pacodes[a_argumentIndex];
+            unsigned int rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
+            unsigned int converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
+            ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, 0);
+            if (convertFunction) {
+              bool popReqArgFlag = false;
+              bool ignore = false;
+
+              if (TypeIndexConverter<>::isSinglePointer(a_clearTypeIndex)) {
+                if (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER){
+                  state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_RESOLVE_POINTER});
+                  popReqArgFlag = true;
+                } else {
+                  ignore = true;
+                }
+              }
+
+              if (!ignore) {
+                CallConversionNode curnode;
+                curnode.prev = 0;
+                curnode.next = 0;
+                curnode.conversion.index = a_argumentIndex;
+                curnode.conversion.sourceIndex = a_inputArgumentIndex;
+                curnode.conversion.type = rtypeSimpleIndex;
+                curnode.conversion.mode = a_isPointerMode ? CCM_PTR_CONVERT : CCM_CONVERT;
+                curnode.conversion.invariantIteration = true;
+                curnode.conversion.converter = (void*)convertFunction;
+                if (a_node){
+                  a_node->next = &curnode;
+                  curnode.prev = a_node;
+                }
+                state.ptrFunctionSignature->pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(rtypeIndex);
+
+                InputArgument nextTypeInputArgument;
+                _createCurrentInputArgument(nextTypeInputArgument, *a_currentInputArgument, rtypeSimpleIndex, 0, a_currentInputArgument->enablePtrSpecificators);
+                nextTypeInputArgument.ignoreConvertSeeker = true;
+
+                (*this)(&curnode, &nextTypeInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+                state.ptrFunctionSignature->pacodes[a_argumentIndex] = sourceTypeIndex;
+                if (state.result->complete) {
+                  return;
+                }
+                if (a_node) {
+                  a_node->next = 0;
+                }
+                if (popReqArgFlag){
+                  state.requiredArgumentsFlags.pop_back();
+                }
+              }
+            }
+          }
+
+          // left side
+          if (leftIt != treeIt->second.begin()) {
+            --leftIt;
+            unsigned int rtypeIndex = leftIt->first.pacodes[a_argumentIndex];
+            unsigned int rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
+            unsigned int converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
+            ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, 0);
+            if (convertFunction){
+              bool popReqArgFlag = false;
+              bool ignore = false;
+
+              if (TypeIndexConverter<>::isSinglePointer(a_clearTypeIndex)) {
+                if (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER){
+                  state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_RESOLVE_POINTER});
+                  popReqArgFlag = true;
+                } else {
+                  ignore = true;
+                }
+              }
+
+              if (!ignore) {
+                CallConversionNode curnode;
+                curnode.prev = 0;
+                curnode.next = 0;
+                curnode.conversion.index = a_argumentIndex;
+                curnode.conversion.sourceIndex = a_inputArgumentIndex;
+                curnode.conversion.type = rtypeSimpleIndex;
+                curnode.conversion.mode = a_isPointerMode ? CCM_PTR_CONVERT : CCM_CONVERT;
+                curnode.conversion.invariantIteration = true;
+                curnode.conversion.converter = (void*)convertFunction;
+                if (a_node){
+                  a_node->next = &curnode;
+                  curnode.prev = a_node;
+                }
+                state.ptrFunctionSignature->pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(rtypeIndex);
+
+                InputArgument nextTypeInputArgument;
+                _createCurrentInputArgument(nextTypeInputArgument, *a_currentInputArgument, rtypeSimpleIndex, 0, a_currentInputArgument->enablePtrSpecificators);
+                nextTypeInputArgument.ignoreConvertSeeker = true;
+
+                (*this)(&curnode, &nextTypeInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+                state.ptrFunctionSignature->pacodes[a_argumentIndex] = sourceTypeIndex;
+                if (state.result->complete) {
+                  return;
+                }
+                if (a_node) {
+                  a_node->next = 0;
+                }
+                if (popReqArgFlag){
+                  state.requiredArgumentsFlags.pop_back();
+                }
+              }
+            }
+          } // if (leftIt != treeIt->second.end()) end
+        } // if (treeIt != state.groupIterator->second.callersTree.end()) end
+      }
+
       static ::fcf::CallPlaceHolderArg* _getNextPlaceHolder(CallStorageSelectionFunctionInfo* pCall, int a_currentArgNumber){
         ::fcf::CallPlaceHolderArg* result = 0;
         unsigned int minValue = UINT_MAX;
@@ -566,7 +583,7 @@ namespace fcf {
               bool enableSeparate = isSinglePair;
               CallConversionNode* cnode = node;
               while (true) {
-                if ((cnode->conversion.mode == CCM_RESOLVE || cnode->conversion.mode == CCM_POINTER_RESOLVE) && cnode->conversion.invariantIteration){
+                if ((cnode->conversion.mode == CCM_RESOLVE || cnode->conversion.mode == CCM_POINTER_RESOLVE || cnode->conversion.mode == CCM_CONVERT || cnode->conversion.mode == CCM_PTR_CONVERT ) && cnode->conversion.invariantIteration){
                   enableSeparate = true;
                 }
 
@@ -787,7 +804,7 @@ namespace fcf {
                 singleIterationLastIndex = begNode->conversion.index;
               }
               if (
-                   (begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE) && 
+                   (begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE || begNode->conversion.mode == CCM_CONVERT || begNode->conversion.mode == CCM_PTR_CONVERT) && 
                    begNode->conversion.invariantIteration &&
                    singleIterationLastIndex != begNode->conversion.index
                   ){

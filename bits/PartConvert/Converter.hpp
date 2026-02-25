@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___
 #define ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___
 
+#include <climits>
 #include <algorithm>
 #include <string>
 #include <sstream>
@@ -45,6 +46,93 @@ namespace fcf {
           throw std::runtime_error(std::string() + "Ne ne string format for '" + Type<TDestination>().name() + "' type");
         }
         std::swap(a_destination, result);
+      }
+  };
+
+
+  template <>
+  class Converter<3, short, std::string>{
+    public:
+      void operator()(short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoi(a_source);
+        if (a_destination < SHRT_MIN){
+          throw std::runtime_error("Exceeding the SHRT_MIN value");
+        }
+        if (a_destination > SHRT_MAX){
+          throw std::runtime_error("Exceeding the SHRT_MAX value");
+        }
+      }
+  };
+
+
+  template <>
+  class Converter<3, unsigned short, std::string>{
+    public:
+      void operator()(unsigned short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoul(a_source);
+        if (a_destination > USHRT_MAX){
+          throw std::runtime_error("Exceeding the USHRT_MAX value");
+        }
+      }
+  };
+
+  template <>
+  class Converter<3, int, std::string>{
+    public:
+      void operator()(int& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoi(a_source);
+      }
+  };
+
+
+  template <>
+  class Converter<3, unsigned int, std::string>{
+    public:
+      void operator()(unsigned int& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoul(a_source);
+        if (a_destination > UINT_MAX){
+          throw std::runtime_error("Exceeding the UINT_MAX value");
+        }
+      }
+  };
+
+  template <>
+  class Converter<3, long, std::string>{
+    public:
+      void operator()(long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stol(a_source);
+      }
+  };
+
+  template <>
+  class Converter<3, unsigned long, std::string>{
+    public:
+      void operator()(unsigned long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoul(a_source);
+      }
+  };
+
+  template <>
+  class Converter<3, long long, std::string>{
+    public:
+      void operator()(long long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoll(a_source);
+      }
+  };
+
+  template <>
+  class Converter<3, unsigned long long, std::string>{
+    public:
+      void operator()(unsigned long long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = std::stoull(a_source);
       }
   };
 

@@ -53,7 +53,7 @@ FCF_DECLARE_FUNCTION(sum,
                      FcfTest::BasisTest::sum,
                      int (*) (int*, int*, int*),
                      (
-                       (fcf::CallOptions, 2, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER | fcf::CAO_PAIR_SEGMENTATION>),
+                       (fcf::CallOptions, 2, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER | fcf::CAO_PAIR_SEGMENTATION  | fcf::CAO_RESOLVE_POINTER | fcf::CAO_CONVERT_POINTER >),
                      ),
                     );
 
@@ -80,14 +80,14 @@ namespace FcfTest {
         fcf::Variant res = fcf::rcall("sum", (int*)&buffer, v);
         FCF_TEST(res == 10, res);
       }
-      /*
+      
       {
         int buffer = 0;
-        std::vector<fcf::Variant> v = {fcf::Variant(1), fcf::Variant(2.1), fcf::Variant("3"), fcf::Variant("4.1")};
+        std::vector<fcf::Variant> v = {1, 2.1, "3", "4.1"};
         fcf::Variant res = fcf::rcall("sum", (int*)&buffer, v);
         FCF_TEST(res == 10, res);
       }
-      */
+      
     }
 
   } // namespace BasisTest

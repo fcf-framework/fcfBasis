@@ -494,6 +494,20 @@ namespace fcf {
               a_arguments.setTypeIndex(a_cc.index, a_cc.type);
             }
             break;
+          case CCM_PTR_CONVERT:
+            {
+              const size_t argBufferIndex = a_state.argBuffer.size();
+              if ((argBufferIndex+1) >= ConversionState::BUFFER_CAPACITY){
+                throw std::runtime_error("Argument buffer overflow");
+              }
+              unsigned int currentType = TypeIndexConverter<>::removeLevelPointer( a_arguments.getTypeIndex(a_cc.index) );
+              unsigned int expectedType = TypeIndexConverter<>::removeLevelPointer(a_cc.type);
+              a_state.argBuffer.push_back(::fcf::Variant(expectedType, *(const void**)a_arguments.getArgument(a_cc.index), currentType, (ConvertOptions*)0, (ConvertFunction)a_cc.converter));
+              a_state.argBuffer.push_back(::fcf::Variant( (int*)a_state.argBuffer.back().ptr() ));
+              a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
+              a_arguments.setTypeIndex(a_cc.index, a_cc.type);
+            }
+            break;
           case CCM_PLACE_HOLDER:
             {
               int* aptr = (int*)a_arguments.getArgument(a_cc.index);
