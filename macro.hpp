@@ -403,19 +403,29 @@
     #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder) \
       _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR a_placeHolder) )
 
-    #define _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-    #define _FCF_DECLARE_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_DECLARE_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
+    #define _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                  a_varName##_##a_arg1##_##a_arg2##_##a_arg3##_##a_arg4##_##a_arg5##_##a_line
+    #define _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                  _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5)
+
+    #define _FCF_DECLARE_FUNCTION__NAME_RESOLVE_1(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                  a_arg1 "::" a_arg2 "::" a_arg3 "::" a_arg4 "::" a_arg5
+    #define _FCF_DECLARE_FUNCTION__NAME_RESOLVE_0(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                  _FCF_DECLARE_FUNCTION__NAME_RESOLVE_1(#a_arg1, #a_arg2, #a_arg3, #a_arg4, #a_arg5)
+    #define _FCF_DECLARE_FUNCTION__NAME_RESOLVE(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                  _FCF_DECLARE_FUNCTION__NAME_RESOLVE_0(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5)
+
     #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
       a_sourceCode; \
       ::fcf::CallStorageRegistrator \
-        _FCF_DECLARE_FUNCTION__VARNAME(functionRegistrator, a_name, __COUNTER__) \
+        _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE(functionRegistrator, __COUNTER__, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_name),,,,,,,,) \
           (\
-            #a_name, \
+            _FCF_DECLARE_FUNCTION__NAME_RESOLVE( FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_name),,,,,,,,), \
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>(a_sourceName),\
             ::fcf::NDetails::CallPlaceHolderSignatures <\
-              _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder)\
+              _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder )\
             > (),\
             #a_sourceCode\
           );

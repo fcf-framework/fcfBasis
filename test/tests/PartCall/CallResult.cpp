@@ -32,14 +32,16 @@ namespace FcfTest {
   } // namespace BasisTest
 } // namespace FcfTest
 
-FCF_DECLARE_FUNCTION(sum,
+FCF_DECLARE_FUNCTION(
+                     (fcftest,sum),
                      "engine_cpu",
                      FcfTest::BasisTest::sum,
                      int (*) (int, int),
                      (),
                     );
 
-FCF_DECLARE_FUNCTION(sum,
+FCF_DECLARE_FUNCTION(
+                     (fcftest,sum),
                      "engine_cpu",
                      FcfTest::BasisTest::sum,
                      int (*) (int*, int*),
@@ -48,7 +50,8 @@ FCF_DECLARE_FUNCTION(sum,
                      ),
                     );
 
-FCF_DECLARE_FUNCTION(sum,
+FCF_DECLARE_FUNCTION(
+                     (fcftest,sum),
                      "engine_cpu",
                      FcfTest::BasisTest::sum,
                      int (*) (int*, int*, int*),
@@ -66,28 +69,43 @@ namespace FcfTest {
     void callResultTest(){
       std::cout << "Start callResultTest()..." << std::endl;
       {
-        fcf::Variant res = fcf::rcall("sum", 1, 2);
+        fcf::Variant res = fcf::rcall("fcftest::sum", 1, 2);
         FCF_TEST(res == 3, res);
       }
       {
         std::vector<int> v = {1,2,3,4};
-        fcf::Variant res = fcf::rcall("sum", v);
+        fcf::Variant res = fcf::rcall("fcftest::sum", v);
         FCF_TEST(res == 10, res);
       }
       {
         int buffer = 0;
         std::vector<fcf::Variant> v = {fcf::Variant(1), fcf::Variant(2), fcf::Variant(3), fcf::Variant(4)};
-        fcf::Variant res = fcf::rcall("sum", (int*)&buffer, v);
+        fcf::Variant res = fcf::rcall("fcftest::sum", (int*)&buffer, v);
         FCF_TEST(res == 10, res);
       }
-      
       {
         int buffer = 0;
         std::vector<fcf::Variant> v = {1, 2.1, "3", "4.1"};
-        fcf::Variant res = fcf::rcall("sum", (int*)&buffer, v);
+        fcf::Variant res = fcf::rcall("fcftest::sum", (int*)&buffer, v);
         FCF_TEST(res == 10, res);
       }
-      
+      {
+        int buffer = 0;
+        std::list<fcf::Variant> v = {1, 2.1, "3", "4.1"};
+        fcf::Variant res = fcf::rcall("fcftest::sum", (int*)&buffer, v);
+        FCF_TEST(res == 10, res);
+      }
+      {
+        int buffer = 0;
+        fcf::Variant res = fcf::rcall("fcftest::sum", (int*)&buffer, std::list<fcf::Variant>{1, 2.1, "3", "4.1"});
+        FCF_TEST(res == 10, res);
+      }
+      {
+        int buffer = 0;
+        std::list<fcf::Variant> v;
+        fcf::Variant res = fcf::rcall("fcftest::sum", (int*)&buffer, v);
+        FCF_TEST(res.empty());
+      }
     }
 
   } // namespace BasisTest

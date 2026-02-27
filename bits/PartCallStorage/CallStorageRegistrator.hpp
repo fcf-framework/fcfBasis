@@ -1,7 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
 #define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
 
-
+#include <algorithm>
 #include "../../foreach.hpp"
 #include "CallStorageSpace.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
@@ -15,13 +15,15 @@
 namespace fcf {
 
     struct CallStorageRegistrator {
+
       template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-      CallStorageRegistrator(const std::string& a_name,
+      CallStorageRegistrator(      std::string a_name,
                                    const std::string& a_space,
                                    const std::string& a_sourceName,
                                    TFunctionResult (*a_function)(TArgPack...),
                                    TPlaceHolderSignatures /*a_phs*/,
                                    std::string a_sourceCode = std::string()){
+        a_name = _rtrim(a_name);
         typedef TFunctionResult (*function_type)(TArgPack...);
         FunctionSignature<TFunctionResult (TArgPack...)> fs;
         CallStorageFunctionIndexes::iterator it = getCallStorage().indexes.find(fs);
@@ -143,6 +145,14 @@ namespace fcf {
         placeHolderRegistrator.groupIt = groupIt;
         placeHolderRegistrator.registry(signatures);
       }
+
+      inline std::string _rtrim(std::string a_str) {
+        size_t len = a_str.length(), i = len;
+        for(; i && a_str[i-1] == ':'; --i);
+        a_str.erase(i, len);
+        return a_str;
+      }
+
 
       template <typename TFunction, typename TFunctionResult, typename ...TArgPack>
       struct PlaceHolderRegistrator {
