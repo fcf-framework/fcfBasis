@@ -86,46 +86,33 @@ namespace fcf{
         template <typename ...TInputPackArg>
         inline void call(TInputPackArg&&... a_argPack){
           bool complete = false;
-          Caller().call(complete, _graph, a_argPack...);
+          Caller caller;
+          caller.call(complete, _graph, a_argPack...);
 
           if (!complete) {
             fcf::Call dc;
             fcf::CallSeeker<void, TPackArg...>()(_functionName.c_str(), &dc, a_argPack...);
-            _addToGraph(dc, _graph);
-            NDetails::Caller().call(dc, a_argPack...);
+            _graph.add(dc);
+            caller.call(dc, a_argPack...);
           }
         }
 
         template <typename ...TInputPackArg>
         inline Variant rcall(TInputPackArg&&... a_argPack){
           bool complete = false;
-          Variant res = Caller().rcall(complete, _graph, a_argPack...);
+          Caller caller;
+          Variant res = caller.rcall(complete, _graph, a_argPack...);
 
           if (!complete) {
             fcf::Call dc;
             fcf::CallSeeker<void, TPackArg...>()(_functionName.c_str(), &dc, a_argPack...);
-            _addToGraph(dc, _graph);
-            res = NDetails::Caller().rcall(dc, a_argPack...);
+            _graph.add(dc);
+            res = caller.rcall(dc, a_argPack...);
           }
 
           return res;
         }
-      private:
 
-        void _addToGraph(const Call& a_call, Caller::CallGraph& a_graph){
-          Caller::CallGraph::ConversionsNode* node = &a_graph.conversions;
-          Call* lastDstCall  = &a_graph.conversions.call;
-          for(const CallConversion& conversion : a_call.conversions){
-            Caller::KeyNode ca{conversion.index, conversion.sourceIndex, conversion.mode};
-            auto insertIt = node->conversions.insert({ca, Caller::CallGraph::ConversionInfoNode()});
-            Caller::CallGraph::ConversionInfoNode* typesConversion = &insertIt.first->second;
-            typesConversion->conversion =  conversion;
-            auto insertTypeIt = typesConversion->types.insert({conversion.type, Caller::CallGraph::ConversionsNode()});
-            lastDstCall = &insertTypeIt.first->second.call;
-            node = &insertTypeIt.first->second;
-          }
-          *lastDstCall = a_call;
-        }
         Caller::CallGraph _graph;
         std::string _functionName;
     };

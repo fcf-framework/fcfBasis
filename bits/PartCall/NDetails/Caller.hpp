@@ -9,6 +9,7 @@
 #include "../../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "../CallConversionMode.hpp"
+#include "../CallOptions.hpp"
 #include "CallArgsTypeIndexes.hpp"
 #include "CallPairArgumentNode.hpp"
 #include "../CallSeeker.hpp"
@@ -137,6 +138,16 @@ namespace fcf {
         std::map<KeyNode, CallGraph::ConversionInfoNode>::iterator             conversionEnd;
       };
 
+      const CallOptions* callOptions;
+
+      Caller()
+        : callOptions(0) {
+      }
+
+      Caller(const CallOptions* a_callOptions)
+        : callOptions(a_callOptions){
+      }
+
       template <typename... TArgPack>
       inline void call(bool& a_complete, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
@@ -250,15 +261,27 @@ namespace fcf {
                   CallArgumentsExtended arguments(a_arguments);
 
                   size_t argBufferSize = a_state.argBuffer.size();
-                  if (ist.currentIteratorConversionsEndIndex) {
-                    for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
-                      _conversion(*ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+                  try {
+                    if (ist.currentIteratorConversionsEndIndex) {
+                      for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
+                        _conversion(*ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+                      }
+                      CallConversion cc;
+                      cc.mode        = CCM_SINGLE_PAIR_COPY;
+                      cc.type        = arguments.getTypeIndex(ist.beginArgIndex);
+                      cc.index       = ist.beginArgIndex;
+                      _conversion(cc, a_state, arguments, INT_MAX);
                     }
-                    CallConversion cc;
-                    cc.mode        = CCM_SINGLE_PAIR_COPY;
-                    cc.type        = arguments.getTypeIndex(ist.beginArgIndex);
-                    cc.index       = ist.beginArgIndex;
-                    _conversion(cc, a_state, arguments, INT_MAX);
+                  } catch(const std::exception& e){
+                    if (argBufferSize != a_state.argBuffer.size()){
+                      a_state.argBuffer.resize(argBufferSize);
+                    }
+                    iterator->inc();
+                    if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                      continue;
+                    } else {
+                      throw;
+                    }
                   }
 
                   arguments.prepare();
@@ -276,9 +299,21 @@ namespace fcf {
                     }
                     funcSignature.applySimpleCallSignature();
 
-                    seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
-                    if (!subcallInfo.complete){
-                      throw std::runtime_error("Iteratable function not found");
+                    try {
+                      seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
+                      if (!subcallInfo.complete){
+                        throw std::runtime_error("Iteratable function not found");
+                      }
+                    } catch(std::exception& e){
+                      if (argBufferSize != a_state.argBuffer.size()){
+                        a_state.argBuffer.resize(argBufferSize);
+                      }
+                      iterator->inc();
+                      if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                        continue;
+                      } else {
+                        throw;
+                      }
                     }
 
                     if (a_graph){
@@ -296,10 +331,22 @@ namespace fcf {
                   }
                 } else {
                   size_t argBufferSize = a_state.argBuffer.size();
-                  if (ist.currentIteratorConversionsEndIndex) {
-                    for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
-                      _conversion(*ist.currentIteratorConversions[i], a_state, a_arguments, INT_MAX);
+                  try {
+                    if (ist.currentIteratorConversionsEndIndex) {
+                      for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
+                        _conversion(*ist.currentIteratorConversions[i], a_state, a_arguments, INT_MAX);
+                      }
                     }
+                  } catch(std::exception&) {
+                      if (argBufferSize != a_state.argBuffer.size()){
+                        a_state.argBuffer.resize(argBufferSize);
+                      }
+                      iterator->inc();
+                      if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                        continue;
+                      } else {
+                        throw;
+                      }
                   }
                   a_arguments.prepare();
                   a_callExecutor(a_callInfo, a_arguments.getArguments());
@@ -373,16 +420,28 @@ namespace fcf {
 
 
           size_t argBufferSize = a_state.argBuffer.size();
-          if (a_ist.currentIteratorConversionsEndIndex) {
-            for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
-              _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+          try {
+            if (a_ist.currentIteratorConversionsEndIndex) {
+              for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
+                _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+              }
+              CallConversion cc;
+              cc.mode        = CCM_SINGLE_PAIR_COPY;
+              cc.type        = arguments.getTypeIndex(a_ist.beginArgIndex);
+              cc.index       = a_ist.beginArgIndex;
+              _conversion(cc, a_state, arguments, INT_MAX);
             }
-            CallConversion cc;
-            cc.mode        = CCM_SINGLE_PAIR_COPY;
-            cc.type        = arguments.getTypeIndex(a_ist.beginArgIndex);
-            cc.index       = a_ist.beginArgIndex;
-            _conversion(cc, a_state, arguments, INT_MAX);
+          } catch(std::exception&) {
+              if (argBufferSize != a_state.argBuffer.size()){
+                a_state.argBuffer.resize(argBufferSize);
+              }
+              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                return;
+              } else {
+                throw;
+              }
           }
+
 
           bool callComplete = false;
           if (a_graph && a_graph->get()) {
@@ -401,9 +460,21 @@ namespace fcf {
             subcallInfo.complete = false;
             CallSeeker<void> seeker;
             arguments.prepare();
-            seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
-            if (!subcallInfo.complete){
-              throw std::runtime_error("Iteratable function not found");
+
+            try {
+              seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
+              if (!subcallInfo.complete){
+                throw std::runtime_error("Iteratable function not found");
+              }
+            } catch(const std::exception& e){
+              if (argBufferSize != a_state.argBuffer.size()){
+                a_state.argBuffer.resize(argBufferSize);
+              }
+              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                return;
+              } else {
+                throw;
+              }
             }
             if (a_graph){
               if (!a_graph->get()){
@@ -419,11 +490,24 @@ namespace fcf {
           }
         } else {
           size_t argBufferSize = a_state.argBuffer.size();
-          if (a_ist.currentIteratorConversionsEndIndex) {
-            for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
-              _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+
+          try {
+            if (a_ist.currentIteratorConversionsEndIndex) {
+              for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
+                _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
+              }
+            }
+          } catch(const std::exception& e){
+            if (argBufferSize != a_state.argBuffer.size()){
+              a_state.argBuffer.resize(argBufferSize);
+            }
+            if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+              return;
+            } else {
+              throw;
             }
           }
+
           arguments.prepare();
           a_callExecutor(a_callInfo, a_arguments.getArguments());
           if (argBufferSize != a_state.argBuffer.size()){
@@ -618,9 +702,6 @@ namespace fcf {
         return true;
       }
     };
-
-
-
   } // NDetails namespace
 } // fcf namespace
 

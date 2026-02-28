@@ -7,7 +7,7 @@ namespace fcf{
   struct BaseCallArgumentOptions {
   };
 
-  enum {
+  enum CallArgumentOptionsFlags {
     CAO_RESOLVE_POINTER        = 1,
     CAO_CONVERT_POINTER        = 2,
     CAO_PAIR_ITERATION_POINTER = 4,

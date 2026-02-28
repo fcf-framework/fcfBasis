@@ -24,6 +24,7 @@ add_executable("basis-test" impl.cpp
                            StaticVector/StaticVectorNotReduce.cpp
                            StaticVector/StaticVectorErase.cpp
                            PartCall/CallInvariantArguments.cpp
+                           PartCall/CallQuietOptions.cpp
                            PartCall/CallResult.cpp
                            PartCall/CallSpeed.cpp
                            PartCall/CallWithIterations.cpp
