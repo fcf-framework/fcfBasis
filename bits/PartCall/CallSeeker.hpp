@@ -4,6 +4,8 @@
 #include "NDetails/CallSelector.hpp"
 #include "NDetails/CallPairArgumentNode.hpp"
 #include "NDetails/CallArguments.hpp"
+#include "../../convert.hpp"
+#include "../../Exception.hpp"
 
 namespace fcf{
 
@@ -32,11 +34,11 @@ namespace fcf{
         return (*this)(a_functionName, (BaseFunctionSignature*)0, (BaseFunctionSignature*)0, a_result, ca);
       }
 
-      void operator()(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, NDetails::CallArguments& a_arguments){
+      void operator()(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, NDetails::CallArguments& a_arguments, bool a_quiet = false){
         State state;
         state.init = true;
         state.strictSource = true;
-        this->_call(a_functionName, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
+        this->_call(a_functionName, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments, a_quiet);
       }
 
       void packSearch(const char* a_functionName,
@@ -51,12 +53,7 @@ namespace fcf{
       }
 
     protected:
-      void _call(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments){
-        CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);
-        if (groupIt == getCallStorage().groups.end()) {
-          throw std::runtime_error("Function not found.");
-        }
-
+      void _call(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments, bool a_quiet = false){
         BaseFunctionSignature functionSignature(a_callArguments.size());
         BaseFunctionSignature* currentFunctionSignature;
         if (!a_functionSignature){
@@ -68,6 +65,11 @@ namespace fcf{
           currentFunctionSignature = &functionSignature;
         } else {
           currentFunctionSignature = a_functionSignature;
+        }
+
+        CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);
+        if (groupIt == getCallStorage().groups.end()) {
+          throw CallNotFoundException(__FILE__, __LINE__, a_functionName, convert<std::string>((const BaseFunctionSignature&)*currentFunctionSignature));
         }
 
         if (a_state.init) {
@@ -89,8 +91,8 @@ namespace fcf{
           }
         }
 
-        if (!a_result->complete) {
-          throw std::runtime_error("Function not found. No signature found.");
+        if (!a_result->complete && !a_quiet) {
+          throw CallNotFoundException(__FILE__, __LINE__, a_functionName, convert<std::string>((const BaseFunctionSignature&)*currentFunctionSignature));
         }
       }
   };

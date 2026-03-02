@@ -5,7 +5,9 @@
 #include <type_traits>
 #include <map>
 #include <memory>
+#include "../../../convert.hpp"
 #include "../../../FunctionSignature.hpp"
+#include "../../../Exception.hpp"
 #include "../../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "../CallConversionMode.hpp"
@@ -125,9 +127,11 @@ namespace fcf {
         enum {
           BUFFER_CAPACITY = 16
         };
-        ConversionState()
-          : currentIteratorArgumentIndex(INT_MAX) {
+        ConversionState(const char* a_functionName)
+          : functionName(a_functionName)
+          , currentIteratorArgumentIndex(INT_MAX) {
         }
+        const char*                                          functionName;
         int                                                  currentIteratorArgumentIndex;
         StaticVector<fcf::Variant, BUFFER_CAPACITY>          argBuffer;
         StaticVector<IterationState>                         iterations;
@@ -149,19 +153,19 @@ namespace fcf {
       }
 
       template <typename... TArgPack>
-      inline void call(bool& a_complete, CallGraph& a_graph, const TArgPack& ... a_argPack){
+      inline void call(bool& a_complete, const char* a_functionName, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
         CallArgumentsExtended argumentsEx(arguments);
         CallExecutor callExecutor;
-        callWithArguments(callExecutor, a_complete, a_graph, argumentsEx);
+        callWithArguments(callExecutor, a_complete, a_functionName, a_graph, argumentsEx);
       }
 
       template <typename... TArgPack>
-      inline Variant rcall(bool& a_complete, CallGraph& a_graph, const TArgPack& ... a_argPack){
+      inline Variant rcall(bool& a_complete, const char* a_functionName, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
         CallArgumentsExtended argumentsEx(arguments);
         RCallExecutor callExecutor;
-        callWithArguments(callExecutor, a_complete, a_graph, argumentsEx);
+        callWithArguments(callExecutor, a_complete, a_functionName, a_graph, argumentsEx);
         return callExecutor.result();
       }
 
@@ -182,10 +186,10 @@ namespace fcf {
 
     protected:
       template <typename TCallExecutor, typename... TArgPack>
-      inline void callWithArguments(TCallExecutor& a_callExecutor, bool& a_complete, CallGraph& a_graph, CallArgumentsExtended& a_argumentsEx){
+      inline void callWithArguments(TCallExecutor& a_callExecutor, bool& a_complete, const char* a_functionName, CallGraph& a_graph, CallArgumentsExtended& a_argumentsEx){
         StaticVector<GraphPosition, 16> stack;
 
-        ConversionState state;
+        ConversionState state(a_functionName);
 
         CallGraph::ConversionsNode*            pnode     = &a_graph.conversions;
         const Call*                 pcall     = pnode->call.complete ? &pnode->call : 0;
@@ -288,7 +292,7 @@ namespace fcf {
 
                   bool callComplete = false;
                   if (a_graph && a_graph->get()) {
-                    callWithArguments(a_callExecutor, callComplete, *a_graph->get(), arguments);
+                    callWithArguments(a_callExecutor, callComplete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
                   }
 
                   if (!callComplete) {
@@ -300,11 +304,21 @@ namespace fcf {
                     funcSignature.applySimpleCallSignature();
 
                     try {
-                      seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
+                      seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments(), true);
                       if (!subcallInfo.complete){
-                        throw std::runtime_error("Iteratable function not found");
+                        throw std::bad_function_call();
                       }
-                    } catch(std::exception& e){
+                    } catch(const std::bad_function_call&){
+                      if (argBufferSize != a_state.argBuffer.size()){
+                        a_state.argBuffer.resize(argBufferSize);
+                      }
+                      iterator->inc();
+                      if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                        continue;
+                      } else {
+                        throw CallIterableNotFoundException(__FILE__, __LINE__, a_callInfo.name, a_arguments.getStringRepresentationTypes());
+                      }
+                    } catch(const std::exception&){
                       if (argBufferSize != a_state.argBuffer.size()){
                         a_state.argBuffer.resize(argBufferSize);
                       }
@@ -387,7 +401,7 @@ namespace fcf {
 
       template <typename TCallExecutor, typename ... TArgPack>
       inline void _call(TCallExecutor& a_callExecutor, const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments){
-        ConversionState state;
+        ConversionState state(a_callInfo.name.c_str());
 
         CallArgumentsExtended eargs(a_arguments);
 
@@ -445,7 +459,7 @@ namespace fcf {
 
           bool callComplete = false;
           if (a_graph && a_graph->get()) {
-            callWithArguments(a_callExecutor, callComplete, *a_graph->get(), arguments);
+            callWithArguments(a_callExecutor, callComplete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
           }
 
           if (!callComplete) {
@@ -462,11 +476,20 @@ namespace fcf {
             arguments.prepare();
 
             try {
-              seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments());
+              seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments(), true);
               if (!subcallInfo.complete){
-                throw std::runtime_error("Iteratable function not found");
+                throw std::bad_function_call();
               }
-            } catch(const std::exception& e){
+            } catch(const std::bad_function_call&) {
+              if (argBufferSize != a_state.argBuffer.size()){
+                a_state.argBuffer.resize(argBufferSize);
+              }
+              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                return;
+              } else {
+                throw CallIterableNotFoundException(__FILE__, __LINE__, a_callInfo.name, a_arguments.getStringRepresentationTypes());
+              }
+            } catch(const std::exception&){
               if (argBufferSize != a_state.argBuffer.size()){
                 a_state.argBuffer.resize(argBufferSize);
               }
@@ -538,7 +561,7 @@ namespace fcf {
             )
           ){
           if (a_state.iterations.back().currentIteratorConversionsEndIndex >= FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE){
-            throw std::runtime_error("Iteration conversion buffer overflow (FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE macro)");
+            throw CallIterationConversionBufferOverflowException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
           }
           a_state.iterations.back().currentIteratorConversions[a_state.iterations.back().currentIteratorConversionsEndIndex] = &a_cc;
           ++a_state.iterations.back().currentIteratorConversionsEndIndex;
@@ -560,7 +583,7 @@ namespace fcf {
               ResolveData rd = converter(*(arg_type**)a_arguments.getArgument(a_cc.index));
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex) >= ConversionState::BUFFER_CAPACITY){
-                throw std::runtime_error("Argument buffer overflow");
+                throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
               a_state.argBuffer.push_back(::fcf::Variant((arg_type*)rd.data));
               a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
@@ -571,7 +594,7 @@ namespace fcf {
             {
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex) >= ConversionState::BUFFER_CAPACITY){
-                throw std::runtime_error("Argument buffer overflow");
+                throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
               a_state.argBuffer.push_back(::fcf::Variant(a_cc.type, (const void*)a_arguments.getArgument(a_cc.index), a_arguments.getTypeIndex(a_cc.index), (ConvertOptions*)0, (ConvertFunction)a_cc.converter));
               a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
@@ -582,7 +605,7 @@ namespace fcf {
             {
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex+1) >= ConversionState::BUFFER_CAPACITY){
-                throw std::runtime_error("Argument buffer overflow");
+                throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
               unsigned int currentType = TypeIndexConverter<>::removeLevelPointer( a_arguments.getTypeIndex(a_cc.index) );
               unsigned int expectedType = TypeIndexConverter<>::removeLevelPointer(a_cc.type);
@@ -617,12 +640,12 @@ namespace fcf {
                 const CallPlaceHolderArgEx& phae = a_cc.placeHolders[i];
                 const size_t argBufferIndex = a_state.argBuffer.size();
                 if (argBufferIndex >= ConversionState::BUFFER_CAPACITY){
-                  throw std::runtime_error("Argument buffer overflow");
+                  throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
                 }
                 a_state.argBuffer.resize(argBufferIndex+1);
 
                 if (phae.placeHolderArgument-1 >= callResultsSize) {
-                  throw std::runtime_error("The function of the specificator returned an insufficient number of arguments");
+                  throw CallSpecificatorArgumentCountException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
                 }
 
                 a_state.argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].getTypeIndex());
@@ -639,11 +662,11 @@ namespace fcf {
               Variant viterator = converter(a_arguments.getArgument(a_cc.index), 0, 0);
               DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
               if (!iterator){
-                throw std::runtime_error("Failed to get left bound of argument");
+                throw CallIteratorGettingException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex+2) >= ConversionState::BUFFER_CAPACITY){
-                throw std::runtime_error("Argument buffer overflow");
+                throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
 
               unsigned int ptrTypeIndex = TypeIndexConverter<>::addLevelPointer( iterator->getValueTypeIndex() );
@@ -665,7 +688,7 @@ namespace fcf {
               a_state.iterations.push_back(IterationState(converter(a_arguments.getArgument(a_cc.index), 0, 0), a_cc.index, a_cc.index+1, 0));
               DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)a_state.iterations.back().iterator.ptr();
               if (!iterator){
-                throw std::runtime_error("Failed to get left bound of argument");
+                throw CallIteratorGettingException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
               a_state.currentIteratorArgumentIndex = a_cc.index;
 
@@ -685,7 +708,7 @@ namespace fcf {
             {
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex+1) >= ConversionState::BUFFER_CAPACITY){
-                throw std::runtime_error("Argument buffer overflow");
+                throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
 
               const TypeInfo* ti = fcf::getTypeInfo( TypeIndexConverter<>::removeLevelPointer(a_cc.type) );

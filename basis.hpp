@@ -7,6 +7,8 @@
 
 #include "Type.hpp"
 
+#include "Exception.hpp"
+
 #include "foreach.hpp"
 
 #include "./FunctionSignature.hpp"

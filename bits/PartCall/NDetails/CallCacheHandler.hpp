@@ -84,10 +84,24 @@ namespace fcf{
         }
 
         template <typename ...TInputPackArg>
+        inline void call(const CallOptions& a_callOptions, TInputPackArg&&... a_argPack){
+          bool complete = false;
+          Caller caller(&a_callOptions);
+          caller.call(complete, _functionName.c_str(), _graph, a_argPack...);
+
+          if (!complete) {
+            fcf::Call dc;
+            fcf::CallSeeker<void, TPackArg...>()(_functionName.c_str(), &dc, a_argPack...);
+            _graph.add(dc);
+            caller.call(dc, a_argPack...);
+          }
+        }
+
+        template <typename ...TInputPackArg>
         inline void call(TInputPackArg&&... a_argPack){
           bool complete = false;
           Caller caller;
-          caller.call(complete, _graph, a_argPack...);
+          caller.call(complete, _functionName.c_str(), _graph, a_argPack...);
 
           if (!complete) {
             fcf::Call dc;
@@ -101,7 +115,23 @@ namespace fcf{
         inline Variant rcall(TInputPackArg&&... a_argPack){
           bool complete = false;
           Caller caller;
-          Variant res = caller.rcall(complete, _graph, a_argPack...);
+          Variant res = caller.rcall(complete, _functionName.c_str(), _graph, a_argPack...);
+
+          if (!complete) {
+            fcf::Call dc;
+            fcf::CallSeeker<void, TPackArg...>()(_functionName.c_str(), &dc, a_argPack...);
+            _graph.add(dc);
+            res = caller.rcall(dc, a_argPack...);
+          }
+
+          return res;
+        }
+
+        template <typename ...TInputPackArg>
+        inline Variant rcall(const CallOptions& a_callOptions, TInputPackArg&&... a_argPack){
+          bool complete = false;
+          Caller caller(&a_callOptions);
+          Variant res = caller.rcall(complete, _functionName.c_str(), _graph, a_argPack...);
 
           if (!complete) {
             fcf::Call dc;

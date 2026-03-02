@@ -5,6 +5,7 @@
 #include "../../../StaticVector.hpp"
 #include "../../../Type.hpp"
 #include "../../../foreach.hpp"
+#include "../../../Exception.hpp"
 
 namespace fcf{
   namespace NDetails {
@@ -186,6 +187,21 @@ namespace fcf{
         return *this;
       }
 
+      inline CallArguments& getSourceCallArguments(){
+        return *this;
+      }
+
+      inline std::string getStringRepresentationTypes(){
+        std::string result;
+        for(size_t i = 0; i < size(); ++i){
+          if (i){
+            result += ", ";
+          }
+          result += getTypeInfo(i)->name;
+        }
+        return result;
+      }
+
     protected:
       FCF_FOREACH_METHOD_WRAPPER(ArgFiller, CallArguments, _argFiller);
       template <typename TTuple, typename TArg>
@@ -232,13 +248,17 @@ namespace fcf{
           return *_current;
         }
 
+        inline CallArguments& getSourceCallArguments(){
+          return _source;
+        }
+
         inline void extend(size_t a_index){
           _current = &_buffer;
           if (a_index) {
             prepare((ptrdiff_t)a_index-1);
           }
           if (a_index < _buffer.size()) {
-            throw std::runtime_error("Extend argumnt error");
+            throw CallArgumentBufferOverflowException(__FILE__, __LINE__, _source.getStringRepresentationTypes());
           }
           _buffer.resize(a_index+1);
           _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{ Type<void>().index(), Type<void>().getTypeInfo() });

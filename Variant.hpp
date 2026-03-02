@@ -17,7 +17,7 @@
 #include "bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "bits/PartVariant/NDetails/VariantAllocator.hpp"
 #include "bits/PartContainerAccess/VariantCursor.hpp"
-
+#include "bits/PartException/Exception.hpp"
 
 namespace fcf{
 

@@ -114,6 +114,17 @@ namespace fcf{
         }
       }
 
+      StaticVector(const Ty* a_begin, size_t a_size)
+        : _pdata((Ty*)&_adata[0])
+        , _sdata(0)
+        , _cdata(StaticSize) {
+        _forceRealloc(_getBufferSize(a_size));
+        for(size_t i = 0; i != a_size; ++i){
+          new (&_pdata[_sdata]) Ty(a_begin[i]);
+          ++_sdata;
+        }
+      }
+
       StaticVector(size_t a_size, const Ty& a_fill)
         : _pdata((Ty*)&_adata[0])
         , _sdata(0)
@@ -221,6 +232,11 @@ namespace fcf{
             _pdata[_sdata].~Ty();
           }
         }
+      }
+
+      void reserve(size_t a_size) {
+        size_t newBufferSize = _getBufferSize(a_size);
+        _realloc(newBufferSize, a_size < _sdata ? a_size : _sdata);
       }
 
       void resize(size_t a_size, bool a_notReduce = false) {

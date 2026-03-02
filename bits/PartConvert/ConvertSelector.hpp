@@ -1,6 +1,8 @@
 #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_SELECTOR_HPP___
 #define ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_SELECTOR_HPP___
 
+#include "Converter.hpp"
+
 namespace fcf {
 
   namespace NDetails {

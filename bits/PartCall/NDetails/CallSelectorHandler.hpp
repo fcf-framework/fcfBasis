@@ -4,6 +4,7 @@
 #include <climits>
 #include <algorithm>
 #include "../../../foreach.hpp"
+#include "../../../convert.hpp"
 #include "../../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../../bits/PartType/getTypeInfo.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
@@ -94,7 +95,7 @@ namespace fcf {
               }
             }
             if (curSpecNodesSize == curSpecNodesMaxSize){
-              throw std::runtime_error("Overflow specificator vector size");
+              throw CallPlaceholderBufferOverflowException(__FILE__, __LINE__, state.name, convert<std::string>(state.functionSignature));
             }
 
             CallConversionNode& curnode = curSpecNodes[curSpecNodesSize];
@@ -851,7 +852,7 @@ namespace fcf {
               node->conversion.index += phmapOffset;
               while(phmapIndex <= node->conversion.index){
                 if (phmapIndex >= phmap.size()){
-                  throw std::runtime_error("Invalid logic into CallSelectorHandler (complete step filling flags)");
+                  throw LogicException(__FILE__, __LINE__, "into CallSelectorHandler (complete step filling flags)");
                 }
                 if (phmap[phmapIndex] == UINT_MAX){               // if PLACE HOLDER insertion
                   ++phmapOffset;
@@ -880,10 +881,10 @@ namespace fcf {
 
               if (node->conversion.mode == CCM_FLAT_ITERATOR || node->conversion.mode == CCM_ITERATOR) {
                 if (phmap[phmapIndex] == UINT_MAX){
-                  throw std::runtime_error("Invalid logic into CallSelectorHandler (Placeholder overflow (pos1))");
+                  throw LogicException(__FILE__, __LINE__, "into CallSelectorHandler (Placeholder overflow)");
                 }
                 if (phmapIndex >= phmap.size()){
-                  throw std::runtime_error("Invalid logic into CallSelectorHandler (Placeholder overflow (pos2))");
+                  throw LogicException(__FILE__, __LINE__, "into CallSelectorHandler (Placeholder overflow)");
                 }
                 phmap[phmapIndex] = (UINT_MAX - 1);
               } else if (node->conversion.mode == CCM_PLACE_HOLDER && pCall) {
@@ -917,7 +918,7 @@ namespace fcf {
                   if (state.invariantIteration) {
                     break;
                   } else {
-                    throw std::runtime_error("Invalid logic into CallSelectorHandler (argument map overflow)");
+                    throw LogicException(__FILE__, __LINE__, "into CallSelectorHandler (argument map overflow)");
                   }
                 }
                 state.result->argsMap[srcArgCounter] = i;

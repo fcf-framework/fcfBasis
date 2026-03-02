@@ -457,6 +457,155 @@
     #define FCF_GET_FUNCTION(a_index) \
       ::fcf::getCallStorage().functions[a_index].function
   #endif // #ifndef FCF_GET_FUNCTION
+/*
+  #define FCF_EXCEPTION_DECLARE(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename ...TArgPack>\
+        am_type(const char* a_file, unsigned int a_line, const TArgPack&... a_argPack)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_argPack... ){\
+        }\
+        template <typename ...TArgPack>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArgPack&... a_argPack)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_argPack... ){\
+        }\
+    };
+*/
+  #define _FCF_EXCEPTION_DECLARE_A0(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        am_type(const char* a_file, unsigned int a_line)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line){\
+        }\
+        template <typename TArg1>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A1(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1){\
+        }\
+        template <typename TArg1>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A2(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2){\
+        }\
+        template <typename TArg1, typename TArg2>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A3(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A4(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A5(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5){\
+        }\
+    };
+
+
+  #define _FCF_EXCEPTION_DECLARE_A6(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A7(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6, typename TArg7>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6, typename TArg7>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A8(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6, typename TArg7, typename TArg8>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7, const TArg8& a_arg8)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7, a_arg8){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6, typename TArg7, typename TArg8>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7, const TArg8& a_arg8)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7, a_arg8){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_A9(am_type, am_name, am_message) \
+    class am_type: public ::fcf::Exception { \
+      public:\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6, typename TArg7, typename TArg8, typename TArg9>\
+        am_type(const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7, const TArg8& a_arg8, const TArg9& a_arg9)\
+          : ::fcf::Exception(am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7, a_arg8, a_arg9){\
+        }\
+        template <typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5, typename TArg6, typename TArg7, typename TArg8, typename TArg9>\
+        am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7, const TArg8& a_arg8, const TArg9& a_arg9)\
+          : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7, a_arg8, a_arg9){\
+        }\
+    };
+
+  #define _FCF_EXCEPTION_DECLARE_0(a_macro, am_type, am_name, am_message, am_argCount) \
+    a_macro(am_type, am_name, am_message)
+
+  #define FCF_EXCEPTION_DECLARE(am_type, am_name, am_message, am_argCount) \
+    _FCF_EXCEPTION_DECLARE_0(_FCF_EXCEPTION_DECLARE_A##am_argCount, am_type, am_name, am_message, am_argCount)
 
 #endif // #ifndef ___FCF_BASIS__MACRO_HPP___
 

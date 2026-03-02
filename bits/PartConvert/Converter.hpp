@@ -9,6 +9,8 @@
 #include "../PartType/Type.hpp"
 #include "../PartConvert/DefaultConvertMode.hpp"
 #include "../../Variant.hpp"
+#include "../../FunctionSignature.hpp"
+
 
 namespace fcf {
 
@@ -171,6 +173,25 @@ namespace fcf {
         a_destination = a_source;
       }
   };
+
+  template <>
+  class Converter<3, std::string, BaseFunctionSignature>{
+    public:
+      void operator()(std::string& a_destination, const BaseFunctionSignature& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination.clear();
+        a_destination += getTypeInfo(a_source.rcode)->name;
+        a_destination += " (";
+        for(size_t i = 0; i < a_source.asize; ++i){
+          if (i){
+            a_destination += ", ";
+          }
+          a_destination += getTypeInfo(a_source.pacodes[i])->name;
+        }
+        a_destination += ")";
+      }
+  };
+
 /*
   template <>
   class Converter<const char*, const char*>{

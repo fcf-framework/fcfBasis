@@ -2,6 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CALL__CALL_CACHE_HPP___
 
 #include "NDetails/CallCacheHandler.hpp"
+#include "CallOptions.hpp"
 
 namespace fcf{
 
@@ -21,8 +22,28 @@ namespace fcf{
       }
 
       template <typename ...TInputPackArg>
+      inline void call(const CallOptions& a_callOptions, TInputPackArg&&... a_packArg){
+        _handler.call(a_callOptions, a_packArg...);
+      }
+
+      template <typename ...TInputPackArg>
+      inline void call(CallOptions& a_callOptions, TInputPackArg&&... a_packArg){
+        _handler.call((const CallOptions&)a_callOptions, a_packArg...);
+      }
+
+      template <typename ...TInputPackArg>
       inline Variant rcall(TInputPackArg&&... a_packArg){
         return _handler.rcall(a_packArg...);
+      }
+
+      template <typename ...TInputPackArg>
+      inline Variant rcall(const CallOptions& a_callOptions, TInputPackArg&&... a_packArg){
+        return _handler.rcall(a_callOptions, a_packArg...);
+      }
+
+      template <typename ...TInputPackArg>
+      inline Variant rcall(CallOptions& a_callOptions, TInputPackArg&&... a_packArg){
+        return _handler.rcall((const CallOptions&)a_callOptions, a_packArg...);
       }
 
     private:
