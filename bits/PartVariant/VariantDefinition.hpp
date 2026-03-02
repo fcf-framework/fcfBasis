@@ -317,9 +317,6 @@ namespace fcf {
       template <typename TResult>
       TResult cast() const;
 
-      template <typename TResult>
-      TResult strict_cast() const;
-
       template <typename TType>
       bool is() const;
 

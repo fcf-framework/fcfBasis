@@ -845,22 +845,6 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  template <typename TResult>
-  TResult BasicVariant<innerBufferSize>::strict_cast() const{
-    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
-    static const unsigned int variantTypeIndex      = Type<Variant>().index();
-    if (getDataTypeIndex() != Type<TResult>().dataIndex()){
-      if (_typeInfo->dataIndex == selfVariantTypeIndex) {
-        return ((BasicVariant*)ptr())->strict_cast<TResult>();
-      } else if (_typeInfo->dataIndex == variantTypeIndex) {
-        return ((Variant*)ptr())->strict_cast<TResult>();
-      }
-      throw std::runtime_error(std::string() + "The type saved in the variant is not '" + Type<TResult>().name() + "' type");
-    }
-    return *(TResult*)ptr();
-  }
-
-  template <size_t innerBufferSize>
   template <typename TType>
   bool BasicVariant<innerBufferSize>::is() const{
     return getDataTypeIndex() == Type<TType>().dataIndex();
