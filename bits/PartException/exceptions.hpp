@@ -15,6 +15,11 @@ namespace fcf {
   FCF_EXCEPTION_DECLARE(CallIteratorGettingException, "FCF_CALL_ITERATOR_GETTING", "Unable to get an iterator from argument ${{1}}$ for function call '${{2}}$' (Arguments: ${{3}}$)", 3);
   FCF_EXCEPTION_DECLARE(CallPlaceholderBufferOverflowException, "FCF_CALL_PLACEHOLDER_BUFFER_OVERFLOW", "Argument placeholder buffer overflow for function call '${{1}}$' (Signature: ${{2}}$)", 2);
 
+  FCF_EXCEPTION_DECLARE(VariantTypeMismatchExeption, "FCF_VARIANT_TYPE_MISMATCH", "The stored data type '${{1}}$' in the Variant object is not of type '${{2}}$'", 2);
+  FCF_EXCEPTION_DECLARE(VariantSetReferenceTypeException, "FCF_VARIANT_SET_REFERENCE_TYPE", "Cannot set a reference of type ${{1}}$ to data type '${{2}}$'", 2);
+  FCF_EXCEPTION_DECLARE(VariantReadOnlyException, "FCF_VARIANT_READ_ONLY", "The Variant object is read-only", 0);
+  FCF_EXCEPTION_DECLARE(VariantEmptyToReferenceException, "FCF_VARIANT_EMPTY_TO_REFERENCE", "Setting an empty value for a variant reference", 0);
+  FCF_EXCEPTION_DECLARE(VariantAssignConstDataException, "FCF_VARIANT_ASSIGN_CONST_DATA", "It is impossible to establish a non-constant reference to constant data", 0);
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___

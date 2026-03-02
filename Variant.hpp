@@ -17,7 +17,7 @@
 #include "bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "bits/PartVariant/NDetails/VariantAllocator.hpp"
 #include "bits/PartContainerAccess/VariantCursor.hpp"
-#include "bits/PartException/Exception.hpp"
+#include "../../Exception.hpp"
 
 namespace fcf{
 
@@ -816,7 +816,7 @@ namespace fcf{
         }
         ti = 0;
       }
-      throw std::runtime_error(std::string() + "The type saved in the variant is not '" + Type<TResult>().name() + "' type");
+      throw VariantTypeMismatchExeption(__FILE__, __LINE__, (_typeInfo ? _typeInfo->name.c_str() : "undefined"),Type<TResult>().name());
     } else {
       return *(result_type*)ptr();
     }
@@ -871,7 +871,7 @@ namespace fcf{
   template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
   void BasicVariant<innerBufferSize>::_clone(std::true_type /*a_enableConvert*/, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
     if (a_dataMode & FORCE_REFERENCE) {
-      throw std::runtime_error("You cannot link to an inappropriate type");
+      throw VariantSetReferenceTypeException(__FILE__, __LINE__, (a_variant._typeInfo ? a_variant._typeInfo->name.c_str() : "undefined"), Type<Variant>().name()+"&");
     }
     if (a_dataMode & REFERENCE) {
       if (a_variant._typeInfo && a_variant._typeInfo->dataIndex == Type<ReferenceType>().dataIndex() ){
@@ -882,7 +882,7 @@ namespace fcf{
         }
         return;
       } else {
-        throw std::runtime_error("You cannot link to an inappropriate type");
+        throw VariantSetReferenceTypeException(__FILE__, __LINE__, (a_variant._typeInfo ? a_variant._typeInfo->name.c_str() : "undefined"), Type<ReferenceType&>().name() );
       }
     }
     DataType source = a_variant.template cast<DataType>();
@@ -899,14 +899,14 @@ namespace fcf{
         typename BasicVariant<InputInnerBufferSize>::DataEndpointEx sourceEndpoint = ((BasicVariant<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
 
         if (selfEndpoint.isConst){
-          throw std::runtime_error("The data in the Variant object is read-only");
+          throw VariantReadOnlyException(__FILE__, __LINE__);
         }
         BasicVariant* curVariant =  (BasicVariant*)selfEndpoint.variant;
         if (curVariant->_typeInfo && 
             !curVariant->_typeInfo->isVariant && 
             TypeIndexConverter<>::isReference(curVariant->_typeInfo->index)) {
           if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
-            throw std::runtime_error("The data in the Variant object is read-only");
+            throw VariantReadOnlyException(__FILE__, __LINE__);
           }
           if (sourceEndpoint.typeInfo) {
             if (curVariant->_typeInfo->dataIndex == sourceEndpoint.typeInfo->dataIndex) {
@@ -918,12 +918,12 @@ namespace fcf{
               wrp->set(buffer.ptr());
             }
           } else {
-            throw std::runtime_error("Set empty value for variant reference");
+            throw VariantEmptyToReferenceException(__FILE__, __LINE__);
           }
         } else {
           if (curVariant->_typeInfo){
             if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
-              throw std::runtime_error("The data in the Variant object is read-only");
+              throw VariantReadOnlyException(__FILE__, __LINE__);
             }
             if (curVariant->_typeInfo->initializer->size() <= selfEndpoint.innerSize ){
               ((BaseTypeWrapper*)&curVariant->_mem[0])->~BaseTypeWrapper();
@@ -1020,7 +1020,7 @@ namespace fcf{
       case REFERENCE:
         {
           if (!std::is_const<ReferenceType>::value && std::is_const<ArgTy>::value){
-            throw std::runtime_error("It is impossible to establish a non-constant reference to constant data");
+            throw VariantAssignConstDataException(__FILE__, __LINE__);
           }
           typedef typename std::remove_reference< ReferenceType >::type& EndpointType;
           _ptr = NDetails::VariantAllocator<EndpointType, innerBufferSize>()(&_mem[0], a_value)->rootPtr();
@@ -1034,7 +1034,7 @@ namespace fcf{
   template <typename DataType, typename ReferenceType, typename ArgTy>
   void BasicVariant<innerBufferSize>::_init(std::true_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
     if (a_dataMode & (REFERENCE|FORCE_REFERENCE)) {
-      throw std::runtime_error("You cannot link to an inappropriate type");
+      throw VariantSetReferenceTypeException(__FILE__, __LINE__, Type<ArgTy>().name()+"&", Type<Variant>().name()+"&");
     }
     Variant buffer(Type<DataType>().index(), &a_value, Type<ArgTy>().index());
     _init<DataType, DataType>(std::false_type(), *(DataType*)buffer.ptr(), a_dataMode);
@@ -1048,14 +1048,14 @@ namespace fcf{
         {
           VariantEndpoint ve = _variantEndpoint();
           if (ve.isConst){
-            throw std::runtime_error("The data in the Variant object is read-only");
+            throw VariantReadOnlyException(__FILE__, __LINE__);
           }
           BasicVariant* curVariant =  (BasicVariant*)ve.variant;
           if (curVariant->_typeInfo &&
               !curVariant->_typeInfo->isVariant &&
               TypeIndexConverter<>::isReference(curVariant->_typeInfo->index)) {
             if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
-              throw std::runtime_error("The data in the Variant object is read-only");
+              throw VariantReadOnlyException(__FILE__, __LINE__);
             }
             if (curVariant->_typeInfo->dataIndex == Type<DataType>().dataIndex()) {
               BaseTypeWrapper* wrp = curVariant->_getWrapper();
@@ -1068,7 +1068,7 @@ namespace fcf{
           } else {
             if (curVariant->_typeInfo){
               if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
-                throw std::runtime_error("The data in the Variant object is read-only");
+                throw VariantReadOnlyException(__FILE__, __LINE__);
               }
               if ( curVariant->_typeInfo->initializer->size() <= ve.innerSize ){
                 ((BaseTypeWrapper*)&curVariant->_mem[0])->~BaseTypeWrapper();
@@ -1310,7 +1310,7 @@ namespace fcf{
     if (!dde.typeInfo) {
       return *this;
     } else if (dde.isConst){
-      throw std::runtime_error("The data in the Variant object is read-only");
+      throw VariantReadOnlyException(__FILE__, __LINE__);
     } else if (!sde.typeInfo) {
       return *this;
     } else if (dde.typeInfo->dataIndex == sde.typeInfo->dataIndex) {
@@ -1358,7 +1358,7 @@ namespace fcf{
     }
 
     if (dde.isConst){
-      throw std::runtime_error("The data in the Variant object is read-only");
+      throw VariantReadOnlyException(__FILE__, __LINE__);
     }
 
     typedef typename std::remove_reference<Ty>::type ArgType;
