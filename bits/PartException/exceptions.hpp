@@ -20,6 +20,9 @@ namespace fcf {
   FCF_EXCEPTION_DECLARE(VariantReadOnlyException, "FCF_VARIANT_READ_ONLY", "The Variant object is read-only", 0);
   FCF_EXCEPTION_DECLARE(VariantEmptyToReferenceException, "FCF_VARIANT_EMPTY_TO_REFERENCE", "Setting an empty value for a variant reference", 0);
   FCF_EXCEPTION_DECLARE(VariantAssignConstDataException, "FCF_VARIANT_ASSIGN_CONST_DATA", "It is impossible to establish a non-constant reference to constant data", 0);
+
+  FCF_EXCEPTION_DECLARE(MathArumentCountException, "FCF_MATH_ARGUMENT_COUNT", "Error in the mathematical operation '${{1}}$'. Incorrent number of arguments", 1);
+  FCF_EXCEPTION_DECLARE(MathEmptyResultPointerException, "FCF_MATH_EMPTY_RESULT_POINTER", "Error in the mathematical operation '${{1}}$'. The pointer to the result variable is not set", 1);
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___

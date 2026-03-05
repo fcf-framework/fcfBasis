@@ -3,6 +3,7 @@
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/Type.hpp"
+#include "../../Exception.hpp"
 #include "../../Variant.hpp"
 
 namespace fcf{
@@ -22,29 +23,34 @@ namespace fcf{
 
     inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
       if (a_argc < 2){
-        throw std::runtime_error("Invalid argument number");
+        throw MathArumentCountException(__FILE__, __LINE__, "-");
       }
       if (!a_object) {
-        throw std::runtime_error("First argument is null");
+        throw MathEmptyResultPointerException(__FILE__, __LINE__, "-");
       }
-      if (!a_argv) {
-        throw std::runtime_error("Second argument is null");
+      if (Type<Ty>().index() != a_argv[0].getDataTypeIndex() ||
+          Type<Ty>().index() != a_argv[1].getDataTypeIndex()
+         ){
+        const Ty left = a_argv[0].cast<Ty>();
+        const Ty right = a_argv[1].cast<Ty>();
+        Type<Ty, MulSpecificator>().call(a_object, &left, &right);
+      } else {
+        const Ty* leftPtr = (const Ty*)a_argv->ptr();
+        if (!leftPtr) {
+          throw std::runtime_error("Second argument is null");
+        }
+        const Ty* rightPtr = (const Ty*)(a_argv+1)->ptr();
+        if (!rightPtr) {
+          throw std::runtime_error("Second argument is null");
+        }
+        if (Type<Ty>().index() != a_argv->getTypeIndex()) {
+          throw std::runtime_error("Error sum different types");
+        }
+        if (Type<Ty>().index() != (a_argv+1)->getTypeIndex()) {
+          throw std::runtime_error("Error sum different types");
+        }
+        Type<Ty, MulSpecificator>().call(a_object, leftPtr, rightPtr);
       }
-      const Ty* leftPtr = (const Ty*)a_argv->ptr();
-      if (!leftPtr) {
-        throw std::runtime_error("Second argument is null");
-      }
-      const Ty* rightPtr = (const Ty*)(a_argv+1)->ptr();
-      if (!rightPtr) {
-        throw std::runtime_error("Second argument is null");
-      }
-      if (Type<Ty>().index() != a_argv->getTypeIndex()) {
-        throw std::runtime_error("Error sum different types");
-      }
-      if (Type<Ty>().index() != (a_argv+1)->getTypeIndex()) {
-        throw std::runtime_error("Error sum different types");
-      }
-      Type<Ty, MulSpecificator>().call(a_object, leftPtr, rightPtr);
       return Variant();
     }
 

@@ -28,6 +28,7 @@ namespace FcfTest {
 
     void exceptionTest();
 
+    void arithmeticSpecificatorsTest();
     void minMaxSpecificatorTest();
     void foreachTest();
     void variantCmpTest();
@@ -87,6 +88,7 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   FcfTest::BasisTest::variantEraseTest();
   FcfTest::BasisTest::sequenceTest();
 
+  FcfTest::BasisTest::arithmeticSpecificatorsTest();
   FcfTest::BasisTest::minMaxSpecificatorTest();
 
   FcfTest::BasisTest::staticVectorTest();

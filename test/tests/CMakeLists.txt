@@ -31,6 +31,7 @@ add_executable("basis-test" impl.cpp
                            PartCall/CallZeroIterations.cpp
                            PartException/Exception.cpp
                            PartForeach/foreach.cpp
+                           PartSpecificator/ArithmeticSpecificators.cpp
                            PartVariant/VariantCmpTest.cpp
                            PartVariant/VariantConstructor.cpp
                            PartVariant/VariantAssignmentTest.cpp
