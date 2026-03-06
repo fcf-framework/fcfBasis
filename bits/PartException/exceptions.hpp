@@ -4,8 +4,10 @@
 #include "Exception.hpp"
 namespace fcf {
 
-  FCF_EXCEPTION_DECLARE(LogicException, "FCF_LOGIC", "Logic error: ${{1}}$", 1);
- 
+ FCF_EXCEPTION_DECLARE(LogicException, "FCF_LOGIC", "Logic error: ${{1}}$", 1);
+
+  FCF_EXCEPTION_DECLARE(FunctionNotFoundException, "FCF_FUNCTION_NOT_FOUND", "Function '${{1}}$' function not'", 1);
+
   FCF_EXCEPTION_DECLARE(CallNotFoundException, "FCF_CALL_NOT_FOUND", "Call '${{1}}$' function not found with signature '${{2}}$'", 2);
   FCF_EXCEPTION_DECLARE(CallIterableNotFoundException, "FCF_CALL_ITERABLE_NOT_FOUND", "Call iterable '${{1}}$' function not found (Arguments: ${{2}}$)'", 2);
   FCF_EXCEPTION_DECLARE(CallIterationConversionBufferOverflowException, "FCF_CALL_ITERATION_CONVERSION_BUFFER_OWERFLOW", " Iteration conversion buffer overflow (Function: ${{1}}$; Arguments: ${{2}}$)'", 2);
@@ -24,6 +26,8 @@ namespace fcf {
   FCF_EXCEPTION_DECLARE(MathArumentCountException, "FCF_MATH_ARGUMENT_COUNT", "Error in the mathematical operation '${{1}}$'. Incorrent number of arguments", 1);
   FCF_EXCEPTION_DECLARE(MathEmptyResultPointerException, "FCF_MATH_EMPTY_RESULT_POINTER", "Error in the mathematical operation '${{1}}$'. The pointer to the result variable is not set", 1);
   FCF_EXCEPTION_DECLARE(MathEmptyArgumentException, "FCF_MATH_EMPTY_ARGUMENT", "Error in the mathematical operation '${{1}}$'. Argument number ${{2}}$ is empty/null", 2);
+
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___

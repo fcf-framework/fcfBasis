@@ -289,11 +289,11 @@ namespace fcf {
         FunctionSignature<TFunction> fs;
         CallStorageFunctionIndexes::iterator it = getCallStorage().indexes.find(fs);
         if (it == getCallStorage().indexes.end()) {
-          throw std::runtime_error(std::string() + "Function \"" + a_name + "\" not found");
+          throw FunctionNotFoundException(__FILE__, __LINE__, a_name);
         }
         CallStorageFunctionIndexes::value_type::second_type::iterator itFunc = it->second.find(a_name);
         if (itFunc == it->second.end()) {
-          throw std::runtime_error(std::string() + "Function \"" + a_name + "\" not found");
+          throw FunctionNotFoundException(__FILE__, __LINE__, a_name);
         }
         return itFunc->second;
       }
