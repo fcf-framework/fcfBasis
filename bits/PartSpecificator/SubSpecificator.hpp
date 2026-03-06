@@ -36,17 +36,11 @@ namespace fcf{
       } else {
         const Ty* leftPtr = (const Ty*)a_argv->ptr();
         if (!leftPtr) {
-          throw std::runtime_error("Second argument is null");
+          throw MathEmptyArgumentException(__FILE__, __LINE__, "-", 1);
         }
         const Ty* rightPtr = (const Ty*)(a_argv+1)->ptr();
         if (!rightPtr) {
-          throw std::runtime_error("Second argument is null");
-        }
-        if (Type<Ty>().index() != a_argv->getTypeIndex()) {
-          throw std::runtime_error("Error subtration for different types");
-        }
-        if (Type<Ty>().index() != (a_argv+1)->getTypeIndex()) {
-          throw std::runtime_error("Error subtration for different types");
+          throw MathEmptyArgumentException(__FILE__, __LINE__, "-", 2);
         }
         Type<Ty, SubSpecificator>().call(a_object, leftPtr, rightPtr);
       }

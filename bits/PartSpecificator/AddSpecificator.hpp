@@ -23,10 +23,10 @@ namespace fcf{
 
     inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
       if (a_argc < 2){
-        throw MathArumentCountException(__FILE__, __LINE__, "-");
+        throw MathArumentCountException(__FILE__, __LINE__, "+");
       }
       if (!a_object) {
-        throw MathEmptyResultPointerException(__FILE__, __LINE__, "-");
+        throw MathEmptyResultPointerException(__FILE__, __LINE__, "+");
       }
       if (Type<Ty>().index() != a_argv[0].getDataTypeIndex() ||
           Type<Ty>().index() != a_argv[1].getDataTypeIndex()
@@ -37,17 +37,11 @@ namespace fcf{
       } else {
         const Ty* leftPtr = (const Ty*)a_argv->ptr();
         if (!leftPtr) {
-          throw std::runtime_error("Second argument is null");
+          throw MathEmptyArgumentException(__FILE__, __LINE__, "+", 1);
         }
         const Ty* rightPtr = (const Ty*)(a_argv+1)->ptr();
         if (!rightPtr) {
-          throw std::runtime_error("Second argument is null");
-        }
-        if (Type<Ty>().index() != a_argv->getTypeIndex()) {
-          throw std::runtime_error("Error sum different types");
-        }
-        if (Type<Ty>().index() != (a_argv+1)->getTypeIndex()) {
-          throw std::runtime_error("Error sum different types");
+          throw MathEmptyArgumentException(__FILE__, __LINE__, "+", 2);
         }
         Type<Ty, AddSpecificator>().call(a_object, leftPtr, rightPtr);
       }
