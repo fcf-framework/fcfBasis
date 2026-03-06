@@ -3,6 +3,7 @@
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/Type.hpp"
+#include "../../Exception.hpp"
 #include "../../Variant.hpp"
 
 namespace fcf{
@@ -20,24 +21,14 @@ namespace fcf{
   struct TypeImpl<Ty, BoolSpecificator> {
     enum { enable = true };
 
-    inline Variant universalCall(const Ty* a_object, Variant* a_argv, size_t a_argc) const {
+    inline Variant universalCall(const Ty* a_object, const Variant* /*a_argv*/, size_t a_argc) const {
       if (!a_argc){
-        std::runtime_error("Invalid argument number");
+        throw MathArumentCountException(__FILE__, __LINE__, "bool");
       }
       if (!a_object) {
-        std::runtime_error("First argument is null");
+        throw MathEmptyArgumentException(__FILE__, __LINE__, "bool", 1);
       }
-      if (!a_argv) {
-        std::runtime_error("Second argument is null");
-      }
-      const Ty* ptr = (const Ty*)a_argv->ptr();
-      if (!ptr) {
-        std::runtime_error("Second argument is null");
-      }
-      if (Type<Ty>().index() != a_argv->getTypeIndex()) {
-        std::runtime_error("Error comparing different types");
-      }
-      return (bool)Type<Ty, BoolSpecificator>().call(a_object);
+      return Variant(Type<Ty, BoolSpecificator>().call(a_object));
     }
 
     inline bool call(const Ty* a_value) const {
