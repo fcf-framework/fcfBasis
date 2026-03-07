@@ -27,7 +27,7 @@ namespace fcf {
   FCF_EXCEPTION_DECLARE(MathEmptyResultPointerException, "FCF_MATH_EMPTY_RESULT_POINTER", "Error in the mathematical operation '${{1}}$'. The pointer to the result variable is not set", 1);
   FCF_EXCEPTION_DECLARE(MathEmptyArgumentException, "FCF_MATH_EMPTY_ARGUMENT", "Error in the mathematical operation '${{1}}$'. Argument number ${{2}}$ is empty/null", 2);
 
-  FCF_EXCEPTION_DECLARE(ConversionNotFoundException, "FCF_CONVERSION_NOT_FOUND", "No conversion function found for types ${{1}}$ to ${{2}}$", 2);
+  FCF_EXCEPTION_DECLARE(ConversionNotFoundException, "FCF_CONVERSION_NOT_FOUND", "No conversion function found for types ${{2}}$ to ${{1}}$", 2);
   
   FCF_EXCEPTION_DECLARE(TypeIndexNotRegisteredException, "FCF_TYPE_INDEX_NOT_REGISTERED", "The requested type index (${{1}}$) is not registered", 1);
 

@@ -28,7 +28,9 @@ namespace fcf {
         }
         return (ConvertFunction)convIt->second;
       } while(false);
-      throw std::runtime_error("No conversion function found");
+      const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex);
+      const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex);
+      throw ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeInfo->name);
     }
   #endif
 
@@ -63,7 +65,9 @@ namespace fcf {
     const ::fcf::TypeInfo::Converters& converters = Type<TDestination>().backConverters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_sourceTypeIndex);
     if (convIt == converters.end()) {
-      throw std::runtime_error("No conversion function found");
+      const TypeInfo* destinationTypeInfo = Type<TDestination>(). getTypeInfo();
+      const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex);
+      throw ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeInfo->name);
     }
     return (ConvertFunction)convIt->second;
   }
@@ -88,7 +92,9 @@ namespace fcf {
     const ::fcf::TypeInfo::Converters& converters = Type<TSource>().converters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
     if (convIt == converters.end()) {
-      throw std::runtime_error("No conversion function found");
+      const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex);
+      const TypeInfo* sourceTypeInfo = Type<TSource>(). getTypeInfo();
+      throw ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeInfo->name);
     }
     return (ConvertFunction)convIt->second;
   }

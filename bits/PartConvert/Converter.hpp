@@ -45,7 +45,7 @@ namespace fcf {
         TDestination result;
         iss >> result;
         if (iss.fail() || (iss.get(c)))  {
-          throw std::runtime_error(std::string() + "Ne ne string format for '" + Type<TDestination>().name() + "' type");
+          throw std::runtime_error(std::string() + "Argument not have a string format for '" + Type<TDestination>().name() + "' type");
         }
         std::swap(a_destination, result);
       }
