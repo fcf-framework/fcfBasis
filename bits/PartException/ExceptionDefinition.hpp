@@ -2,8 +2,8 @@
 #define ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_DEFINITION_HPP___
 
 #include <exception>
-#include "../../StaticVector.hpp"
-#include "../../bits/PartVariant/VariantPredefinition.hpp"
+#include "../../bits/PartStaticVector/StaticVectorDefinition.hpp"
+#include "../../bits/PartVariant/VariantDefinition.hpp"
 
 
 namespace fcf{
@@ -12,6 +12,8 @@ namespace fcf{
 
     public:
       virtual ~Exception();
+
+      Exception();
 
       Exception(const Exception& a_exception, bool a_copySub);
 
@@ -30,6 +32,10 @@ namespace fcf{
       Exception(const Exception& a_subexception, const char* a_shortMessage, const char* a_patternMessage, const char* a_file, unsigned int a_line, const TArgPack&... a_argPack);
 
       Exception& operator=(const Exception& a_exception);
+
+      const char* operator()() const;
+
+      operator bool() const;
 
       virtual const char* what() const throw();
 

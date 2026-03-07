@@ -2,6 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_DEFINITION_HPP___
 
 #include "TypeInfo.hpp"
+#include "../../bits/PartException/ExceptionPredefinition.hpp"
 
 namespace fcf{
 
@@ -14,14 +15,22 @@ namespace fcf{
 
       inline unsigned int index() const;
 
-      inline std::string name(std::exception const ** a_errorDst = 0);
+      inline std::string name();
 
-      inline const TypeInfo* getTypeInfo(std::exception const ** a_errorDst = 0);
+      inline std::string name(Exception* a_errorDst);
 
-      inline size_t getWrapperSize(std::exception const ** a_errorDst = 0);
+      inline const TypeInfo* getTypeInfo();
+
+      inline const TypeInfo* getTypeInfo(Exception* a_errorDst);
+
+      inline size_t getWrapperSize();
+
+      inline size_t getWrapperSize(Exception* a_errorDst);
 
     protected:
-      inline bool _prepare(std::exception const ** a_errorDst = 0);
+      inline void _prepare();
+
+      inline bool _prepare(Exception* a_errorDst);
 
       unsigned int    _index;
       const TypeInfo* _info;

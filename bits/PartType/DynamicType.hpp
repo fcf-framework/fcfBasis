@@ -1,9 +1,11 @@
+
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_HPP___
 
 #include "DynamicTypeDefinition.hpp"
 #include "TypeInfo.hpp"
 #include "getTypeInfo.hpp"
+#include "../../Exception.hpp"
 
 namespace fcf{
 
@@ -21,34 +23,52 @@ namespace fcf{
     return _index;
   }
 
-  std::string DynamicType::name(std::exception const ** a_errorDst){
+  std::string DynamicType::name(){
+    _prepare();
+    return _info->name;
+  }
+
+  std::string DynamicType::name(Exception* a_errorDst){
     if (!_prepare(a_errorDst)){
       return std::string();
     }
     return _info->name;
   }
 
-  const TypeInfo* DynamicType::getTypeInfo(std::exception const ** a_errorDst) {
+  const TypeInfo* DynamicType::getTypeInfo() {
+    _prepare();
+    return _info;
+  }
+
+  const TypeInfo* DynamicType::getTypeInfo(Exception* a_errorDst) {
     if (!_prepare(a_errorDst)){
       return 0;
     }
     return _info;
   }
 
-  size_t DynamicType::getWrapperSize(std::exception const ** a_errorDst){
+  size_t DynamicType::getWrapperSize(){
+    _prepare();
+    return _info->initializer->size();
+  }
+
+  size_t DynamicType::getWrapperSize(Exception* a_errorDst){
     if (!_prepare(a_errorDst)){
       return 0;
     }
     return _info->initializer->size();
   }
 
-  bool DynamicType::_prepare(std::exception const ** a_errorDst){
-    if (a_errorDst) {
-      *a_errorDst = 0;
+  void DynamicType::_prepare(){
+    if (!_info){
+      _info = ::fcf::getTypeInfo(_index);
     }
-    if (!_info && _index){
+  }
+
+  bool DynamicType::_prepare(Exception* a_errorDst){
+    if (!_info){
       const TypeInfo* info = ::fcf::getTypeInfo(_index, a_errorDst);
-      if (a_errorDst && *a_errorDst) {
+      if (a_errorDst && a_errorDst->name()) {
         return false;
       }
       _info = info;
@@ -59,3 +79,4 @@ namespace fcf{
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_HPP___
+

@@ -4,6 +4,7 @@
 #include <exception>
 #include "ExceptionDefinition.hpp"
 #include "../../foreach.hpp"
+#include "../../StaticVector.hpp"
 #include "../../Variant.hpp"
 
 namespace fcf{
@@ -14,6 +15,13 @@ namespace fcf{
     if (_pwhat){
       delete _pwhat;
     }
+  }
+#endif
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  Exception::Exception()
+    : _smessage(0)
+  {
   }
 #endif
 
@@ -113,6 +121,10 @@ namespace fcf{
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   Exception& Exception::operator=(const Exception& a_exception){
+    if (_pwhat){
+      delete _pwhat;
+      _pwhat = 0;
+    }
     _smessage = a_exception._smessage;
     _pmessage = a_exception._pmessage;
     _file = a_exception._file;
@@ -124,7 +136,22 @@ namespace fcf{
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
+  const char* Exception::operator()() const{
+    return _smessage;
+  }
+#endif
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  Exception::operator bool() const{
+    return !!_smessage;
+  }
+#endif
+  
+#ifdef FCF_BASIS_IMPLEMENTATION
   const char* Exception::what() const throw() {
+    if (!_smessage){
+      return "";
+    }
     if (_pwhat){
       return _pwhat->c_str();
     }
@@ -141,12 +168,18 @@ namespace fcf{
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   const char* Exception::name() const throw() {
+    if (!_smessage){
+      return "";
+    }
     return _smessage;
   }
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   std::string Exception::position() const throw() {
+    if (!_smessage){
+      return "";
+    }
     std::string res;
     res += _file;
     res += ":";
@@ -175,12 +208,18 @@ namespace fcf{
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   const char* Exception::file() const throw() {
+    if (!_smessage){
+      return "";
+    }
     return _file;
   }
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   unsigned int Exception::line() const throw() {
+    if (!_smessage){
+      return 0;
+    }
     return _line;
   }
 #endif
@@ -193,6 +232,9 @@ namespace fcf{
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   std::string Exception::full() const throw() {
+    if (!_smessage){
+      return "";
+    }
     std::string res = info();
     if (_sub.size()){
       res += "\nSub errors:\n";
@@ -212,7 +254,7 @@ namespace fcf{
 #ifdef FCF_BASIS_IMPLEMENTATION  
   std::string Exception::message() const throw() {
     std::string result;
-    if (!_pmessage) {
+    if (!_smessage || !_pmessage) {
       return result;
     }
     int           s = 0;
@@ -287,6 +329,9 @@ namespace fcf{
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   std::string Exception::_info(const char* a_firstLinePrefix, const char* a_linePrefix) const throw() {
+    if (!_smessage){
+      return "";
+    }
     std::string res;
     res += a_firstLinePrefix;
       res += "Error:    ";

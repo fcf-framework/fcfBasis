@@ -3,23 +3,26 @@
 
 #include <exception>
 #include "TypeInfo.hpp"
-#include "../../bits/PartException/ExceptionDefinition.hpp"
+#include "../../Exception.hpp"
 namespace fcf {
 
-  inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex, std::exception const ** a_errorDst = 0){
-    if (a_errorDst) {
-      *a_errorDst = 0;
-    }
+  inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex){
     const fcf::TypeInfo* ptr = typeStorage.get(a_typeIndex);
     if (!ptr) {
-      if (a_errorDst) {
-        static const std::runtime_error error("The requested type index is not registered");
-        *a_errorDst = &error;
-      } else {
-        throw std::runtime_error("The requested type index is not registered");
-      }
+      throw TypeIndexNotRegisteredException(__FILE__, __LINE__, a_typeIndex);
     }
     return ptr;
+  }
+
+  inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex, Exception* a_errorDst){
+    try {
+      return getTypeInfo(a_typeIndex);
+    } catch(const Exception& e){
+      if (a_errorDst){
+        *a_errorDst = e;
+      }
+      return 0;
+    }
   }
 
 } // fcf namespace

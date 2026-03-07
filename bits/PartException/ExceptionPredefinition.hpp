@@ -1,0 +1,10 @@
+#ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_PREDEFINITION_HPP___
+#define ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_PREDEFINITION_HPP___
+
+namespace fcf{
+
+  class Exception;
+
+} // fcf namespace
+
+#endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_PREDEFINITION_HPP___

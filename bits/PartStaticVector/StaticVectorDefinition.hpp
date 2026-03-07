@@ -16,6 +16,9 @@ namespace FcfTest {
 
 namespace fcf{
 
+  template<typename Ty, unsigned int StaticSize=16, unsigned int OffsetSize=2, unsigned int StepSize=2, unsigned int StepModuleInt=2, unsigned int StepModuleFrac=0, unsigned int MaxPow=/*16*2*4096/sizeof(Ty)*/ 0 >
+  class StaticVector;
+
   ///
   /// @class StaticVector<typename Ty, unsigned int StaticSize=16, unsigned int OffsetSize=2, unsigned int StepSize=2, unsigned int StepModuleInt=2, unsigned int StepModuleFrac=0, unsigned int MaxPow=2*4096/sizeof(Ty)>
   /// @brief A class that stores data in internal data fields and, if necessary, allocates memory from the heap when there is insufficient memory
