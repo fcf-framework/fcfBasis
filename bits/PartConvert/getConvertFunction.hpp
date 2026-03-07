@@ -6,6 +6,7 @@
 #include "ConvertFunction.hpp"
 #include "../../bits/PartType/TypeStorage.hpp"
 #include "../../bits/PartType/Type.hpp"
+#include "../../Exception.hpp"
 
 namespace fcf {
 

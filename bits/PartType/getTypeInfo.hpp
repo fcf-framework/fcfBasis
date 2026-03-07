@@ -3,7 +3,7 @@
 
 #include <exception>
 #include "TypeInfo.hpp"
-
+#include "../../bits/PartException/ExceptionDefinition.hpp"
 namespace fcf {
 
   inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex, std::exception const ** a_errorDst = 0){

@@ -5,6 +5,7 @@
 
 #include "Type.hpp"
 #include "bits/registry.hpp"
+#include "bits/PartType/DynamicType.hpp"
 #include "bits/PartConvert/convertRuntime.hpp"
 #include "bits/PartSpecificator/StoredDataTypeSpecificator.hpp"
 #include "bits/PartSpecificator/LessSpecificator.hpp"

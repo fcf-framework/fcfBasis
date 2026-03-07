@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include "../../macro.hpp"
 #include "../../bits/PartVariant/VariantPredefinition.hpp"
-#include "../../bits/PartType/DynamicType.hpp"
+#include "../../bits/PartType/DynamicTypeDefinition.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartMetaType/MetaTypeBoolean.hpp"
 #include "../../bits/PartContainerAccess/VariantCursorDefinition.hpp"
