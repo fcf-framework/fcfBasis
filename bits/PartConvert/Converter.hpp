@@ -10,7 +10,7 @@
 #include "../PartConvert/DefaultConvertMode.hpp"
 #include "../../Variant.hpp"
 #include "../../FunctionSignature.hpp"
-
+#include "../PartException/exceptions.hpp"
 
 namespace fcf {
 
@@ -45,7 +45,7 @@ namespace fcf {
         TDestination result;
         iss >> result;
         if (iss.fail() || (iss.get(c)))  {
-          throw std::runtime_error(std::string() + "Argument not have a string format for '" + Type<TDestination>().name() + "' type");
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<TDestination>().name());
         }
         std::swap(a_destination, result);
       }
@@ -57,12 +57,18 @@ namespace fcf {
     public:
       void operator()(short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoi(a_source);
+        try {
+            a_destination = std::stoi(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<short>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<short>().name());
+        }
         if (a_destination < SHRT_MIN){
-          throw std::runtime_error("Exceeding the SHRT_MIN value");
+           throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<short>().name());
         }
         if (a_destination > SHRT_MAX){
-          throw std::runtime_error("Exceeding the SHRT_MAX value");
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<short>().name());
         }
       }
   };
@@ -73,9 +79,15 @@ namespace fcf {
     public:
       void operator()(unsigned short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoul(a_source);
+        try {
+            a_destination = std::stoul(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
+        }
         if (a_destination > USHRT_MAX){
-          throw std::runtime_error("Exceeding the USHRT_MAX value");
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
         }
       }
   };
@@ -85,7 +97,13 @@ namespace fcf {
     public:
       void operator()(int& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoi(a_source);
+        try {
+            a_destination = std::stoi(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<int>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<int>().name());
+        }
       }
   };
 
@@ -95,9 +113,15 @@ namespace fcf {
     public:
       void operator()(unsigned int& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoul(a_source);
+        try {
+            a_destination = std::stoul(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned int>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<unsigned int>().name());
+        }
         if (a_destination > UINT_MAX){
-          throw std::runtime_error("Exceeding the UINT_MAX value");
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned int>().name());
         }
       }
   };
@@ -107,7 +131,13 @@ namespace fcf {
     public:
       void operator()(long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stol(a_source);
+        try {
+            a_destination = std::stol(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<long>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<long>().name());
+        }
       }
   };
 
@@ -116,7 +146,13 @@ namespace fcf {
     public:
       void operator()(unsigned long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoul(a_source);
+        try {
+            a_destination = std::stoul(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned long>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<unsigned long>().name());
+        }
       }
   };
 
@@ -125,7 +161,13 @@ namespace fcf {
     public:
       void operator()(long long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoll(a_source);
+        try {
+            a_destination = std::stoll(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<long long>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<long long>().name());
+        }
       }
   };
 
@@ -134,7 +176,13 @@ namespace fcf {
     public:
       void operator()(unsigned long long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
-        a_destination = std::stoull(a_source);
+        try {
+            a_destination = std::stoull(a_source);
+        } catch (const std::out_of_range&) {
+          throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned long long>().name());
+        } catch (const std::invalid_argument&) {
+          throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<unsigned long long>().name());
+        }
       }
   };
 
@@ -268,3 +316,4 @@ namespace fcf {
 
 } // fcf namespace
 #endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERTER_HPP___
+

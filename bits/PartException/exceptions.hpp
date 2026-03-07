@@ -1,3 +1,5 @@
+
+
 #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
 #define ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
 
@@ -31,6 +33,11 @@ namespace fcf {
   
   FCF_EXCEPTION_DECLARE(TypeIndexNotRegisteredException, "FCF_TYPE_INDEX_NOT_REGISTERED", "The requested type index (${{1}}$) is not registered", 1);
 
+  // Новые исключения для конвертеров
+  FCF_EXCEPTION_DECLARE(ConvertFormatException, "FCF_PARSING_FORMAT_ERROR", "Argument '${{1}}$' is not a valid format for type ${{2}}$", 2);
+  FCF_EXCEPTION_DECLARE(ConvertRangeExceededException, "FCF_CONVERSION_RANGE_EXCEEDED", "Value '${{1}}$' exceeds the range of type ${{2}}$", 2);
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
+
