@@ -136,7 +136,7 @@ namespace fcf {
   size_t DynamicContainerAccess<TContainerAccess>::distance(const DynamicContainerAccessBase& a_iterator) const {
     const DynamicContainerAccess* p = (const DynamicContainerAccess*)&a_iterator;
     if (!p){
-      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, Type<TContainerAccess>().name());
+      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, Type<DynamicContainerAccess>().name());
     }
     return _containerAccess.distance(p->_containerAccess);
   }
@@ -272,7 +272,7 @@ namespace fcf {
   size_t DynamicContainerAccess< ContainerAccess<const TContainer> >::distance(const DynamicContainerAccessBase& a_iterator) const {
     const DynamicContainerAccess* p = (const DynamicContainerAccess*)&a_iterator;
     if (!p){
-      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, Type<TContainer>().name());
+      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, Type<DynamicContainerAccess>().name());
     }
     return _containerAccess.distance(p->_containerAccess);
   }
