@@ -9,14 +9,14 @@
 namespace fcf {
 
   template <bool IsConstValue>
-  template <typename TContainerAcces, typename TValue>
-  void DynamicContainerAccessHelper<IsConstValue>::set(TContainerAcces& a_container, const TValue& a_value) {
+  template <typename TContainerAccess, typename TValue>
+  void DynamicContainerAccessHelper<IsConstValue>::set(TContainerAccess& a_container, const TValue& a_value) {
     a_container.value() = a_value;
   }
 
-  template <typename TContainerAcces, typename TValue>
-  void DynamicContainerAccessHelper<true>::set(TContainerAcces& /*a_container*/, const TValue& /*a_value*/){
-    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The container does not support the recording of the value");
+  template <typename TContainerAccess, typename TValue>
+  void DynamicContainerAccessHelper<true>::set(TContainerAccess& /*a_container*/, const TValue& /*a_value*/){
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, Type<TContainerAccess>().name());
   }
 
   template <typename TContainerAccess>
@@ -76,7 +76,7 @@ namespace fcf {
   void* DynamicContainerAccess<TContainerAccess>::getValuePtr() {
     typedef decltype(_containerAccess.value()) resolve_type;
     if (std::is_const< resolve_type >::value) {
-      throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The type does not support access to modify the stored value.");
+      throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, Type<TContainerAccess>().name());
     }
     return _containerAccess.ptr();
   };
@@ -136,7 +136,7 @@ namespace fcf {
   size_t DynamicContainerAccess<TContainerAccess>::distance(const DynamicContainerAccessBase& a_iterator) const {
     const DynamicContainerAccess* p = (const DynamicContainerAccess*)&a_iterator;
     if (!p){
-      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, "The transferred virtual type does not correspond to the required");
+      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, Type<TContainerAccess>().name());
     }
     return _containerAccess.distance(p->_containerAccess);
   }
@@ -219,12 +219,12 @@ namespace fcf {
 
   template <typename TContainer>
   void* DynamicContainerAccess< ContainerAccess<const TContainer> >::getValuePtr() {
-    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The type does not support access to modify the stored value.");
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, Type<TContainer>().name());
   };
 
   template <typename TContainer>
   void DynamicContainerAccess< ContainerAccess<const TContainer> >::setValue(const Variant& /*a_value*/){
-    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The type does not support access to modify the stored value.");
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, Type<TContainer>().name());
   }
 
   template <typename TContainer>
@@ -272,7 +272,7 @@ namespace fcf {
   size_t DynamicContainerAccess< ContainerAccess<const TContainer> >::distance(const DynamicContainerAccessBase& a_iterator) const {
     const DynamicContainerAccess* p = (const DynamicContainerAccess*)&a_iterator;
     if (!p){
-      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, "The transferred virtual type does not correspond to the required");
+      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, Type<TContainer>().name());
     }
     return _containerAccess.distance(p->_containerAccess);
   }
@@ -290,7 +290,7 @@ namespace fcf {
 
   template <typename TContainer>
   void DynamicContainerAccess< ContainerAccess<const TContainer> >::erase(DynamicContainerAccessBase& /*a_endAccess*/){
-    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The object is only available for reading");
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, Type<TContainer>().name());
   }
 } // fcf namespace
 
