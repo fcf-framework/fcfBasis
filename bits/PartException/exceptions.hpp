@@ -32,18 +32,16 @@ namespace fcf {
   
   FCF_EXCEPTION_DECLARE(TypeIndexNotRegisteredException, "FCF_TYPE_INDEX_NOT_REGISTERED", "The requested type index (${{1}}$) is not registered", 1);
 
-  // Новые исключения для конвертеров
   FCF_EXCEPTION_DECLARE(ConvertFormatException, "FCF_PARSING_FORMAT_ERROR", "Argument '${{1}}$' is not a valid format for type ${{2}}$", 2);
   FCF_EXCEPTION_DECLARE(ConvertRangeExceededException, "FCF_CONVERSION_RANGE_EXCEEDED", "Value '${{1}}$' exceeds the range of type ${{2}}$", 2);
 
- // Новые исключения для контейнеров
  FCF_EXCEPTION_DECLARE(ContainerReadOnlyException, "FCF_CONTAINER_READ_ONLY", "The container '{{1}}' does not support the recording of the value", 1);
  FCF_EXCEPTION_DECLARE(ContainerIterationTypeMismatchException, "FCF_CONTAINER_ITERATION_TYPE_MISMATCH", "The transferred virtual type does not correspond to the required type '${{1}}$'", 1);
+
+ FCF_EXCEPTION_DECLARE(CursorIteratorUnsetException, "FCF_CURSOR_ITERATOR_UNSET", "Iterator for type '${{1}}$' is not set", 1);
 
 } // fcf namespace
 
 #include "Exception.hpp"
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
-
-
