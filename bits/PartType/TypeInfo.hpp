@@ -1,6 +1,8 @@
 #ifndef ___FCF__BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
 #define ___FCF__BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
 
+#include "TypeInfoDefinition.hpp"
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -15,78 +17,62 @@
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/BaseTypeFactory.hpp"
+
 #include "../../bits/PartType/TypeIndexConverter.hpp"
+#include "../../bits/PartException/exceptions.hpp"
 
 namespace fcf {
 
-  struct TypeInfo{
-    typedef std::unordered_map<unsigned int, ConvertFunction> Converters;
+  TypeInfo::TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize, size_t a_size)
+    : index(a_index)
+    , name(a_name)
+    , isVariantRef(a_isVariantRef)
+    , isVariant(a_isVariant)
+    , innerSize(a_innerSize)
+    , size(a_size)
+    , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
+    , resolver(0) {
+  }
 
-    unsigned int                                                  index;
-    std::string                                                   name;
-    bool                                                          isVariantRef;
-    bool                                                          isVariant;
-    size_t                                                        innerSize;
-    size_t                                                        size;
-    unsigned int                                                  dataIndex;
-    ResolveSpecificator::CallFunctionType                         resolver;
-    Converters                                                    converters;
-    Converters                                                    backConverters;
-    std::map<unsigned int, SpecificatorInfo>                      specificators;
-    std::shared_ptr< BaseTypeFactory >                            initializer;
-
-    TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize, size_t a_size)
-      : index(a_index)
-      , name(a_name)
-      , isVariantRef(a_isVariantRef)
-      , isVariant(a_isVariant)
-      , innerSize(a_innerSize)
-      , size(a_size)
-      , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
-      , resolver(0) {
-
+  template <typename TSpecificator>
+  typename TSpecificator::CallType TypeInfo::getSpecificatorCall() const {
+    const unsigned int specificatorIndex = Type<TSpecificator>().index();
+    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
+    if (it != specificators.end()) {
+      return (typename TSpecificator::CallType)it->second.call;
     }
+    return (typename TSpecificator::CallType)0;
+  }
 
-    template <typename TSpecificator>
-    typename TSpecificator::CallType getSpecificatorCall() const {
-      const unsigned int specificatorIndex = Type<TSpecificator>().index();
-      std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-      if (it != specificators.end()) {
-        return (typename TSpecificator::CallType)it->second.call;
-      }
-      return (typename TSpecificator::CallType)0;
+  template <typename TSpecificator>
+  typename TSpecificator::CallType TypeInfo::getSafeSpecificatorCall() const {
+    const unsigned int specificatorIndex = Type<TSpecificator>().index();
+    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
+    if (it != specificators.end() && !!it->second.call) {
+      return (typename TSpecificator::CallType)it->second.call;
     }
+    throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+  }
 
-    template <typename TSpecificator>
-    typename TSpecificator::CallType getSafeSpecificatorCall() const {
-      const unsigned int specificatorIndex = Type<TSpecificator>().index();
-      std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-      if (it != specificators.end() && !!it->second.call) {
-        return (typename TSpecificator::CallType)it->second.call;
-      }
-      throw std::runtime_error("Specificator not found");
+  template <typename TSpecificator>
+  UniversalCall TypeInfo::getSpecificator() const {
+    const unsigned int specificatorIndex = Type<TSpecificator>().index();
+    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
+    if (it != specificators.end()) {
+      return (UniversalCall)it->second.universalCall;
     }
+    return (UniversalCall)0;
+  }
 
-    template <typename TSpecificator>
-    UniversalCall getSpecificator() const {
-      const unsigned int specificatorIndex = Type<TSpecificator>().index();
-      std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-      if (it != specificators.end()) {
-        return (UniversalCall)it->second.universalCall;
-      }
-      return (UniversalCall)0;
+  template <typename TSpecificator>
+  UniversalCall TypeInfo::getSafeSpecificator() const {
+    const unsigned int specificatorIndex = Type<TSpecificator>().index();
+    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
+    if (it != specificators.end() && !!it->second.universalCall) {
+      return (UniversalCall)it->second.universalCall;
     }
-
-    template <typename TSpecificator>
-    UniversalCall getSafeSpecificator() const {
-      const unsigned int specificatorIndex = Type<TSpecificator>().index();
-      std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-      if (it != specificators.end() && !!it->second.universalCall) {
-        return (UniversalCall)it->second.universalCall;
-      }
-      throw std::runtime_error("Specificator not found");
-    }
-  };
+    throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+  }
 
 } // fcf namespace
 

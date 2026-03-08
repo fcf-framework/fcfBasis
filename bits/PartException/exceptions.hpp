@@ -5,7 +5,7 @@
 
 namespace fcf {
 
- FCF_EXCEPTION_DECLARE(LogicException, "FCF_LOGIC", "Logic error: ${{1}}$", 1);
+  FCF_EXCEPTION_DECLARE(LogicException, "FCF_LOGIC", "Logic error: ${{1}}$", 1);
 
   FCF_EXCEPTION_DECLARE(FunctionNotFoundException, "FCF_FUNCTION_NOT_FOUND", "Function '${{1}}$' function not'", 1);
 
@@ -39,6 +39,8 @@ namespace fcf {
  FCF_EXCEPTION_DECLARE(ContainerIterationTypeMismatchException, "FCF_CONTAINER_ITERATION_TYPE_MISMATCH", "The transferred virtual type does not correspond to the required type '${{1}}$'", 1);
 
  FCF_EXCEPTION_DECLARE(CursorIteratorUnsetException, "FCF_CURSOR_ITERATOR_UNSET", "Iterator for type '${{1}}$' is not set", 1);
+
+ FCF_EXCEPTION_DECLARE(SpecificatorNotFoundException, "FCF_SPECIFICATOR_NOT_FOUND", "Specificator of type ${{2}}$  for type ${{1}}$ is not found", 2);
 
 } // fcf namespace
 

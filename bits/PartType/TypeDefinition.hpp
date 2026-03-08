@@ -1,10 +1,70 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_DEFINITION_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_DEFINITION_HPP___
 
+#include <list>
+#include <set>
+#include <vector>
+#include <type_traits>
+
+#include "TypePredefinition.hpp"
+
+#include "../../bits/PartType/TypeStorageDefinition.hpp"
+#include "../../bits/PartConvert/NDetails/setConverterDefinition.hpp"
+#include "../../bits/PartTypes/UniversalCall.hpp"
+#include "../../bits/PartType/TypeId.hpp"
+#include "../../bits/PartSpecificator/NDetails/SpecificatorRefRegistrarDefinition.hpp"
+
 namespace fcf{
 
-  template <typename Ty, typename TInfoMode = Nop>
+  template <typename Ty, typename TInfoMode>
   struct Type;
+
+  template <typename Ty>
+  struct Type<Ty, Nop> {
+
+      template <typename TContainer, typename TSubSpecificator>
+      friend class SpecificatorRegistrar;
+
+      template <typename, typename, typename>
+      friend struct NDetails::SpecificatorRefRegistrarImpl;
+
+      template <typename, typename, typename, typename>
+      friend struct NDetails::SpecificatorRegistrarIfTypeDeclaredImpl;
+
+
+
+      template <typename TDestination, typename TSource>
+      friend void ::fcf::NDetails::setConverter();
+
+      typedef Ty         owner_type;
+
+      Type();
+
+      const std::string& name();
+
+      unsigned int index();
+
+      unsigned int dataIndex();
+
+      const TypeInfo* getTypeInfo();
+
+      size_t getWrapperSize();
+
+      const std::map<unsigned int, SpecificatorInfo>& specificators();
+
+      template <typename TSubSpecificator>
+      UniversalCall getSpecificator() const;
+
+      const TypeInfo::Converters& converters();
+
+      const TypeInfo::Converters& backConverters();
+
+    protected:
+      static TypeInfo* _info;
+  };
+
+
+
 
 } // fcf namespace
 
