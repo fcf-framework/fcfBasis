@@ -1,163 +1,23 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
 
-#include "DynamicContainerAccessBase.hpp"
+#include "DynamicContainerAccessDefinition.hpp"
+#include <stdexcept>
+#include "../../Exception.hpp"
+#include "../../Variant.hpp"
 
 namespace fcf {
 
   template <bool IsConstValue>
-  struct DynamicContainerAccessHelper{
+  template <typename TContainerAcces, typename TValue>
+  void DynamicContainerAccessHelper<IsConstValue>::set(TContainerAcces& a_container, const TValue& a_value) {
+    a_container.value() = a_value;
+  }
 
-    template <typename TContainerAcces, typename TValue>
-    void set(TContainerAcces& a_container, const TValue& a_value){
-      a_container.value() = a_value;
-    }
-  };
-
-  template <>
-  struct DynamicContainerAccessHelper<true>{
-
-    template <typename TContainerAcces, typename TValue>
-    void set(TContainerAcces& /*a_container*/, const TValue& /*a_value*/){
-      throw std::runtime_error("The container does not support the recording of the value");
-    }
-  };
-
-  template <typename TContainerAccess>
-  class DynamicContainerAccess : public DynamicContainerAccessBase {
-    public:
-      enum { is_const_resolve_value = TContainerAccess::is_const_resolve_value };
-
-      typedef typename TContainerAccess::container_type             container_type;
-      typedef typename TContainerAccess::key_type                   key_type;
-      typedef typename TContainerAccess::value_type                 value_type;
-      typedef DynamicContainerAccessHelper<is_const_resolve_value>  helper_type;
-
-      DynamicContainerAccess();
-
-      DynamicContainerAccess(container_type& a_container, ::fcf::ContainerPosition a_position = ::fcf::CP_BEGIN);
-
-      virtual ~DynamicContainerAccess();
-
-      virtual bool isFlatContainer();
-
-      virtual void setBeginPosition();
-
-      virtual void setEndPosition();
-
-      virtual void setPosition(const ::fcf::Variant& a_key, bool a_create = false);
-
-      virtual void addPosition(size_t a_offset);
-
-      virtual void decPosition(size_t a_offset);
-
-      virtual void dec();
-
-      virtual void inc();
-
-      virtual void* getValuePtr();
-
-      virtual void setValue(const Variant& a_value);
-
-      virtual unsigned int getValueTypeIndex() const;
-
-      virtual const TypeInfo* getValueTypeInfo() const;
-
-      virtual unsigned int getKeyTypeIndex() const;
-
-      virtual const void* getConstValuePtr() const;
-
-      virtual Variant getValue() const;
-
-      virtual Variant getRefValue();
-
-      virtual Variant getKey() const;
-
-      virtual size_t getContainerSize() const;
-
-      virtual size_t distance(const DynamicContainerAccessBase& a_iterator) const;
-
-      virtual bool isEnd() const;
-
-      virtual bool equal(DynamicContainerAccessBase& a_containerAccess) const;
-
-      virtual void erase(DynamicContainerAccessBase& a_endAccess);
-
-    protected:
-      TContainerAccess _containerAccess;
-  };
-
-  template <typename TContainer>
-  class DynamicContainerAccess< ContainerAccess<const TContainer> > : public DynamicContainerAccessBase {
-    public:
-      typedef ContainerAccess<const TContainer> ContainerAccessType;
-
-      enum { is_const_resolve_value = ContainerAccessType::is_const_resolve_value };
-
-      typedef typename ContainerAccessType::container_type          container_type;
-      typedef typename ContainerAccessType::key_type                key_type;
-      typedef typename ContainerAccessType::value_type              value_type;
-      typedef DynamicContainerAccessHelper<is_const_resolve_value>  helper_type;
-
-      DynamicContainerAccess();
-
-      DynamicContainerAccess(const container_type& a_container, ::fcf::ContainerPosition a_position = ::fcf::CP_BEGIN);
-
-      virtual ~DynamicContainerAccess();
-
-      virtual bool isFlatContainer();
-
-      virtual void setBeginPosition();
-
-      virtual void setEndPosition();
-
-      virtual void setPosition(const ::fcf::Variant& a_key, bool a_create = false);
-
-      virtual void addPosition(size_t a_offset);
-
-      virtual void decPosition(size_t a_offset);
-
-      virtual void dec();
-
-      virtual void inc();
-
-      virtual void* getValuePtr();
-
-      virtual void setValue(const Variant& a_value);
-
-      virtual unsigned int getValueTypeIndex() const;
-
-      virtual const TypeInfo* getValueTypeInfo() const;
-
-      virtual unsigned int getKeyTypeIndex() const;
-
-      virtual const void* getConstValuePtr() const;
-
-      virtual Variant getValue() const;
-
-      virtual Variant getRefValue();
-
-      virtual Variant getKey() const;
-
-      virtual size_t getContainerSize() const;
-
-      virtual size_t distance(const DynamicContainerAccessBase& a_iterator) const;
-
-      virtual bool isEnd() const;
-
-      virtual bool equal(DynamicContainerAccessBase& a_containerAccess) const;
-
-      virtual void erase(DynamicContainerAccessBase& a_endAccess);
-
-    protected:
-      ContainerAccessType _containerAccess;
-  };
-
-} // fcf namespace
-
-#include "../../Variant.hpp"
-
-namespace fcf {
+  template <typename TContainerAcces, typename TValue>
+  void DynamicContainerAccessHelper<true>::set(TContainerAcces& /*a_container*/, const TValue& /*a_value*/){
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The container does not support the recording of the value");
+  }
 
   template <typename TContainerAccess>
   DynamicContainerAccess<TContainerAccess>::DynamicContainerAccess(){
@@ -216,7 +76,7 @@ namespace fcf {
   void* DynamicContainerAccess<TContainerAccess>::getValuePtr() {
     typedef decltype(_containerAccess.value()) resolve_type;
     if (std::is_const< resolve_type >::value) {
-      throw std::runtime_error("The type does not support access to modify the stored value.");
+      throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The type does not support access to modify the stored value.");
     }
     return _containerAccess.ptr();
   };
@@ -276,7 +136,7 @@ namespace fcf {
   size_t DynamicContainerAccess<TContainerAccess>::distance(const DynamicContainerAccessBase& a_iterator) const {
     const DynamicContainerAccess* p = (const DynamicContainerAccess*)&a_iterator;
     if (!p){
-      throw std::runtime_error("The transferred virtual type does not correspond to the required");
+      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, "The transferred virtual type does not correspond to the required");
     }
     return _containerAccess.distance(p->_containerAccess);
   }
@@ -288,7 +148,6 @@ namespace fcf {
 
   template <typename TContainerAccess>
   bool DynamicContainerAccess<TContainerAccess>::equal(DynamicContainerAccessBase& a_containerAccess) const{
-    //DynamicContainerAccess<TContainerAccess>* arg = dynamic_cast<DynamicContainerAccess<TContainerAccess>*>(&a_containerAccess);
     DynamicContainerAccess<TContainerAccess>* arg = (DynamicContainerAccess*)&a_containerAccess;
     return _containerAccess == arg->_containerAccess;
   }
@@ -360,12 +219,12 @@ namespace fcf {
 
   template <typename TContainer>
   void* DynamicContainerAccess< ContainerAccess<const TContainer> >::getValuePtr() {
-    throw std::runtime_error("The type does not support access to modify the stored value.");
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The type does not support access to modify the stored value.");
   };
 
   template <typename TContainer>
   void DynamicContainerAccess< ContainerAccess<const TContainer> >::setValue(const Variant& /*a_value*/){
-    throw std::runtime_error("The type does not support access to modify the stored value.");
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The type does not support access to modify the stored value.");
   }
 
   template <typename TContainer>
@@ -413,7 +272,7 @@ namespace fcf {
   size_t DynamicContainerAccess< ContainerAccess<const TContainer> >::distance(const DynamicContainerAccessBase& a_iterator) const {
     const DynamicContainerAccess* p = (const DynamicContainerAccess*)&a_iterator;
     if (!p){
-      throw std::runtime_error("The transferred virtual type does not correspond to the required");
+      throw fcf::ContainerIterationTypeMismatchException(__FILE__, __LINE__, "The transferred virtual type does not correspond to the required");
     }
     return _containerAccess.distance(p->_containerAccess);
   }
@@ -425,15 +284,18 @@ namespace fcf {
 
   template <typename TContainer>
   bool DynamicContainerAccess< ContainerAccess<const TContainer> >::equal(DynamicContainerAccessBase& a_containerAccess) const{
-    //DynamicContainerAccess* arg = dynamic_cast<DynamicContainerAccess*>(&a_containerAccess);
     DynamicContainerAccess* arg = (DynamicContainerAccess*)&a_containerAccess;
     return _containerAccess == arg->_containerAccess;
   }
 
   template <typename TContainer>
   void DynamicContainerAccess< ContainerAccess<const TContainer> >::erase(DynamicContainerAccessBase& /*a_endAccess*/){
-    throw std::runtime_error("The object is only available for reading");
+    throw fcf::ContainerReadOnlyException(__FILE__, __LINE__, "The object is only available for reading");
   }
-
 } // fcf namespace
+
+
+
 #endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
+
+
