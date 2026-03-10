@@ -25,9 +25,7 @@ namespace fcf{
         return callWithConvert(MethodArgumentsType(), SequenceType(), a_argPack...);
       }
 
-      template <int ...SequencePack, typename ...TMethodArgPack, typename ...TPack,
-                typename TArguments = std::tuple<TMethodArgPack...>
-                >
+      template <typename TArguments, typename ...TMethodArgPack, int ...SequencePack, typename ...TPack>
       static inline ResultType callWithConvert(TArguments, MetaTypeSequence<SequencePack...>, TPack... a_argPack){
         return Type<Ty, TSpecificator>().call(
            (decltype(std::get<SequencePack>(TArguments())))std::get<SequencePack>(std::forward_as_tuple(std::forward<TPack>(a_argPack)...))...
