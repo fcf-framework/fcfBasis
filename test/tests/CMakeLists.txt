@@ -1,9 +1,9 @@
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable("basis-test" impl.cpp
+add_executable("basis-test"
+                           impl.cpp
                            main.cpp
-                           Template/Sequence.cpp
                            index/deepIndexCallInner.cpp
                            index/deepIndexCallCaller.cpp
                            index/deepIndexCall.cpp
@@ -31,6 +31,7 @@ add_executable("basis-test" impl.cpp
                            PartCall/CallZeroIterations.cpp
                            PartException/Exception.cpp
                            PartForeach/foreach.cpp
+                           PartMetaType/MetaTypeSequence.cpp
                            PartSpecificator/ArithmeticSpecificators.cpp
                            PartVariant/VariantCmpTest.cpp
                            PartVariant/VariantConstructor.cpp

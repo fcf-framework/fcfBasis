@@ -5,8 +5,6 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void sequenceTest();
-
     void staticVectorTest();
     void staticVectorCopyTest();
     void staticVectorExceptionTest();
@@ -27,6 +25,8 @@ namespace FcfTest {
     void callZeroIterationsTest();
 
     void exceptionTest();
+
+    void metaTypeSequenceTest();
 
     void arithmeticSpecificatorsTest();
     void minMaxSpecificatorTest();
@@ -86,7 +86,8 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   FcfTest::BasisTest::variantContainerTest();
   FcfTest::BasisTest::variantArithmeticTest();
   FcfTest::BasisTest::variantEraseTest();
-  FcfTest::BasisTest::sequenceTest();
+
+  FcfTest::BasisTest::metaTypeSequenceTest();
 
   FcfTest::BasisTest::arithmeticSpecificatorsTest();
   FcfTest::BasisTest::minMaxSpecificatorTest();
