@@ -27,10 +27,9 @@ namespace fcf {
             }
           };
 
-          template <size_t IndexEnd, typename Ty>
-          struct TypeInitializer<IndexEnd-1, IndexEnd, Ty> {
-            void operator()(unsigned int* a_codes){
-              a_codes[IndexEnd-1] = Type<Ty>().index();
+          template <size_t Index, typename Ty>
+          struct TypeInitializer<Index, Index, Ty> {
+            void operator()(unsigned int* /*a_codes*/){
             }
           };
         }
