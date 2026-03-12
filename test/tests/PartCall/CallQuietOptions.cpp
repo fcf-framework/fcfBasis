@@ -32,7 +32,6 @@ namespace FcfTest {
   } // namespace BasisTest
 } // namespace FcfTest
 
-
 FCF_DECLARE_FUNCTION(
                      (QuietTest,sum),
                      "engine_cpu",

@@ -3,6 +3,7 @@
 
 #include <tuple>
 #include <type_traits>
+#include "../../../bits/PartMetaType/MetaTypeRemoveRightReference.hpp"
 #include "../../../bits/PartMetaType/MetaTypeFunction.hpp"
 #include "../../../bits/PartMetaType/MetaTypeSequence.hpp"
 
@@ -28,7 +29,18 @@ namespace fcf{
       template <typename TArguments, typename ...TMethodArgPack, int ...SequencePack, typename ...TPack>
       static inline ResultType callWithConvert(TArguments, MetaTypeSequence<SequencePack...>, TPack... a_argPack){
         return Type<Ty, TSpecificator>().call(
-           (decltype(std::get<SequencePack>(TArguments())))std::get<SequencePack>(std::forward_as_tuple(std::forward<TPack>(a_argPack)...))...
+           (
+             typename MetaTypeRemoveRightReference<
+                decltype( 
+                  std::get<SequencePack>(TArguments())
+                )
+             >::type
+           )
+           std::get<SequencePack>(
+            std::forward_as_tuple(
+              std::forward<TPack>(a_argPack)...
+            )
+           )...
         );
       }
     };

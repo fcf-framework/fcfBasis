@@ -7,6 +7,10 @@
 
 namespace fcf {
 
+    #ifdef _MSC_VER
+      #pragma warning(push)
+      #pragma warning(disable : 4244)
+    #endif
     template <typename Ty1, typename Ty2>
     Ty1 random(Ty1 a_min, Ty2 a_max) {
       double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
@@ -20,6 +24,9 @@ namespace fcf {
         *a_begin = a_min + ((a_max - a_min) * r);
       }
     }
+    #ifdef _MSC_VER
+      #pragma warning(pop)
+    #endif
 
 } // fcf namespace
 

@@ -220,7 +220,7 @@ namespace FcfTest {
         {
           static_vector_type v;
           for(size_t i = 0; i < 10; ++i) {
-            v.push_back(i);
+            v.push_back((int)i);
             size_t c = (size_t)std::ceil((double)(i+1) / 2);
             c *= 2;
             if (c < 2){
@@ -242,7 +242,7 @@ namespace FcfTest {
         {
           static_vector_type v;
           for(size_t i = 0; i < 10; ++i) {
-            v.push_back(i);
+            v.push_back((int)i);
             size_t c = (size_t)std::ceil((double)(i+1) / 2);
             c *= 2;
             if (c < 2){

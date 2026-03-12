@@ -63,7 +63,7 @@ namespace fcf {
           Caller::CallGraph::ConversionsNode* node = &conversions;
           Call* lastDstCall  = &conversions.call;
           for(const CallConversion& conversion : a_call.conversions){
-            Caller::KeyNode ca{conversion.index, conversion.sourceIndex, conversion.mode};
+            Caller::KeyNode ca{conversion.index, conversion.sourceIndex, (unsigned int)conversion.mode};
             auto insertIt = node->conversions.insert({ca, ConversionInfoNode()});
             ConversionInfoNode* typesConversion = &insertIt.first->second;
             typesConversion->conversion =  conversion;
@@ -276,7 +276,7 @@ namespace fcf {
                       cc.index       = ist.beginArgIndex;
                       _conversion(cc, a_state, arguments, INT_MAX);
                     }
-                  } catch(const std::exception& e){
+                  } catch(const std::exception&){
                     if (argBufferSize != a_state.argBuffer.size()){
                       a_state.argBuffer.resize(argBufferSize);
                     }
@@ -288,7 +288,7 @@ namespace fcf {
                     }
                   }
 
-                  arguments.prepare();
+                  arguments.prepareForceCopy();
 
                   bool callComplete = false;
                   if (a_graph && a_graph->get()) {
@@ -520,7 +520,7 @@ namespace fcf {
                 _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
               }
             }
-          } catch(const std::exception& e){
+          } catch(const std::exception&){
             if (argBufferSize != a_state.argBuffer.size()){
               a_state.argBuffer.resize(argBufferSize);
             }

@@ -7,9 +7,16 @@ namespace fcf {
 
     template <typename TIterator, typename TValue>
     void fill(TIterator a_begin, TIterator a_end, TValue a_value) {
+      #ifdef _MSC_VER
+        #pragma warning(push)
+        #pragma warning(disable : 4244)
+      #endif
       for(; a_begin != a_end; ++a_begin) {
         *a_begin = a_value;
       }
+      #ifdef _MSC_VER
+        #pragma warning(pop)
+      #endif
     }
 
 } // fcf namespace

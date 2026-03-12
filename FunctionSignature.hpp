@@ -43,7 +43,7 @@ namespace fcf {
         }
 
         BaseFunctionSignature(size_t a_asize)
-          : asize(a_asize)
+          : asize((unsigned int)a_asize)
           , pacodes(&aacodes[0]) {
           if (asize > (sizeof(aacodes)/sizeof(aacodes[0]))) {
             vacodes.resize(asize);

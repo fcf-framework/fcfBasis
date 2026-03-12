@@ -18,8 +18,8 @@ namespace FcfTest {
         fcf::call("fill",begin, end, 999.1);
       }
       {
-        int* begin = (int*)0xffffffff;
-        int* end   = (int*)0xffffffff;
+        int* begin = (int*)(long)0xffffffff;
+        int* end   = (int*)(long)0xffffffff;
         fcf::call("fill",begin, end, 999.1);
       }
       {
@@ -29,7 +29,7 @@ namespace FcfTest {
       }
       {
         std::vector<fcf::Variant> values;
-        fcf::call("fill", values.begin().operator->(), values.end().operator->(), 999);
+        fcf::call("fill", values.data(), values.data() + values.size(), 999);
         FCF_TEST(values.size() == 0, values.size());
       }
 

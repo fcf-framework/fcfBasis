@@ -81,7 +81,7 @@ namespace fcf {
     void operator()(){
       enum { toConvertion = EnableFront && ConvertersRegistrarMarker<TCrossConvert, Index>::fromConversion };
       enum { fromConvertion = EnableBack && ConvertersRegistrarMarker<TCrossConvert, Index>::toConversion };
-      ConvertersRegistrarItem<TCrossConvert, TCurrent, toConvertion, fromConvertion>()( *((typename ConvertersRegistrarMarker<TCrossConvert, Index>::type*)0xffffffff/*stub address*/)  );
+      ConvertersRegistrarItem<TCrossConvert, TCurrent, toConvertion, fromConvertion>()( *((typename ConvertersRegistrarMarker<TCrossConvert, Index>::type*)(void*)(long)0xffffffff/*stub address*/)  );
       ConvertersRegistrarWalker<TCrossConvert, Index+1, Size, TCurrent, EnableFront, EnableBack,  TPack..., typename ConvertersRegistrarMarker<TCrossConvert, Index>::type>()();
     }
   };

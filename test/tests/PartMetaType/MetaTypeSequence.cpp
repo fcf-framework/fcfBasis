@@ -28,7 +28,7 @@ namespace FcfTest {
 
         template <int ... SequencePack>
         void _call(fcf::MetaTypeSequence<SequencePack...> /*a_sequence*/){
-          iteration((const Item<SequencePack>*)((void*)0xffffffff)...);
+          iteration((const Item<SequencePack>*)((void*)(long)0xffffffff)...);
           /*
           typedef std::tuple< Item<SequencePack>...  > tuple_type;
           tuple_type tuple;

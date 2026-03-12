@@ -177,10 +177,14 @@ namespace fcf{
       inline void extend(size_t /*a_index*/){
       }
 
-      inline void prepare(ptrdiff_t /*a_index*/){
+      inline void prepare(ptrdiff_t /*a_index*/, bool a_forceCopy = false){
+        (void)a_forceCopy;
       }
 
       inline void prepare(){
+      }
+
+      inline void prepareForceCopy() {
       }
 
       inline CallArguments& getCallArguments(){
@@ -269,11 +273,21 @@ namespace fcf{
           prepare(_extendCounter + _source.size() - 1);
         }
 
-        inline void prepare(ptrdiff_t a_index){
-          if (_current != &_buffer){
-            return;
+        inline void prepareForceCopy() {
+          prepare(_extendCounter + _source.size() - 1, true);
+        }
+
+        inline void prepare(ptrdiff_t a_index, bool a_forceCopy = false){
+          if (!a_forceCopy) {
+            if (_current != &_buffer){
+              return;
+            }
+          } else {
+              if (_current != &_buffer) {
+                _current = &_buffer;
+              }
           }
-          if (a_index < (ptrdiff_t)_buffer.size()){
+          if (a_index < (ptrdiff_t)_buffer.size()) {
             return;
           }
           size_t lastIndex = _buffer.size();

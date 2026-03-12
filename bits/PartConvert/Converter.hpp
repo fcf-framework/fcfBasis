@@ -80,7 +80,7 @@ namespace fcf {
       void operator()(unsigned short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
         try {
-            a_destination = std::stoul(a_source);
+            a_destination = (unsigned short)std::stoul(a_source);
         } catch (const std::out_of_range&) {
           throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
         } catch (const std::invalid_argument&) {

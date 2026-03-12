@@ -24,7 +24,7 @@ namespace FcfTest {
       unsigned long long iterations = 10000;
       {
         std::vector<unsigned int> v = {1,2,3,4};
-        fcf::fill(&v[0], &v[v.size()], 999.1);
+        fcf::fill(&v[0], &v[0] + v.size(), 999.1);
         FCF_TEST(v.size() == 4, v.size());
         FCF_TEST(v[0] == 999, v[0]);
         FCF_TEST(v[1] == 999, v[1]);
@@ -215,7 +215,7 @@ namespace FcfTest {
 
       {
         std::vector<int> values({1,2,3});
-        fcf::call("fill", (unsigned int*)values.begin().operator->(), (unsigned int*)values.end().operator->(), 999);
+        fcf::call("fill", (unsigned int*)&values[0], (unsigned int*)(&values[0] + values.size()), 999);
         FCF_TEST(values.size() == 3, values.size());
         for(int& val : values){
           FCF_TEST(val == 999, val);
@@ -223,7 +223,7 @@ namespace FcfTest {
       }
       {
         std::vector<int> values({1,2,3});
-        fcf::fill((unsigned int*)values.begin().operator->(), (unsigned int*)values.end().operator->(), 999);
+        fcf::fill((unsigned int*)&values[0], (unsigned int*)(&values[0] + values.size()), 999);
         FCF_TEST(values.size() == 3, values.size());
         for(int& val : values){
           FCF_TEST(val == 999, val);
@@ -231,7 +231,7 @@ namespace FcfTest {
       }
       {
         std::vector<int> values({1,2,3});
-        fcf::call("fill", values.begin().operator->(), values.end().operator->(), 999);
+        fcf::call("fill", (unsigned int*)&values[0], (unsigned int*)(&values[0] + values.size()), 999);
         FCF_TEST(values.size() == 3, values.size());
         for(int& val : values){
           FCF_TEST(val == 999, val);
@@ -239,7 +239,7 @@ namespace FcfTest {
       }
       {
         std::vector<fcf::Variant> values({1,1,1});
-        fcf::call("fill", values.begin().operator->(), values.end().operator->(), 999);
+        fcf::call("fill", (fcf::Variant*)&values[0], (fcf::Variant*)(&values[0] + values.size()), 999);
         FCF_TEST(values.size() == 3, values.size());
         for(fcf::Variant& val : values){
           FCF_TEST(val == 999, val);

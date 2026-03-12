@@ -413,7 +413,7 @@
       _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg2),\
       _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg3)
 #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, ...)\
-              _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_1(a_signature, __VA_ARGS__, , , )
+              FCF_EXPAND_ARGUMENTS(_FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_1, (a_signature, __VA_ARGS__, , , ))
 
 #define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder) \
       _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR a_placeHolder) )
@@ -421,14 +421,14 @@
 #define _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
                                   a_varName##_##a_arg1##_##a_arg2##_##a_arg3##_##a_arg4##_##a_arg5##_##a_line
 #define _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5)
+                                  FCF_EXPAND_ARGUMENTS(_FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0, (a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5))
 
 #define _FCF_DECLARE_FUNCTION__NAME_RESOLVE_1(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
                                   a_arg1 "::" a_arg2 "::" a_arg3 "::" a_arg4 "::" a_arg5
 #define _FCF_DECLARE_FUNCTION__NAME_RESOLVE_0(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
                                   _FCF_DECLARE_FUNCTION__NAME_RESOLVE_1(#a_arg1, #a_arg2, #a_arg3, #a_arg4, #a_arg5)
 #define _FCF_DECLARE_FUNCTION__NAME_RESOLVE(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  _FCF_DECLARE_FUNCTION__NAME_RESOLVE_0(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5)
+                                  FCF_EXPAND_ARGUMENTS(_FCF_DECLARE_FUNCTION__NAME_RESOLVE_0, (a_arg1, a_arg2, a_arg3, a_arg4, a_arg5))
 
 #define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
       a_sourceCode; \

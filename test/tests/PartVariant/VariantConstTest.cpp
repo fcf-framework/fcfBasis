@@ -85,7 +85,7 @@ namespace FcfTest {
         const std::vector<int> vec={1,2,3};
         try {
           fcf::Variant v(fcf::Type< std::vector<int> >(), vec, fcf::Variant::REFERENCE);
-        } catch(std::exception& e){
+        } catch(std::exception&){
           error = true;
         }
         FCF_TEST(error == true);

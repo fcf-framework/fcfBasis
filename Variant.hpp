@@ -1158,7 +1158,7 @@ namespace fcf{
     } else {
       char* data = (char*)&((const TypeWrapper<int>*)_ptr)->data;
       char* wrp  = (char*)_ptr;
-      long  offset  = data - wrp;
+      long  offset  = (long)(data - wrp);
       char* address = wrp - offset;
       return (BaseTypeWrapper*)address;
     }

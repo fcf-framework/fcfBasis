@@ -49,7 +49,14 @@ namespace fcf{
     }
 
     inline void call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) const {
+      #ifdef _MSC_VER
+        #pragma warning(push)
+        #pragma warning(disable : 4804)
+      #endif
       *a_destination = (*a_leftValue) / (*a_rightValue);
+      #ifdef _MSC_VER
+        #pragma warning(pop)
+      #endif
     }
   };
 

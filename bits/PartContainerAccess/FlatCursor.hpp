@@ -83,7 +83,13 @@ namespace fcf {
     }
 
     inline void* getValuePtr() {
-      return (void*)&(*container)[key];
+      // For ignore exceptions and compilation 
+      if (container->size()){
+        return (void*)(&(*container)[0] + key);
+      } else {
+        long zero_addr = 0x00;
+        return (void*)(((value_type*)(void*)(long)zero_addr) + key);
+      }
     }
 
     inline resolve_stored_value_type getStoredValue() {

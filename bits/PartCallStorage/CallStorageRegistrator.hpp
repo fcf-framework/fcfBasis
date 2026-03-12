@@ -65,7 +65,7 @@ namespace fcf {
 
         unsigned int index;
         if (indexIt == it->second.end()) {
-          index = getCallStorage().functions.size();
+          index = (unsigned int)getCallStorage().functions.size();
 
           CallStorageFunctionInfo sfi;
           sfi.name       = a_name;
