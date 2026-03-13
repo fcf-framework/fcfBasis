@@ -20,6 +20,7 @@
 
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartException/exceptions.hpp"
+#include "../../bits/PartType/TypeFactory.hpp"
 
 namespace fcf {
 
@@ -31,7 +32,78 @@ namespace fcf {
     , innerSize(a_innerSize)
     , size(a_size)
     , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
-    , resolver(0) {
+    , resolver(0)
+    , initializer(0) {
+  }
+
+  TypeInfo::TypeInfo()
+    : index(0)
+    , isVariantRef(0)
+    , isVariant(0)
+    , innerSize(0)
+    , size(0)
+    , dataIndex(0)
+    , resolver(0)
+    , initializer(0) {
+  }
+
+  TypeInfo::TypeInfo(const TypeInfo& a_source)
+    : index(a_source.index)
+    , name(a_source.name)
+    , isVariantRef(a_source.isVariantRef)
+    , isVariant(a_source.isVariant)
+    , innerSize(a_source.innerSize)
+    , size(a_source.size)
+    , dataIndex(a_source.dataIndex)
+    , resolver(a_source.resolver)
+    , converters(a_source.converters)
+    , backConverters(a_source.backConverters)
+    , specificators(a_source.specificators)
+    , initializer(0)
+  {
+    if (a_source.initializer){
+      initializer = a_source.initializer->createFactory();
+    }
+  }
+
+  TypeInfo::~TypeInfo(){
+    if (initializer){
+      delete initializer;
+    }
+  }
+
+  inline TypeInfo& TypeInfo::operator=(const TypeInfo& a_source) {
+    index = a_source.index;
+    name = a_source.name;
+    isVariantRef = a_source.isVariantRef;
+    isVariant = a_source.isVariant;
+    innerSize = a_source.innerSize;
+    size = a_source.size;
+    dataIndex = a_source.dataIndex;
+    resolver = a_source.resolver;
+    converters = a_source.converters;
+    backConverters = a_source.backConverters;
+    specificators = a_source.specificators;
+
+    if (initializer){
+      delete initializer;
+    }
+
+    if (a_source.initializer){
+      initializer = a_source.initializer->createFactory();
+    } else {
+      initializer = 0;
+    }
+
+    return *this;
+  }
+
+  template <typename Ty>
+  void TypeInfo::initialize(){
+    if (initializer){
+      delete initializer;
+    }
+    initializer = new TypeFactory<Ty>();
   }
 
   template <typename TSpecificator>

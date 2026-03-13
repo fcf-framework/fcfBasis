@@ -11,7 +11,7 @@ namespace fcf {
     struct TypeRegistrar {
       typedef Ty type;
       TypeRegistrar(::fcf::TypeInfo* a_info, unsigned int /*a_index*/){
-        a_info->initializer = std::shared_ptr< BaseTypeFactory >(new TypeFactory<Ty>());
+        a_info->initialize<Ty>();
       }
     };
 
@@ -19,7 +19,7 @@ namespace fcf {
     struct TypeRegistrar<TUnstatic, UnstaticCounter, Ty&&> {
       typedef Ty type;
       TypeRegistrar(::fcf::TypeInfo* a_info, unsigned int /*a_index*/){
-        a_info->initializer = std::shared_ptr< BaseTypeFactory >(new TypeFactory<Ty&>());
+        a_info->initialize<Ty>();
       }
     };
 

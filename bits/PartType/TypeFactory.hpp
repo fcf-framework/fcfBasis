@@ -14,6 +14,7 @@ namespace fcf {
       virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata);
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
+      virtual BaseTypeFactory* createFactory();
   };
 
   template <typename Ty>
@@ -25,6 +26,7 @@ namespace fcf {
       virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata);
       virtual BaseTypeWrapper* create();
       virtual BaseTypeWrapper* create(char* a_mem);
+      virtual BaseTypeFactory* createFactory();
   };
 
 } // fcf namespace
@@ -64,11 +66,12 @@ namespace fcf {
     return new (a_mem) TypeWrapper<Ty>();
   }
 
-  
-  
-  
-  
-  
+  template <typename Ty>
+  BaseTypeFactory* TypeFactory<Ty>::createFactory(){
+    return new TypeFactory<Ty>();
+  }
+
+
   template <typename Ty>
   size_t TypeFactory<Ty&>::size() {
     return sizeof(TypeWrapper<Ty&>);
@@ -98,6 +101,11 @@ namespace fcf {
   template <typename Ty>
   BaseTypeWrapper* TypeFactory<Ty&>::create(char* a_mem){
     return new (a_mem) TypeWrapper<Ty&>();
+  }
+
+  template <typename Ty>
+  BaseTypeFactory* TypeFactory<Ty&>::createFactory(){
+    return new TypeFactory<Ty&>();
   }
 
 } // fcf namespace

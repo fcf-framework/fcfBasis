@@ -14,6 +14,7 @@ namespace fcf{
       virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata) = 0;
       virtual BaseTypeWrapper* create() = 0;
       virtual BaseTypeWrapper* create(char* a_mem) = 0;
+      virtual BaseTypeFactory* createFactory() = 0;
   };
 
   #ifdef FCF_BASIS_IMPLEMENTATION

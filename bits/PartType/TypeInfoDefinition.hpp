@@ -33,9 +33,20 @@ namespace fcf{
     Converters                                                    converters;
     Converters                                                    backConverters;
     std::map<unsigned int, SpecificatorInfo>                      specificators;
-    std::shared_ptr< BaseTypeFactory >                            initializer;
+    BaseTypeFactory*                                              initializer;
 
     inline TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize, size_t a_size);
+
+    inline TypeInfo();
+
+    inline TypeInfo(const TypeInfo& a_source);
+
+    inline ~TypeInfo();
+
+    inline TypeInfo& operator=(const TypeInfo& a_source);
+
+    template <typename Ty>
+    void initialize();
 
     template <typename TSpecificator>
     typename TSpecificator::CallType getSpecificatorCall() const;
