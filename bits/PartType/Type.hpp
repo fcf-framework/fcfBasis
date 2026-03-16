@@ -4,7 +4,6 @@
 #include "TypeDefinition.hpp"
 #include "../../bits/PartType/TypeStorage.hpp"
 #include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
-#include "../../bits/PartType/TypeWrapper.hpp"
 #include "../../bits/PartVariant/NDetails/IsVariantRef.hpp"
 #include "../../bits/PartVariant/NDetails/IsVariant.hpp"
 #include "../../bits/PartVariant/NDetails/VariantInnerSize.hpp"
@@ -67,11 +66,6 @@ namespace fcf {
   template <typename Ty>
   const TypeInfo* Type<Ty, Nop>::getTypeInfo() {
     return _info;
-  }
-
-  template <typename Ty>
-  size_t Type<Ty, Nop>::getWrapperSize(){
-    return sizeof(fcf::TypeWrapper<Ty>);
   }
 
   template <typename Ty>

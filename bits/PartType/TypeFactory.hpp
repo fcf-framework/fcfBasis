@@ -1,44 +1,34 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_HPP___
 
-#include "BaseTypeWrapper.hpp"
+#include "BaseTypeFactory.hpp"
 
 namespace fcf {
 
   template <typename Ty>
   class FCF_BASIS_DECL_EXPORT TypeFactory : public BaseTypeFactory {
     public:
-      virtual size_t size(); 
-      virtual void set(void* a_destination, const void* a_source);
-      virtual BaseTypeWrapper* clone(const void* a_pdata);
-      virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata);
-      virtual BaseTypeWrapper* create();
-      virtual BaseTypeWrapper* create(char* a_mem);
+      virtual void   set(void* a_destination, const void* a_source);
+      virtual void*  clone(void* a_mem, const void* a_pdata);
+      virtual void*  create(void* a_mem);
+      virtual void   destroy(void* a_mem);
       virtual BaseTypeFactory* createFactory();
   };
 
   template <typename Ty>
   class FCF_BASIS_DECL_EXPORT TypeFactory<Ty&> : public BaseTypeFactory {
-    public:
-      virtual size_t size(); 
-      virtual void set(void* a_destination, const void* a_source);
-      virtual BaseTypeWrapper* clone(const void* a_pdata);
-      virtual BaseTypeWrapper* clone(char* a_mem, const void* a_pdata);
-      virtual BaseTypeWrapper* create();
-      virtual BaseTypeWrapper* create(char* a_mem);
+      virtual void   set(void* a_destination, const void* a_source);
+      virtual void*  clone(void* a_mem, const void* a_pdata);
+      virtual void*  create(void* a_mem);
+      virtual void   destroy(void* a_mem);
       virtual BaseTypeFactory* createFactory();
   };
 
 } // fcf namespace
 
 #include "NDetails/AssigmentWrapper.hpp"
-#include "TypeWrapper.hpp"
 
 namespace fcf {
-  template <typename Ty>
-  size_t TypeFactory<Ty>::size() {
-    return sizeof(TypeWrapper<Ty>);
-  }
 
 
   template <typename Ty>
@@ -47,23 +37,24 @@ namespace fcf {
   }
 
   template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty>::clone(const void* a_pdata){
-    return new TypeWrapper<Ty>(*(Ty*)a_pdata);
+  void* TypeFactory<Ty>::clone(void* a_mem, const void* a_pdata){
+    if (!a_mem){
+      a_mem = new char[sizeof(Ty)];
+    }
+    return (void*)(new (a_mem) Ty(*(const Ty*)a_pdata));
   }
 
   template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty>::clone(char* a_mem, const void* a_pdata){
-    return new (a_mem) TypeWrapper<Ty>(*(Ty*)a_pdata);
+  void* TypeFactory<Ty>::create(void* a_mem){
+    if (!a_mem){
+      a_mem = new char[sizeof(Ty)];
+    }
+    return (void*)(new (a_mem) Ty());
   }
 
   template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty>::create(){
-    return new TypeWrapper<Ty>();
-  }
-
-  template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty>::create(char* a_mem){
-    return new (a_mem) TypeWrapper<Ty>();
+  void TypeFactory<Ty>::destroy(void* a_mem){
+    ((Ty*)a_mem)->~Ty();
   }
 
   template <typename Ty>
@@ -72,11 +63,6 @@ namespace fcf {
   }
 
 
-  template <typename Ty>
-  size_t TypeFactory<Ty&>::size() {
-    return sizeof(TypeWrapper<Ty&>);
-  }
-
 
   template <typename Ty>
   void TypeFactory<Ty&>::set(void* a_destination, const void* a_source){
@@ -84,23 +70,29 @@ namespace fcf {
   }
 
   template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty&>::clone(const void* a_pdata){
-    return new TypeWrapper<Ty&>(*(Ty*)a_pdata);
+  void* TypeFactory<Ty&>::clone(void* a_mem, const void* a_pdata){
+    if (!a_mem){
+      throw std::runtime_error("The reference could not be created with memory allocation");
+    }
+    typedef Ty* PtrType;
+    PtrType* p = (PtrType*)a_mem;
+    *p = (PtrType)a_pdata;
+    return *(void**)p;
   }
 
   template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty&>::clone(char* a_mem, const void* a_pdata){
-    return new (a_mem) TypeWrapper<Ty&>(*(Ty*)a_pdata);
+  void* TypeFactory<Ty&>::create(void* a_mem){
+    throw std::runtime_error("A reference cannot be created without a data source");
+    if (!a_mem){
+      throw std::runtime_error("The reference could not be created with memory allocation");
+    }
+    typedef Ty* PtrType;
+    PtrType* p = (PtrType*)a_mem;
+    return *(void**)p;
   }
 
   template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty&>::create(){
-    return new TypeWrapper<Ty&>();
-  }
-
-  template <typename Ty>
-  BaseTypeWrapper* TypeFactory<Ty&>::create(char* a_mem){
-    return new (a_mem) TypeWrapper<Ty&>();
+  void TypeFactory<Ty&>::destroy(void* /*a_mem*/){
   }
 
   template <typename Ty>

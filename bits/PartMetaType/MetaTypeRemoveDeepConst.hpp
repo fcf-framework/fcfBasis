@@ -33,6 +33,22 @@ namespace fcf{
     typedef Ty** type;
   };
 
+  template <typename Ty>
+  struct MetaTypeRemoveDeepConst<Ty const &>{
+    typedef Ty& type;
+  };
+
+  template <typename Ty>
+  struct MetaTypeRemoveDeepConst<Ty const *&>{
+    typedef Ty*& type;
+  };
+
+  template <typename Ty>
+  struct MetaTypeRemoveDeepConst<Ty const **&>{
+    typedef Ty**& type;
+  };
+
+  
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_REMOVE_DEEP_CONST_HPP___

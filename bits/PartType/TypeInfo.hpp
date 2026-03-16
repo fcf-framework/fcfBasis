@@ -17,6 +17,7 @@
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/BaseTypeFactory.hpp"
+#include "../../bits/PartMetaType/MetaTypeRemoveDeepConst.hpp"
 
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartException/exceptions.hpp"
@@ -103,7 +104,7 @@ namespace fcf {
     if (initializer){
       delete initializer;
     }
-    initializer = new TypeFactory<Ty>();
+    initializer = new TypeFactory< typename MetaTypeRemoveDeepConst<Ty>::type >();
   }
 
   template <typename TSpecificator>

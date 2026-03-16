@@ -23,10 +23,6 @@ namespace fcf{
 
       inline const TypeInfo* getTypeInfo(Exception* a_errorDst);
 
-      inline size_t getWrapperSize();
-
-      inline size_t getWrapperSize(Exception* a_errorDst);
-
     protected:
       inline void _prepare();
 

@@ -47,18 +47,6 @@ namespace fcf{
     return _info;
   }
 
-  size_t DynamicType::getWrapperSize(){
-    _prepare();
-    return _info->initializer->size();
-  }
-
-  size_t DynamicType::getWrapperSize(Exception* a_errorDst){
-    if (!_prepare(a_errorDst)){
-      return 0;
-    }
-    return _info->initializer->size();
-  }
-
   void DynamicType::_prepare(){
     if (!_info){
       _info = ::fcf::getTypeInfo(_index);

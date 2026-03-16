@@ -157,12 +157,7 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename Ty>
   BasicVariant<innerBufferSize>::BasicVariant(Type<Ty, Nop> a_type){
-    size_t wrapperSize = a_type.getWrapperSize();
-    if (wrapperSize <= innerBufferSize) {
-      _ptr = a_type.getTypeInfo()->initializer->create(&_mem[0])->rootPtr();
-    } else {
-      _ptr = a_type.getTypeInfo()->initializer->create()->rootPtr();
-    }
+    _ptr = a_type.getTypeInfo()->initializer->create(_size(a_type.getTypeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
     _typeInfo = a_type.getTypeInfo();
   }
 
@@ -174,12 +169,8 @@ namespace fcf{
       _ptr = 0;
       return;
     }
-    size_t wrapperSize = a_dynamicType.getWrapperSize();
-    if (wrapperSize <= innerBufferSize) {
-      _ptr = a_dynamicType.getTypeInfo()->initializer->create(&_mem[0])->rootPtr();
-    } else {
-      _ptr = a_dynamicType.getTypeInfo()->initializer->create()->rootPtr();
-    }
+    size_t dataSize = _size(a_dynamicType.getTypeInfo());
+    _ptr = a_dynamicType.getTypeInfo()->initializer->create( dataSize <= innerBufferSize ? &_mem[0] : 0 );
     _typeInfo = a_dynamicType.getTypeInfo();
   }
 
@@ -190,12 +181,8 @@ namespace fcf{
       _ptr = 0;
       return;
     }
-    size_t wrapperSize = a_typeInfo->initializer->size();
-    if (wrapperSize <= innerBufferSize) {
-      _ptr = a_typeInfo->initializer->create(&_mem[0])->rootPtr();
-    } else {
-      _ptr = a_typeInfo->initializer->create()->rootPtr();
-    }
+    size_t dataSize = _size(a_typeInfo);
+    _ptr = a_typeInfo->initializer->create(dataSize <= innerBufferSize ? &_mem[0] : 0);
     _typeInfo = a_typeInfo;
   }
 
@@ -216,12 +203,8 @@ namespace fcf{
       return;
     }
 
-    size_t wrapperSize = a_dynamicType.getWrapperSize();
-    if (wrapperSize <= innerBufferSize) {
-      _ptr = a_dynamicType.getTypeInfo()->initializer->create(&_mem[0])->rootPtr();
-    } else {
-      _ptr = a_dynamicType.getTypeInfo()->initializer->create()->rootPtr();
-    }
+    size_t dataSize = _size(a_dynamicType.getTypeInfo());
+    _ptr = a_dynamicType.getTypeInfo()->initializer->create( dataSize <= innerBufferSize ? &_mem[0] : 0 );
     _typeInfo = a_dynamicType.getTypeInfo();
   }
 
@@ -236,13 +219,8 @@ namespace fcf{
       return;
     }
 
-    size_t wrapperSize = a_typeInfo->initializer->size();
-    if (wrapperSize <= innerBufferSize) {
-      _ptr = a_typeInfo->initializer->create(&_mem[0])->rootPtr();
-    } else {
-      _ptr = a_typeInfo->initializer->create()->rootPtr();
-    }
-
+    size_t dataSize = _size(a_typeInfo);
+    _ptr = a_typeInfo->initializer->create( dataSize <= innerBufferSize ? &_mem[0] : 0 );
     _typeInfo = a_typeInfo;
   }
 
@@ -259,13 +237,7 @@ namespace fcf{
       return;
     }
 
-    size_t wrapperSize = a_type.getWrapperSize();
-    if (wrapperSize <= innerBufferSize) {
-      _ptr = a_type.getTypeInfo()->initializer->create(&_mem[0])->rootPtr();
-    } else {
-      _ptr = a_type.getTypeInfo()->initializer->create()->rootPtr();
-    }
-
+    _ptr = a_type.getTypeInfo()->initializer->create(_size(a_type.getTypeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
     _typeInfo = a_type.getTypeInfo();
   }
 
@@ -718,8 +690,6 @@ namespace fcf{
     return _calc<MulSpecificator>(a_value);
   }
 
-
-
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator/=(const BasicVariant<innerBufferSize>& a_value){
     return _selfCalcTo<DivSpecificator>(a_value);
@@ -860,10 +830,9 @@ namespace fcf{
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::_destroy(){
     if (_typeInfo) {
-      if (isInnerMemory()){
-        ((BaseTypeWrapper*)&_mem[0])->~BaseTypeWrapper();
-      } else {
-        delete (BaseTypeWrapper*)_getWrapper();
+      _typeInfo->initializer->destroy(_ptr);
+      if (!isInnerMemory()){
+        delete (char*)_ptr;
       }
     }
   }
@@ -911,12 +880,10 @@ namespace fcf{
           }
           if (sourceEndpoint.typeInfo) {
             if (curVariant->_typeInfo->dataIndex == sourceEndpoint.typeInfo->dataIndex) {
-              BaseTypeWrapper* wrp = curVariant->_getWrapper();
-              wrp->set(sourceEndpoint.ptr);
+              curVariant->_typeInfo->initializer->set(curVariant->_ptr, sourceEndpoint.ptr);
             } else {
               Variant buffer(curVariant->_typeInfo->dataIndex, sourceEndpoint.ptr, sourceEndpoint.typeInfo->index);
-              BaseTypeWrapper* wrp = curVariant->_getWrapper();
-              wrp->set(buffer.ptr());
+              curVariant->_typeInfo->initializer->set( curVariant->_ptr, buffer.ptr());
             }
           } else {
             throw VariantEmptyToReferenceException(__FILE__, __LINE__);
@@ -926,21 +893,20 @@ namespace fcf{
             if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
               throw VariantReadOnlyException(__FILE__, __LINE__);
             }
-            if (curVariant->_typeInfo->initializer->size() <= selfEndpoint.innerSize ){
-              ((BaseTypeWrapper*)&curVariant->_mem[0])->~BaseTypeWrapper();
-            } else {
-              delete (BaseTypeWrapper*)curVariant->_getWrapper();
+            curVariant->_typeInfo->initializer->destroy( curVariant->_ptr );
+            if (_size(curVariant->_typeInfo) > selfEndpoint.innerSize ){
+              delete (char*)curVariant->_ptr;
             }
             curVariant->_ptr = 0;
             curVariant->_typeInfo = 0;
           }
           if (sourceEndpoint.typeInfo){
-            if ( sourceEndpoint.typeInfo->initializer->size() <= selfEndpoint.innerSize ){
-              char* innerBuffer = (char*)&curVariant->_mem[0];
-              curVariant->_ptr = sourceEndpoint.wrapper->cloneData(innerBuffer)->rootPtr();
-            } else {
-              curVariant->_ptr = sourceEndpoint.wrapper->cloneData()->rootPtr();
-            }
+            curVariant->_ptr = sourceEndpoint.typeInfo->initializer->clone(
+                                     (_size(sourceEndpoint.typeInfo) <= selfEndpoint.innerSize)
+                                        ? (void*)&curVariant->_mem[0]
+                                        : (void*)0,
+                                     sourceEndpoint.ptr
+                                    );
             if (TypeIndexConverter<>::isSingleReference(sourceEndpoint.typeInfo->index)){
               curVariant->_typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>::getUnreferenceIndex(sourceEndpoint.typeInfo->index));
             } else {
@@ -957,11 +923,11 @@ namespace fcf{
           _typeInfo = 0;
           auto ui = ((BasicVariant<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
           if (ui.typeInfo) {
-            if (ui.wrapper->size() <= innerBufferSize){
-              _ptr = ui.wrapper->cloneData(&_mem[0])->rootPtr();
-            } else {
-              _ptr = ui.wrapper->cloneData()->rootPtr();
-            }
+            _ptr = ui.typeInfo->initializer->clone((_size(ui.typeInfo) <= innerBufferSize) 
+                                                      ? (void*)&_mem[0]
+                                                      : (void*)0,
+                                                    ui.ptr
+                                                  );
             if (ui.typeInfo->index != ui.typeInfo->dataIndex){
               ui.typeInfo = ::fcf::getTypeInfo(ui.typeInfo->dataIndex);
             }
@@ -977,8 +943,9 @@ namespace fcf{
         _destroy();
         _ptr = 0;
         _typeInfo = 0;
-        typedef ReferenceType& EndpointType;
-        _ptr = NDetails::VariantAllocator<EndpointType, innerBufferSize>()(&_mem[0], a_variant)->rootPtr();
+        typedef typename std::remove_reference< ReferenceType >::type& EndpointType;
+        *(void**)(&_mem[0]) = (void*)&a_variant;
+        _ptr = (void*)&a_variant;
         _typeInfo = Type<EndpointType>().getTypeInfo();
       }
       break;
@@ -991,14 +958,12 @@ namespace fcf{
         _ptr = 0;
         _typeInfo = 0;
         if (a_variant._typeInfo) {
-          BaseTypeWrapper* wrp = (BaseTypeWrapper*)a_variant._getWrapper();
-          if (std::is_const<ReferenceType>::value) {
-            _ptr = wrp->constReferenceClone(&_mem[0])->rootPtr();
-            _typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>().getConstSingleReferenceIndex(a_variant.getTypeIndex()));
-          } else {
-            _ptr = wrp->referenceClone(&_mem[0])->rootPtr();
-            _typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>().getSingleReferenceIndex(a_variant.getTypeIndex()));
-          }
+          unsigned int index = std::is_const<ReferenceType>::value 
+                    ? TypeIndexConverter<>::getConstSingleReferenceIndex( a_variant._typeInfo->index )
+                    : TypeIndexConverter<>::getSingleReferenceIndex( a_variant._typeInfo->index );
+          const TypeInfo* refTypeInfo = ::fcf::getTypeInfo(index);
+          _ptr = refTypeInfo->initializer->clone(&_mem[0], a_variant._ptr);
+          _typeInfo = refTypeInfo;
         }
       }
       break;
@@ -1013,7 +978,7 @@ namespace fcf{
       case WRITE:
         {
           typedef typename std::remove_reference< typename Type<DataType, StoredDataTypeSpecificator>::type >::type StoredType;
-          _ptr = NDetails::VariantAllocator<StoredType, innerBufferSize>()(&_mem[0], a_value)->rootPtr();
+          _ptr = (void*)NDetails::VariantAllocator<StoredType, innerBufferSize>()(&_mem[0], a_value);
           _typeInfo = Type<StoredType>().getTypeInfo();
         }
         break;
@@ -1023,9 +988,10 @@ namespace fcf{
           if (!std::is_const<ReferenceType>::value && std::is_const<ArgTy>::value){
             throw VariantAssignConstDataException(__FILE__, __LINE__);
           }
-          typedef typename std::remove_reference< ReferenceType >::type& EndpointType;
-          _ptr = NDetails::VariantAllocator<EndpointType, innerBufferSize>()(&_mem[0], a_value)->rootPtr();
-          _typeInfo = Type<EndpointType>().getTypeInfo();
+          typedef typename std::remove_reference< ReferenceType >::type EndpointType;
+          typedef EndpointType& RefEndpointType;
+          _ptr = *(void**)NDetails::VariantAllocator<EndpointType*, innerBufferSize>()(&_mem[0], (EndpointType*)&a_value);
+          _typeInfo = Type<RefEndpointType>().getTypeInfo();
         }
         break;
     }
@@ -1059,56 +1025,53 @@ namespace fcf{
               throw VariantReadOnlyException(__FILE__, __LINE__);
             }
             if (curVariant->_typeInfo->dataIndex == Type<DataType>().dataIndex()) {
-              BaseTypeWrapper* wrp = curVariant->_getWrapper();
-              wrp->set(&a_value);
+              curVariant->_typeInfo->initializer->set(curVariant->_ptr, &a_value);
             } else {
               Variant buffer(curVariant->_typeInfo->dataIndex, &a_value, Type<DataType>().dataIndex());
-              BaseTypeWrapper* wrp = curVariant->_getWrapper();
-              wrp->set(buffer.ptr());
+              curVariant->_typeInfo->initializer->set(curVariant->_ptr, buffer.ptr());
             }
           } else {
             if (curVariant->_typeInfo){
               if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
                 throw VariantReadOnlyException(__FILE__, __LINE__);
               }
-              if ( curVariant->_typeInfo->initializer->size() <= ve.innerSize ){
-                ((BaseTypeWrapper*)&curVariant->_mem[0])->~BaseTypeWrapper();
-              } else {
-                delete (BaseTypeWrapper*)curVariant->_getWrapper();
-              }
+              curVariant->_destroy();
               curVariant->_ptr = 0;
               curVariant->_typeInfo = 0;
             }
-            typedef typename Type<DataType, StoredDataTypeSpecificator>::type type;
-            if ( sizeof(TypeWrapper<type>) <= ve.innerSize ){
-              void* innerBuffer = &curVariant->_mem[0];
-              curVariant->_ptr = (new (innerBuffer) TypeWrapper<type>(a_value))->rootPtr();
+            typedef typename Type<DataType, StoredDataTypeSpecificator>::type StroredType;
+            if (Type<StroredType>().dataIndex() == Type<DataType>().dataIndex()){
+              const TypeInfo* ti = Type<StroredType>().getTypeInfo();
+              curVariant->_ptr = ti->initializer->clone(_size(ti) <= ve.innerSize ? (void*)&curVariant->_mem[0] : 0, &a_value);
+              curVariant->_typeInfo = ti;
             } else {
-              curVariant->_ptr = (new TypeWrapper<type>(a_value))->rootPtr();
+              const TypeInfo* storedTypeInfo    = Type<StroredType>().getTypeInfo();
+              Variant buffer(storedTypeInfo->index, &a_value, Type<DataType>().dataIndex());
+              curVariant->_ptr      = storedTypeInfo->initializer->clone(_size(storedTypeInfo) <= ve.innerSize ? (void*)&curVariant->_mem[0] : 0, buffer.ptr());
+              curVariant->_typeInfo = storedTypeInfo;
             }
-            curVariant->_typeInfo = Type<type>().getTypeInfo();
           }
           break;
         }
         break;
       case RESET:
         {
-          typedef typename Type<DataType, StoredDataTypeSpecificator>::type type;
+          typedef typename std::remove_reference< typename Type<DataType, StoredDataTypeSpecificator>::type >::type type;
           _destroy();
           _ptr = 0;
           _typeInfo = 0;
-          _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->rootPtr();
+          _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value);
           _typeInfo = Type<type>().getTypeInfo();
         }
         break;
       case FORCE_REFERENCE:
       case REFERENCE:
         {
-          typedef typename Type<ReferenceType, StoredDataTypeSpecificator>::type& type;
+          typedef typename std::remove_reference< typename Type<ReferenceType, StoredDataTypeSpecificator>::type >::type type;
           _destroy();
           _ptr = 0;
           _typeInfo = 0;
-          _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value)->rootPtr();
+          _ptr = (void*)NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value);
           _typeInfo = Type<type>().getTypeInfo();
         }
         break;
@@ -1124,20 +1087,12 @@ namespace fcf{
     }
     DynamicType dt(a_typeIndex);
     const TypeInfo* ti = dt.getTypeInfo();
-    size_t wsize = ti->initializer->size();
-    if (wsize > innerBufferSize) {
-      if (a_sourceData && !a_sourceTypeIndex && !a_convertFunction) {
-        _ptr = dt.getTypeInfo()->initializer->clone(a_sourceData)->rootPtr();
-      } else {
-        _ptr = dt.getTypeInfo()->initializer->create()->rootPtr();
-      }
+    if (a_sourceData && !a_sourceTypeIndex && !a_convertFunction) {
+      _ptr = dt.getTypeInfo()->initializer->clone(_size(ti) <= innerBufferSize ? (void*)&_mem[0] : (void*)0, a_sourceData);
     } else {
-      if (a_sourceData && !a_sourceTypeIndex && !a_convertFunction) {
-        _ptr = dt.getTypeInfo()->initializer->clone(&_mem[0], a_sourceData)->rootPtr();
-      } else {
-        _ptr = dt.getTypeInfo()->initializer->create(&_mem[0])->rootPtr();
-      }
+      _ptr = dt.getTypeInfo()->initializer->create(_size(ti) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
     }
+
     _typeInfo = ti;
 
     if (a_sourceTypeIndex && !a_convertFunction) {
@@ -1147,22 +1102,6 @@ namespace fcf{
     }
   }
 
-
-  template <size_t innerBufferSize>
-  BaseTypeWrapper* BasicVariant<innerBufferSize>::_getWrapper() const{
-    if (!_typeInfo){
-      return 0;
-    }
-    if (isInnerMemory()) {
-      return (BaseTypeWrapper*)&_mem[0];
-    } else {
-      char* data = (char*)&((const TypeWrapper<int>*)_ptr)->data;
-      char* wrp  = (char*)_ptr;
-      long  offset  = (long)(data - wrp);
-      char* address = wrp - offset;
-      return (BaseTypeWrapper*)address;
-    }
-  }
 
   template <size_t innerBufferSize>
   typename BasicVariant<innerBufferSize>::VariantEndpoint BasicVariant<innerBufferSize>::_variantEndpoint(){
@@ -1212,17 +1151,15 @@ namespace fcf{
   template <size_t innerBufferSize>
   typename BasicVariant<innerBufferSize>::DataEndpointEx BasicVariant<innerBufferSize>::_dataEndpointEx() {
     if (!_typeInfo){
-      return DataEndpointEx{0, 0, 0};
+      return DataEndpointEx{0, 0};
     }
     void* p              = ptr();
     const TypeInfo* ti   = _typeInfo;
-    BaseTypeWrapper* wrp = (BaseTypeWrapper*)_getWrapper();
     while (ti && ti->isVariant) {
       ti = ((BasicVariant*)p)->getTypeInfo();
-      wrp = ((BasicVariant*)p)->_getWrapper();
       p = ((BasicVariant*)p)->ptr();
     }
-    return DataEndpointEx{ti, p, wrp};
+    return DataEndpointEx{ti, p};
   }
 
   template <size_t innerBufferSize>

@@ -324,10 +324,7 @@ namespace fcf {
       bool strictIs() const;
 
       bool isInnerMemory() const{
-        if (!_typeInfo){
-          return true;
-        }
-        return _typeInfo->initializer->size() <= innerBufferSize;
+        return _size() <= innerBufferSize;
       }
 
     private:
@@ -344,7 +341,6 @@ namespace fcf {
       struct DataEndpointEx {
         const TypeInfo*  typeInfo;
         void*            ptr;
-        BaseTypeWrapper* wrapper;
       };
 
       struct VariantEndpoint{
@@ -352,6 +348,14 @@ namespace fcf {
         bool  isConst;
         size_t innerSize;
       };
+
+      inline size_t _size() const{
+        return _size(_typeInfo);
+      }
+
+      inline size_t _size(const TypeInfo* a_typeInfo) const{
+        return !a_typeInfo || TypeIndexConverter<>::isReference(a_typeInfo->index) ? sizeof(void*) : a_typeInfo->size;
+      }
 
       void _destroy();
 
@@ -374,8 +378,6 @@ namespace fcf {
       void _init(std::true_type a_enableConvert, ArgTy& a_value, DataSetMode a_dataMode);
 
       void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
-
-      BaseTypeWrapper* _getWrapper() const;
 
       inline VariantEndpoint _variantEndpoint();
 

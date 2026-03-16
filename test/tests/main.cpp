@@ -58,14 +58,20 @@ void tupleTest();
 
 
 
-template <typename TClass, typename Ty, void (TClass::*Method)(Ty)>
-struct Test{
-};
-
 int main(int /*a_argc*/, char* /*a_argv*/[]) {
 
 
   variantTest();
+
+  FcfTest::BasisTest::variantConstTest();
+  FcfTest::BasisTest::variantPtrTest();
+  FcfTest::BasisTest::variantRefTest();
+  FcfTest::BasisTest::variantConstructorTest();
+  FcfTest::BasisTest::variantAssignmentTest();
+  FcfTest::BasisTest::variantCmpTest();
+  FcfTest::BasisTest::variantContainerTest();
+  FcfTest::BasisTest::variantArithmeticTest();
+  FcfTest::BasisTest::variantEraseTest();
 
   FcfTest::BasisTest::callInvariantArgumentsTest();
   FcfTest::BasisTest::callQuietTest();
@@ -77,16 +83,6 @@ int main(int /*a_argc*/, char* /*a_argv*/[]) {
   FcfTest::BasisTest::exceptionTest();
 
   FcfTest::BasisTest::foreachTest();
-  FcfTest::BasisTest::variantConstTest();
-  FcfTest::BasisTest::variantPtrTest();
-  FcfTest::BasisTest::variantRefTest();
-  FcfTest::BasisTest::variantConstructorTest();
-  FcfTest::BasisTest::variantAssignmentTest();
-  FcfTest::BasisTest::variantCmpTest();
-  FcfTest::BasisTest::variantContainerTest();
-  FcfTest::BasisTest::variantArithmeticTest();
-  FcfTest::BasisTest::variantEraseTest();
-
   FcfTest::BasisTest::metaTypeSequenceTest();
 
   FcfTest::BasisTest::arithmeticSpecificatorsTest();

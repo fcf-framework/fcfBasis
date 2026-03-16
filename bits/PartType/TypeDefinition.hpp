@@ -48,8 +48,6 @@ namespace fcf{
 
       const TypeInfo* getTypeInfo();
 
-      size_t getWrapperSize();
-
       const std::map<unsigned int, SpecificatorInfo>& specificators();
 
       template <typename TSubSpecificator>
