@@ -21,7 +21,7 @@
 
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartException/exceptions.hpp"
-#include "../../bits/PartType/TypeFactory.hpp"
+#include "NDetails/FactoryGetter.hpp"
 
 namespace fcf {
 
@@ -63,14 +63,11 @@ namespace fcf {
     , initializer(0)
   {
     if (a_source.initializer){
-      initializer = a_source.initializer->createFactory();
+      initializer = a_source.initializer;
     }
   }
 
   TypeInfo::~TypeInfo(){
-    if (initializer){
-      delete initializer;
-    }
   }
 
   inline TypeInfo& TypeInfo::operator=(const TypeInfo& a_source) {
@@ -86,12 +83,8 @@ namespace fcf {
     backConverters = a_source.backConverters;
     specificators = a_source.specificators;
 
-    if (initializer){
-      delete initializer;
-    }
-
     if (a_source.initializer){
-      initializer = a_source.initializer->createFactory();
+      initializer = a_source.initializer;
     } else {
       initializer = 0;
     }
@@ -101,10 +94,11 @@ namespace fcf {
 
   template <typename Ty>
   void TypeInfo::initialize(){
-    if (initializer){
-      delete initializer;
-    }
-    initializer = new TypeFactory< typename MetaTypeRemoveDeepConst<Ty>::type >();
+    typedef typename MetaTypeRemoveDeepConst<Ty>::type UnconstType;
+    initializer = NDetails::FactoryGetter<
+                                    !std::is_reference<UnconstType>::value && std::is_pointer<UnconstType>::value,
+                                    UnconstType
+                                  >::get();
   }
 
   template <typename TSpecificator>

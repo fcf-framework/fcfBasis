@@ -4,20 +4,26 @@
 #include "../../macro.hpp"
 namespace fcf{
 
-  class FCF_BASIS_DECL_EXPORT BaseTypeFactory {
+  class BaseTypeFactory {
     public:
-      virtual ~BaseTypeFactory();
-      virtual void   set(void* a_destination, const void* a_source) = 0;
-      virtual void*  clone(void* a_mem, const void* a_pdata) = 0;
-      virtual void*  create(void* a_mem) = 0;
-      virtual void   destroy(void* a_mem) = 0;
-      virtual BaseTypeFactory* createFactory() = 0;
-  };
+      typedef void  (*SetFunction)(void* a_destination, const void* a_source);
+      typedef void* (*CloneFunction)(void* a_mem, const void* a_pdata);
+      typedef void* (*CreateFunction)(void* a_mem);
+      typedef void  (*DestroyFunction)(void* a_mem);
 
-  #ifdef FCF_BASIS_IMPLEMENTATION
-    BaseTypeFactory::~BaseTypeFactory(){
-    }
-  #endif
+      template <typename TFactory>
+      inline void initialize() {
+        set = TFactory::_set;
+        clone = TFactory::_clone;
+        create = TFactory::_create;
+        destroy = TFactory::_destroy;
+      }
+
+      SetFunction     set;
+      CloneFunction   clone;
+      CreateFunction  create;
+      DestroyFunction destroy;
+  };
 
 } // fcf namespace
 
