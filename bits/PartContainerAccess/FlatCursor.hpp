@@ -88,7 +88,7 @@ namespace fcf {
         return (void*)(&(*container)[0] + key);
       } else {
         long zero_addr = 0x00;
-        return (void*)(((value_type*)(void*)(long)zero_addr) + key);
+        return (void*)(((value_type*)(void*)(uintptr_t)zero_addr) + key);
       }
     }
 
