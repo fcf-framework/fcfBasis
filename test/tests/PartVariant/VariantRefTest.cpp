@@ -11,6 +11,9 @@ namespace FcfTest {
         bool operator==(const Item& a_value) const{
           return value == a_value.value;
         }
+        ~Item(){
+          value = "";
+        }
       };
     }
   }

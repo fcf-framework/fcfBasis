@@ -900,18 +900,20 @@ namespace fcf{
             curVariant->_ptr = 0;
             curVariant->_typeInfo = 0;
           }
+          const TypeInfo* newTypeInfo = sourceEndpoint.typeInfo;
+          if (sourceEndpoint.typeInfo->index != sourceEndpoint.typeInfo->dataIndex){
+            newTypeInfo = ::fcf::getTypeInfo(sourceEndpoint.typeInfo->dataIndex) ;
+          } else {
+            newTypeInfo = sourceEndpoint.typeInfo;
+          }
           if (sourceEndpoint.typeInfo){
-            curVariant->_ptr = sourceEndpoint.typeInfo->initializer->clone(
-                                     (_size(sourceEndpoint.typeInfo) <= selfEndpoint.innerSize)
+            curVariant->_ptr = newTypeInfo->initializer->clone(
+                                     (_size(newTypeInfo) <= selfEndpoint.innerSize)
                                         ? (void*)&curVariant->_mem[0]
                                         : (void*)0,
                                      sourceEndpoint.ptr
                                     );
-            if (TypeIndexConverter<>::isSingleReference(sourceEndpoint.typeInfo->index)){
-              curVariant->_typeInfo = ::fcf::getTypeInfo(TypeIndexConverter<>::getUnreferenceIndex(sourceEndpoint.typeInfo->index));
-            } else {
-              curVariant->_typeInfo = sourceEndpoint.typeInfo;
-            }
+            curVariant->_typeInfo = newTypeInfo;
           }
         }
         break;
@@ -962,7 +964,8 @@ namespace fcf{
                     ? TypeIndexConverter<>::getConstSingleReferenceIndex( a_variant._typeInfo->index )
                     : TypeIndexConverter<>::getSingleReferenceIndex( a_variant._typeInfo->index );
           const TypeInfo* refTypeInfo = ::fcf::getTypeInfo(index);
-          _ptr = refTypeInfo->initializer->clone(&_mem[0], a_variant._ptr);
+          *(void**)(&_mem[0]) = (void*)a_variant._ptr;
+          _ptr = (void*)a_variant._ptr;
           _typeInfo = refTypeInfo;
         }
       }
@@ -1071,8 +1074,9 @@ namespace fcf{
           _destroy();
           _ptr = 0;
           _typeInfo = 0;
-          _ptr = (void*)NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value);
-          _typeInfo = Type<type>().getTypeInfo();
+          *(void**)&_mem[0] = (void*)&a_value;
+          _ptr = (void*)&a_value;
+          _typeInfo = Type<type&>().getTypeInfo();
         }
         break;
     }
