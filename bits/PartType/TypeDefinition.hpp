@@ -40,22 +40,22 @@ namespace fcf{
 
       Type();
 
-      const std::string& name();
+      inline const std::string& name();
 
-      unsigned int index();
+      inline unsigned int index();
 
-      unsigned int dataIndex();
+      inline unsigned int dataIndex();
 
-      const TypeInfo* getTypeInfo();
+      inline  const TypeInfo* getTypeInfo();
 
-      const std::map<unsigned int, SpecificatorInfo>& specificators();
+      inline const std::map<unsigned int, SpecificatorInfo>& specificators();
 
       template <typename TSubSpecificator>
-      UniversalCall getSpecificator() const;
+      inline UniversalCall getSpecificator() const;
 
-      const TypeInfo::Converters& converters();
+      inline const TypeInfo::Converters& converters();
 
-      const TypeInfo::Converters& backConverters();
+      inline const TypeInfo::Converters& backConverters();
 
     protected:
       static TypeInfo* _info;

@@ -73,6 +73,19 @@
       };
 #endif
 
+#ifdef _MSC_VER
+  #define FCF_ATTRIBUTE_MINIMIZE
+  #define FCF_ATTRIBUTE_MINIMIZE_BEGIN  __pragma(optimize("s", on))
+  #define FCF_ATTRIBUTE_MINIMIZE_END    __pragma(optimize("", on))
+#elif defined(__clang__)
+  #define FCF_ATTRIBUTE_MINIMIZE_BEGIN
+  #define FCF_ATTRIBUTE_MINIMIZE __attribute__((cold, minsize))
+  #define FCF_ATTRIBUTE_MINIMIZE_END
+#else
+  #define FCF_ATTRIBUTE_MINIMIZE_BEGIN
+  #define FCF_ATTRIBUTE_MINIMIZE __attribute__((cold, optimize("Os")))
+  #define FCF_ATTRIBUTE_MINIMIZE_END
+#endif
 
 #ifndef _MSC_VER
 #define FCF_SINGLE_EXPAND_ARGUMENTS(am_macro, ...) am_macro __VA_ARGS__
@@ -139,7 +152,9 @@
         typedef FCF_BASIS_EXPAND a_basic_type basic_type;\
         bool          autoIndex()   { return ((a_index) & 0x00ffffff)== 0; }\
         unsigned int  index()       { return a_index; }\
-        std::string   name()        { return std::string() + a_name; }\
+        FCF_ATTRIBUTE_MINIMIZE_BEGIN\
+        std::string   FCF_ATTRIBUTE_MINIMIZE  name()  { return std::string() + a_name; }\
+        FCF_ATTRIBUTE_MINIMIZE_END\
         bool          isTemplate()  { return a_isTemplate; }\
       };
 #endif // #ifndef FCF_TYPEID_REGISTRY_IMPL_DECL_CLASS
