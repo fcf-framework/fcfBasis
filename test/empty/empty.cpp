@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
 
-int main(int /*a_argc*/, char* a_argv[]){
+int main(int /*a_argc*/, char* /*a_argv*/[]){
   
   std::map<std::string, std::string> m;
   std::cout << "!!!!!!!!1" << std::endl;

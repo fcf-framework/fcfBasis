@@ -35,4 +35,5 @@ include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/test/libraries)
 
 add_subdirectory(./test/tests)
 add_subdirectory(./test/empty)
+add_subdirectory(./test/shared)
 
