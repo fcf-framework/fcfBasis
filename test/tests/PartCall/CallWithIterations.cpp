@@ -46,8 +46,7 @@ namespace FcfTest {
   namespace BasisTest {
 
 
-    void callIterationsTest (){
-      std::cout << "Start callIterationsTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Call", "iteration call"){
       {
         std::list<int> list;
         fcf::call("fill", list, 999);

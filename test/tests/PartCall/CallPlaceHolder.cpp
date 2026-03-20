@@ -40,9 +40,9 @@ FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::PHCTestDataItem, "FcfTest::BasisTe
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecificator);
 
 
-FCF_DECLARE_FUNCTION(fill, 
-                   "engine_cpu", 
-                   fcf::fill, 
+FCF_DECLARE_FUNCTION(fill,
+                   "engine_cpu",
+                   fcf::fill,
                    void(*) (FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, int),
                    (
                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
@@ -59,10 +59,9 @@ namespace FcfTest {
     void function_test_2(int* a_a1, int /*a_a2*/, short a_a3){
       *a_a1 = (int)a_a3;
     }
-    
-    void placeHolderCall(){
-      std::cout << "Start placeHolderCall()..." << std::endl;
-      
+
+    FCF_TEST_DECLARE("fcfBasis", "Call", "placeholder call"){
+
       {
         typedef void (function_type)(int*, int, short);
         fcf::NDetails::CallWrapper<function_type> c;
@@ -78,8 +77,8 @@ namespace FcfTest {
         FCF_TEST(a1data == a2, a1data, a2);
         c.call(function_test_2, &cpa[0]);
         FCF_TEST(a1data == a3, a1data, a3);
-          
-        
+
+
       }
       /*
       {
@@ -123,7 +122,7 @@ namespace FcfTest {
           FCF_TEST(itm.value == itm.defaultValue, itm.value, itm.defaultValue);
         }
       }
-      
+
 
     }
 

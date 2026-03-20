@@ -1,12 +1,8 @@
 #include <iostream>
-
 #include "../../libraries/fcfTest/test.hpp"
-
 #include "../../../basis.hpp"
 
-void indexTypesTest(){
-  std::cout << "Start indexTypesTest..." << std::endl;
-
+FCF_TEST_DECLARE("fcfBasis", "Type", "type index"){
   {
     unsigned int index = FCF_INT8_TYPE_INDEX;
     unsigned int expected = index;
@@ -106,5 +102,4 @@ void indexTypesTest(){
 
 
   }
-
 }

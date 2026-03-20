@@ -6,8 +6,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantContainerTest(){
-      std::cout << "Start variantContainerTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "container variant"){
       {
         std::vector<int> vec = {1, 2, 3};
         fcf::Variant v(vec);
@@ -76,7 +75,6 @@ namespace FcfTest {
           for(fcf::Variant::const_iterator it = v.cbegin(); it != v.end(); ++it){
             list.push_back({ it.key().cast<int>(), it.value().cast<std::string>() });
           }
-          std::cout << v.cbegin().value().getTypeInfo()->name << std::endl;
           FCF_TEST(list.size() == 3, list.size());
           FCF_TEST(list[0].second == "1-1", list[0].second);
           FCF_TEST(list[0].first == 1, list[0].first);

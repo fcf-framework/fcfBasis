@@ -16,9 +16,7 @@ FCF_TYPEID_REGISTRY(FcfTest::BasisTest::ConstructorTest::BigItem, "FcfTest::Basi
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantConstructorTest(){
-      std::cout << "Start variantConstructorTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "consructor variant"){
       {
         typedef int type;
         fcf::Variant v(fcf::DynamicType(fcf::Type<type>().index()));

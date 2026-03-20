@@ -7,8 +7,7 @@
 
 namespace FcfTest {
   namespace BasisTest {
-    void arithmeticSpecificatorsTest(){
-      std::cout << "Start arithmeticSpecificatorsTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Specificator", "arithmetic specificators"){
       {
         fcf::Variant args[2] = {3, "2"};
         int result = 0;

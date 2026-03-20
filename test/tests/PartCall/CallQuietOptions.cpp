@@ -46,9 +46,7 @@ FCF_DECLARE_FUNCTION(
 namespace FcfTest {
   namespace BasisTest {
 
-    void callQuietTest(){
-      std::cout << "Start callQuietTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Call", "quiet options call"){
       {
         bool error = false;
         try {

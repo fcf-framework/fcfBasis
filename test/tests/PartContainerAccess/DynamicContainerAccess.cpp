@@ -5,10 +5,7 @@
 #include <array>
 
  
-
-  
-void iteratorTest(){
-  std::cout << "Start iteratorTest()..." << std::endl;
+FCF_TEST_DECLARE("fcfBasis", "ContainerAccess", "dynamic container access"){
   {
     typedef std::vector<char> type;
     type vec;
@@ -102,15 +99,4 @@ void iteratorTest(){
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
 

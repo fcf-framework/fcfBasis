@@ -6,8 +6,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantAssignmentTest(){
-      std::cout << "Start variantAssignmentTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "assigment variant"){
       {
         fcf::Variant v(fcf::Type<std::string>(), 1);
         FCF_TEST(v == "1", v);

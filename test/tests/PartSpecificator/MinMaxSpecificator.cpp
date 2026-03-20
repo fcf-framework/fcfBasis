@@ -85,8 +85,7 @@ FCF_DECLARE_FUNCTION(random,
 
 namespace FcfTest {
   namespace BasisTest {
-    void minMaxSpecificatorTest(){
-      std::cout << "Start minMaxSpecificatorTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Specificator", "MinMaxSpecificator"){
       std::vector<FcfTest::BasisTest::MinMaxSpecificatorTest::Item> vector(100);
       fcf::call("random", vector);
       for(Item& itm : vector){

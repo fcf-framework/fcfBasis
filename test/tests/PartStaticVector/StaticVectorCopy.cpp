@@ -48,10 +48,7 @@ namespace FcfTest {
       int value;
     };
 
-    void staticVectorCopyTest(){
-      std::cout << "Start staticVectorCopyTest()..." << std::endl;
-
-
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "copy StaticVector"){
       {
         typedef fcf::StaticVector<int, 2, 0, 2, 1, 0, 0> static_vector_type;
         static_vector_type v1(3);

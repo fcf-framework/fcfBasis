@@ -88,8 +88,7 @@ namespace FcfTest {
 namespace FcfTest {
   namespace BasisTest {
 
-    void foreachTest(){
-      std::cout << "Start foreachTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Foreach", "foreach"){
       {
         std::vector<size_t>                                   keys;
         std::vector<std::string>                              values;

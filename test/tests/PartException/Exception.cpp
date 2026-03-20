@@ -8,9 +8,7 @@ FCF_EXCEPTION_DECLARE(CallNotFoundTestException, "FCF_CALL_NOT_FOUND_TEST", "Cal
 namespace FcfTest {
   namespace BasisTest {
 
-    void exceptionTest(){
-      std::cout << "Start exceptionTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Exception", "exception"){
       {
         std::string name, what,info;
         try {

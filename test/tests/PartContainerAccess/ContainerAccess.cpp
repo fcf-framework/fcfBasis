@@ -2,8 +2,7 @@
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../basis.hpp"
 
-void dynamicIteratorTest(){
-  std::cout << "Start dynamicIteratorTest()..." << std::endl;
+FCF_TEST_DECLARE("fcfBasis", "ContainerAccess", "container access"){
   {
     typedef std::vector<int> container_type;
     container_type                             c;

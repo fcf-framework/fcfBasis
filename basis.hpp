@@ -25,6 +25,15 @@
 
 #include "bits/PartContainerAccess/DynamicContainerAccessBase.hpp"
 
+#include "bits/PartMetaType/MetaTypeSequence.hpp"
+#include "bits/PartMetaType/MetaTypeBoolean.hpp"
+#include "bits/PartMetaType/MetaTypeFunction.hpp"
+#include "bits/PartMetaType/MetaTypeMaxTypeSize.hpp"
+#include "bits/PartMetaType/MetaTypeRemoveDeepConst.hpp"
+#include "bits/PartMetaType/MetaTypeRemoveRightReference.hpp"
+#include "bits/PartMetaType/MetaTypeSequence.hpp"
+#include "bits/PartMetaType/MetaTypeTupleInsert.hpp"
+#include "bits/PartMetaType/MetaTypeTupleReplace.hpp"
 
 #endif // #ifndef ___FCF_BASIS__BASIS_HPP___
 

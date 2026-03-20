@@ -5,9 +5,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void staticVectorIteratorTest(){
-      std::cout << "Start staticVectorIteratorTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "iterator StaticVector"){
       {
         typedef fcf::StaticVector<int, 2, 0, 2, 2, 0, 0> static_vector_type;
         static_vector_type v = {1,2,3};

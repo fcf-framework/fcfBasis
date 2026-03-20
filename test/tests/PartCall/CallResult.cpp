@@ -66,9 +66,7 @@ namespace FcfTest {
   namespace BasisTest {
 
 
-    void callResultTest(){
-      std::cout << "Start callResultTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Call", "result call"){
       {
         fcf::Variant res = fcf::rcall("fcftest::sum", 1, 2);
         FCF_TEST(res == 3, res);

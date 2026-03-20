@@ -62,9 +62,7 @@ namespace FcfTest {
 
     };
 
-    void metaTypeSequenceTest(){
-      std::cout << "Start metaTypeSequenceTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "MetaType", "sequence metatype"){
       {
         FcfTest::BasisTest::SequenceTest::Filler<0, 3> filler;
         std::vector<int> v;

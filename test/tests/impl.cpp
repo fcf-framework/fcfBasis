@@ -1,5 +1,6 @@
-#define FCF_BASIS_IMPLEMENTATION
+#define FCF_IMPLEMENTATION
 #include "../../basis.hpp"
+#include <fcfTest/test.hpp>
 
 /*
 void filling(int* a_begin, int* a_end, int a_value){

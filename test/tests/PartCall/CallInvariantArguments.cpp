@@ -17,9 +17,7 @@ namespace fcf {
 namespace FcfTest {
   namespace BasisTest {
 
-    void callInvariantArgumentsTest (){
-      std::cout << "Start callInvariantArgumentsTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Call", "invariant arguments call"){
       //unsigned long long iterations = 1000000;
       unsigned long long iterations = 10000;
       {

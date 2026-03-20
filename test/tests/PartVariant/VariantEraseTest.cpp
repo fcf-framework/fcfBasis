@@ -7,8 +7,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantEraseTest(){
-      std::cout << "Start variantEraseTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "erase variant"){
       {
         std::vector<int> vector = {1,2,3,4};
         fcf::Variant variant(vector);

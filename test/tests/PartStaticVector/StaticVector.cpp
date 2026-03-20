@@ -42,9 +42,13 @@ namespace FcfTest {
       int  state;
     };
 
-    void staticVectorTest(){
-      std::cout << "Start staticVectorTest()..." << std::endl;
+    void staticVectorTest();
 
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "StaticVector"){
+      staticVectorTest();
+    }
+
+    void staticVectorTest(){
       {
         typedef fcf::StaticVector<int, 2, 0, 1, 1, 0, 0> static_vector_type;
         static_vector_type v = {1};

@@ -6,9 +6,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantArithmeticTest(){
-      std::cout << "Start variantArithmeticTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "arithmetic variant"){
       //
       // operator +=
       // 

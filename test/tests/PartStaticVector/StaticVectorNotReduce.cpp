@@ -5,9 +5,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void staticVectorNotReduce(){
-      std::cout << "Start staticVectorNotReduce()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "not reduce StaticVector"){
       {
         fcf::StaticVector<int, 16> v(24);
         FCF_TEST(v.size() == 24, v.size());

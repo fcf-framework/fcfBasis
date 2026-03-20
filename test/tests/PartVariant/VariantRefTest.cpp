@@ -28,8 +28,7 @@ FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::VariantRefTest::Item,  fcf::
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantRefTest(){
-      std::cout << "Start variantRefTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "reference variant"){
       {
         int i = 1;
         fcf::Variant v(i, fcf::Variant::REFERENCE);

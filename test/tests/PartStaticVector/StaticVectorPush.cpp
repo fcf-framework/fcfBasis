@@ -48,8 +48,11 @@ namespace FcfTest {
       int value;
     };
 
-    void staticVectorPushTest(){
-      std::cout << "Start staticVectorPushTest()..." << std::endl;
+    void staticVectorPushTest();
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "push StaticVector"){
+      staticVectorPushTest();
+    }
+    void staticVectorPushTest() {
       g_staticVectorPushTestItem_set.clear();
 
       {

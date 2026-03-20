@@ -44,8 +44,7 @@ namespace FcfTest {
       };
     } // StaticVectorExceptionTest namespace
 
-    void staticVectorExceptionTest(){
-      std::cout << "Start staticVectorExceptionTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "exception StaticVector"){
       {
         typedef fcf::StaticVector<StaticVectorExceptionTest::Item, 2, 0, 2, 2, 0, 0> static_vector_type;
         StaticVectorExceptionTest::g_exceptValue = 2;

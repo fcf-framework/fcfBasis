@@ -31,8 +31,7 @@ namespace FcfTest {
 
     int EraseTestItem::activeCounter = 0;
 
-    void staticVectorEraseTest() {
-      std::cout << "Start staticVectorEraseTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "erase StaticVector"){
       {
         fcf::StaticVector<EraseTestItem, 2> v = {0,1,2,3};
         v.erase( ++(++v.begin()));

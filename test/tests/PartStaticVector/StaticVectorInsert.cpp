@@ -31,8 +31,7 @@ namespace FcfTest {
 
     int InsertTestItem::activeCounter = 0;
 
-    void staticVectorInsertTest() {
-      std::cout << "Start staticVectorInsertTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "StaticVector", "insert StaticVector"){
       {
         fcf::StaticVector<InsertTestItem, 4> v;
         v.insert(v.begin(), InsertTestItem(1));

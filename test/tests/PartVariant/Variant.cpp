@@ -1,17 +1,13 @@
 #include <iostream>
-#include <fcfTest/test.hpp>
-#include "../macro.hpp"
-#include "../../../convert.hpp"
-#include "../../../Variant.hpp"
-#include "../../../Type.hpp"
+#include "../../libraries/fcfTest/test.hpp"
+#include "../../../basis.hpp"
 
-void variantTest(){
-  std::cout << "Start variantTest..." << std::endl;
+FCF_TEST_DECLARE("fcfBasis", "Variant", "variant"){
   {
     fcf::Variant v("123.1");
     fcf::Variant v2(v);
     fcf::Variant v3;
-    //FCF_TEST(v2 == "123.1", v2.cast<std::string>());
+    FCF_TEST(v2 == "123.1", v2.cast<std::string>());
     v3 = v2;
     v2.clear();
     v2 = fcf::convert<fcf::Variant>("999");

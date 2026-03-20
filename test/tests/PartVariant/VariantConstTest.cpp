@@ -6,8 +6,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantConstTest(){
-      std::cout << "Start variantConstTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "const variant"){
       {
         bool error = false;
         int i = 1;

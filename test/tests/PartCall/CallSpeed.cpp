@@ -15,11 +15,8 @@ namespace fcf {
 namespace FcfTest {
   namespace BasisTest {
 
-    void callSpeedTest(){
-      std::cout << "Start callSpeedTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Call", "speed call"){
       const size_t iterationCount = 1024*1024;
-
 
       // OLD DURTION: 120ns
       // 

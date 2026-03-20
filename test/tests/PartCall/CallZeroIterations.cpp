@@ -5,9 +5,7 @@
 
 namespace FcfTest {
   namespace BasisTest {
-    void callZeroIterationsTest(){
-      std::cout << "Start callZeroIterationsTest()..." << std::endl;
-
+    FCF_TEST_DECLARE("fcfBasis", "Call", "zero iteration call"){
       {
         std::vector<fcf::Variant> vector;
         fcf::call("fill",vector, 999.1);

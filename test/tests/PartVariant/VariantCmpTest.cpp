@@ -6,8 +6,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantCmpTest(){
-      std::cout << "Start variantCmpTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "cmp variant"){
       {
         fcf::Variant v1;
         fcf::Variant v2(2);

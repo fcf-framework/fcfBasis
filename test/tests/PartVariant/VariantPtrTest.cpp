@@ -6,8 +6,7 @@
 namespace FcfTest {
   namespace BasisTest {
 
-    void variantPtrTest(){
-      std::cout << "Start variantPtrTest()..." << std::endl;
+    FCF_TEST_DECLARE("fcfBasis", "Variant", "pointer variant"){
       {
         int i = 1;
         fcf::Variant v;
