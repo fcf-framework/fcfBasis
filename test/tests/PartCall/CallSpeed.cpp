@@ -35,7 +35,7 @@ namespace FcfTest {
           fcf::call(&dc, &arr[0], &arr[10], v);
         }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
       }
 
 
@@ -47,7 +47,7 @@ namespace FcfTest {
           fcf::fill(v, 999.1);
         }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
         FCF_TEST(v.size() == 4, v.size());
         FCF_TEST(v[0] == 999, v[0]);
         FCF_TEST(v[1] == 999, v[1]);

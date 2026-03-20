@@ -74,7 +74,7 @@ namespace FcfTest {
           fcf::fill(v, 999);
         }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
         FCF_TEST(v.size() == 4, v.size());
         FCF_TEST(v[0] == 999, v[0]);
         FCF_TEST(v[1] == 999, v[1]);
@@ -90,7 +90,7 @@ namespace FcfTest {
         duration([&variant](){
           fcf::fill(variant, 999.1);
         });
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
 
         fcf::fill(variant, 999.1);
         FCF_TEST(v.size() == 4, v.size());
@@ -110,7 +110,7 @@ namespace FcfTest {
             fcf::fill(variant, 999.1);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
 
         fcf::fill(variant, 999.1);
         FCF_TEST(v.size() == 4, v.size());
@@ -132,7 +132,7 @@ namespace FcfTest {
             FCF_TEST(vector[3] == 999, vector[3]);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
       }
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
@@ -146,7 +146,7 @@ namespace FcfTest {
             FCF_TEST(vector[3] == 999, vector[3]);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
       }
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
@@ -160,7 +160,7 @@ namespace FcfTest {
             FCF_TEST(vector[3] == 999, vector[3]);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
       }
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
@@ -174,7 +174,7 @@ namespace FcfTest {
             FCF_TEST(vector[3] == 999, vector[3]);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
       }
       {
         std::vector<fcf::Variant> vector = {(int)1,2,3,4};
@@ -188,7 +188,7 @@ namespace FcfTest {
             FCF_TEST(vector[3] == 999, vector[3]);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns std::vector<fcf::Variant>[4]" << std::endl;
       }
 
       /*
@@ -208,7 +208,7 @@ namespace FcfTest {
             fcf::call("fill",vector, 999.1);
           }
         duration.end();
-        std::cout << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
+        fcf::NTest::inf() << "Duration: " << duration.duration().count() << "; total: " << duration.totalDuration().count() << "ns " << std::endl;
       }
 
       {
