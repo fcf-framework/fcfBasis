@@ -2,18 +2,10 @@
 #define ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
 
 #include "StaticVectorDefinition.hpp"
+#include "../../bits/PartContainerAccess/ContainerAccess.hpp"
 
 namespace fcf{
 
-
-  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow>
-  struct Cursor< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> > : public FlatCursor<
-                                  StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>
-                                >{
-    typedef FlatCursor< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>
-                       > BaseType;
-    using FlatCursor< StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow> >::FlatCursor;
-  };
 
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
   StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow >::StaticVector()

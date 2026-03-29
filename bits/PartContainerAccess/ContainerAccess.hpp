@@ -1,339 +1,335 @@
 #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 #define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 
-#include <stdexcept>
-#include <vector>
-#include <list>
-#include <map>
-#include <unordered_map>
-#include <set>
-
-#include "ContainerPosition.hpp"
-#include "CursorSelector.hpp"
-
-#include "FlatCursor.hpp"
-#include "MapIteratableCursor.hpp"
-#include "SetIteratableCursor.hpp"
-#include "ListIteratableCursor.hpp"
-#include "VariantCursorDefinition.hpp"
-
+#include "ContainerAccessDefinition.hpp"
+#include "../../Type.hpp"
 namespace fcf {
 
   template <typename TContainer>
-  class ContainerAccess {
-    public:
-      typedef Cursor<TContainer>                                    cursor_type;
-      typedef typename cursor_type::container_type                  container_type;
-      typedef typename cursor_type::key_type                        key_type;
-      typedef typename cursor_type::value_type                      value_type;
-      typedef typename cursor_type::stored_value_type               stored_value_type;
-      typedef typename cursor_type::resolve_value_type              resolve_value_type;
-      typedef typename cursor_type::resolve_stored_value_type       resolve_stored_value_type;
-      typedef decltype(cursor_type().getStoredValue())              resolve_stored_ref_type;
-      typedef decltype(cursor_type().getValue())                    resolve_value_ret_type;
-
-      friend container_type;
-      enum Mode        { constMode = false };
-      enum MemMode     { is_flat = cursor_type::is_flat };
-      enum ResolveMode { is_const_resolve_value = std::is_const<resolve_value_type>::value };
-
-      inline ContainerAccess(){
-      }
-
-      inline ContainerAccess(container_type& a_container, ::fcf::ContainerPosition a_position = ::fcf::CP_BEGIN)
-        : cursor(a_container)
-      {
-        if (a_position == ::fcf::CP_BEGIN) {
-          cursor.setBeginPosition();
-        } else {
-          cursor.setEndPosition();
-        }
-      }
-
-      inline ContainerAccess(container_type& a_container, key_type a_position, bool a_create = false)
-        : cursor(a_container)
-      {
-        cursor.setPosition(a_position, a_create);
-      }
-
-      inline void setPosition(key_type a_position, bool a_create = false){
-        cursor.setPosition(a_position, a_create);
-      }
-
-      inline void setBeginPosition() {
-        cursor.setBeginPosition();
-      }
-
-      inline void setEndPosition() {
-        cursor.setEndPosition();
-      }
-
-      inline void addPosition(size_t a_offset){
-        cursor.addPosition(a_offset);
-      }
-
-      inline void decPosition(size_t a_offset){
-        cursor.decPosition(a_offset);
-      }
-
-      inline ContainerAccess& operator--(){
-        cursor.decPosition();
-        return *this;
-      }
-
-      inline ContainerAccess operator--(int){
-        ContainerAccess result(*this);
-        cursor.decPosition();
-        return result;
-      }
-
-      inline ContainerAccess& operator++(){
-        cursor.incPosition();
-        return *this;
-      }
-
-      inline ContainerAccess operator++(int){
-        ContainerAccess result(*this);
-        cursor.incPosition();
-        return result;
-      }
-
-      inline resolve_value_ret_type value(){
-        return cursor.getValue();
-      }
-
-      inline void* ptr(){
-        return (void*)cursor.getValuePtr();
-      }
-
-      inline size_t distance(const ContainerAccess& a_iterator) const {
-        return cursor.getDistance(a_iterator.cursor);
-      }
-
-      resolve_stored_ref_type operator*() {
-        return cursor.getStoredValue();
-      }
-
-      stored_value_type* operator->() {
-        return &cursor.getStoredValue();
-      }
-
-      inline key_type key() const {
-        return cursor.getKey();
-      }
-
-      inline size_t getContainerSize() const {
-        return cursor.getContainerSize();
-      }
-
-      inline ContainerAccess operator+(size_t a_diff) const {
-        ContainerAccess result(*this);
-        result.cursor.addPosition(a_diff);
-        return result;
-      }
-
-      inline ContainerAccess operator-(size_t a_diff) const {
-        ContainerAccess result(*this);
-        result.cursor.decPosition(a_diff);
-        return result;
-      }
-
-      inline bool operator==(const ContainerAccess& a_iterator) const {
-        return cursor.equal(a_iterator.cursor);
-      }
-
-      inline bool operator==(const ContainerAccess<const TContainer>& a_iterator) const {
-        return cursor.equal(a_iterator.cursor);
-      }
-
-      inline bool operator!=(const ContainerAccess& a_iterator) const {
-        return !cursor.equal(a_iterator.cursor);
-      }
-
-      inline bool operator!=(const ContainerAccess<const TContainer>& a_iterator) const {
-        return !cursor.equal(a_iterator.cursor);
-      }
-
-      inline bool isEnd() const {
-        return cursor.isEnd();
-      }
-
-      template <typename TContainerAccess>
-      inline void erase(const TContainerAccess& a_endAccess){
-        cursor.erase(a_endAccess.cursor);
-      }
-
-
-      cursor_type cursor;
-  };
+  ContainerAccess<TContainer>::ContainerAccess(){
+  }
 
   template <typename TContainer>
-  class ContainerAccess<const TContainer> {
-    public:
-      typedef typename CursorSelector<const TContainer>::Type           cursor_type;
-      typedef typename std::remove_const<TContainer>::type              container_type;
-      typedef typename cursor_type::key_type                            key_type;
-      typedef typename cursor_type::value_type                          value_type;
-      typedef typename cursor_type::stored_value_type                   stored_value_type;
-      typedef typename cursor_type::resolve_value_type                  resolve_value_type;
-      typedef typename cursor_type::resolve_stored_value_type           resolve_stored_value_type;
-      typedef const decltype(cursor_type().getStoredValue())            resolve_stored_ref_type;
-      typedef const decltype(cursor_type().getValue())                  resolve_value_ret_type;
+  ContainerAccess<TContainer>::ContainerAccess(container_type& a_container, ::fcf::ContainerPosition a_position)
+    : cursor(a_container)
+  {
+    if (a_position == ::fcf::CP_BEGIN) {
+      cursor.setBeginPosition();
+    } else {
+      cursor.setEndPosition();
+    }
+  }
 
-      friend container_type;
-      enum Mode { constMode = true };
-      enum MemMode { is_flat = cursor_type::is_flat };
-      enum ResolveMode { is_const_resolve_value = true };
+  template <typename TContainer>
+  ContainerAccess<TContainer>::ContainerAccess(container_type& a_container, key_type a_position, bool a_create)
+    : cursor(a_container)
+  {
+    cursor.setPosition(a_position, a_create);
+  }
 
-      inline ContainerAccess(){
-      }
+  template <typename TContainer>
+  void ContainerAccess<TContainer>::setPosition(key_type a_position, bool a_create){
+    cursor.setPosition(a_position, a_create);
+  }
 
-      inline ContainerAccess(const container_type& a_container, ::fcf::ContainerPosition a_position = ::fcf::CP_BEGIN) \
-        : cursor((container_type&)a_container)
-      {
-        if (a_position == ::fcf::CP_BEGIN) {
-          cursor.setBeginPosition();
-        } else {
-          cursor.setEndPosition();
-        }
-      }
+  template <typename TContainer>
+  void ContainerAccess<TContainer>::setBeginPosition() {
+    cursor.setBeginPosition();
+  }
 
-      inline ContainerAccess(const container_type& a_container, key_type a_position)
-        : cursor((container_type&)a_container)
-      {
-        cursor.setPosition(a_position);
-      }
+  template <typename TContainer>
+  void ContainerAccess<TContainer>::setEndPosition() {
+    cursor.setEndPosition();
+  }
 
-      inline void setPosition(key_type a_position, bool a_create = false){
-        cursor.setPosition(a_position, a_create);
-      }
+  template <typename TContainer>
+  void ContainerAccess<TContainer>::addPosition(size_t a_offset){
+    cursor.addPosition(a_offset);
+  }
 
-      inline void setBeginPosition() {
-        cursor.setBeginPosition();
-      }
+  template <typename TContainer>
+  void ContainerAccess<TContainer>::decPosition(size_t a_offset){
+    cursor.decPosition(a_offset);
+  }
 
-      inline void setEndPosition() {
-        cursor.setEndPosition();
-      }
+  template <typename TContainer>
+  ContainerAccess<TContainer>& ContainerAccess<TContainer>::operator--(){
+    cursor.decPosition();
+    return *this;
+  }
 
-      inline void addPosition(size_t a_offset){
-        cursor.addPosition(a_offset);
-      }
+  template <typename TContainer>
+  ContainerAccess<TContainer> ContainerAccess<TContainer>::operator--(int){
+    ContainerAccess result(*this);
+    cursor.decPosition();
+    return result;
+  }
 
-      inline void decPosition(size_t a_offset){
-        cursor.decPosition(a_offset);
-      }
+  template <typename TContainer>
+  ContainerAccess<TContainer>& ContainerAccess<TContainer>::operator++(){
+    cursor.incPosition();
+    return *this;
+  }
 
-      inline ContainerAccess& operator--(){
-        cursor.decPosition();
-        return *this;
-      }
+  template <typename TContainer>
+  ContainerAccess<TContainer> ContainerAccess<TContainer>::operator++(int){
+    ContainerAccess result(*this);
+    cursor.incPosition();
+    return result;
+  }
 
-      inline ContainerAccess operator--(int){
-        ContainerAccess result(*this);
-        cursor.decPosition();
-        return result;
-      }
+  template <typename TContainer>
+  typename ContainerAccess<TContainer>::resolve_value_ret_type ContainerAccess<TContainer>::value(){
+    return cursor.getValue();
+  }
 
-      inline ContainerAccess& operator++(){
-        cursor.incPosition();
-        return *this;
-      }
+  template <typename TContainer>
+  void* ContainerAccess<TContainer>::ptr(){
+    return (void*)cursor.getValuePtr();
+  }
 
-      inline ContainerAccess operator++(int){
-        ContainerAccess result(*this);
-        cursor.incPosition();
-        return result;
-      }
+  template <typename TContainer>
+  size_t ContainerAccess<TContainer>::distance(const ContainerAccess& a_iterator) const {
+    return cursor.getDistance(a_iterator.cursor);
+  }
 
-      inline resolve_value_ret_type value() const{
-        return ((cursor_type&)cursor).getValue();
-      }
+  template <typename TContainer>
+  typename ContainerAccess<TContainer>::resolve_stored_ref_type ContainerAccess<TContainer>::operator*() {
+    return cursor.getStoredValue();
+  }
 
-      inline const void* ptr() const{
-        return (const void*)((cursor_type&)cursor).getValuePtr();
-      }
+  template <typename TContainer>
+  typename ContainerAccess<TContainer>::stored_value_type* ContainerAccess<TContainer>::operator->() {
+    return &cursor.getStoredValue();
+  }
 
-      inline size_t distance(const ContainerAccess& a_iterator) const {
-        return cursor.getDistance(a_iterator.cursor);
-      }
+  template <typename TContainer>
+  typename ContainerAccess<TContainer>::key_type ContainerAccess<TContainer>::key() const {
+    return cursor.getKey();
+  }
 
-      inline const resolve_stored_ref_type operator*() const {
-        return ((cursor_type&)cursor).getStoredValue();
-      }
+  template <typename TContainer>
+  size_t ContainerAccess<TContainer>::getContainerSize() const {
+    return cursor.getContainerSize();
+  }
 
-      inline const stored_value_type* operator->() const{
-        return &((cursor_type&)cursor).getStoredValue();
-      }
+  template <typename TContainer>
+  ContainerAccess<TContainer> ContainerAccess<TContainer>::operator+(size_t a_diff) const {
+    ContainerAccess result(*this);
+    result.cursor.addPosition(a_diff);
+    return result;
+  }
 
-      inline key_type key() const {
-        return cursor.getKey();
-      }
+  template <typename TContainer>
+  ContainerAccess<TContainer> ContainerAccess<TContainer>::operator-(size_t a_diff) const {
+    ContainerAccess result(*this);
+    result.cursor.decPosition(a_diff);
+    return result;
+  }
 
-      inline size_t getContainerSize() const {
-        return cursor.getContainerSize();
-      }
+  template <typename TContainer>
+  bool ContainerAccess<TContainer>::operator==(const ContainerAccess& a_iterator) const {
+    return cursor.equal(a_iterator.cursor);
+  }
 
-      inline ContainerAccess operator+(size_t a_diff) const {
-        ContainerAccess result(*this);
-        result.cursor.addPosition(a_diff);
-        return result;
-      }
+  template <typename TContainer>
+  bool ContainerAccess<TContainer>::operator==(const ContainerAccess<const TContainer>& a_iterator) const {
+    return cursor.equal(a_iterator.cursor);
+  }
 
-      inline ContainerAccess operator-(size_t a_diff) const {
-        ContainerAccess result(*this);
-        result.cursor.decPosition(a_diff);
-        return result;
-      }
+  template <typename TContainer>
+  bool ContainerAccess<TContainer>::operator!=(const ContainerAccess& a_iterator) const {
+    return !cursor.equal(a_iterator.cursor);
+  }
 
-      inline bool operator==(const ContainerAccess& a_iterator) const {
-        return cursor.equal(a_iterator.cursor);
-      }
+  template <typename TContainer>
+  bool ContainerAccess<TContainer>::operator!=(const ContainerAccess<const TContainer>& a_iterator) const {
+    return !cursor.equal(a_iterator.cursor);
+  }
 
-      inline bool operator==(const ContainerAccess<TContainer>& a_iterator) const {
-        return cursor.equal(a_iterator.cursor);
-      }
+  template <typename TContainer>
+  bool ContainerAccess<TContainer>::isEnd() const {
+    return cursor.isEnd();
+  }
 
-      inline bool operator!=(const ContainerAccess& a_iterator) const {
-        return !cursor.equal(a_iterator.cursor);
-      }
-
-      inline bool operator!=(const ContainerAccess<TContainer>& a_iterator) const {
-        return !cursor.equal(a_iterator.cursor);
-      }
-
-      inline bool isEnd() const {
-        return cursor.isEnd();
-      }
-
-      inline value_type& resolve(key_type a_key) {
-        return cursor.resolve(a_key);
-      }
-
-      inline void set(key_type a_key, const value_type& a_value) {
-        cursor.set(a_key, a_value);
-      }
-
-      template <typename TContainerAccess>
-      inline void erase(const TContainerAccess& /*a_endAccess*/){
-        throw ::std::runtime_error("The object is only available for reading");
-      }
+  template <typename TContainer>
+  template <typename TContainerAccess>
+  void ContainerAccess<TContainer>::erase(const TContainerAccess& a_endAccess){
+    cursor.erase(a_endAccess.cursor);
+  }
 
 
-      cursor_type cursor;
-  };
+
+
+
+
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer>::ContainerAccess(){
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer>::ContainerAccess(const container_type& a_container, ::fcf::ContainerPosition a_position) \
+    : cursor((container_type&)a_container)
+  {
+    if (a_position == ::fcf::CP_BEGIN) {
+      cursor.setBeginPosition();
+    } else {
+      cursor.setEndPosition();
+    }
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer>::ContainerAccess(const container_type& a_container, key_type a_position)
+    : cursor((container_type&)a_container)
+  {
+    cursor.setPosition(a_position);
+  }
+
+  template <typename TContainer>
+  void ContainerAccess<const TContainer>::setPosition(key_type a_position, bool a_create){
+    cursor.setPosition(a_position, a_create);
+  }
+
+  template <typename TContainer>
+  void ContainerAccess<const TContainer>::setBeginPosition() {
+    cursor.setBeginPosition();
+  }
+
+  template <typename TContainer>
+  void ContainerAccess<const TContainer>::setEndPosition() {
+    cursor.setEndPosition();
+  }
+
+  template <typename TContainer>
+  void ContainerAccess<const TContainer>::addPosition(size_t a_offset){
+    cursor.addPosition(a_offset);
+  }
+
+  template <typename TContainer>
+  void ContainerAccess<const TContainer>::decPosition(size_t a_offset){
+    cursor.decPosition(a_offset);
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer>& ContainerAccess<const TContainer>::operator--(){
+    cursor.decPosition();
+    return *this;
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer> ContainerAccess<const TContainer>::operator--(int){
+    ContainerAccess result(*this);
+    cursor.decPosition();
+    return result;
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer>& ContainerAccess<const TContainer>::operator++(){
+    cursor.incPosition();
+    return *this;
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer> ContainerAccess<const TContainer>::operator++(int){
+    ContainerAccess result(*this);
+    cursor.incPosition();
+    return result;
+  }
+
+  template <typename TContainer>
+  typename ContainerAccess<const TContainer>::resolve_value_ret_type ContainerAccess<const TContainer>::value() const{
+    return ((cursor_type&)cursor).getValue();
+  }
+
+  template <typename TContainer>
+  const void* ContainerAccess<const TContainer>::ptr() const{
+    return (const void*)((cursor_type&)cursor).getValuePtr();
+  }
+
+  template <typename TContainer>
+  size_t ContainerAccess<const TContainer>::distance(const ContainerAccess& a_iterator) const {
+    return cursor.getDistance(a_iterator.cursor);
+  }
+
+  template <typename TContainer>
+  const typename ContainerAccess<const TContainer>::resolve_stored_ref_type ContainerAccess<const TContainer>::operator*() const {
+    return ((cursor_type&)cursor).getStoredValue();
+  }
+
+  template <typename TContainer>
+  const typename ContainerAccess<const TContainer>::stored_value_type* ContainerAccess<const TContainer>::operator->() const{
+    return &((cursor_type&)cursor).getStoredValue();
+  }
+
+  template <typename TContainer>
+  typename ContainerAccess<const TContainer>::key_type ContainerAccess<const TContainer>::key() const {
+    return cursor.getKey();
+  }
+
+  template <typename TContainer>
+  size_t ContainerAccess<const TContainer>::getContainerSize() const {
+    return cursor.getContainerSize();
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer> ContainerAccess<const TContainer>::operator+(size_t a_diff) const {
+    ContainerAccess result(*this);
+    result.cursor.addPosition(a_diff);
+    return result;
+  }
+
+  template <typename TContainer>
+  ContainerAccess<const TContainer> ContainerAccess<const TContainer>::operator-(size_t a_diff) const {
+    ContainerAccess result(*this);
+    result.cursor.decPosition(a_diff);
+    return result;
+  }
+
+  template <typename TContainer>
+  bool ContainerAccess<const TContainer>::operator==(const ContainerAccess& a_iterator) const {
+    return cursor.equal(a_iterator.cursor);
+  }
+
+  template <typename TContainer>
+  bool ContainerAccess<const TContainer>::operator==(const ContainerAccess<TContainer>& a_iterator) const {
+    return cursor.equal(a_iterator.cursor);
+  }
+
+  template <typename TContainer>
+  bool ContainerAccess<const TContainer>::operator!=(const ContainerAccess& a_iterator) const {
+    return !cursor.equal(a_iterator.cursor);
+  }
+
+  template <typename TContainer>
+  bool ContainerAccess<const TContainer>::operator!=(const ContainerAccess<TContainer>& a_iterator) const {
+    return !cursor.equal(a_iterator.cursor);
+  }
+
+  template <typename TContainer>
+  bool ContainerAccess<const TContainer>::isEnd() const {
+    return cursor.isEnd();
+  }
+
+  template <typename TContainer>
+  typename ContainerAccess<const TContainer>::value_type& ContainerAccess<const TContainer>::resolve(key_type a_key) {
+    return cursor.resolve(a_key);
+  }
+
+  template <typename TContainer>
+  void ContainerAccess<const TContainer>::set(key_type a_key, const value_type& a_value) {
+    cursor.set(a_key, a_value);
+  }
+
+  template <typename TContainer>
+  template <typename TContainerAccess>
+  void ContainerAccess<const TContainer>::erase(const TContainerAccess& /*a_endAccess*/){
+    throw ContainerReadOnlyException(__FILE__, __LINE__, Type<TContainer>().name());
+  }
+
 
 } // fcf namespace
 
-
-namespace std {
-
-  template <typename TContainer>
-  size_t distance(const fcf::ContainerAccess<TContainer>& a_begin, const fcf::ContainerAccess<TContainer>& a_end) {
-    return a_begin.distance(a_end);
-  }
-
-}
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 
