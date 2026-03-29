@@ -2,8 +2,8 @@
 #include <exception>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../basis.hpp"
-#include "../../../bits/functions/random.hpp"
 
+#include "../bits/functions.hpp"
 
 namespace FcfTest {
   namespace BasisTest {

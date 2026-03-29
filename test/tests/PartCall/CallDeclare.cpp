@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../call.hpp"
-#include "../../../functions.hpp"
+#include "../bits/functions.hpp"
 
 #define FCFTEST_STRINGIFY_2(...) #__VA_ARGS__
 #define FCFTEST_STRINGIFY_1(...) FCFTEST_STRINGIFY_2(__VA_ARGS__)

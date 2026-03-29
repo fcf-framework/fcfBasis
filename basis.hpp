@@ -3,7 +3,7 @@
 
 #include "macro.hpp"
 
-#include "nativeType.hpp"
+#include "bits/PartTypes/nativeTypes.hpp"
 
 #include "Type.hpp"
 
@@ -11,15 +11,11 @@
 
 #include "foreach.hpp"
 
-#include "./FunctionSignature.hpp"
+#include "bits/PartCall/FunctionSignature.hpp"
 
 #include "call.hpp"
 
-#include "functions.hpp"
-
 #include "convert.hpp"
-
-#include "ArgPlaceHolder.hpp"
 
 #include "bits/PartContainerAccess/ContainerAccess.hpp"
 

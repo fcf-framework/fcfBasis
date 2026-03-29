@@ -1,9 +1,9 @@
-#ifndef ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
-#define ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
+#ifndef ___FCF_BASIS__TEST__TESTS__BITS__RANDOM_HPP___
+#define ___FCF_BASIS__TEST__TESTS__BITS__RANDOM_HPP___
 
-#include "../../Variant.hpp"
-#include "../../ArgPlaceHolder.hpp"
-#include "../../Details/randomGenerator.hpp"
+#include <fcfBasis/call.hpp>
+#include <fcfBasis/Variant.hpp>
+#include <fcfBasis/Details/randomGenerator.hpp>
 
 namespace fcf {
 
@@ -54,5 +54,4 @@ namespace fcf {
                         );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
-#endif // #ifndef ___FCF_BASIS__BITS__FUNCTIONS__RANDOM_HPP___
-
+#endif // #ifndef ___FCF_BASIS__TEST__TESTS__BITS__RANDOM_HPP___

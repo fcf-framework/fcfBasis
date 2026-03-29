@@ -1,5 +1,7 @@
-#ifndef ___FCF_BASIS__NATIVE_TYPE_HPP___
-#define ___FCF_BASIS__NATIVE_TYPE_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_TYPES__NATIVE_TYPES_HPP___
+#define ___FCF_BASIS__BITS__PART_TYPES__NATIVE_TYPES_HPP___
+
+namespace fcf{
 
   #ifndef FCF_INT8_TYPE
     #define FCF_INT8_TYPE_INDEX 1
@@ -67,5 +69,6 @@
     typedef long double fcf_float128;
   #endif // #ifndef FCF_FLOAT128_TYPE
 
-#endif // #ifndef ___FCF_BASIS__NATIVE_TYPE_HPP___
+} // fcf namespace
 
+#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPES__NATIVE_TYPES_HPP___

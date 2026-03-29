@@ -1,0 +1,288 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCF Basis - High-Performance C++ Framework</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --code-bg: #2d2d2d;
+            --code-text: #f8f8f2;
+            --accent: #28a745;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+        }
+
+        /* Header / Hero Section */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 4rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #1e293b;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            color: #475569;
+            margin-top: 1.5rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .inline-code {
+            background-color: #e9ecef;
+            color: #d63384;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1e293b;
+            color: #94a3b8;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Syntax Highlighting Simulation */
+        .kwd { color: #ff79c6; } /* Keyword */
+        .typ { color: #8be9fd; } /* Type */
+        .str { color: #f1fa8c; } /* String */
+        .com { color: #6272a4; } /* Comment */
+        .num { color: #bd93f9; } /* Number */
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>FCF Basis</h1>
+        <p>Мощный C++ фреймворк для динамической типизации, рефлексии и высокопроизводительных контейнеров.</p>
+        <a href="#features" class="btn">Изучить возможности</a>
+        <a href="#tech-spec" class="btn" style="background-color: transparent; border: 1px solid white; margin-left: 10px;">Техническая документация</a>
+    </header>
+
+    <div class="container">
+
+        <!-- Intro -->
+        <section id="intro">
+            <h2>О проекте</h2>
+            <p><strong>FCF Basis</strong> — это низкоуровневая библиотека на C++, разработанная для решения задач, требующих гибкости динамических языков при сохранении скорости компилируемого кода. Библиотека предоставляет механизмы для создания универсальных контейнеров, динамической рефлексии типов и сложной системы спецификаторов.</p>
+            <p>Идеально подходит для создания движков игровых систем, скриптовых интерпретаторов и высоконагруженных серверных приложений.</p>
+        </section>
+
+        <!-- Key Features -->
+        <section id="features">
+            <h2>Ключевые возможности</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Variant & Dynamic Types</h3>
+                    <p>Класс <code>BasicVariant</code> с поддержкой Small Buffer Optimization (SBO). Хранит данные любого типа без лишних аллокаций для малых объектов.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧩</div>
+                    <h3>Container Access</h3>
+                    <p>Унифицированный интерфейс итерации для любых контейнеров (std::vector, std::map, std::list) через <code>ContainerAccess</code> и <code>Cursor</code>.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Runtime Reflection</h3>
+                    <p>Полная информация о типах в рантайме через <code>TypeInfo</code>. Поддержка конвертации типов и динамического создания объектов.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3>Specificators</h3>
+                    <p>Расширяемая система спецификаторов для обработки данных (например, <code>MinMaxSpecificator</code> для генерации случайных чисел).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Specs -->
+        <section id="tech-spec">
+            <h2>Техническое описание</h2>
+
+            <h3>1. Архитектура Variant</h3>
+            <p>Ядром библиотеки является шаблонный класс <code>BasicVariant&lt;InnerBufferSize&gt;</code>. Он использует технику Small Buffer Optimization для хранения небольших типов (int, float, short strings) непосредственно внутри объекта, избегая выделения памяти в куче.</p>
+
+            <pre><code><span class="kwd">template</span> &lt;<span class="kwd">size_t</span> innerBufferSize&gt;
+<span class="kwd">class</span> BasicVariant {
+    <span class="kwd">public</span>:
+        <span class="kwd">enum</span> DataSetMode { WRITE, RESET, REFERENCE, FORCE_REFERENCE };
+
+        <span class="kwd">template</span> &lt;<span class="kwd">typename</span> Ty&gt;
+        BasicVariant(<span class="kwd">const</span> Ty& a_value);
+
+        <span class="kwd">template</span> &lt;<span class="kwd">typename</span> Ty&gt;
+        Ty cast() <span class="kwd">const</span>;
+
+    <span class="kwd">private</span>:
+        <span class="kwd">const</span> TypeInfo* _typeInfo;
+        <span class="kwd">void</span>*           _ptr;
+        <span class="kwd">char</span>            _mem[innerBufferSize]; <span class="com">// SBO Buffer</span>
+};</code></pre>
+
+            <h3>2. Система типов (Type System)</h3>
+            <p>Каждый тип регистрируется в глобальном хранилище <code>TypeStorage</code>. Структура <code>TypeInfo</code> содержит метаданные, включая имя типа, размер, указатели на функции конвертации и спецификаторы.</p>
+            <ul>
+                <li><strong>Динамическая регистрация:</strong> Макросы и шаблоны автоматически регистрируют типы при первом использовании.</li>
+                <li><strong>Конвертация:</strong> Поддержка конвертеров между типами через <code>ConvertFunction</code>.</li>
+                <li><strong>Идентификация:</strong> Уникальные индексы типов с битовыми флагами для константности и ссылок.</li>
+            </ul>
+
+            <h3>3. Итерация и Контейнеры</h3>
+            <p>Библиотека абстрагирует доступ к элементам контейнеров через класс <code>ContainerAccess</code>. Это позволяет писать алгоритмы, работающие с <code>std::vector</code>, <code>std::map</code> или пользовательскими структурами одинаково.</p>
+
+            <pre><code><span class="kwd">template</span> &lt;<span class="kwd">typename</span> TContainer&gt;
+<span class="kwd">class</span> ContainerAccess {
+    <span class="kwd">public</span>:
+        <span class="kwd">typedef</span> <span class="kwd">typename</span> CursorSelector&lt;<span class="kwd">const</span> TContainer&gt;::Type cursor_type;
+
+        <span class="kwd">inline</span> <span class="kwd">void</span> setBeginPosition();
+        <span class="kwd">inline</span> <span class="kwd">void</span> setEndPosition();
+        <span class="kwd">inline</span> <span class="kwd">void</span> inc();
+        <span class="kwd">inline</span> <span class="kwd">void</span> dec();
+
+        <span class="kwd">inline</span> <span class="kwd">bool</span> isEnd() <span class="kwd">const</span>;
+        <span class="kwd">inline</span> <span class="kwd">void</span> setValue(<span class="kwd">const</span> Variant& a_value);
+};</code></pre>
+
+            <h3>4. Функциональность</h3>
+            <p>Включает набор утилитарных функций, таких как <code>fill</code> и <code>random</code>, которые могут работать как с обычными указателями, так и с динамическими контейнерами.</p>
+            <ul>
+                <li><code>random(Ty1 min, Ty2 max)</code> — генерация случайных чисел.</li>
+                <li><code>fill(begin, end, value)</code> — заполнение диапазона.</li>
+            </ul>
+        </section>
+
+        <!-- Usage Example -->
+        <section id="usage">
+            <h2>Пример использования</h2>
+            <p>Создание динамического контейнера и итерация по нему:</p>
+            <pre><code><span class="com">// Создание варианта с типом std::vector&lt;int&gt;</span>
+Variant vec = Variant(std::vector&lt;int&gt;{1, 2, 3, 4, 5});
+
+<span class="com">// Получение итератора</span>
+Variant::iterator it = vec.begin();
+
+<span class="kwd">while</span> (it != vec.end()) {
+    <span class="com">// Доступ к значению</span>
+    <span class="kwd">int</span> val = it.value().cast&lt;<span class="kwd">int</span>&gt;();
+
+    <span class="com">// Изменение значения</span>
+    it.setValue(val * 2);
+
+    ++it;
+}</code></pre>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2023 FCF Basis Project. Open Source C++ Library.</p>
+        <p>Generated from source code analysis.</p>
+    </footer>
+
+</body>
+</html>

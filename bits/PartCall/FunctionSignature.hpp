@@ -1,9 +1,10 @@
-#ifndef ___FCF_BASIS__FUNCTION_SIGNATURE_HPP___
-#define ___FCF_BASIS__FUNCTION_SIGNATURE_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
+
 #include <cstring>
 #include <vector>
 #include <functional>
-#include "Type.hpp"
+#include "../../Type.hpp"
 
 #ifndef FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE
   #define FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE 10
@@ -172,19 +173,19 @@ namespace fcf {
 
 } // fcf namespace
 
-  template <>
-  struct std::hash<fcf::BaseFunctionSignature>
+template <>
+struct std::hash<fcf::BaseFunctionSignature>
+{
+  std::size_t operator()(const fcf::BaseFunctionSignature& a_signature) const
   {
-    std::size_t operator()(const fcf::BaseFunctionSignature& a_signature) const
-    {
-      size_t res = 17;
-      res = res * 31 + a_signature.rcode;
-      for(size_t i = 0; i < a_signature.asize; ++i){
-        res = res * 31 + a_signature.pacodes[i];
-      }
-      return res;
+    size_t res = 17;
+    res = res * 31 + a_signature.rcode;
+    for(size_t i = 0; i < a_signature.asize; ++i){
+      res = res * 31 + a_signature.pacodes[i];
     }
-  };
+    return res;
+  }
+};
 
 
-#endif // #ifndef ___FCF_SIGNATURE__FUNCTION_SIGNATURE_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../call.hpp"
-#include "../../../functions.hpp"
+#include "../bits/functions.hpp"
 #include "../../../Type.hpp"
 #include "../../../bits/registry.hpp"
 #include "../../../basis.hpp"

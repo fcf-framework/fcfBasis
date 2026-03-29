@@ -10,7 +10,7 @@
 
 #include "../macro.hpp"
 #include "../Nop.hpp"
-#include "../nativeType.hpp"
+#include "../../bits/PartTypes/nativeTypes.hpp"
 #include "../bits/PartType/TypeInitializer.hpp"
 #include "./PartContainerAccess/ContainerAccess.hpp"
 #include "./PartContainerAccess/DynamicContainerAccess.hpp"

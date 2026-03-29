@@ -1,8 +1,8 @@
-#ifndef ___FCF_BASIS__BITS__FUNCTIONS__FILL_HPP___
-#define ___FCF_BASIS__BITS__FUNCTIONS__FILL_HPP___
+#ifndef ___FCF_BASIS__TEST__TESTS__BITS__FILL_HPP___
+#define ___FCF_BASIS__TEST__TESTS__BITS__FILL_HPP___
 
-#include "../../ArgPlaceHolder.hpp"
-#include "../../call.hpp"
+#include <fcfBasis/call.hpp>
+
 namespace fcf {
 
     template <typename TIterator, typename TValue>
@@ -47,7 +47,4 @@ namespace fcf {
 
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
-
-
-#endif // #ifndef ___FCF_BASIS__BITS__FUNCTIONS__FILL_HPP___
-
+#endif // #ifndef ___FCF_BASIS__TEST__TESTS__BITS__FILL_HPP___

@@ -9,7 +9,7 @@
 #include "../PartType/Type.hpp"
 #include "../PartConvert/DefaultConvertMode.hpp"
 #include "../../Variant.hpp"
-#include "../../FunctionSignature.hpp"
+#include "../../bits/PartCall/FunctionSignature.hpp"
 #include "../PartException/exceptions.hpp"
 
 namespace fcf {

@@ -4,6 +4,7 @@
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../basis.hpp"
 
+#include "../bits/functions.hpp"
 
 namespace FcfTest {
   namespace BasisTest {
