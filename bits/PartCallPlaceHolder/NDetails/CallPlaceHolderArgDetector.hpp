@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_ARG_DETECTOR_HPP___
 
 #include <type_traits>
-#include "../../../Nop.hpp"
+#include "../../../bits/PartTypes/Nop.hpp"
 #include "../../../bits/PartCall/Arg.hpp"
 
 namespace fcf { 

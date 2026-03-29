@@ -9,7 +9,7 @@
 #include <map>
 
 #include "../macro.hpp"
-#include "../Nop.hpp"
+#include "../bits/PartTypes/Nop.hpp"
 #include "../../bits/PartTypes/nativeTypes.hpp"
 #include "../bits/PartType/TypeInitializer.hpp"
 #include "./PartContainerAccess/ContainerAccess.hpp"
