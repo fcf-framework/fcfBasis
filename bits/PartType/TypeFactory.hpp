@@ -3,6 +3,9 @@
 
 #include "BaseTypeFactory.hpp"
 #include "NDetails/AssigmentWrapper.hpp"
+#include "../../bits/PartException/Exception.hpp"
+#include "../../bits/PartException/exceptions.hpp"
+
 namespace fcf {
 
   template <typename Ty>
@@ -10,7 +13,7 @@ namespace fcf {
     public:
       friend class BaseTypeFactory;
 
-       TypeFactory() {
+      TypeFactory() {
         initialize< TypeFactory<Ty> >();
       }
 
@@ -72,12 +75,12 @@ namespace fcf {
     public:
       friend class BaseTypeFactory;
 
-       TypeFactory() {
+      TypeFactory() {
         initialize< TypeFactory<Ty&> >();
       }
 
     protected:
-       static void _set(void* a_destination, const void* a_source){
+      static void _set(void* a_destination, const void* a_source){
         NDetails::AssigmentWrapper<Ty>()(a_destination, a_source);
       }
 
