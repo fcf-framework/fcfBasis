@@ -48,7 +48,7 @@ namespace fcf {
 
       static void* _clone(void* a_mem, const void* a_pdata){
         if (!a_mem){
-          throw std::runtime_error("The reference could not be created with memory allocation");
+          throw fcf::ReferenceAllocationException(__FILE__, __LINE__);
         }
         typedef void* PtrType;
         PtrType* p = (PtrType*)a_mem;
@@ -56,14 +56,8 @@ namespace fcf {
         return *(void**)p;
       }
 
-      static void* _create(void* a_mem){
-        throw std::runtime_error("A reference cannot be created without a data source");
-        if (!a_mem){
-          throw std::runtime_error("The reference could not be created with memory allocation");
-        }
-        typedef void* PtrType;
-        PtrType* p = (PtrType*)a_mem;
-        return *(void**)p;
+      static void* _create(void* /*a_mem*/){
+        throw fcf::ReferenceCreationException(__FILE__, __LINE__);
       }
 
       static void _destroy(void* /*a_mem*/){

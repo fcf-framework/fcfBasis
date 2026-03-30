@@ -29,7 +29,6 @@ namespace fcf {
   FCF_EXCEPTION_DECLARE(MathEmptyArgumentException, "FCF_MATH_EMPTY_ARGUMENT", "Error in the mathematical operation '${{1}}$'. Argument number ${{2}}$ is empty/null", 2);
 
   FCF_EXCEPTION_DECLARE(ConversionNotFoundException, "FCF_CONVERSION_NOT_FOUND", "No conversion function found for types ${{2}}$ to ${{1}}$", 2);
-  
   FCF_EXCEPTION_DECLARE(TypeIndexNotRegisteredException, "FCF_TYPE_INDEX_NOT_REGISTERED", "The requested type index (${{1}}$) is not registered", 1);
 
   FCF_EXCEPTION_DECLARE(ConvertFormatException, "FCF_PARSING_FORMAT_ERROR", "Argument '${{1}}$' is not a valid format for type ${{2}}$", 2);
@@ -41,6 +40,9 @@ namespace fcf {
  FCF_EXCEPTION_DECLARE(CursorIteratorUnsetException, "FCF_CURSOR_ITERATOR_UNSET", "Iterator for type '${{1}}$' is not set", 1);
 
  FCF_EXCEPTION_DECLARE(SpecificatorNotFoundException, "FCF_SPECIFICATOR_NOT_FOUND", "Specificator of type ${{2}}$  for type ${{1}}$ is not found", 2);
+
+  FCF_EXCEPTION_DECLARE(ReferenceAllocationException, "FCF_REFERENCE_ALLOCATION", "The reference could not be created with memory allocation", 0);
+  FCF_EXCEPTION_DECLARE(ReferenceCreationException, "FCF_REFERENCE_CREATION", "A reference cannot be created without a data source", 0);
 
 } // fcf namespace
 
