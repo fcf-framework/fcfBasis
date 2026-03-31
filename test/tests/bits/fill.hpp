@@ -1,7 +1,7 @@
 #ifndef ___FCF_BASIS__TEST__TESTS__BITS__FILL_HPP___
 #define ___FCF_BASIS__TEST__TESTS__BITS__FILL_HPP___
 
-#include <fcfBasis/call.hpp>
+#include <fcfBasis/PartCall.hpp>
 
 namespace fcf {
 

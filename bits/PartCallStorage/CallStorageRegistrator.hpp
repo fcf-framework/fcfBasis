@@ -2,7 +2,7 @@
 #define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
 
 #include <algorithm>
-#include "../../foreach.hpp"
+#include "../../PartForeach.hpp"
 #include "CallStorageSpace.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartCallPlaceHolder/NDetails/CallPlaceHolderSignatureGetter.hpp"

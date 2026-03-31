@@ -4,8 +4,8 @@
 #include "NDetails/CallSelector.hpp"
 #include "NDetails/CallPairArgumentNode.hpp"
 #include "NDetails/CallArguments.hpp"
-#include "../../convert.hpp"
-#include "../../Exception.hpp"
+#include "../../PartConvert.hpp"
+#include "../../PartException.hpp"
 
 namespace fcf{
 

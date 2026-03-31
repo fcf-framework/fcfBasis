@@ -4,8 +4,8 @@
 #include <tuple>
 #include "../../../StaticVector.hpp"
 #include "../../../Type.hpp"
-#include "../../../foreach.hpp"
-#include "../../../Exception.hpp"
+#include "../../../PartForeach.hpp"
+#include "../../../PartException.hpp"
 
 namespace fcf{
   namespace NDetails {

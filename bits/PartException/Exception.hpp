@@ -3,7 +3,7 @@
 
 #include <exception>
 #include "ExceptionDefinition.hpp"
-#include "../../foreach.hpp"
+#include "../../PartForeach.hpp"
 #include "../../StaticVector.hpp"
 #include "../../Variant.hpp"
 

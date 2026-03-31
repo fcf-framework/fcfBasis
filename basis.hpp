@@ -7,15 +7,15 @@
 
 #include "Type.hpp"
 
-#include "Exception.hpp"
+#include "PartException.hpp"
 
-#include "foreach.hpp"
+#include "PartForeach.hpp"
 
 #include "bits/PartCall/FunctionSignature.hpp"
 
-#include "call.hpp"
+#include "PartCall.hpp"
 
-#include "convert.hpp"
+#include "PartConvert.hpp"
 
 #include "bits/PartContainerAccess/ContainerAccess.hpp"
 

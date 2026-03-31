@@ -4,7 +4,7 @@
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../Variant.hpp"
-#include "../../Exception.hpp"
+#include "../../PartException.hpp"
 namespace fcf{
 
   struct SubSpecificator {

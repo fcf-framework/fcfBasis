@@ -1,22 +1,18 @@
-#ifndef ___FCF_BASIS__CALL_HPP___
-#define ___FCF_BASIS__CALL_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_FUNCTION_HPP___
+#define ___FCF_BASIS__BITS__PART_CALL__CALL_FUNCTION_HPP___
 
-#include "macro.hpp"
-
-#include "Type.hpp"
+#include "../../macro.hpp"
+#include "../../Type.hpp"
+#include "CallSeeker.hpp"
+#include "NDetails/Caller.hpp"
+#include "CallCache.hpp"
+#include "CallOptions.hpp"
 
 // Included for use macros
-#include "bits/PartCall/NDetails/CallResultTypeGetter.hpp"
-#include "bits/PartCallStorage/CallStorageRegistrator.hpp"
+#include "NDetails/CallResultTypeGetter.hpp"
+#include "../../bits/PartCallStorage/CallStorageRegistrator.hpp"
 
-#include "bits/PartCall/CallSeeker.hpp"
-#include "bits/PartCall/NDetails/Caller.hpp"
-
-#include "bits/PartCall/CallCache.hpp"
-
-#include "bits/PartCall/CallOptions.hpp"
-
-namespace fcf {
+namespace fcf{
 
   template <typename... TArgPack>
   inline void call(const char* a_functionName, const TArgPack& ... a_argPack) {
@@ -84,4 +80,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__CALL_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_FUNCTION_HPP___

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fcfTest/test.hpp>
 #include "../../basis.hpp"
+#include <fcfBasis/PartTypes.hpp>
+
 
 FCF_TEST_GROUP_ORDER("Type", -12)
 FCF_TEST_GROUP_ORDER("Exception", -11)

@@ -5,7 +5,7 @@
 #include "DynamicTypeDefinition.hpp"
 #include "TypeInfo.hpp"
 #include "getTypeInfo.hpp"
-#include "../../Exception.hpp"
+#include "../../PartException.hpp"
 
 namespace fcf{
 

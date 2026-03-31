@@ -3,8 +3,8 @@
 
 #include <climits>
 #include <algorithm>
-#include "../../../foreach.hpp"
-#include "../../../convert.hpp"
+#include "../../../PartForeach.hpp"
+#include "../../../PartConvert.hpp"
 #include "../../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../../bits/PartType/getTypeInfo.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"

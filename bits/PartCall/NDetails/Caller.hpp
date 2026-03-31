@@ -5,9 +5,9 @@
 #include <type_traits>
 #include <map>
 #include <memory>
-#include "../../../convert.hpp"
+#include "../../../PartConvert.hpp"
 #include "../FunctionSignature.hpp"
-#include "../../../Exception.hpp"
+#include "../../../PartException.hpp"
 #include "../../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "../CallConversionMode.hpp"

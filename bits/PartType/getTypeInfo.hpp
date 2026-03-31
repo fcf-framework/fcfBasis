@@ -3,7 +3,8 @@
 
 #include <exception>
 #include "TypeInfo.hpp"
-#include "../../Exception.hpp"
+#include "../../PartException.hpp"
+
 namespace fcf {
 
   inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex){

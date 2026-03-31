@@ -3,7 +3,7 @@
 
 #include "DynamicContainerAccessDefinition.hpp"
 #include <stdexcept>
-#include "../../Exception.hpp"
+#include "../../PartException.hpp"
 #include "../../Variant.hpp"
 
 namespace fcf {

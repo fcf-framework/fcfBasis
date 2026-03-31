@@ -6,7 +6,7 @@
 #include "../PartType/Type.hpp"
 #include "../../Variant.hpp"
 #include "../../bits/PartTypes/UniversalArguments.hpp"
-#include "../../foreach.hpp"
+#include "../../PartForeach.hpp"
 
 namespace fcf{
 
