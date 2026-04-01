@@ -5,7 +5,7 @@
 
 #include "bits/PartTypes/nativeTypes.hpp"
 
-#include "Type.hpp"
+#include "PartType.hpp"
 
 #include "PartException.hpp"
 

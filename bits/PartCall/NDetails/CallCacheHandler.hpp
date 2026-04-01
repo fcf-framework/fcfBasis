@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_CACHE_HANDLER_HPP___
 
 #include <string>
-#include "../../../Type.hpp"
+#include "../../../PartType.hpp"
 #include "../Call.hpp"
 #include "../CallSeeker.hpp"
 #include "Caller.hpp"

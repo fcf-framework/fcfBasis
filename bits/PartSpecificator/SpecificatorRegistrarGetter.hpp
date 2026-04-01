@@ -3,7 +3,7 @@
 
 #include "SpecificatorInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 namespace fcf{
 
   template <typename Ty, typename TSpecificator>

@@ -4,7 +4,7 @@
 #include "DynamicContainerAccessDefinition.hpp"
 #include <stdexcept>
 #include "../../PartException.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 
 namespace fcf {
 

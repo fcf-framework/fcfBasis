@@ -4,7 +4,7 @@
 #include <tuple>
 #include <type_traits>
 #include "../../../bits/PartMetaType/MetaTypeSequence.hpp"
-#include "../../../Variant.hpp"
+#include "../../../PartVariant.hpp"
 
 namespace fcf { 
   namespace NDetails {

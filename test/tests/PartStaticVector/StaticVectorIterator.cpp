@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../../libraries/fcfTest/test.hpp"
-#include "../../../StaticVector.hpp"
+#include "../../../PartStaticVector.hpp"
 
 namespace FcfTest {
   namespace BasisTest {

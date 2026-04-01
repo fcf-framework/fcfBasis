@@ -2,8 +2,8 @@
 #define ___FCF_BASIS__BITS__PART_SPECIFICATOR__INHERITANCE_SPECIFICATOR_HPP___
 
 #include <tuple>
-#include "../PartType/Type.hpp"
-#include "../../StaticVector.hpp"
+#include "../PartType/PartType.hpp"
+#include "../../PartStaticVector.hpp"
 
 namespace fcf{
 

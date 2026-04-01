@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_VARIANT__VARIANT_HPP___
 
 
-#include "../../Type.hpp"
+#include "../../PartType.hpp"
 #include "../../bits/registry.hpp"
 #include "../../bits/PartType/DynamicType.hpp"
 #include "../../bits/PartConvert/convertRuntime.hpp"

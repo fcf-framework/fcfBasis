@@ -2,8 +2,8 @@
 #define ___FCF_BASIS__BITS__PART_SPECIFICATOR__SUB_SPECIFICATOR_HPP___
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "../../bits/PartType/Type.hpp"
-#include "../../Variant.hpp"
+#include "../../bits/PartType/PartType.hpp"
+#include "../../PartVariant.hpp"
 #include "../../PartException.hpp"
 namespace fcf{
 

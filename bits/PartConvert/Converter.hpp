@@ -8,7 +8,7 @@
 #include "ConvertOptions.hpp"
 #include "../PartType/Type.hpp"
 #include "../PartConvert/DefaultConvertMode.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 #include "../../bits/PartCall/FunctionSignature.hpp"
 #include "../PartException/exceptions.hpp"
 
@@ -273,7 +273,7 @@ namespace fcf {
 
 } // fcf namespace
 
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 
 namespace fcf {
 

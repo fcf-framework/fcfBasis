@@ -3,7 +3,7 @@
 #include <set>
 #include <vector>
 #include "../../libraries/fcfTest/test.hpp"
-#include "../../../StaticVector.hpp"
+#include "../../../PartStaticVector.hpp"
 
 namespace FcfTest {
   namespace BasisTest {

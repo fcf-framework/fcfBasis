@@ -1,8 +1,8 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPES__UNIVERSAL_ARGUMENTS_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPES__UNIVERSAL_ARGUMENTS_HPP___
 
-#include "../../Variant.hpp"
-#include "../../StaticVector.hpp"
+#include "../../PartVariant.hpp"
+#include "../../PartStaticVector.hpp"
 
 namespace fcf {
 

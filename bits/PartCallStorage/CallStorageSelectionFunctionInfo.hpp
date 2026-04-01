@@ -2,7 +2,7 @@
 #define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SELECTION_FUNCTION_INFO_HPP___
 
 #include "../../bits/PartCall/FunctionSignature.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 #include "../../bits/PartCallPlaceHolder/CallPlaceHolderInfo.hpp"
 
 namespace fcf {

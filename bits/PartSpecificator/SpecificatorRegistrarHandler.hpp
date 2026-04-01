@@ -19,7 +19,7 @@ namespace fcf{
 #include "SpecificatorRegistrar.hpp"
 #include "SpecificatorRegistrarGetter.hpp"
 #include "NDetails/SpecificatorRefRegistrar.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 
 namespace fcf {
 

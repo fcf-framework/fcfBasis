@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CONVERT__NDETAILS__CONVERTERS_REGISTRAR_HPP___
 
 #include <tuple>
-#include "../../../Type.hpp"
+#include "../../../PartType.hpp"
 #include "../../../bits/PartConvert/NDetails/setConverter.hpp"
 
 namespace fcf {

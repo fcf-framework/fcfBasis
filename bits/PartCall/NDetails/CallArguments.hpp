@@ -2,8 +2,8 @@
 #define ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGUMENTS_HPP___
 
 #include <tuple>
-#include "../../../StaticVector.hpp"
-#include "../../../Type.hpp"
+#include "../../../PartStaticVector.hpp"
+#include "../../../PartType.hpp"
 #include "../../../PartForeach.hpp"
 #include "../../../PartException.hpp"
 

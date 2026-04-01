@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include "../../../PartForeach.hpp"
-#include "../../../Type.hpp"
+#include "../../../PartType.hpp"
 #include "../../../bits/PartCall/ArgNumber.hpp"
 #include "../../../bits/PartCall/FunctionSignature.hpp"
 #include "../../../bits/PartType/getTypeInfo.hpp"

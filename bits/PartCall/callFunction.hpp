@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CALL__CALL_FUNCTION_HPP___
 
 #include "../../macro.hpp"
-#include "../../Type.hpp"
+#include "../../PartType.hpp"
 #include "CallSeeker.hpp"
 #include "NDetails/Caller.hpp"
 #include "CallCache.hpp"

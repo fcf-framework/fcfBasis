@@ -4,7 +4,7 @@
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../PartException.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 
 namespace fcf{
 

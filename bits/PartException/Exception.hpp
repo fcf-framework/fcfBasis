@@ -4,8 +4,8 @@
 #include <exception>
 #include "ExceptionDefinition.hpp"
 #include "../../PartForeach.hpp"
-#include "../../StaticVector.hpp"
-#include "../../Variant.hpp"
+#include "../../PartStaticVector.hpp"
+#include "../../PartVariant.hpp"
 
 namespace fcf{
 

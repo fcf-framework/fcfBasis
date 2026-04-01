@@ -4,7 +4,7 @@
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "SpecificatorRegistrar.hpp"
 #include "../PartType/Type.hpp"
-#include "../../Variant.hpp"
+#include "../../PartVariant.hpp"
 #include "../../bits/PartTypes/UniversalArguments.hpp"
 #include "../../PartForeach.hpp"
 

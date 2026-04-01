@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___
 
 #include "CallConversion.hpp"
-#include "../../StaticVector.hpp"
+#include "../../PartStaticVector.hpp"
 
 namespace fcf{
 

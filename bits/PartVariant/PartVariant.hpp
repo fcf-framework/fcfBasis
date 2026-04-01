@@ -1,0 +1,6 @@
+#ifndef ___FCF_BASIS__BITS__PART_VARIANT__PART_VARIANT_HPP___
+#define ___FCF_BASIS__BITS__PART_VARIANT__PART_VARIANT_HPP___
+
+#include "Variant.hpp"
+
+#endif // #ifndef ___FCF_BASIS__BITS__PART_VARIANT__PART_VARIANT_HPP___

@@ -3,8 +3,8 @@
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "SpecificatorRegistrar.hpp"
-#include "../PartType/Type.hpp"
-#include "../../Variant.hpp"
+#include "../PartType/PartType.hpp"
+#include "../../PartVariant.hpp"
 #include "ResolveSpecificatorDefinition.hpp"
 
 namespace fcf{

@@ -2,7 +2,7 @@
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../../PartCall.hpp"
 #include "../bits/functions.hpp"
-#include "../../../Type.hpp"
+#include "../../../PartType.hpp"
 #include "../../../bits/registry.hpp"
 #include "../../../basis.hpp"
 

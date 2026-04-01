@@ -14,7 +14,7 @@
 #include "../bits/PartType/TypeInitializer.hpp"
 #include "./PartContainerAccess/ContainerAccess.hpp"
 #include "./PartContainerAccess/DynamicContainerAccess.hpp"
-#include "../Variant.hpp"
+#include "../PartVariant.hpp"
 #include "../bits/PartType/NDetails/TypeRegistrar.hpp"
 #include "../bits/PartTypes/UniversalArguments.hpp"
 #include "../bits/PartSpecificator/PartSpecificator.hpp"

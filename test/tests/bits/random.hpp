@@ -2,7 +2,7 @@
 #define ___FCF_BASIS__TEST__TESTS__BITS__RANDOM_HPP___
 
 #include <fcfBasis/PartCall.hpp>
-#include <fcfBasis/Variant.hpp>
+#include <fcfBasis/PartVariant.hpp>
 #include <fcfBasis/Details/randomGenerator.hpp>
 
 namespace fcf {

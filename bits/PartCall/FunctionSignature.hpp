@@ -4,7 +4,7 @@
 #include <cstring>
 #include <vector>
 #include <functional>
-#include "../../Type.hpp"
+#include "../../PartType.hpp"
 
 #ifndef FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE
   #define FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE 10

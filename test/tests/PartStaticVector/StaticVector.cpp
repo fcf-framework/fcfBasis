@@ -2,7 +2,7 @@
 #include <exception>
 #include <set>
 #include "../../libraries/fcfTest/test.hpp"
-#include "../../../StaticVector.hpp"
+#include "../../../PartStaticVector.hpp"
 
 
 namespace FcfTest {
