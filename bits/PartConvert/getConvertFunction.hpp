@@ -11,7 +11,7 @@
 namespace fcf {
 
   FCF_BASIS_DECL_EXPORT ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex);
-  FCF_BASIS_DECL_EXPORT ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex, int* a_error);
+  FCF_BASIS_DECL_EXPORT ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex, Exception* a_error);
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex) {
@@ -35,27 +35,15 @@ namespace fcf {
   #endif
 
   #ifdef FCF_BASIS_IMPLEMENTATION
-    ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex, int* a_error) {
-      a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
-      a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
-      do {
-        const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
-        if (!pti)
-          break;
-        const ::fcf::TypeInfo::Converters& converters = pti->converters; 
-        ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
-        if (convIt == converters.end()) {
-          break;
-        }
+    ConvertFunction getConvertFunction(unsigned int a_destinationTypeIndex, unsigned int a_sourceTypeIndex, Exception* a_error) {
+      try {
+        return getConvertFunction(a_destinationTypeIndex, a_sourceTypeIndex);
+      } catch(const Exception& e){
         if (a_error) {
-          *a_error = 0;
+          *a_error = e;
         }
-        return (ConvertFunction)convIt->second;
-      } while(false);
-      if (a_error) {
-        *a_error = FCF_ERROR_FUNCTION_NOT_FOUND;
       }
-      return 0;
+      return (ConvertFunction)0;
     }
   #endif
 
@@ -73,17 +61,15 @@ namespace fcf {
   }
 
   template <typename TDestination>
-  ConvertFunction getConvertFunctionByDestination(unsigned int a_sourceTypeIndex, int* a_error){
-    a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
-    const ::fcf::TypeInfo::Converters& converters = Type<TDestination>().backConverters(); 
-    ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_sourceTypeIndex);
-    if (convIt == converters.end()) {
+  ConvertFunction getConvertFunctionByDestination(unsigned int a_sourceTypeIndex, Exception* a_error){
+    try {
+      return getConvertFunctionByDestination<TDestination>(a_sourceTypeIndex);
+    } catch(const Exception& e){
       if (a_error) {
-        *a_error = FCF_ERROR_FUNCTION_NOT_FOUND;
+        *a_error = e;
       }
-      return 0;
     }
-    return (ConvertFunction)convIt->second;
+    return (ConvertFunction)0;
   }
 
   template <typename TSource>
@@ -100,17 +86,15 @@ namespace fcf {
   }
 
   template <typename TSource>
-  ConvertFunction getConvertFunctionBySource(unsigned int a_destinationTypeIndex, int* a_error){
-    a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
-    const ::fcf::TypeInfo::Converters& converters = Type<TSource>().converters(); 
-    ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
-    if (convIt == converters.end()) {
+  ConvertFunction getConvertFunctionBySource(unsigned int a_destinationTypeIndex, Exception* a_error){
+    try {
+      return getConvertFunctionBySource<TSource>(a_destinationTypeIndex);
+    } catch(const Exception& e){
       if (a_error) {
-        *a_error = FCF_ERROR_FUNCTION_NOT_FOUND;
+        *a_error = e;
       }
-      return 0;
     }
-    return (ConvertFunction)convIt->second;
+    return (ConvertFunction)0;
   }
 
 } // fcf namespace
