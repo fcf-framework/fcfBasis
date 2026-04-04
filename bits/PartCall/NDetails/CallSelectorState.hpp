@@ -13,20 +13,21 @@ namespace fcf {
         unsigned int specificatorIndex;
         unsigned int argumentNumber;
       };
-      const char*                                       name;
-      BaseFunctionSignature*                            resultFunctionSignature;
-      Call*                                             result;
-      CallStorageSelectionFunctionGroups::iterator      groupIterator;
-      BaseFunctionSignature&                            functionSignature;
-      BaseFunctionSignature*                            ptrFunctionSignature;
+      const CallStorage*                                  storage;
+      const char*                                         name;
+      BaseFunctionSignature*                              resultFunctionSignature;
+      Call*                                               result;
+      CallStorageSelectionFunctionGroups::const_iterator  groupIterator;
+      BaseFunctionSignature&                              functionSignature;
+      BaseFunctionSignature*                              ptrFunctionSignature;
       /*StaticVector<void*, 8>*                           arguments;*/
-      std::vector<PlaceHolderSource>                    placeHolderVec;
-      std::vector<std::vector<unsigned int> >*          placeHolderSpecificators;
-      bool                                              strictSource;
-      bool                                              dynamicCaller;
-      StaticVector<unsigned int, 4>                     ptrResolveVector;
+      std::vector<PlaceHolderSource>                      placeHolderVec;
+      const std::vector<std::vector<unsigned int> >*      placeHolderSpecificators;
+      bool                                                strictSource;
+      bool                                                dynamicCaller;
+      StaticVector<unsigned int, 4>                       ptrResolveVector;
       StaticVector<std::pair<unsigned int, unsigned int>, 4> requiredArgumentsFlags;
-      bool                                              invariantIteration;
+      bool                                                invariantIteration;
     };
 
   } // NDetails namespace

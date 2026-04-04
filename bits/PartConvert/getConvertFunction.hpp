@@ -2,7 +2,6 @@
 #define ___FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___
 
 #include "../../macro.hpp"
-#include "../../error.hpp"
 #include "ConvertFunction.hpp"
 #include "../../bits/PartType/TypeStorage.hpp"
 #include "../../bits/PartType/Type.hpp"

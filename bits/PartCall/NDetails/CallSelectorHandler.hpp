@@ -282,7 +282,7 @@ namespace fcf {
           }
         }
 
-        if (currentInputArgument->containerAccessResolver && 
+        if (currentInputArgument->containerAccessResolver &&
             !currentInputArgument->pairCounter &&
             state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER
             ) {
@@ -362,14 +362,17 @@ namespace fcf {
 
       void _convertOperation(bool a_isPointerMode, unsigned int a_clearTypeIndex, CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
         unsigned int sourceTypeIndex       = state.ptrFunctionSignature->pacodes[a_argumentIndex];
-        CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
+        CallStorageSelectionFunctionsByArgNumber::const_iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
         if (treeIt != state.groupIterator->second.callersTree.end()){
           BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
           for(size_t i = a_argumentIndex + 1; i < shortSign.asize; ++i){
             shortSign.pacodes[i] = 0;
           }
-          CallStorageSelectionFunctionsMap::iterator rightIt = treeIt->second.lower_bound(shortSign);
-          CallStorageSelectionFunctionsMap::iterator leftIt = rightIt;
+          CallStorageSelectionFunctionsMap::const_iterator rightIt = treeIt->second.lower_bound(shortSign);
+          CallStorageSelectionFunctionsMap::const_iterator leftIt = rightIt;
+
+          bool isIgnorePointer = Type<char*>().index() == a_clearTypeIndex;
+
           if (rightIt != treeIt->second.end()) {
             // right side
             unsigned int rtypeIndex       = rightIt->first.pacodes[a_argumentIndex];
@@ -380,7 +383,7 @@ namespace fcf {
               bool popReqArgFlag = false;
               bool ignore = false;
 
-              if (TypeIndexConverter<>::isSinglePointer(a_clearTypeIndex)) {
+              if (!isIgnorePointer && TypeIndexConverter<>::isSinglePointer(a_clearTypeIndex)) {
                 if (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER){
                   state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_RESOLVE_POINTER});
                   popReqArgFlag = true;
@@ -435,7 +438,7 @@ namespace fcf {
               bool popReqArgFlag = false;
               bool ignore = false;
 
-              if (TypeIndexConverter<>::isSinglePointer(a_clearTypeIndex)) {
+              if (!isIgnorePointer && TypeIndexConverter<>::isSinglePointer(a_clearTypeIndex)) {
                 if (state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER){
                   state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_RESOLVE_POINTER});
                   popReqArgFlag = true;
@@ -546,9 +549,9 @@ namespace fcf {
 
         bool isSinglePair = false;
 
-        if (!a_isIterationMode && 
-            !a_currentInputArgument->singleStepIteration && 
-            !a_currentInputArgument->pairCounter && 
+        if (!a_isIterationMode &&
+            !a_currentInputArgument->singleStepIteration &&
+            !a_currentInputArgument->pairCounter &&
             state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER &&
             a_inputArgumentIndex+1 < inputArguments.size() &&
             inputArguments[a_inputArgumentIndex].clearTypeIndex == inputArguments[a_inputArgumentIndex+1].clearTypeIndex &&
@@ -657,7 +660,7 @@ namespace fcf {
           }
         }
 
-        if (a_currentInputArgument->singleStepIteration || 
+        if (a_currentInputArgument->singleStepIteration ||
             (a_currentInputArgument->pairCounter && a_currentInputArgument->nextArgument) ||
             a_isIterationMode ) {
           //const TypeInfo* ti = ::fcf::getTypeInfo(a_currentInputArgument->clearTypeIndex);
@@ -695,7 +698,7 @@ namespace fcf {
       }
 
       void _complete(CallConversionNode* a_node, bool /*a_dynamicCaller*/) {
-        CallStorageSelectionFunctionInfo* pCall = 0;
+        const CallStorageSelectionFunctionInfo* pCall = 0;
 
         if (!state.dynamicCaller && state.invariantIteration) {
           state.result->complete = true;
@@ -705,7 +708,7 @@ namespace fcf {
           state.result->argCount = state.groupIterator->second.maxArgumentCount;
           state.result->name = state.name;
         } else if (!state.dynamicCaller) {
-          std::pair<CallStorageSelectionFunctions::iterator, CallStorageSelectionFunctions::iterator> range =
+          std::pair<CallStorageSelectionFunctions::const_iterator, CallStorageSelectionFunctions::const_iterator> range =
               state.groupIterator->second.callers.equal_range(*state.ptrFunctionSignature);
           for(; range.first != range.second; ++range.first) {
             bool found = true;
@@ -723,7 +726,7 @@ namespace fcf {
               }
 
               if (subFound) {
-                const CallStorageFunctionInfo* functionInfo = &getCallStorage().functions[range.first->second.index];
+                const CallStorageFunctionInfo* functionInfo = &state.storage->functions[range.first->second.index];
                 for(size_t resolveIndex = 0; resolveIndex <  state.ptrResolveVector.size(); ++resolveIndex){
                   unsigned int resolveArgumentIndex = state.ptrResolveVector[resolveIndex];
                   std::map<unsigned int, unsigned int>::const_iterator it    = functionInfo->argumentOptions.find(resolveArgumentIndex);
@@ -759,14 +762,14 @@ namespace fcf {
           state.result->complete = true;
           state.result->caller   = (void*)range.first->second.lcaller;
           state.result->rcaller  = (void*)range.first->second.rcaller;
-          state.result->function = getCallStorage().functions[range.first->second.index].function;
+          state.result->function = state.storage->functions[range.first->second.index].function;
           state.result->argCount = range.first->second.callerSignature.asize;
           state.result->name = state.name;
           if (state.resultFunctionSignature){
             *state.resultFunctionSignature = *state.ptrFunctionSignature;
           }
         } else {
-          CallStorageSelectionFunctionsByArgNumber::iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
+          CallStorageSelectionFunctionsByArgNumber::const_iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
           if (treeIt != state.groupIterator->second.callersTree.end()) {
             CallStorageSelectionFunctionsMap::const_iterator it = treeIt->second.begin();
             for(; it != treeIt->second.end(); ++it) {
@@ -805,7 +808,7 @@ namespace fcf {
                 singleIterationLastIndex = begNode->conversion.index;
               }
               if (
-                   (begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE || begNode->conversion.mode == CCM_CONVERT || begNode->conversion.mode == CCM_PTR_CONVERT) && 
+                   (begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE || begNode->conversion.mode == CCM_CONVERT || begNode->conversion.mode == CCM_PTR_CONVERT) &&
                    begNode->conversion.invariantIteration &&
                    singleIterationLastIndex != begNode->conversion.index
                   ){
@@ -888,8 +891,8 @@ namespace fcf {
                 }
                 phmap[phmapIndex] = (UINT_MAX - 1);
               } else if (node->conversion.mode == CCM_PLACE_HOLDER && pCall) {
-                std::vector<::fcf::CallPlaceHolderInfo>::iterator it =
-                  std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [node](::fcf::CallPlaceHolderInfo& a_itm){
+                std::vector<::fcf::CallPlaceHolderInfo>::const_iterator it =
+                  std::find_if(pCall->placeHolder.begin(), pCall->placeHolder.end(), [node](const ::fcf::CallPlaceHolderInfo& a_itm){
                     return a_itm.specificatorIndex == node->conversion.specificatorIndex &&
                            ((unsigned int)a_itm.argSourceIndex - 1) == node->conversion.index;
                   });

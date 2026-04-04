@@ -1,9 +1,10 @@
 #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___
 #define ___FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___
 
-#include "NDetails/CallSelector.hpp"
 #include "NDetails/CallPairArgumentNode.hpp"
 #include "NDetails/CallArguments.hpp"
+#include "NDetails/CallSelectorHandler.hpp"
+#include "NDetails/CallPairArgumentNode.hpp"
 #include "../../PartConvert.hpp"
 #include "../../PartException.hpp"
 
@@ -20,7 +21,17 @@ namespace fcf{
         bool             strictSource;
       };
 
+      const CallStorage* _storage;
+
     public:
+
+      CallSeeker()
+        : _storage(&getCallStorage()){
+      }
+
+      CallSeeker(const CallStorage& a_storage)
+        : _storage(&a_storage){
+      }
 
       template <typename... TCurrentArgPack>
       void operator()(const char* a_functionName, Call* a_result, const TCurrentArgPack&... a_argPack){
@@ -67,8 +78,8 @@ namespace fcf{
           currentFunctionSignature = a_functionSignature;
         }
 
-        CallStorageSelectionFunctionGroups::iterator groupIt = getCallStorage().groups.find(a_functionName);
-        if (groupIt == getCallStorage().groups.end()) {
+        CallStorageSelectionFunctionGroups::const_iterator groupIt = _storage->groups.find(a_functionName);
+        if (groupIt == _storage->groups.cend()) {
           throw CallNotFoundException(__FILE__, __LINE__, a_functionName, convert<std::string>((const BaseFunctionSignature&)*currentFunctionSignature));
         }
 
@@ -81,7 +92,22 @@ namespace fcf{
           a_result->conversions.clear();
         }
 
-        ::fcf::NDetails::CallSelectorState iasd = {a_functionName, a_resultFunctionSignature, a_result, groupIt, *currentFunctionSignature, currentFunctionSignature, {}, &groupIt->second.specificatorsByArgIndex, a_state.strictSource, false, {}, {}, false};
+        ::fcf::NDetails::CallSelectorState iasd = {
+                                                    _storage,
+                                                    a_functionName, 
+                                                    a_resultFunctionSignature, 
+                                                    a_result, 
+                                                    groupIt, 
+                                                    *currentFunctionSignature, 
+                                                    currentFunctionSignature, 
+                                                    {}, 
+                                                    &groupIt->second.specificatorsByArgIndex,
+                                                    a_state.strictSource, 
+                                                    false, 
+                                                    {}, 
+                                                    {}, 
+                                                    false
+                                                  };
         {
           NDetails::CallSelectorHandler csh(iasd);
           csh.initialize(a_callArguments);

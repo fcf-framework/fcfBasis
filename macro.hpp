@@ -419,7 +419,7 @@
 
 #define _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg) \
       typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<a_signature, \
-                                                ::fcf::NDetails::CallResultTypeGetter<a_signature>::type, \
+                                                ::fcf::FunctionSignature<a_signature>::result_type, \
                                                 _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
                                                 >::active_type
 
@@ -461,22 +461,6 @@
           );
 #endif // #ifndef FCF_DECLARE_FUNCTION
 
-
-#ifndef FCF_EXTEND_FUNCTION
-#define _FCF_EXTEND_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-#define _FCF_EXTEND_FUNCTION__VARNAME(a_varName, a_funcName, a_line) _FCF_EXTEND_FUNCTION__VARNAME_0(a_varName, a_funcName, a_line)
-#define FCF_EXTEND_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_sourceCode) \
-      ::fcf::CallStorageRegistrator \
-        _FCF_EXTEND_FUNCTION__VARNAME(functionRegistrator, a_name, __LINE__) \
-          (\
-            #a_name, \
-            a_space, \
-            #a_sourceName, \
-            static_cast<a_signature>((a_signature)(void*)0),\
-            ::fcf::ArgPlaceHolder::CallPlaceHolderSignatureGetter<::fcf::Nop>(),\
-            #a_sourceCode\
-          );
-#endif // #ifndef FCF_EXTEND_FUNCTION
 
 #ifndef FCF_GET_FUNCTION_INDEX
 #define FCF_GET_FUNCTION_INDEX(a_name, a_signature) \
