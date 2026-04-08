@@ -10,20 +10,14 @@
 
 FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
   {
-    std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
                                         _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),)
@@ -31,20 +25,14 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
     FCF_TEST(str == expected, str, expected);
   }
   {
-    std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
                                         _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),())
@@ -52,20 +40,14 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
     FCF_TEST(str == expected, str, expected);
   }
   {
-    std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "1-1, 1-2 "
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " 1-1, 1-2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
                                         _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2)))
@@ -73,20 +55,14 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
     FCF_TEST(str == expected, str, expected);
   }
   {
-    std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "1-1, 1-2 "
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " 1-1, 1-2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "2 "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "::fcf::Nop "
+                           "typename ::fcf::CallDetails<"
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
                                         _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2)))
@@ -94,20 +70,14 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
     FCF_TEST(str == expected, str, expected);
   }
   {
-    std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "1-1, 1-2 "
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " 1-1, 1-2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "2 "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "3 "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 3 "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
                                         _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2), (3)))
@@ -115,20 +85,14 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
     FCF_TEST(str == expected, str, expected);
   }
   {
-    std::string expected = "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "1-1, 1-2 "
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " 1-1, 1-2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "2 "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 2 "
                                                                     ">::active_type, "
-                           "typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<"
-                                                                      "void(), "
-                                                                      "::fcf::FunctionSignature<void()>::result_type, "
-                                                                      "3 "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 3 "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
                                         _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2), (3), (4)))

@@ -4,7 +4,7 @@
 #include "../../PartForeach.hpp"
 #include "CallStorageSpace.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
-#include "../../bits/PartCallPlaceHolder/NDetails/CallPlaceHolderSignatureGetter.hpp"
+#include "../../bits/PartCall/CallDetails.hpp"
 #include "../../bits/PartCall/CallOptions.hpp"
 #include "../../bits/PartCall/CallArgumentOptions.hpp"
 #include "../PartCall/NDetails/CallWrapper.hpp"
@@ -16,25 +16,41 @@
 
 namespace fcf {
 
-    template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
+    template <typename TSignaturesTuple, typename TFunctionResult, typename... TArgPack>
     void CallStorage::add(std::string a_name,
                           TFunctionResult (*a_function)(TArgPack...),
-                          TPlaceHolderSignatures a_phs){
+                          const TSignaturesTuple& a_phs){
       add(a_name, "engine_cpu", std::string(), a_function, a_phs, std::string());
     }
 
     template <typename TFunctionResult, typename... TArgPack>
     void CallStorage::add(std::string a_name,
                           TFunctionResult (*a_function)(TArgPack...)){
-      add(a_name, "engine_cpu", std::string(), a_function, ::fcf::NDetails::CallPlaceHolderSignatures<>(), std::string());
+      add(a_name, "engine_cpu", std::string(), a_function, std::tuple<>(), std::string());
     }
 
     template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-    void CallStorage::add(std::string a_name,
+    void CallStorage::addWithSignatures(std::string a_name,
              const std::string& a_space,
              const std::string& a_sourceName,
              TFunctionResult (*a_function)(TArgPack...),
              TPlaceHolderSignatures /*a_phs*/,
+             std::string a_sourceCode) {
+      typename TPlaceHolderSignatures::signatures_type signaturesTuple;
+      add(a_name,
+          a_space,
+          a_sourceName,
+          a_function,
+          signaturesTuple,
+          a_sourceCode);
+    }
+
+    template <typename TSignaturesTuple, typename TFunctionResult, typename... TArgPack>
+    void CallStorage::add(std::string a_name,
+             const std::string& a_space,
+             const std::string& a_sourceName,
+             TFunctionResult (*a_function)(TArgPack...),
+             TSignaturesTuple a_phs,
              std::string a_sourceCode) {
       a_name = _rtrim(a_name);
       typedef TFunctionResult (*function_type)(TArgPack...);
@@ -149,14 +165,13 @@ namespace fcf {
                   }
                 });
 
-      typename TPlaceHolderSignatures::signatures_type signatures;
       NDetails::CallStoragePlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
       placeHolderRegistrator.function = a_function;
       placeHolderRegistrator.index = index;
       placeHolderRegistrator.fs = fs;
       placeHolderRegistrator.scs = scs;
       placeHolderRegistrator.groupIt = groupIt;
-      placeHolderRegistrator.registry(*this, signatures);
+      placeHolderRegistrator.registry(*this, a_phs);
     }
 
     std::string CallStorage::_rtrim(std::string a_str) {

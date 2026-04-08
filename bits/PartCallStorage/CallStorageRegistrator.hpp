@@ -6,7 +6,7 @@
 #include "../../PartForeach.hpp"
 #include "CallStorageSpace.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
-#include "../../bits/PartCallPlaceHolder/NDetails/CallPlaceHolderSignatureGetter.hpp"
+#include "../../bits/PartCall/CallDetails.hpp"
 #include "../../bits/PartCall/CallOptions.hpp"
 #include "../../bits/PartCall/CallArgumentOptions.hpp"
 #include "../PartCall/NDetails/CallWrapper.hpp"
@@ -24,7 +24,7 @@ namespace fcf {
                                    TFunctionResult (*a_function)(TArgPack...),
                                    TPlaceHolderSignatures a_phs,
                                    std::string a_sourceCode = std::string()){
-        getCallStorage().add(a_name, a_space, a_sourceName, a_function, a_phs, a_sourceCode);
+        getCallStorage().addWithSignatures(a_name, a_space, a_sourceName, a_function, a_phs, a_sourceCode);
       }
 
     };

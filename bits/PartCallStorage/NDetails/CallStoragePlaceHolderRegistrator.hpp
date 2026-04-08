@@ -112,7 +112,7 @@ namespace fcf{
       void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TSignature& /*a_signatureGetter*/) {
         unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
         if (specificatorIndex == Type<CallOptions>().index()){
-          typename TSignature::short_function_signature_type::args_type tuple;
+          typename TSignature::ShortTupleArgumentsType tuple;
           ArgOptionInitializer argOptionInitializer(this);
           foreach(tuple, argOptionInitializer, (unsigned int) std::max((int)TSignature::ArgIndex-1, (int)0));
         } else {

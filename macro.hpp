@@ -418,8 +418,7 @@
 #define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(__VA_ARGS__)
 
 #define _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg) \
-      typename ::fcf::NDetails::CallPlaceHolderSignatureGetter<a_signature, \
-                                                ::fcf::FunctionSignature<a_signature>::result_type, \
+      typename ::fcf::CallDetails<\
                                                 _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
                                                 >::active_type
 

@@ -17,13 +17,21 @@ namespace fcf {
       inline void add(std::string a_name,
                TFunctionResult (*a_function)(TArgPack...));
 
-      template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
+      template <typename TSignaturesTuple, typename TFunctionResult, typename... TArgPack>
       inline void add(std::string a_name,
                TFunctionResult (*a_function)(TArgPack...),
-               TPlaceHolderSignatures a_phs);
+               const TSignaturesTuple& a_phs);
+
+      template <typename TTuplePlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
+      void add(std::string a_name,
+               const std::string& a_space,
+               const std::string& a_sourceName,
+               TFunctionResult (*a_function)(TArgPack...),
+               TTuplePlaceHolderSignatures a_phs,
+               std::string a_sourceCode = std::string());
 
       template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-      void add(std::string a_name,
+      void addWithSignatures(std::string a_name,
                const std::string& a_space,
                const std::string& a_sourceName,
                TFunctionResult (*a_function)(TArgPack...),
