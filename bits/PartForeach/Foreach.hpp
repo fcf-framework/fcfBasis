@@ -39,6 +39,17 @@ namespace fcf {
   };
 
   template <typename... TPack>
+  class Foreach< const std::tuple<TPack...> >{
+    public:
+      typedef std::tuple<TPack...> container_type;
+
+      template <typename TContainer, typename TFunctor, typename ...TArgPack>
+      inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs){
+        Details::TupleForeach<container_type, 0, sizeof...(TPack)>()(a_container, a_functor, a_packArgs...);
+      }
+  };
+
+  template <typename... TPack>
   class Foreach< std::unordered_map<TPack...> >{
     public:
       template <typename TContainer, typename TFunctor, typename ...TArgPack>

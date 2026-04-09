@@ -16,28 +16,38 @@
 
 namespace fcf {
 
-    template <typename TSignaturesTuple, typename TFunctionResult, typename... TArgPack>
+    template <typename TFunction, typename ... TPackCallDetails>
     void CallStorage::add(std::string a_name,
-                          TFunctionResult (*a_function)(TArgPack...),
-                          const TSignaturesTuple& a_phs){
-      add(a_name, "engine_cpu", std::string(), a_function, a_phs, std::string());
+                          TFunction a_function,
+                          const std::tuple<TPackCallDetails...>& a_phs){
+      addEx(a_name, "engine_cpu", std::string(), a_function, a_phs, std::string());
     }
 
+    template <typename TFunction, typename ... TPackCallDetails>
+    void CallStorage::add(std::string a_name,
+                          TFunction a_function,
+                          const TPackCallDetails& ... /*a_packCallDetails*/){
+      typedef std::tuple<TPackCallDetails...> DetailsTuple;
+      addEx(a_name, "engine_cpu", std::string(), a_function, DetailsTuple(), std::string());
+    }
+
+    /*
     template <typename TFunctionResult, typename... TArgPack>
     void CallStorage::add(std::string a_name,
                           TFunctionResult (*a_function)(TArgPack...)){
       add(a_name, "engine_cpu", std::string(), a_function, std::tuple<>(), std::string());
     }
+    */
 
-    template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-    void CallStorage::addWithSignatures(std::string a_name,
+    template <typename TFunction, typename ... TPackCallDetails>
+    void CallStorage::addEx(std::string a_name,
              const std::string& a_space,
              const std::string& a_sourceName,
-             TFunctionResult (*a_function)(TArgPack...),
-             TPlaceHolderSignatures /*a_phs*/,
+             TFunction a_function,
+             const NDetails::CallPlaceHolderSignatures<TPackCallDetails...>& /*a_phs*/,
              std::string a_sourceCode) {
-      typename TPlaceHolderSignatures::signatures_type signaturesTuple;
-      add(a_name,
+      typename NDetails::CallPlaceHolderSignatures<TPackCallDetails...>::signatures_type signaturesTuple;
+      addEx(a_name,
           a_space,
           a_sourceName,
           a_function,
@@ -45,16 +55,15 @@ namespace fcf {
           a_sourceCode);
     }
 
-    template <typename TSignaturesTuple, typename TFunctionResult, typename... TArgPack>
-    void CallStorage::add(std::string a_name,
+    template <typename TFunction, typename ... TPackCallDetails>
+    void CallStorage::addEx(std::string a_name,
              const std::string& a_space,
              const std::string& a_sourceName,
-             TFunctionResult (*a_function)(TArgPack...),
-             TSignaturesTuple a_phs,
+             TFunction a_function,
+             const std::tuple<TPackCallDetails...>& a_phs,
              std::string a_sourceCode) {
       a_name = _rtrim(a_name);
-      typedef TFunctionResult (*function_type)(TArgPack...);
-      FunctionSignature<TFunctionResult (TArgPack...)> fs;
+      FunctionSignature<TFunction> fs;
       CallStorageFunctionIndexes::iterator it = indexes.find(fs);
       if (it == indexes.end()) {
         CallStorageFunctionIndexes::value_type newItem(fs, CallStorageFunctionIndexes::value_type::second_type());
@@ -135,7 +144,9 @@ namespace fcf {
         item.first = a_name;
         groupIt = groups.insert(item).first;
       }
-      groupIt->second.maxArgumentCount = std::max(groupIt->second.maxArgumentCount, (unsigned int)sizeof...(TArgPack));
+
+      typedef typename FunctionSignature<TFunction>::args_type ArgsTupleType;
+      groupIt->second.maxArgumentCount = std::max(groupIt->second.maxArgumentCount, (unsigned int)std::tuple_size<ArgsTupleType>::value);
 
       BaseFunctionSignature scs = fs.getSimpleCallSignature();
       BaseFunctionSignature sscs = scs;
@@ -145,8 +156,8 @@ namespace fcf {
           CallStorageSelectionFunctionInfo{
             scs,
             index,
-            NDetails::CallWrapper<function_type>::getWrapper(),
-            NDetails::CallWrapper<function_type>::getRWrapper(),
+            NDetails::CallWrapper<TFunction>::getWrapper(),
+            NDetails::CallWrapper<TFunction>::getRWrapper(),
             CallStorageSelectionFunctionInfo::PlaceHolderType()
           }
         });
@@ -159,13 +170,13 @@ namespace fcf {
                   CallStorageSelectionFunctionInfo{
                     scs,
                     index,
-                    NDetails::CallWrapper<function_type>::getWrapper(),
-                    NDetails::CallWrapper<function_type>::getRWrapper(),
+                    NDetails::CallWrapper<TFunction>::getWrapper(),
+                    NDetails::CallWrapper<TFunction>::getRWrapper(),
                     CallStorageSelectionFunctionInfo::PlaceHolderType()
                   }
                 });
 
-      NDetails::CallStoragePlaceHolderRegistrator<function_type, TFunctionResult, TArgPack...> placeHolderRegistrator;
+      NDetails::CallStoragePlaceHolderRegistrator<TFunction> placeHolderRegistrator;
       placeHolderRegistrator.function = a_function;
       placeHolderRegistrator.index = index;
       placeHolderRegistrator.fs = fs;

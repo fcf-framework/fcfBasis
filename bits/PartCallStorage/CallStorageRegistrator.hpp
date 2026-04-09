@@ -24,7 +24,7 @@ namespace fcf {
                                    TFunctionResult (*a_function)(TArgPack...),
                                    TPlaceHolderSignatures a_phs,
                                    std::string a_sourceCode = std::string()){
-        getCallStorage().addWithSignatures(a_name, a_space, a_sourceName, a_function, a_phs, a_sourceCode);
+        getCallStorage().addEx(a_name, a_space, a_sourceName, a_function, a_phs, a_sourceCode);
       }
 
     };

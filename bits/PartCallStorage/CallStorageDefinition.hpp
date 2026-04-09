@@ -4,6 +4,7 @@
 #include "CallStorageFunctionIndexes.hpp"
 #include "CallStorageFunctionInfoVector.hpp"
 #include "CallStorageSelectionFunctionGroup.hpp"
+#include "../../bits/PartCall/NDetails/CallPlaceHolderSignatures.hpp"
 
 namespace fcf {
 
@@ -13,29 +14,30 @@ namespace fcf {
       CallStorageFunctionInfoVector      functions;
       CallStorageSelectionFunctionGroups groups;
 
-      template <typename TFunctionResult, typename... TArgPack>
+      template <typename TFunction, typename ... TPackCallDetails>
       inline void add(std::string a_name,
-               TFunctionResult (*a_function)(TArgPack...));
+                      TFunction a_function,
+                      const std::tuple<TPackCallDetails...>& a_phs);
 
-      template <typename TSignaturesTuple, typename TFunctionResult, typename... TArgPack>
+      template <typename TFunction, typename ... TPackCallDetails>
       inline void add(std::string a_name,
-               TFunctionResult (*a_function)(TArgPack...),
-               const TSignaturesTuple& a_phs);
+                     TFunction a_function,
+                     const TPackCallDetails& ... a_packCallDetails);
 
-      template <typename TTuplePlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-      void add(std::string a_name,
+      template <typename TFunction, typename ... TPackCallDetails>
+      void addEx(std::string a_name,
                const std::string& a_space,
                const std::string& a_sourceName,
-               TFunctionResult (*a_function)(TArgPack...),
-               TTuplePlaceHolderSignatures a_phs,
+               TFunction a_function,
+               const NDetails::CallPlaceHolderSignatures<TPackCallDetails...>& a_phs,
                std::string a_sourceCode = std::string());
 
-      template <typename TPlaceHolderSignatures, typename TFunctionResult, typename... TArgPack>
-      void addWithSignatures(std::string a_name,
+      template <typename TFunction, typename ... TPackCallDetails>
+      void addEx(std::string a_name,
                const std::string& a_space,
                const std::string& a_sourceName,
-               TFunctionResult (*a_function)(TArgPack...),
-               TPlaceHolderSignatures a_phs,
+               TFunction a_function,
+               const std::tuple<TPackCallDetails...>& a_phs,
                std::string a_sourceCode = std::string());
 
 

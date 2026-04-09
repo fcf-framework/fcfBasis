@@ -9,16 +9,16 @@ namespace fcf{
 
   namespace NDetails {
 
-    template <typename TFunction, typename TFunctionResult, typename ...TArgPack>
+    template <typename TFunction>
     struct CallStoragePlaceHolderRegistrator {
 
       template <typename TSignatures>
-      inline void registry(TSignatures& a_signatures){
+      inline void registry(const TSignatures& a_signatures){
         registry(getCallStorage(), a_signatures);
       }
 
       template <typename TSignatures>
-      void registry(CallStorage& a_storage, TSignatures& a_signatures){
+      void registry(CallStorage& a_storage, const TSignatures& a_signatures){
         if (fs.asize >= groupIt->second.argumentOptions.size()){
           groupIt->second.argumentOptions.resize(fs.asize, 0);
         }
@@ -109,7 +109,7 @@ namespace fcf{
       FCF_FOREACH_METHOD_WRAPPER(ArgOptionInitializer, CallStoragePlaceHolderRegistrator, _argOptionInitialize);
 
       template <typename Tuple, typename TIndex, typename TSignature>
-      void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TSignature& /*a_signatureGetter*/) {
+      void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, const TSignature& /*a_signatureGetter*/) {
         unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
         if (specificatorIndex == Type<CallOptions>().index()){
           typename TSignature::ShortTupleArgumentsType tuple;
@@ -136,7 +136,7 @@ namespace fcf{
 
       TFunction                                             function;
       unsigned int                                          index;
-      FunctionSignature<TFunctionResult (TArgPack...)>      fs;
+      FunctionSignature<TFunction>                          fs;
       BaseFunctionSignature                                 scs;
       CallStorageSelectionFunctionGroups::iterator          groupIt;
       std::list<::fcf::CallPlaceHolderInfo>                 _specificatorsData;
