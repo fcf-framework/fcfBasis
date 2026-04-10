@@ -431,7 +431,7 @@ namespace fcf{
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::operator bool() const{
     const void* p = ptr();
-    if (p) {
+    if (!p) {
       return false;
     }
     BoolSpecificator::CallType c = _typeInfo->getSpecificatorCall<BoolSpecificator>();
