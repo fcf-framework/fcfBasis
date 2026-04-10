@@ -4,7 +4,7 @@
 #include "CallStorageFunctionIndexes.hpp"
 #include "CallStorageFunctionInfoVector.hpp"
 #include "CallStorageSelectionFunctionGroup.hpp"
-#include "../../bits/PartCall/NDetails/CallPlaceHolderSignatures.hpp"
+#include "../../bits/PartCall/CallDetailsPack.hpp"
 
 namespace fcf {
 
@@ -29,7 +29,7 @@ namespace fcf {
                const std::string& a_space,
                const std::string& a_sourceName,
                TFunction a_function,
-               const NDetails::CallPlaceHolderSignatures<TPackCallDetails...>& a_phs,
+               const CallDetailsPack<TPackCallDetails...>& a_phs,
                std::string a_sourceCode = std::string());
 
       template <typename TFunction, typename ... TPackCallDetails>

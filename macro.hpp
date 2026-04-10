@@ -453,7 +453,7 @@
             a_space, \
             #a_sourceName, \
             static_cast<a_signature>(a_sourceName),\
-            ::fcf::NDetails::CallPlaceHolderSignatures <\
+            ::fcf::CallDetailsPack <\
               _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder )\
             > (),\
             #a_sourceCode\

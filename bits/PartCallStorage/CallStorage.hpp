@@ -44,9 +44,9 @@ namespace fcf {
              const std::string& a_space,
              const std::string& a_sourceName,
              TFunction a_function,
-             const NDetails::CallPlaceHolderSignatures<TPackCallDetails...>& /*a_phs*/,
+             const CallDetailsPack<TPackCallDetails...>& /*a_phs*/,
              std::string a_sourceCode) {
-      typename NDetails::CallPlaceHolderSignatures<TPackCallDetails...>::signatures_type signaturesTuple;
+      typename CallDetailsPack<TPackCallDetails...>::signatures_type signaturesTuple;
       addEx(a_name,
           a_space,
           a_sourceName,
