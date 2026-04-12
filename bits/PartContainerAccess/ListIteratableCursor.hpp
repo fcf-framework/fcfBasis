@@ -38,11 +38,10 @@ namespace fcf {
         }
         for(; key != a_position; ++key, ++iterator);
       } else {
-        if (a_create){
-          for(; key <= a_position; ++key){
+        if (a_create) {
+          for(; container->size() <= a_position; ++key){
             container->push_back(value_type());
           }
-          key -= 1;
           iterator = --std::end(*container);
         } else {
           iterator = std::end(*container);

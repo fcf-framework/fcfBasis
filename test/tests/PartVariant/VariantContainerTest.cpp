@@ -161,6 +161,22 @@ namespace FcfTest {
 
         FCF_TEST(!v[4].empty());
       }
+      {
+        fcf::Variant sourceVec       = std::vector<int>{1,2,3,4,5};
+        fcf::Variant destinationList( fcf::Type< std::list<std::string> >{}  );
+        FCF_TEST(destinationList.containerSize() == 0, destinationList.containerSize());
+        for(size_t i = 0; i < sourceVec.containerSize(); ++i ){
+          FCF_TEST(destinationList.containerSize() == i, i, destinationList.containerSize());
+          destinationList[i] = sourceVec[i];
+        }
+        FCF_TEST(destinationList.containerSize() == 5, destinationList.containerSize());
+        int counter = 1;
+        for(fcf::Variant item : destinationList){
+          std::string expected = std::to_string(counter);
+          FCF_TEST(item == expected, item, expected);
+          ++counter;
+        }
+      }
     }
 
   }
