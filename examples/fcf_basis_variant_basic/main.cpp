@@ -12,10 +12,10 @@ int main() {
 
     // 2. Automatic type conversion in arithmetic
     fcf::Variant sum1 = v1 + v2;         // int + double -> int
-    std::cout << "Sum (int + double) -> int    : " << sum1.cast<int>() << std::endl;
+    std::cout << "Sum (int + double) -> int    : " << sum1 << std::endl;
 
     fcf::Variant sum2 = v2 + v3;         // double + string(double) -> double
-    std::cout << "Sum (int + string) -> double : " << sum2.cast<double>() << std::endl;
+    std::cout << "Sum (int + string) -> double : " << sum2 << std::endl;
 
     // 3. Comparison
     fcf::Variant a = 100;
@@ -26,13 +26,13 @@ int main() {
 
     // 4. Type check
     if (v1.is<int>()) {
-        std::cout << "v1 is an integer             : " << v1.get<int>() << std::endl;
+        std::cout << "v1 is an integer             : " << v1 << std::endl;
     }
 
     // 5. Working with strings
     fcf::Variant str = std::string("Dynamic");
     str += " String";
-    std::cout << "String value                 : " << str.cast<std::string>() << std::endl;
+    std::cout << "String value                 : " << str << std::endl;
 
     return 0;
 }
