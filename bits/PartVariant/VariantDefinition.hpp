@@ -421,7 +421,13 @@ namespace fcf {
        * @brief Returns the size of the container if the variant holds a container type.
        * @return The number of elements, or 0 if not a container.
        */
-      size_t containerSize();
+      size_t containerSize() const;
+
+      /**
+       * @brief Checking if a stored object is a container
+       * @return Returns true if the stored object is a container.
+       */
+       bool isContainer() const;
 
       /**
        * @brief Erases an element identified by a key.

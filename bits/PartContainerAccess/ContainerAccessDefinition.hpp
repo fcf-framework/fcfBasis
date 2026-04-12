@@ -36,7 +36,7 @@ namespace fcf{
       friend container_type;
       enum Mode        { constMode = false };
       enum MemMode     { is_flat = cursor_type::is_flat };
-      enum ResolveMode { is_const_resolve_value = std::is_const<resolve_value_type>::value };
+      enum ResolveMode { is_const_resolve_value = std::is_const< typename std::remove_reference<resolve_value_type>::type >::value };
 
       inline ContainerAccess();
 

@@ -339,7 +339,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  size_t BasicVariant<innerBufferSize>::containerSize(){
+  size_t BasicVariant<innerBufferSize>::containerSize() const{
     if (!_typeInfo){
       return 0;
     }
@@ -348,10 +348,20 @@ namespace fcf{
       return 0;
     }
 
-    Variant vdca = call(ptr(), 0, 0);
+    Variant vdca = call((void*)ptr(), 0, 0);
     DynamicContainerAccessBase* pdca = (DynamicContainerAccessBase*)vdca.ptr();
     return pdca->getContainerSize();
   }
+
+  template <size_t innerBufferSize>
+  bool BasicVariant<innerBufferSize>::isContainer() const {
+    if (!_typeInfo){
+      return false;
+    }
+    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>();
+    return !!call;
+  }
+
 
   template <size_t innerBufferSize>
   void BasicVariant<innerBufferSize>::erase(const BasicVariant& a_key){
