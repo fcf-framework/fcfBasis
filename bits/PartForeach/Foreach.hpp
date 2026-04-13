@@ -55,7 +55,7 @@ namespace fcf {
       template <typename TContainer, typename TFunctor, typename ...TArgPack>
       inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         for(auto& pair : a_container){
-          a_functor(a_container, pair.first, pair.second, a_packArgs...);
+          a_functor(pair.first, pair.second, a_packArgs...);
         }
       }
   };
@@ -66,7 +66,7 @@ namespace fcf {
       template <typename TContainer, typename TFunctor, typename ...TArgPack>
       inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         for(auto& pair : a_container){
-          a_functor(a_container, pair.first, pair.second, a_packArgs...);
+          a_functor(pair.first, pair.second, a_packArgs...);
         }
       }
   };
@@ -77,7 +77,7 @@ namespace fcf {
       template <typename TContainer, typename TFunctor, typename ...TArgPack>
       inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         for(auto& item : a_container){
-          a_functor(a_container, item, item, a_packArgs...);
+          a_functor(item, item, a_packArgs...);
         }
       }
   };
@@ -88,7 +88,7 @@ namespace fcf {
       template <typename TContainer, typename TFunctor, typename ...TArgPack>
       inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         for(auto& item : a_container){
-          a_functor(a_container, item, item, a_packArgs...);
+          a_functor(item, item, a_packArgs...);
         }
       }
   };
@@ -99,7 +99,7 @@ namespace fcf {
       template <typename TContainer, typename TFunctor, typename ...TArgPack>
       inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         for(size_t i = 0; i < a_container.size(); ++i){
-          a_functor(a_container, i, a_container[i], a_packArgs...);
+          a_functor(i, a_container[i], a_packArgs...);
         }
       }
   };
@@ -111,7 +111,7 @@ namespace fcf {
       inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs) {
         typename std::list<TPack...>::iterator it = a_container.begin();
         for(size_t i = 0; it != a_container.end(); ++i, ++it){
-          a_functor(a_container, i, *it, a_packArgs...);
+          a_functor(i, *it, a_packArgs...);
         }
       }
   };

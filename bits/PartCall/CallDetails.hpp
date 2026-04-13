@@ -32,8 +32,8 @@ namespace fcf{
       }
 
       struct SignatureDataFiller {
-        template <typename TContainer, typename TIndex, typename TValue>
-        void operator()(TContainer& /*a_container*/, TIndex a_index, TValue& /*a_value*/){
+        template <typename TIndex, typename TValue>
+        void operator()(TIndex a_index, TValue& /*a_value*/){
           if (ArgNumber<TValue>::value == 0){
             return;
           }

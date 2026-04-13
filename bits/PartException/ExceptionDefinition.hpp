@@ -65,8 +65,8 @@ namespace fcf{
       std::string _info(const char* a_firstLinePrefix, const char* a_linePrefix) const throw();
 
       FCF_FOREACH_METHOD_WRAPPER(ArgFiller, Exception, _fillArgs);
-      template <typename TTuple, typename TType>
-      void _fillArgs(TTuple&, size_t, const TType& a_value);
+      template <typename TType>
+      void _fillArgs(size_t, const TType& a_value);
 
       std::string*                  _pwhat;
       const char*                   _smessage;

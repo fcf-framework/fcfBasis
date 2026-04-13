@@ -348,8 +348,8 @@ namespace fcf{
   }
 #endif
 
-template <typename TTuple, typename TType>
-void Exception::_fillArgs(TTuple&, size_t, const TType& a_value){
+template <typename TType>
+void Exception::_fillArgs(size_t, const TType& a_value){
   _args.push_back(a_value);
 }
 

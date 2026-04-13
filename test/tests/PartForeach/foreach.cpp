@@ -8,8 +8,8 @@ namespace FcfTest {
   namespace BasisTest { 
     namespace ForeachTest {
 
-      template <typename TContainer, typename TKey, typename TValue, typename TKeys, typename TValues>
-      void tupleHandler(TContainer& /*a_container*/, TKey a_key, TValue /*a_item*/, TKeys& a_keys, TValues& a_values) {
+      template <typename TKey, typename TValue, typename TKeys, typename TValues>
+      void tupleHandler(TKey a_key, TValue /*a_item*/, TKeys& a_keys, TValues& a_values) {
         a_keys.push_back(a_key);
         a_values.push_back( fcf::Type<TValue>().name() );
       }
@@ -17,16 +17,16 @@ namespace FcfTest {
       FCF_FOREACH_FUNCTION_WRAPPER(TupleHandlerForeachFunctionWrapper, tupleHandler);
 
       struct TupleHandler0 {
-        template <typename TContainer, typename TKey, typename TValue, typename TKeys, typename TValues>
-        void operator()(TContainer& /*a_container*/, TKey a_key, TValue /*a_item*/, TKeys& a_keys, TValues& a_values) {
+        template <typename TKey, typename TValue, typename TKeys, typename TValues>
+        void operator()(TKey a_key, TValue /*a_item*/, TKeys& a_keys, TValues& a_values) {
           a_keys.push_back(a_key);
           a_values.push_back( fcf::Type<TValue>().name() );
         }
       };
 
       struct TupleHandler {
-        template <typename TContainer, typename TKey, typename TValue, typename TKeys, typename TValues>
-        void iteration(TContainer& /*a_container*/, TKey a_key, TValue /*a_item*/, TKeys& a_keys, TValues& a_values) {
+        template <typename TKey, typename TValue, typename TKeys, typename TValues>
+        void iteration(TKey a_key, TValue /*a_item*/, TKeys& a_keys, TValues& a_values) {
           a_keys.push_back(a_key);
           a_values.push_back( fcf::Type<TValue>().name() );
         }
@@ -97,7 +97,7 @@ namespace FcfTest {
         container.push_back("002");
         fcf::foreach(
           container,
-          [](FcfTest::BasisTest::ForeachTest::Vector<std::string>& /*a_container*/, size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
+          [](size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
             a_keys.push_back(a_key);
             a_values.push_back(a_value);
             a_value += "-";
@@ -152,7 +152,7 @@ namespace FcfTest {
         ForeachTest::Container    container;
         container.vector.push_back("001");
         container.vector.push_back("002");
-        fcf::foreach(container, [](ForeachTest::Container& /*a_container*/, size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
+        fcf::foreach(container, [](size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
           a_keys.push_back(a_key);
           a_values.push_back(a_value);
           a_value += "-";
@@ -170,7 +170,7 @@ namespace FcfTest {
         container_type    container;
         container.push_back("001");
         container.push_back("002");
-        fcf::foreach(container, [](container_type& /*a_container*/, size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
+        fcf::foreach(container, [](size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
           a_keys.push_back(a_key);
           a_values.push_back(a_value);
           a_value += "-";
@@ -188,7 +188,7 @@ namespace FcfTest {
         container_type    container;
         container.insert("001");
         container.insert("002");
-        fcf::foreach(container, [](container_type& /*a_container*/, const std::string& a_key, const std::string& a_value, std::vector<std::string>& a_keys, std::vector<std::string>& a_values){
+        fcf::foreach(container, [](const std::string& a_key, const std::string& a_value, std::vector<std::string>& a_keys, std::vector<std::string>& a_values){
           a_keys.push_back(a_key);
           a_values.push_back(a_value);
         }, keys, values);
@@ -201,7 +201,7 @@ namespace FcfTest {
         std::vector<size_t>       keys;
         std::vector<std::string>  values;
         std::vector<std::string>  vec = { "001", "002" };
-        fcf::foreach(vec, [](std::vector<std::string>& /*a_container*/, size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
+        fcf::foreach(vec, [](size_t a_key, std::string& a_value, std::vector<size_t>& a_keys, std::vector<std::string>& a_values){
           a_keys.push_back(a_key);
           a_values.push_back(a_value);
           a_value += "-";
@@ -216,7 +216,7 @@ namespace FcfTest {
         std::vector<std::string> keys;
         std::vector<int>         values;
         std::map<std::string, int> map = { {"001", 1}, {"002", 2} };
-        fcf::foreach(map, [&keys, &values](std::map<std::string, int>&  /*a_container*/, std::string a_key, int& a_value){
+        fcf::foreach(map, [&keys, &values](std::string a_key, int& a_value){
           keys.push_back(a_key);
           values.push_back(a_value);
           a_value += 3;
@@ -230,7 +230,7 @@ namespace FcfTest {
         std::vector<std::string> keys;
         std::vector<int>         values;
         std::map<std::string, int> map = { {"001", 1}, {"002", 2} };
-        fcf::foreach(map, [](std::map<std::string, int>& /*a_container*/, std::string a_key, int& a_value, std::vector<std::string>* a_keys, std::vector<int>* a_values){
+        fcf::foreach(map, [](std::string a_key, int& a_value, std::vector<std::string>* a_keys, std::vector<int>* a_values){
           a_keys->push_back(a_key);
           a_values->push_back(a_value);
           a_value += 3;
@@ -244,7 +244,7 @@ namespace FcfTest {
         std::vector<std::string> keys;
         std::vector<int>         values;
         std::map<std::string, int> map = { {"001", 1}, {"002", 2} };
-        fcf::foreach(map, [](std::map<std::string, int>& /*a_container*/, std::string a_key, int& a_value, std::vector<std::string>& a_keys, std::vector<int>& a_values){
+        fcf::foreach(map, [](std::string a_key, int& a_value, std::vector<std::string>& a_keys, std::vector<int>& a_values){
           a_keys.push_back(a_key);
           a_values.push_back(a_value);
           a_value += 3;
@@ -258,7 +258,7 @@ namespace FcfTest {
       {
         std::vector<std::string> keys;
         std::vector<int>         values;
-        fcf::foreach(std::map<std::string, int>{ {"001", 1}, {"002", 2} }, [](std::map<std::string, int>& /*a_container*/, std::string a_key, int& a_value, std::vector<std::string>& a_keys, std::vector<int>& a_values){
+        fcf::foreach(std::map<std::string, int>{ {"001", 1}, {"002", 2} }, [](std::string a_key, int& a_value, std::vector<std::string>& a_keys, std::vector<int>& a_values){
           a_keys.push_back(a_key);
           a_values.push_back(a_value);
           a_value += 3;

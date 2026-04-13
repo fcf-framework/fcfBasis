@@ -97,19 +97,19 @@ namespace fcf{
                               } );
       }
 
-      template <typename Tuple, typename TIndex, unsigned int Flags>
-      void _argOptionInitialize(Tuple& /*a_tuple*/, TIndex /*a_index*/, const CallArgumentOptions<Flags>& /*a_options*/, unsigned int a_argumentNumber) {
+      template <typename TIndex, unsigned int Flags>
+      void _argOptionInitialize(TIndex /*a_index*/, const CallArgumentOptions<Flags>& /*a_options*/, unsigned int a_argumentNumber) {
         _argumentOptions.push_back( {a_argumentNumber, Flags} );
       }
 
-      template <typename Tuple, typename TIndex, typename TArg>
-      void _argOptionInitialize(Tuple& /*a_tuple*/, TIndex /*a_index*/, const TArg& /*a_arg*/, unsigned int /*a_argumentNumber*/) {
+      template <typename TIndex, typename TArg>
+      void _argOptionInitialize(TIndex /*a_index*/, const TArg& /*a_arg*/, unsigned int /*a_argumentNumber*/) {
       }
 
       FCF_FOREACH_METHOD_WRAPPER(ArgOptionInitializer, CallStoragePlaceHolderRegistrator, _argOptionInitialize);
 
-      template <typename Tuple, typename TIndex, typename TSignature>
-      void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, const TSignature& /*a_signatureGetter*/) {
+      template <typename TIndex, typename TSignature>
+      void operator()(TIndex /*a_index*/, const TSignature& /*a_signatureGetter*/) {
         unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
         if (specificatorIndex == Type<CallOptions>().index()){
           typename TSignature::ShortTupleArgumentsType tuple;

@@ -6,8 +6,8 @@
 
 struct TupleTestFunc{
   std::string result;
-  template <typename Tuple, typename TIndex, typename TValue>
-  void operator()(Tuple& /*a_tuple*/, TIndex /*a_index*/, TValue& /*a_value*/){
+  template <typename TIndex, typename TValue>
+  void operator()(TIndex /*a_index*/, TValue& /*a_value*/){
     if (!result.empty()){
       result += "|";
     }

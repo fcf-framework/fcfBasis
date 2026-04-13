@@ -208,8 +208,8 @@ namespace fcf{
 
     protected:
       FCF_FOREACH_METHOD_WRAPPER(ArgFiller, CallArguments, _argFiller);
-      template <typename TTuple, typename TArg>
-      void _argFiller(const TTuple&, size_t a_index, TArg* a_arg) {
+      template <typename TArg>
+      void _argFiller(size_t a_index, TArg* a_arg) {
         ((void**)_ptr)[a_index] = (void*)a_arg;
         ArgumentInfo* infoPtr =  (ArgumentInfo*)(((void**)_ptr) + _capacity) + a_index;
         infoPtr->typeInfo = Type<TArg>().getTypeInfo();

@@ -15,7 +15,7 @@ namespace fcf {
         auto begin = std::begin(a_container);
         auto end   = std::end(a_container);
         for(size_t i = 0; begin != end; ++begin, ++i) {
-          a_functor(a_container, i, *begin, a_packArgs...);
+          a_functor(i, *begin, a_packArgs...);
         }
       }
     };
@@ -27,7 +27,7 @@ namespace fcf {
         typedef typename std::remove_reference<TInputContainer>::type container_type;
         ContainerAccess<container_type> ca(a_container);
         while(!ca.isEnd()){
-          a_functor(a_container, ca.key(), ca.value(), a_packArgs...);
+          a_functor(ca.key(), ca.value(), a_packArgs...);
           ++ca;
         }
       }

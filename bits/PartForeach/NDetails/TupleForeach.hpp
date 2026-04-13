@@ -11,7 +11,7 @@ namespace fcf {
         public:
           template <typename TContainer, typename TFunctor, typename ...TArgPack>
           inline void operator()(TContainer&& a_container, TFunctor&& a_functor, TArgPack&&... a_packArgs){
-            a_functor(a_container, Index, std::get<Index>(a_container), a_packArgs...);
+            a_functor(Index, std::get<Index>(a_container), a_packArgs...);
             TupleForeach<TTuple, Index+1, Size>()(a_container, a_functor, a_packArgs...);
           }
       };
