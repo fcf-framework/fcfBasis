@@ -187,6 +187,34 @@ namespace fcf {
   };
 
   template <>
+  class Converter<3, bool, std::string>{
+    public:
+      void operator()(bool& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        if (a_source == "true") {
+          a_destination = true;
+        } else if (a_source == "false") {
+          a_destination = false;
+        } else {
+          try {
+            a_destination = !!std::stoll(a_source);
+          } catch(...) {
+            throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<bool>().name());
+          }
+        }
+      }
+  };
+
+  template <>
+  class Converter<3, std::string, bool>{
+    public:
+      void operator()(std::string& a_destination, const bool& a_source, ConvertOptions* a_convertOptions = 0){
+        (void)a_convertOptions;
+        a_destination = a_source ? "true" : "false";
+      }
+  };
+
+  template <>
   class Converter<3, std::string, std::string>{
     public:
       void operator()(std::string& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){

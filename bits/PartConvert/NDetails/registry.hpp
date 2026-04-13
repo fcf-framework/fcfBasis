@@ -9,6 +9,10 @@ namespace fcf {
 
   struct  IntPointerCrossConvert {
   };
+
+  struct  BoolCrossConvert {
+  };
+
 } // fcf namespace
 
 #ifdef FCF_BASIS_IMPLEMENTATION
@@ -32,6 +36,9 @@ namespace fcf {
 
   FCF_CONVERTERS_REGISTRY_FORCE(IntPointerCrossConvert, int*, true, true);
   FCF_CONVERTERS_REGISTRY_FORCE(IntPointerCrossConvert, unsigned int*, true, true);
+
+  FCF_CONVERTERS_REGISTRY_FORCE(BoolCrossConvert, bool, true, true);
+  FCF_CONVERTERS_REGISTRY_FORCE(BoolCrossConvert, std::string, true, true);
 #endif
 
 
