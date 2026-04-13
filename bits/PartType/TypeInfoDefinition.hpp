@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <memory>
 #include "../../macro.hpp"
+#include "../../bits/PartException/ExceptionPredefinition.hpp"
 #include "../../bits/PartConvert/ConvertFunction.hpp"
 #include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
@@ -52,13 +53,13 @@ namespace fcf{
     typename TSpecificator::CallType getSpecificatorCall() const;
 
     template <typename TSpecificator>
-    typename TSpecificator::CallType getSafeSpecificatorCall() const;
+    typename TSpecificator::CallType getSpecificatorCall(Exception* a_error) const;
 
     template <typename TSpecificator>
     UniversalCall getSpecificator() const;
 
     template <typename TSpecificator>
-    UniversalCall getSafeSpecificator() const;
+    UniversalCall getSpecificator(Exception* a_error) const;
 
   };
 

@@ -76,7 +76,7 @@ namespace fcf {
   template <typename Ty>
   template <typename TSubSpecificator>
   UniversalCall Type<Ty, Nop>::getSpecificator() const {
-    return _info->getSpecificator<TSubSpecificator>();
+    return _info->getSpecificator<TSubSpecificator>(0);
   }
 
   template <typename Ty>

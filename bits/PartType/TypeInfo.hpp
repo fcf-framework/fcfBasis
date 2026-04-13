@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <memory>
 #include "../../macro.hpp"
+#include "../../bits/PartException/Exception.hpp"
 #include "../../bits/PartConvert/ConvertFunction.hpp"
 #include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
@@ -105,16 +106,6 @@ namespace fcf {
   typename TSpecificator::CallType TypeInfo::getSpecificatorCall() const {
     const unsigned int specificatorIndex = Type<TSpecificator>().index();
     std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-    if (it != specificators.end()) {
-      return (typename TSpecificator::CallType)it->second.call;
-    }
-    return (typename TSpecificator::CallType)0;
-  }
-
-  template <typename TSpecificator>
-  typename TSpecificator::CallType TypeInfo::getSafeSpecificatorCall() const {
-    const unsigned int specificatorIndex = Type<TSpecificator>().index();
-    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
     if (it != specificators.end() && !!it->second.call) {
       return (typename TSpecificator::CallType)it->second.call;
     }
@@ -122,23 +113,39 @@ namespace fcf {
   }
 
   template <typename TSpecificator>
-  UniversalCall TypeInfo::getSpecificator() const {
+  typename TSpecificator::CallType TypeInfo::getSpecificatorCall(Exception* a_error) const {
     const unsigned int specificatorIndex = Type<TSpecificator>().index();
     std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
     if (it != specificators.end()) {
-      return (UniversalCall)it->second.universalCall;
+      return (typename TSpecificator::CallType)it->second.call;
     }
-    return (UniversalCall)0;
+    if (a_error){
+      *a_error = fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+    }
+    return (typename TSpecificator::CallType)0;
   }
 
   template <typename TSpecificator>
-  UniversalCall TypeInfo::getSafeSpecificator() const {
+  UniversalCall TypeInfo::getSpecificator() const {
     const unsigned int specificatorIndex = Type<TSpecificator>().index();
     std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
     if (it != specificators.end() && !!it->second.universalCall) {
       return (UniversalCall)it->second.universalCall;
     }
     throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+  }
+
+  template <typename TSpecificator>
+  UniversalCall TypeInfo::getSpecificator(Exception* a_error) const {
+    const unsigned int specificatorIndex = Type<TSpecificator>().index();
+    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
+    if (it != specificators.end()) {
+      return (UniversalCall)it->second.universalCall;
+    }
+    if (a_error) {
+      *a_error = fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+    }
+    return (UniversalCall)0;
   }
 
 } // fcf namespace
