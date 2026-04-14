@@ -17,6 +17,47 @@ struct MyCustomStruct {
     std::string name;
 };
 
+/**
+ * @brief Registers the type in the global fcf::TypeStorage.
+ *
+ * This macro:
+ * 1. Generates a unique TypeId for MyCustomStruct.
+ * 2. Creates a TypeInfo object containing the type's name and metadata.
+ * 3. Stores this information in the global registry so it can be retrieved via fcf::Type<MyCustomStruct>().
+ *
+ * @param MyCustomStruct The type to register.
+ * @param "MyCustomStruct" The human-readable name for the type.
+ * @param 0 The base type index (0 for a new root type).
+ */
+FCF_TYPEID_REGISTRY(MyCustomStruct, "MyCustomStruct",  0);
+
+
+namespace fcf {
+  /**
+   * @brief Specialization of fcf::Type to provide runtime behavior for a specificator.
+   *
+   * Here we define how MyCustomStruct should behave when used with fcf::LessSpecificator.
+   * This allows the generic fcf::Type system to perform comparisons on this custom type at runtime.
+   */
+  template<> struct Type<MyCustomStruct, LessSpecificator> : public TypeImpl<MyCustomStruct, LessSpecificator> {
+    inline bool call(const MyCustomStruct* a_left, const MyCustomStruct* a_right) const {
+      return a_left->name < a_right->name;
+    }
+  };
+}
+
+/**
+ * @brief Links the specificator logic to the registered type.
+ *
+ * This macro tells the fcf system that for the type MyCustomStruct,
+ * the fcf::LessSpecificator operation is implemented by the specialization
+ * defined above. This is essential for the runtime dispatch mechanism.
+ *
+ * @param MyCustomStruct The type that supports the specificator.
+ * @param fcf::LessSpecificator The specificator being registered.
+ */
+FCF_SPECIFICATOR_REGISTRY(MyCustomStruct,  fcf::LessSpecificator);
+
 // To allow fcf::Type to work with our type in the context of specificators (e.g., comparison),
 // it must be registered. In this example, we just show basic registration.
 // In a real project, this is done via macros or specialized registrars.
@@ -75,6 +116,40 @@ int main() {
             if (result.cast<bool>()) {
                 std::cout << "Result " << a << "<" << b << ": " << result << " (via LessSpecificator logic)" << std::endl;
             }
+        }
+    }
+
+    std::cout << "\n=== [4] Working with Custom Types (MyCustomStruct) ===" << std::endl;
+    {
+        MyCustomStruct obj1{1, "Alice"};
+        MyCustomStruct obj2{2, "Bob"};
+        MyCustomStruct obj3{3, "Charlie"};
+
+        // 1. Metadata access
+        fcf::Type<MyCustomStruct> customType;
+        std::cout << "Custom Type Name: " << customType.name() << std::endl;
+        std::cout << "Custom Type Index: 0x" << std::hex << customType.index() << std::dec << std::endl;
+
+        // 2. Runtime comparison via Variant and Specificator
+        // We wrap objects in Variants to simulate runtime dispatch
+        fcf::Variant var1(obj1);
+        fcf::Variant var2(obj2);
+        fcf::Variant var3(obj3);
+
+        fcf::UniversalCall lessFunc = fcf::Type<MyCustomStruct>().getSpecificator<fcf::LessSpecificator>();
+
+        if (lessFunc) {
+            // Compare Alice < Bob
+            fcf::Variant res1 = lessFunc(&obj1, &var2, 1);
+            std::cout << "Is 'Alice' < 'Bob'? " << (res1.cast<bool>() ? "Yes" : "No") << std::endl;
+
+            // Compare Bob < Alice (should be false)
+            fcf::Variant res2 = lessFunc(&obj2, &var1, 1);
+            std::cout << "Is 'Bob' < 'Alice'? " << (res2.cast<bool>() ? "Yes" : "No") << std::endl;
+
+            // Compare Bob < Charlie
+            fcf::Variant res3 = lessFunc(&obj2, &var3, 1);
+            std::cout << "Is 'Bob' < 'Charlie'? " << (res3.cast<bool>() ? "Yes" : "No") << std::endl;
         }
     }
 
