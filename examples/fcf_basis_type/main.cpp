@@ -141,15 +141,21 @@ int main() {
         if (lessFunc) {
             // Compare Alice < Bob
             fcf::Variant res1 = lessFunc(&obj1, &var2, 1);
-            std::cout << "Is 'Alice' < 'Bob'? " << (res1.cast<bool>() ? "Yes" : "No") << std::endl;
+            std::cout << "Is 'Alice' < 'Bob'?   [lessFunc comparison] " << (res1.cast<bool>() ? "Yes" : "No") << std::endl;
+            // When comparing (<) Variant objects, fcf::LessSpecificator is also used.
+            std::cout << "Is 'Alice' < 'Bob'?   [Variant comparison]  " << (( var1 < var2 ) ? "Yes" : "No") << std::endl;
 
             // Compare Bob < Alice (should be false)
             fcf::Variant res2 = lessFunc(&obj2, &var1, 1);
-            std::cout << "Is 'Bob' < 'Alice'? " << (res2.cast<bool>() ? "Yes" : "No") << std::endl;
+            std::cout << "Is 'Bob' < 'Alice'?   [lessFunc comparison] " << (res2.cast<bool>() ? "Yes" : "No") << std::endl;
+            // When comparing (<) Variant objects, fcf::LessSpecificator is also used.
+            std::cout << "Is 'Bob' < 'Alice'?   [Variant comparison]  " << (( var2 < var1 ) ? "Yes" : "No") << std::endl;
 
             // Compare Bob < Charlie
             fcf::Variant res3 = lessFunc(&obj2, &var3, 1);
-            std::cout << "Is 'Bob' < 'Charlie'? " << (res3.cast<bool>() ? "Yes" : "No") << std::endl;
+            std::cout << "Is 'Bob' < 'Charlie'? [lessFunc comparison] " << (res3.cast<bool>() ? "Yes" : "No") << std::endl;
+            // When comparing (<) Variant objects, fcf::LessSpecificator is also used.
+            std::cout << "Is 'Bob' < 'Charlie'? [Variant comparison]  " << (( var2 < var3 ) ? "Yes" : "No") << std::endl;
         }
     }
 
