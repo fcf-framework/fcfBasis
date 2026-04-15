@@ -1,32 +1,59 @@
 #ifndef ___FCF_BASIS__TEST__TESTS__BITS__RANDOM_HPP___
 #define ___FCF_BASIS__TEST__TESTS__BITS__RANDOM_HPP___
 
+#include <chrono>
+#include <random>
+
 #include <fcfBasis/PartCall.hpp>
 #include <fcfBasis/PartVariant.hpp>
-#include <fcfBasis/Details/randomGenerator.hpp>
 
 namespace fcf {
 
-    #ifdef _MSC_VER
-      #pragma warning(push)
-      #pragma warning(disable : 4244)
-    #endif
-    template <typename Ty1, typename Ty2>
-    Ty1 random(Ty1 a_min, Ty2 a_max) {
-      double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
-      return a_min + (((Ty1)a_max - a_min) * r);
-    }
+  namespace Details {
 
-    template <typename TItem, typename TValue>
-    void random(TItem* a_begin, TItem* a_end, const TValue& a_min, const TValue& a_max) {
-      for (; a_begin != a_end; ++a_begin) {
-        double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
-        *a_begin = a_min + ((a_max - a_min) * r);
+    FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT std::mt19937* g_randomGenerator;
+
+    FCF_BASIS_DECL_EXPORT std::mt19937& getRandomGenerator();
+
+    #ifdef FCF_BASIS_IMPLEMENTATION
+      std::mt19937& getRandomGenerator(){
+        if(!g_randomGenerator){
+          std::mt19937::result_type rp =
+            (std::mt19937::result_type)std::chrono::duration_cast<std::chrono::seconds>(
+                                         std::chrono::system_clock::now().time_since_epoch()
+                                       ).count()
+            +
+            (std::mt19937::result_type)std::chrono::duration_cast<std::chrono::microseconds>(
+                                         std::chrono::high_resolution_clock::now().time_since_epoch()
+                                       ).count();
+          g_randomGenerator = new std::mt19937(rp);
+        }
+        return *g_randomGenerator;
       }
+    #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+
+  } // Details namespace
+
+  #ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable : 4244)
+  #endif
+  template <typename Ty1, typename Ty2>
+  Ty1 random(Ty1 a_min, Ty2 a_max) {
+    double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
+    return a_min + (((Ty1)a_max - a_min) * r);
+  }
+
+  template <typename TItem, typename TValue>
+  void random(TItem* a_begin, TItem* a_end, const TValue& a_min, const TValue& a_max) {
+    for (; a_begin != a_end; ++a_begin) {
+      double r = (double)Details::getRandomGenerator()() / (unsigned int)0xffffffff;
+      *a_begin = a_min + ((a_max - a_min) * r);
     }
-    #ifdef _MSC_VER
-      #pragma warning(pop)
-    #endif
+  }
+  #ifdef _MSC_VER
+    #pragma warning(pop)
+  #endif
 
 } // fcf namespace
 
