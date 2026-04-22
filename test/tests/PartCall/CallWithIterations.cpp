@@ -54,7 +54,7 @@ namespace FcfTest {
         FCF_TEST(list.size() == 0, list.size());
       }
       {
-        std::list<int> list(10, 0);
+        std::list<int> list(10, 9);
         fcf::call("fill", list, 999);
         FCF_TEST(list.size() == 10, list.size());
         for(int& item : list){

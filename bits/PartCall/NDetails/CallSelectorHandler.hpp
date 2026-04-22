@@ -25,6 +25,7 @@ namespace fcf {
         ResolveSpecificator::CallFunctionType               resolver;
         ResolveData                                         resolveData;
         UniversalCall                                       containerAccessResolver;
+        UniversalCall                                       ptrContainerAccessResolver;
         void*                                               ptrArg;
         const std::map<unsigned int, SpecificatorInfo>*     specificators;
         const std::map<unsigned int, SpecificatorInfo>*     rawSpecificators;
@@ -159,7 +160,7 @@ namespace fcf {
           }
         }
 
-       if (state.strictSource && !currentInputArgument->ignoreConvertSeeker) {
+        if (state.strictSource && !currentInputArgument->ignoreConvertSeeker) {
           _convertOperation(false, currentInputArgument->clearTypeIndex, a_node, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
           if (state.result->complete) {
             return;
@@ -176,7 +177,7 @@ namespace fcf {
             }
             state.requiredArgumentsFlags.pop_back();
           }
-       } // if (state.strictSource && !currentInputArgument->ignoreConvertSeeker) end
+        } // if (state.strictSource && !currentInputArgument->ignoreConvertSeeker) end
 
         if ( state.strictSource &&
              a_argumentIndex < state.groupIterator->second.argumentOptions.size() &&
@@ -282,35 +283,53 @@ namespace fcf {
           }
         }
 
-        if (currentInputArgument->containerAccessResolver &&
-            !currentInputArgument->pairCounter &&
-            state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER
-            ) {
-          Variant viterator = currentInputArgument->containerAccessResolver(0, 0, 0);
+        if (
+            (
+              currentInputArgument->containerAccessResolver &&
+              state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_PAIR_ITERATION_POINTER
+            )
+            ||
+            (
+              TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex) &&
+              currentInputArgument->ptrContainerAccessResolver &&
+              state.groupIterator->second.argumentOptions[a_argumentIndex] & CAO_RESOLVE_POINTER
+            )
+          ) {
+          Variant viterator = currentInputArgument->containerAccessResolver ? currentInputArgument->containerAccessResolver(0, 0, 0)
+                                                                            : currentInputArgument->ptrContainerAccessResolver(0, 0, 0); 
           DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
           if (iterator) {
-            BaseFunctionSignature* ptrOriginFunctionSignature = state.ptrFunctionSignature;
-            BaseFunctionSignature ofs = *state.ptrFunctionSignature;
-            BaseFunctionSignature fs = BaseFunctionSignature(state.ptrFunctionSignature->asize + 1);
-            fs.rcode = ofs.rcode;
-            std::copy(&state.ptrFunctionSignature->pacodes[0],
-                      &state.ptrFunctionSignature->pacodes[a_argumentIndex],
-                      &fs.pacodes[0]
-                      );
-
             unsigned int ptrTypeIndex = iterator->getValueTypeIndex();
             if (ptrTypeIndex & (8 << (24 + 1)) ) {
               ptrTypeIndex |= (16 << (24 + 1));
             } else {
               ptrTypeIndex |= (8 << (24 + 1));
             }
-            fs.pacodes[a_argumentIndex] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
-            fs.pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
 
-            std::copy(&state.ptrFunctionSignature->pacodes[a_argumentIndex+1],
-                      &state.ptrFunctionSignature->pacodes[state.ptrFunctionSignature->asize],
-                      &fs.pacodes[a_argumentIndex+2]
-                      );
+            BaseFunctionSignature* ptrOriginFunctionSignature = state.ptrFunctionSignature;
+            BaseFunctionSignature  fs;
+            unsigned int originArgumentTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex];
+
+            if (!TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex)) {
+              fs = BaseFunctionSignature(state.ptrFunctionSignature->asize + 1);
+              fs.rcode = ptrOriginFunctionSignature->rcode;
+              std::copy(&state.ptrFunctionSignature->pacodes[0],
+                        &state.ptrFunctionSignature->pacodes[a_argumentIndex],
+                        &fs.pacodes[0]
+                        );
+
+              fs.pacodes[a_argumentIndex]   = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
+              fs.pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
+
+              std::copy(&state.ptrFunctionSignature->pacodes[a_argumentIndex+1],
+                        &state.ptrFunctionSignature->pacodes[state.ptrFunctionSignature->asize],
+                        &fs.pacodes[a_argumentIndex+2]
+                        );
+              state.ptrFunctionSignature = &fs;
+            } else {
+              state.ptrFunctionSignature->pacodes[a_argumentIndex]   = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
+              state.ptrFunctionSignature->pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->getSimpleCallType(ptrTypeIndex);
+            }
 
             CallConversionNode curnode;
             curnode.prev = 0;
@@ -325,7 +344,8 @@ namespace fcf {
               curnode.conversion.mode = CCM_ITERATOR;
             }
             curnode.conversion.invariantIteration = false;
-            curnode.conversion.converter          = (void*)currentInputArgument->containerAccessResolver;
+            curnode.conversion.converter          = currentInputArgument->containerAccessResolver ? (void*)currentInputArgument->containerAccessResolver
+                                                                                                  : (void*)currentInputArgument->ptrContainerAccessResolver;
             if (a_node) {
               a_node->next = &curnode;
               curnode.prev = a_node;
@@ -340,13 +360,17 @@ namespace fcf {
             nextArgument.ptrArg = &rightValue;
             currentInputArgument->nextArgument = &nextArgument;
 
-            state.ptrFunctionSignature = &fs;
 
             state.requiredArgumentsFlags.push_back({a_argumentIndex, CAO_PAIR_ITERATION_POINTER});
 
             (*this)(&curnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
 
-            state.ptrFunctionSignature = ptrOriginFunctionSignature;
+            if (state.ptrFunctionSignature != ptrOriginFunctionSignature) {
+              state.ptrFunctionSignature = ptrOriginFunctionSignature;
+            } else {
+              state.ptrFunctionSignature->pacodes[a_argumentIndex] = originArgumentTypeIndex;
+              state.ptrFunctionSignature->pacodes[a_argumentIndex+1] = originArgumentTypeIndex;
+            }
 
             if (state.result->complete) {
               return;
@@ -359,6 +383,8 @@ namespace fcf {
         }
         state.placeHolderVec.resize(originPlaceHolderVecSize);
       }
+
+
 
       void _convertOperation(bool a_isPointerMode, unsigned int a_clearTypeIndex, CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
         unsigned int sourceTypeIndex       = state.ptrFunctionSignature->pacodes[a_argumentIndex];
@@ -484,6 +510,8 @@ namespace fcf {
         } // if (treeIt != state.groupIterator->second.callersTree.end()) end
       }
 
+
+
       static ::fcf::CallPlaceHolderArg* _getNextPlaceHolder(CallStorageSelectionFunctionInfo* pCall, int a_currentArgNumber){
         ::fcf::CallPlaceHolderArg* result = 0;
         unsigned int minValue = UINT_MAX;
@@ -506,6 +534,8 @@ namespace fcf {
         return result;
       }
 
+
+
       void _createCurrentInputArgument(InputArgument& a_destinationInputArgument, InputArgument& a_sourceInputArgument, unsigned int a_type, void* a_ptrArg, bool a_enablePtrSpecificators) {
         _fillCurrentInputArgument(a_destinationInputArgument, a_type, a_ptrArg, a_enablePtrSpecificators);
         a_destinationInputArgument.pairCounter = a_sourceInputArgument.pairCounter;
@@ -513,6 +543,8 @@ namespace fcf {
         a_destinationInputArgument.nextArgument = a_sourceInputArgument.nextArgument;
         a_destinationInputArgument.singleStepIteration = a_sourceInputArgument.singleStepIteration;
       }
+
+
 
       void _fillCurrentInputArgument(InputArgument& a_inputArgument, unsigned int a_type, void* a_ptrArg, bool a_enablePtrSpecificators, bool a_singleStepIteration = false){
         a_inputArgument.ptrArg                  = a_ptrArg;
@@ -532,8 +564,10 @@ namespace fcf {
           unsigned int rawTypeIndex     =  TypeIndexConverter<>::getRawIndex(a_type);
           const fcf::TypeInfo* typeInfo = getTypeInfo(rawTypeIndex);
           a_inputArgument.rawSpecificators = &typeInfo->specificators;
+          a_inputArgument.ptrContainerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
         } else {
           a_inputArgument.rawSpecificators = 0;
+          a_inputArgument.ptrContainerAccessResolver = 0;
         }
 
         if (a_inputArgument.resolver) {
@@ -544,6 +578,8 @@ namespace fcf {
           a_inputArgument.resolveData.invariant = false;
         }
       }
+
+
 
       inline void _processingNextArg(CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller, bool a_isIterationMode = false){
 
@@ -802,15 +838,22 @@ namespace fcf {
             unsigned int currentIIIndex = UINT_MAX;
             CallConversionNode* begNode = a_node;
 
+            CallConversion* lastIterationConvertion = 0;
+
             unsigned int singleIterationLastIndex = UINT_MAX;
             while(begNode->prev){
               if (begNode->conversion.mode == CCM_SINGLE_PAIR_COPY){
                 singleIterationLastIndex = begNode->conversion.index;
               }
               if (
-                   (begNode->conversion.mode == CCM_RESOLVE || begNode->conversion.mode == CCM_POINTER_RESOLVE || begNode->conversion.mode == CCM_CONVERT || begNode->conversion.mode == CCM_PTR_CONVERT) &&
-                   begNode->conversion.invariantIteration &&
-                   singleIterationLastIndex != begNode->conversion.index
+                    (
+                      begNode->conversion.mode == CCM_RESOLVE || 
+                      begNode->conversion.mode == CCM_POINTER_RESOLVE || 
+                      begNode->conversion.mode == CCM_CONVERT || 
+                      begNode->conversion.mode == CCM_PTR_CONVERT
+                    ) &&
+                    begNode->conversion.invariantIteration &&
+                    singleIterationLastIndex != begNode->conversion.index
                   ){
                 begNode->next = 0;
                 currentPHIndex = begNode->conversion.index;
@@ -819,16 +862,35 @@ namespace fcf {
 
               if (begNode->conversion.mode == CCM_PLACE_HOLDER){
                 currentPHIndex = begNode->conversion.index;
-              } else if (begNode->conversion.mode == CCM_FLAT_ITERATOR && currentPHIndex == begNode->conversion.index){
+              } else if ( begNode->conversion.mode == CCM_FLAT_ITERATOR && 
+                          (
+                            currentPHIndex == begNode->conversion.index ||
+                            (
+                              lastIterationConvertion && lastIterationConvertion->index == begNode->conversion.index
+                            )
+                          ) 
+                        ) {
                 begNode->conversion.mode = CCM_ITERATOR;
                 state.requiredArgumentsFlags.push_back({begNode->conversion.index, CAO_PAIR_SEGMENTATION});
               }
+
+              if ((begNode->conversion.mode == CCM_FLAT_ITERATOR) || (begNode->conversion.mode == CCM_ITERATOR)){
+                lastIterationConvertion = &begNode->conversion;
+              }
+
               if (begNode->conversion.mode == CCM_ITERATOR && currentIIIndex == begNode->conversion.index) {
                 begNode->prev = 0;
               }
               begNode = begNode->prev;
             }
-            if (begNode->conversion.mode == CCM_FLAT_ITERATOR && currentPHIndex == begNode->conversion.index){
+            if (begNode->conversion.mode == CCM_FLAT_ITERATOR &&
+                (
+                  currentPHIndex == begNode->conversion.index ||
+                  (
+                    lastIterationConvertion && lastIterationConvertion->index == begNode->conversion.index
+                  )
+                )
+              ){
               begNode->conversion.mode = CCM_ITERATOR;
               state.requiredArgumentsFlags.push_back({begNode->conversion.index, CAO_PAIR_SEGMENTATION});
             }

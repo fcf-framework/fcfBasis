@@ -19,7 +19,10 @@
 #ifndef FCF_ITERATOR_CONVERSION_BUFFER_SIZE
   #define FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE 16
 #endif
-
+//
+// Need to check whether invaiantIteration is always as set to a last item
+//
+//
 namespace fcf {
   namespace NDetails {
 
@@ -99,24 +102,35 @@ namespace fcf {
 
       struct IterationState {
         Variant               iterator;
+        size_t                itemSize;
         unsigned int          typeIndex;
         unsigned int          beginArgIndex;
-        unsigned int          endArgIndex;
         unsigned int          currentIteratorConversionsEndIndex;
         const CallConversion* currentIteratorConversions[FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE];
-        IterationState(Variant&& a_iterator, unsigned int a_beginArgIndex, unsigned int a_endArgIndex, unsigned int a_currentIteratorConversionsEndIndex)
+        const CallConversion* conversion;
+        void*                 leftBufferChildArg;
+        void*                 rightBufferChildArg;
+        void*                 beginBufferChildArg;
+        void*                 endBufferChildArg;
+        IterationState(Variant&& a_iterator, unsigned int a_beginArgIndex, unsigned int a_currentIteratorConversionsEndIndex, const CallConversion* a_conversion, void* /*a_ptrArg*/)
           : iterator(std::move(a_iterator))
+          , itemSize(0)
           , typeIndex(0)
           , beginArgIndex(a_beginArgIndex)
-          , endArgIndex(a_endArgIndex)
           , currentIteratorConversionsEndIndex(a_currentIteratorConversionsEndIndex)
+          , conversion(a_conversion)
         {
         }
-        IterationState(unsigned int a_typeIndex, unsigned int a_beginArgIndex, unsigned int a_endArgIndex, unsigned int a_currentIteratorConversionsEndIndex)
-          : typeIndex(a_typeIndex)
+        IterationState(unsigned int a_typeIndex, unsigned int a_beginArgIndex, unsigned int a_currentIteratorConversionsEndIndex, const CallConversion* a_conversion, void* a_ptrArg, void* a_endPtrArg, size_t a_itemSize)
+          : itemSize(a_itemSize)
+          , typeIndex(a_typeIndex)
           , beginArgIndex(a_beginArgIndex)
-          , endArgIndex(a_endArgIndex)
           , currentIteratorConversionsEndIndex(a_currentIteratorConversionsEndIndex)
+          , conversion(a_conversion)
+          , leftBufferChildArg(*(void**)a_ptrArg)
+          , rightBufferChildArg(*(void**)a_endPtrArg)
+          , beginBufferChildArg(*(void**)a_ptrArg)
+          , endBufferChildArg(*(void**)a_endPtrArg)
         {
         }
         IterationState(){
@@ -227,177 +241,267 @@ namespace fcf {
         if (pcall){
           a_complete = true;
           a_argumentsEx.prepare();
-          _execution(a_callExecutor, state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
+          _executionNewMode(a_callExecutor, state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
         } else {
           a_complete = false;
         }
       }
 
+      inline bool _isIteratorEnd(const IterationState& a_is){
+        DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)a_is.iterator.ptr();
+        if (iterator) {
+          return iterator->isEnd();
+        } else {
+          return a_is.beginBufferChildArg >= a_is.endBufferChildArg;
+        }
+      }
+
+      inline void _iteratorInc(IterationState& a_is){
+        DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)a_is.iterator.ptr();
+        if (iterator) {
+          iterator->inc();
+        } else {
+          a_is.beginBufferChildArg = (char*)a_is.beginBufferChildArg + a_is.itemSize;
+        }
+      }
+
+      inline void _applyIteration(IterationState& a_is,
+                                  CallArguments& a_arguments) {
+        DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)a_is.iterator.ptr();
+        if (iterator) {
+          a_is.leftBufferChildArg = (void*)iterator->getValuePtr();
+          a_is.rightBufferChildArg = (char*)a_is.leftBufferChildArg + iterator->getValueTypeInfo()->size;
+          unsigned int typeIndex = iterator->getValueTypeIndex();
+          typeIndex = TypeIndexConverter<>::addLevelPointer(typeIndex);
+          a_arguments.setTypeIndex(a_is.beginArgIndex,   typeIndex);
+          a_arguments.setTypeIndex(a_is.beginArgIndex+1, typeIndex);
+        } else {
+          a_is.leftBufferChildArg = a_is.beginBufferChildArg;
+          a_is.rightBufferChildArg = (char*)a_is.leftBufferChildArg + a_is.itemSize;
+        }
+        a_arguments.setArgument(a_is.beginArgIndex, &a_is.leftBufferChildArg);
+        a_arguments.setArgument(a_is.beginArgIndex+1, &a_is.rightBufferChildArg);
+      }
+
+      inline void _initIteration(IterationState& a_is,
+                                 CallArguments& a_arguments) {
+        if (a_is.conversion->mode == CCM_ITERATOR) {
+          UniversalCall converter = (UniversalCall)a_is.conversion->converter;
+          a_is.iterator           = converter(*(void**)a_arguments.getArgument(a_is.beginArgIndex), 0, 0);
+        } else {
+          a_is.beginBufferChildArg = a_arguments.getArgument(a_is.beginArgIndex);
+          a_is.endBufferChildArg   = a_arguments.getArgument(a_is.beginArgIndex+1);
+          a_is.itemSize            = a_arguments.getTypeInfo(a_is.beginArgIndex)->size;
+        }
+      }
+
+      inline bool _executionIteration(
+                                     bool*            a_isFirstCall,
+                                     ConversionState& a_state,
+                                     CallArguments&   a_arguments,
+                                     bool&            a_dstIsInvariantMode
+                                     ){
+        size_t start = 0;
+
+        while(true) {
+          if (*a_isFirstCall) {
+            *a_isFirstCall = false;
+          } else { // if (*a_isFirstCall)
+            start = a_state.iterations.size()-1;
+            while(true) {
+              _iteratorInc(a_state.iterations[start]);
+              if (!_isIteratorEnd(a_state.iterations[start])){
+                break;
+              }
+              if (!start) {
+                return false;
+              }
+              --start;
+            } // while(true)
+          } // if (*a_isFirstCall) else
+
+          bool   complete = true;
+          size_t endIndex = a_state.iterations.size();
+          size_t lastIndex = endIndex - 1;
+          for(; start < endIndex; ++start) {
+            IterationState& is = a_state.iterations[start];
+            if (_isIteratorEnd(is)){
+              complete = false;
+              break;
+            }
+            _applyIteration(is, a_arguments);
+            if (is.currentIteratorConversionsEndIndex) {
+              bool pairMode = false;
+              for(size_t i = 0; i < is.currentIteratorConversionsEndIndex; ++i){
+                if (is.currentIteratorConversions[i]->invariantIteration) {
+                  a_dstIsInvariantMode = true;
+                }
+                _conversion(*is.currentIteratorConversions[i], a_state, a_arguments, INT_MAX, &pairMode);
+              }
+              if (!pairMode) {
+                CallConversion cc;
+                cc.mode        = CCM_SINGLE_PAIR_COPY;
+                cc.type        = a_arguments.getTypeIndex(is.beginArgIndex);
+                cc.index       = is.beginArgIndex;
+                _conversion(cc, a_state, a_arguments, INT_MAX);
+              }
+            }
+
+            if (start != lastIndex) {
+              _initIteration(a_state.iterations[start+1], a_arguments);
+            }
+          } // for(; start < endIndex; ++start)
+
+          if (complete) {
+            return true;
+          }
+        } // while (true)
+      }
+
       template <typename TCallExecutor>
-      inline void _execution(
+      inline void _executionNewIterationMode(
                               TCallExecutor& a_callExecutor,
                               ConversionState& a_state,
                               const Call& a_callInfo,
                               int a_lastIterationArgumentIndex,
                               CallArguments& a_arguments,
                               std::shared_ptr<CallGraph>* a_graph = 0) {
-        (void)a_graph;
+        (void) a_callExecutor;
+        (void) a_state;
+        (void) a_callInfo;
+        (void) a_lastIterationArgumentIndex;
+        (void) a_arguments;
+        (void) a_graph;
 
-        if (a_state.iterations.size() && (!a_state.iterations.back().currentIteratorConversionsEndIndex
-             || (a_lastIterationArgumentIndex < (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex) )){
-          for(size_t i = 0; i < a_state.iterations.size(); ++i){
-            IterationState& ist = a_state.iterations[i];
-            if (ist.iterator.ptr()) {
+        bool firstCall = true;
+        
+        CallSeeker<void> seeker;
 
-              DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)ist.iterator.ptr();
-              while(!iterator->isEnd()){
-                void* begin = (void*)iterator->getValuePtr();
-                void* end = (char*)begin + iterator->getValueTypeInfo()->size;
-                a_arguments.setArgument(ist.beginArgIndex, &begin);
-                a_arguments.setArgument(ist.endArgIndex, &end);
-                a_arguments.setTypeIndex(ist.beginArgIndex, TypeIndexConverter<>::addLevelPointer(iterator->getValueTypeInfo()->index));
-                a_arguments.setTypeIndex(ist.endArgIndex, TypeIndexConverter<>::addLevelPointer(iterator->getValueTypeInfo()->index));
+        while(true) {
+          CallArgumentsExtended arguments(a_arguments);
 
-                if (ist.currentIteratorConversionsEndIndex && ist.currentIteratorConversions[ist.currentIteratorConversionsEndIndex-1]->invariantIteration ) {
-                  Call subcallInfo;
-                  subcallInfo.complete = false;
-                  CallSeeker<void> seeker;
-                  CallArgumentsExtended arguments(a_arguments);
+          size_t argBufferSize = a_state.argBuffer.size();
 
-                  size_t argBufferSize = a_state.argBuffer.size();
-                  try {
-                    if (ist.currentIteratorConversionsEndIndex) {
-                      for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
-                        _conversion(*ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
-                      }
-                      CallConversion cc;
-                      cc.mode        = CCM_SINGLE_PAIR_COPY;
-                      cc.type        = arguments.getTypeIndex(ist.beginArgIndex);
-                      cc.index       = ist.beginArgIndex;
-                      _conversion(cc, a_state, arguments, INT_MAX);
-                    }
-                  } catch(const std::exception&){
-                    if (argBufferSize != a_state.argBuffer.size()){
-                      a_state.argBuffer.resize(argBufferSize);
-                    }
-                    iterator->inc();
-                    if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                      continue;
-                    } else {
-                      throw;
-                    }
-                  }
-
-                  arguments.prepareForceCopy();
-
-                  bool callComplete = false;
-                  if (a_graph && a_graph->get()) {
-                    callWithArguments(a_callExecutor, callComplete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
-                  }
-
-                  if (!callComplete) {
-                    BaseFunctionSignature funcSignature(arguments.size());
-                    funcSignature.rcode = Type<void>().index();
-                    for(size_t i = 0; i < arguments.size(); ++i){
-                      funcSignature.pacodes[i] = arguments.getTypeIndex(i);
-                    }
-                    funcSignature.applySimpleCallSignature();
-
-                    try {
-                      seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments(), true);
-                      if (!subcallInfo.complete){
-                        throw std::bad_function_call();
-                      }
-                    } catch(const std::bad_function_call&){
-                      if (argBufferSize != a_state.argBuffer.size()){
-                        a_state.argBuffer.resize(argBufferSize);
-                      }
-                      iterator->inc();
-                      if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                        continue;
-                      } else {
-                        throw CallIterableNotFoundException(__FILE__, __LINE__, a_callInfo.name, a_arguments.getStringRepresentationTypes());
-                      }
-                    } catch(const std::exception&){
-                      if (argBufferSize != a_state.argBuffer.size()){
-                        a_state.argBuffer.resize(argBufferSize);
-                      }
-                      iterator->inc();
-                      if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                        continue;
-                      } else {
-                        throw;
-                      }
-                    }
-
-                    if (a_graph){
-                      if (!a_graph->get()){
-                        a_graph->reset(new CallGraph());
-                      }
-                      (*a_graph)->add(subcallInfo);
-                    }
-                    _call(a_callExecutor, subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments.getCallArguments());
-                  }
-
-
-                  if (argBufferSize != a_state.argBuffer.size()){
-                    a_state.argBuffer.resize(argBufferSize);
-                  }
-                } else {
-                  size_t argBufferSize = a_state.argBuffer.size();
-                  try {
-                    if (ist.currentIteratorConversionsEndIndex) {
-                      for(unsigned int i = 0; i < ist.currentIteratorConversionsEndIndex; ++i) {
-                        _conversion(*ist.currentIteratorConversions[i], a_state, a_arguments, INT_MAX);
-                      }
-                    }
-                  } catch(std::exception&) {
-                      if (argBufferSize != a_state.argBuffer.size()){
-                        a_state.argBuffer.resize(argBufferSize);
-                      }
-                      iterator->inc();
-                      if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                        continue;
-                      } else {
-                        throw;
-                      }
-                  }
-                  a_arguments.prepare();
-                  a_callExecutor(a_callInfo, a_arguments.getArguments());
-                  if (argBufferSize != a_state.argBuffer.size()){
-                    a_state.argBuffer.resize(argBufferSize);
-                  }
-                }
-                iterator->inc();
-              }
-            } else { // if (ist.iterator.ptr())
-              a_arguments.prepare();
-              void* ptrSource               = *(void**)a_arguments.getArgument(ist.beginArgIndex);
-              void* endSource               = *(void**)a_arguments.getArgument(ist.endArgIndex);
-              unsigned int valueTypeIndex   = TypeIndexConverter<>::removeLevelPointer(ist.typeIndex);
-              const TypeInfo* valueTypeInfo = fcf::getTypeInfo(valueTypeIndex);
-              while(ptrSource < endSource) {
-                _iterationSeparatePair(
-                            a_callExecutor,
-                            a_state,
-                            a_callInfo,
-                            ist,
-                            valueTypeIndex,
-                            ptrSource,
-                            (void*)((char*)ptrSource + valueTypeInfo->size),
-                            a_arguments.getCallArguments(),
-                            a_graph
-                          );
-                ptrSource = (char*)ptrSource + valueTypeInfo->size;
-              }
-
-            } // if (ist.iterator.ptr())
+          bool complete;
+          bool invariantIteration = false;
+          try {
+            complete = !_executionIteration(&firstCall, a_state, a_arguments, invariantIteration);
+            if (complete) {
+              return;
+            }
+          } catch(const std::exception&){
+            if (argBufferSize != a_state.argBuffer.size()){
+              a_state.argBuffer.resize(argBufferSize);
+            }
+            if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+              continue;
+            } else {
+              throw;
+            }
           }
+
+          if (complete) {
+            if (argBufferSize != a_state.argBuffer.size()){
+              a_state.argBuffer.resize(argBufferSize);
+            }
+            return;
+          }
+
+          arguments.prepareForceCopy();
+
+          if (a_graph && a_graph->get()) {
+            callWithArguments(a_callExecutor, complete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
+          }
+
+          if (complete) {
+            if (argBufferSize != a_state.argBuffer.size()){
+              a_state.argBuffer.resize(argBufferSize);
+            }
+            continue;
+          }
+         
+          if (invariantIteration) {
+
+            BaseFunctionSignature funcSignature(arguments.size());
+            funcSignature.rcode = Type<void>().index();
+            for(size_t i = 0; i < arguments.size(); ++i){
+              funcSignature.pacodes[i] = arguments.getTypeIndex(i);
+            }
+            funcSignature.applySimpleCallSignature();
+
+            Call subcallInfo;
+            subcallInfo.complete = false;
+
+            try {
+              seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments(), true);
+              if (!subcallInfo.complete){
+                throw std::bad_function_call();
+              }
+            } catch(const std::bad_function_call&){
+              if (argBufferSize != a_state.argBuffer.size()){
+                a_state.argBuffer.resize(argBufferSize);
+              }
+              //iterator->inc(); !!!!!!!!!!!
+              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                continue;
+              } else {
+                throw CallIterableNotFoundException(__FILE__, __LINE__, a_callInfo.name, a_arguments.getStringRepresentationTypes());
+              }
+            } catch(const std::exception&){
+              if (argBufferSize != a_state.argBuffer.size()){
+                a_state.argBuffer.resize(argBufferSize);
+              }
+              //iterator->inc(); !!!!!!!!!!
+              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
+                continue;
+              } else {
+                throw;
+              }
+            }
+
+            if (a_graph){
+              if (!a_graph->get()){
+                a_graph->reset(new CallGraph());
+              }
+              (*a_graph)->add(subcallInfo);
+            }
+            _call(a_callExecutor, subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments.getCallArguments());
+            if (argBufferSize != a_state.argBuffer.size()){
+              a_state.argBuffer.resize(argBufferSize);
+            }
+          } else { // if (invariantIteration) else
+            a_arguments.prepare();
+            a_callExecutor(a_callInfo, a_arguments.getArguments());
+            if (argBufferSize != a_state.argBuffer.size()){
+              a_state.argBuffer.resize(argBufferSize);
+            }
+          }
+        } // while(true)
+      }
+      
+      
+      template <typename TCallExecutor>
+      inline void _executionNewMode(
+                              TCallExecutor& a_callExecutor,
+                              ConversionState& a_state,
+                              const Call& a_callInfo,
+                              int a_lastIterationArgumentIndex,
+                              CallArguments& a_arguments,
+                              std::shared_ptr<CallGraph>* a_graph = 0) {
+        if (a_state.iterations.size()) {
+          _executionNewIterationMode(
+                              a_callExecutor,
+                              a_state,
+                              a_callInfo,
+                              a_lastIterationArgumentIndex,
+                              a_arguments,
+                              a_graph);
         } else {
           a_arguments.prepare();
           a_callExecutor(a_callInfo, a_arguments.getArguments());
         }
       }
+
 
       template <typename TCallExecutor, typename ... TArgPack>
       inline void _call(TCallExecutor& a_callExecutor, const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments){
@@ -411,132 +515,7 @@ namespace fcf {
         }
 
         eargs.prepare();
-        _execution(a_callExecutor, state, a_callInfo, a_lastIterationArgumentIndex, eargs.getCallArguments());
-      }
-
-
-      template <typename TCallExecutor, typename... TArgPack>
-      inline void _iterationSeparatePair(
-                                          TCallExecutor& a_callExecutor,
-                                          ConversionState& a_state,
-                                          const Call& a_callInfo,
-                                          IterationState& a_ist,
-                                          unsigned int /*a_valueTypeIndex*/,
-                                          void* a_begin,
-                                          void* a_end,
-                                          CallArguments& a_arguments,
-                                          std::shared_ptr<CallGraph>* a_graph = 0){
-        CallArgumentsExtended arguments(a_arguments);
-        arguments.setArgument(a_ist.beginArgIndex, &a_begin);
-        arguments.setArgument(a_ist.endArgIndex, &a_end);
-
-        if (a_ist.currentIteratorConversionsEndIndex && a_ist.currentIteratorConversions[a_ist.currentIteratorConversionsEndIndex-1]->invariantIteration ) {
-
-
-          size_t argBufferSize = a_state.argBuffer.size();
-          try {
-            if (a_ist.currentIteratorConversionsEndIndex) {
-              for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
-                _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
-              }
-              CallConversion cc;
-              cc.mode        = CCM_SINGLE_PAIR_COPY;
-              cc.type        = arguments.getTypeIndex(a_ist.beginArgIndex);
-              cc.index       = a_ist.beginArgIndex;
-              _conversion(cc, a_state, arguments, INT_MAX);
-            }
-          } catch(std::exception&) {
-              if (argBufferSize != a_state.argBuffer.size()){
-                a_state.argBuffer.resize(argBufferSize);
-              }
-              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                return;
-              } else {
-                throw;
-              }
-          }
-
-
-          bool callComplete = false;
-          if (a_graph && a_graph->get()) {
-            callWithArguments(a_callExecutor, callComplete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
-          }
-
-          if (!callComplete) {
-            BaseFunctionSignature funcSignature(arguments.size());
-            funcSignature.rcode = Type<void>().index();
-            for(size_t i = 0; i < arguments.size(); ++i){
-              funcSignature.pacodes[i] = arguments.getTypeIndex(i);
-            }
-            funcSignature.applySimpleCallSignature();
-
-            Call subcallInfo;
-            subcallInfo.complete = false;
-            CallSeeker<void> seeker;
-            arguments.prepare();
-
-            try {
-              seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments(), true);
-              if (!subcallInfo.complete){
-                throw std::bad_function_call();
-              }
-            } catch(const std::bad_function_call&) {
-              if (argBufferSize != a_state.argBuffer.size()){
-                a_state.argBuffer.resize(argBufferSize);
-              }
-              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                return;
-              } else {
-                throw CallIterableNotFoundException(__FILE__, __LINE__, a_callInfo.name, a_arguments.getStringRepresentationTypes());
-              }
-            } catch(const std::exception&){
-              if (argBufferSize != a_state.argBuffer.size()){
-                a_state.argBuffer.resize(argBufferSize);
-              }
-              if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-                return;
-              } else {
-                throw;
-              }
-            }
-            if (a_graph){
-              if (!a_graph->get()){
-                a_graph->reset(new CallGraph());
-              }
-              (*a_graph)->add(subcallInfo);
-            }
-            _call(a_callExecutor, subcallInfo, a_ist.currentIteratorConversions[0]->sourceIndex, arguments.getCallArguments());
-          }
-
-          if (argBufferSize != a_state.argBuffer.size()){
-            a_state.argBuffer.resize(argBufferSize);
-          }
-        } else {
-          size_t argBufferSize = a_state.argBuffer.size();
-
-          try {
-            if (a_ist.currentIteratorConversionsEndIndex) {
-              for(unsigned int i = 0; i < a_ist.currentIteratorConversionsEndIndex; ++i) {
-                _conversion(*a_ist.currentIteratorConversions[i], a_state, arguments, INT_MAX);
-              }
-            }
-          } catch(const std::exception&){
-            if (argBufferSize != a_state.argBuffer.size()){
-              a_state.argBuffer.resize(argBufferSize);
-            }
-            if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
-              return;
-            } else {
-              throw;
-            }
-          }
-
-          arguments.prepare();
-          a_callExecutor(a_callInfo, a_arguments.getArguments());
-          if (argBufferSize != a_state.argBuffer.size()){
-            a_state.argBuffer.resize(argBufferSize);
-          }
-        }
+        _executionNewMode(a_callExecutor, state, a_callInfo, a_lastIterationArgumentIndex, eargs.getCallArguments());
       }
 
       FCF_FOREACH_METHOD_WRAPPER(FunctionSugnatureInitializer, Caller, _fillFunctionSignature);
@@ -553,7 +532,7 @@ namespace fcf {
       }
 
       template <typename TCallArguments>
-      inline bool _conversion(const CallConversion& a_cc, ConversionState& a_state, TCallArguments& a_arguments, int a_iteratorIndex = -1){
+      inline bool _conversion(const CallConversion& a_cc, ConversionState& a_state, TCallArguments& a_arguments, int a_iteratorIndex = -1, bool* a_pairMode = 0){
         typedef int arg_type;
         if (a_iteratorIndex < (int)a_cc.index &&
             (
@@ -563,8 +542,13 @@ namespace fcf {
           if (a_state.iterations.back().currentIteratorConversionsEndIndex >= FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE){
             throw CallIterationConversionBufferOverflowException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
           }
-          a_state.iterations.back().currentIteratorConversions[a_state.iterations.back().currentIteratorConversionsEndIndex] = &a_cc;
-          ++a_state.iterations.back().currentIteratorConversionsEndIndex;
+          if (a_cc.mode == CCM_ITERATOR) {
+            UniversalCall converter = (UniversalCall)a_cc.converter;
+            a_state.iterations.push_back(IterationState(converter(a_arguments.getArgument(a_cc.index), 0, 0), a_cc.index, 0, &a_cc, 0));
+          } else {
+            a_state.iterations.back().currentIteratorConversions[a_state.iterations.back().currentIteratorConversionsEndIndex] = &a_cc;
+            ++a_state.iterations.back().currentIteratorConversionsEndIndex;
+          }
           return false;
         }
         a_arguments.prepare(a_cc.index);
@@ -659,7 +643,11 @@ namespace fcf {
           case CCM_FLAT_ITERATOR:
             {
               UniversalCall converter = (UniversalCall)a_cc.converter;
-              Variant viterator = converter(a_arguments.getArgument(a_cc.index), 0, 0);
+              void* ptrArgument = a_arguments.getArgument(a_cc.index);
+              if ( fcf::TypeIndexConverter<>::isPointer( a_arguments.getTypeIndex(a_cc.index))) {
+                ptrArgument = *(void**)ptrArgument;
+              }
+              Variant viterator = converter(ptrArgument, 0, 0);
               DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
               if (!iterator){
                 throw CallIteratorGettingException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
@@ -677,7 +665,11 @@ namespace fcf {
               iterator->setEndPosition();
 
               a_state.argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
-              a_arguments.extend(a_cc.index+1);
+              if (a_pairMode == 0) {
+                a_arguments.extend(a_cc.index+1);
+              } else {
+                *a_pairMode = true;
+              }
               a_arguments.setArgument(a_cc.index+1, a_state.argBuffer.back().ptr());
               a_arguments.setTypeIndex(a_cc.index+1, ptrTypeIndex);
             }
@@ -685,9 +677,14 @@ namespace fcf {
           case CCM_ITERATOR:
             {
               UniversalCall converter = (UniversalCall)a_cc.converter;
-              a_state.iterations.push_back(IterationState(converter(a_arguments.getArgument(a_cc.index), 0, 0), a_cc.index, a_cc.index+1, 0));
+              void* originPtrArgument = a_arguments.getArgument(a_cc.index);
+              void* ptrArgument = originPtrArgument;
+              if ( fcf::TypeIndexConverter<>::isPointer( a_arguments.getTypeIndex(a_cc.index))) {
+                ptrArgument = *(void**)ptrArgument;
+              }
+              a_state.iterations.push_back(IterationState(converter(ptrArgument, 0, 0), a_cc.index, 0, &a_cc, originPtrArgument));
               DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)a_state.iterations.back().iterator.ptr();
-              if (!iterator){
+              if (!iterator) {
                 throw CallIteratorGettingException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
               a_state.currentIteratorArgumentIndex = a_cc.index;
@@ -700,7 +697,8 @@ namespace fcf {
             break;
           case CCM_SEPARATE_PAIR:
             {
-              a_state.iterations.push_back(IterationState(a_cc.type, a_cc.index, a_cc.index+1, 0));
+              const TypeInfo* itemTypeInfo = getTypeInfo(TypeIndexConverter<>::removeLevelPointer(a_cc.type));
+              a_state.iterations.push_back(IterationState(a_cc.type, a_cc.index, 0, &a_cc, a_arguments.getArgument(a_cc.index), a_arguments.getArgument(a_cc.index+1), itemTypeInfo->size) );
               a_state.currentIteratorArgumentIndex = a_cc.index;
             }
             break;
