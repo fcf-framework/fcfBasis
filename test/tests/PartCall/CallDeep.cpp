@@ -65,6 +65,47 @@ namespace FcfTest {
       }
     }
 
+    template <typename MatType>
+    void fullTestForDeepCallTest() {
+      FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+      {
+        MatType m = {
+          {},
+          {9,9,9},
+          {9,9,9}
+        };
+        FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      }
+      {
+        MatType m = {
+          {9,9,9},
+          {9,9,9},
+          {}
+        };
+        FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      }
+      {
+        MatType m = {
+          {9,9,9},
+          {},
+          {9,9,9}
+        };
+        FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      }
+      {
+        MatType m = {
+          {},
+          {},
+          {}
+        };
+        FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      }
+      {
+        MatType m = {};
+        FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      }
+    }
+
   }
 }
 
@@ -72,42 +113,43 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "deep call"){
   {
     typedef std::vector<int>   VecType;
     typedef std::list<VecType> MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
   {
     typedef std::vector<int>     VecType;
     typedef std::vector<VecType> MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
   {
     typedef std::list<int>       VecType;
     typedef std::vector<VecType> MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
   {
     typedef std::list<int>       VecType;
     typedef std::list<VecType> MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
 
   {
     typedef std::list<fcf::Variant> VecType;
     typedef std::list<VecType>      MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
 
   {
     typedef std::list<fcf::Variant> VecType;
     typedef std::vector<VecType>    MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
 
   {
     typedef std::vector<fcf::Variant> VecType;
     typedef std::vector<VecType>    MatType;
-    FcfTest::Call::fill2LevelDeepCallTest<MatType>();
+    FcfTest::Call::fullTestForDeepCallTest<MatType>();
   }
 
+  // Bench testing
   {
     typedef std::vector<fcf::Variant> VecType;
     typedef std::list<VecType>        MatType;
@@ -121,7 +163,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "deep call"){
     FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
     fcf::NTest::Duration banch(1000);
     banch([&m](){
-      FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      fcf::fill(m, 13579);
     });
     fcf::NTest::inf() << "  Duration for " << fcf::Type<MatType>().name() << " 3x3: "<< banch.duration().count() << std::endl;
   }
@@ -137,7 +179,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "deep call"){
     FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
     fcf::NTest::Duration banch(1000);
     banch([&m](){
-      FcfTest::Call::fill2LevelCachedForDataDeepCallTest<MatType>(m);
+      fcf::fill(m, 13579);
     });
     fcf::NTest::inf() << "  Duration for " << fcf::Type<MatType>().name() << " 3x3: " << banch.duration().count() << std::endl;
   }

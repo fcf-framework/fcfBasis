@@ -241,7 +241,7 @@ namespace fcf {
         if (pcall){
           a_complete = true;
           a_argumentsEx.prepare();
-          _executionNewMode(a_callExecutor, state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
+          _execution(a_callExecutor, state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
         } else {
           a_complete = false;
         }
@@ -326,8 +326,12 @@ namespace fcf {
           for(; start < endIndex; ++start) {
             IterationState& is = a_state.iterations[start];
             if (_isIteratorEnd(is)){
-              complete = false;
-              break;
+              if (!start) {
+                return false;
+              } else {
+                complete = false;
+                break;
+              }
             }
             _applyIteration(is, a_arguments);
             if (is.currentIteratorConversionsEndIndex) {
@@ -359,7 +363,7 @@ namespace fcf {
       }
 
       template <typename TCallExecutor>
-      inline void _executionNewIterationMode(
+      inline void _executionIterationMode(
                               TCallExecutor& a_callExecutor,
                               ConversionState& a_state,
                               const Call& a_callInfo,
@@ -441,7 +445,6 @@ namespace fcf {
               if (argBufferSize != a_state.argBuffer.size()){
                 a_state.argBuffer.resize(argBufferSize);
               }
-              //iterator->inc(); !!!!!!!!!!!
               if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
                 continue;
               } else {
@@ -451,7 +454,6 @@ namespace fcf {
               if (argBufferSize != a_state.argBuffer.size()){
                 a_state.argBuffer.resize(argBufferSize);
               }
-              //iterator->inc(); !!!!!!!!!!
               if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
                 continue;
               } else {
@@ -478,24 +480,21 @@ namespace fcf {
           }
         } // while(true)
       }
-      
-      
+
       template <typename TCallExecutor>
-      inline void _executionNewMode(
-                              TCallExecutor& a_callExecutor,
+      inline void _execution( TCallExecutor& a_callExecutor,
                               ConversionState& a_state,
                               const Call& a_callInfo,
                               int a_lastIterationArgumentIndex,
                               CallArguments& a_arguments,
                               std::shared_ptr<CallGraph>* a_graph = 0) {
         if (a_state.iterations.size()) {
-          _executionNewIterationMode(
-                              a_callExecutor,
-                              a_state,
-                              a_callInfo,
-                              a_lastIterationArgumentIndex,
-                              a_arguments,
-                              a_graph);
+          _executionIterationMode(a_callExecutor,
+                                  a_state,
+                                  a_callInfo,
+                                  a_lastIterationArgumentIndex,
+                                  a_arguments,
+                                  a_graph);
         } else {
           a_arguments.prepare();
           a_callExecutor(a_callInfo, a_arguments.getArguments());
@@ -515,7 +514,7 @@ namespace fcf {
         }
 
         eargs.prepare();
-        _executionNewMode(a_callExecutor, state, a_callInfo, a_lastIterationArgumentIndex, eargs.getCallArguments());
+        _execution(a_callExecutor, state, a_callInfo, a_lastIterationArgumentIndex, eargs.getCallArguments());
       }
 
       FCF_FOREACH_METHOD_WRAPPER(FunctionSugnatureInitializer, Caller, _fillFunctionSignature);
