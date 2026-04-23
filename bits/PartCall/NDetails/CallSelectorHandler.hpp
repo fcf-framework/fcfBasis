@@ -835,7 +835,6 @@ namespace fcf {
           state.result->argsMap.resize(state.functionSignature.asize);
           if (a_node) {
             unsigned int currentPHIndex = UINT_MAX;
-            unsigned int currentIIIndex = UINT_MAX;
             CallConversionNode* begNode = a_node;
 
             CallConversion* lastIterationConvertion = 0;
@@ -857,7 +856,6 @@ namespace fcf {
                   ){
                 begNode->next = 0;
                 currentPHIndex = begNode->conversion.index;
-                currentIIIndex = begNode->conversion.index;
               }
 
               if (begNode->conversion.mode == CCM_PLACE_HOLDER){
@@ -876,10 +874,6 @@ namespace fcf {
 
               if ((begNode->conversion.mode == CCM_FLAT_ITERATOR) || (begNode->conversion.mode == CCM_ITERATOR)){
                 lastIterationConvertion = &begNode->conversion;
-              }
-
-              if (begNode->conversion.mode == CCM_ITERATOR && currentIIIndex == begNode->conversion.index) {
-                begNode->prev = 0;
               }
               begNode = begNode->prev;
             }
