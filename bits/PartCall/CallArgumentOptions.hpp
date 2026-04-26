@@ -3,7 +3,14 @@
 
 namespace fcf{
 
-  struct BaseCallArgumentOptions {
+  struct BasicCallArgumentOptions {
+    int flagsValue;
+    BasicCallArgumentOptions()
+      : flagsValue(0)
+    {}
+    BasicCallArgumentOptions(int a_flagsValue)
+      : flagsValue(a_flagsValue)
+    {}
   };
 
   enum CallArgumentOptionsFlags {
@@ -14,8 +21,12 @@ namespace fcf{
   };
 
   template <unsigned int Flags>
-  struct CallArgumentOptions : public BaseCallArgumentOptions{
+  struct CallArgumentOptions : public BasicCallArgumentOptions {
     enum { flags = Flags };
+
+    CallArgumentOptions()
+      : BasicCallArgumentOptions(flags)
+    {}
   };
 
 } // fcf namespace

@@ -45,7 +45,7 @@ FCF_TYPEID_REGISTRY(fcf::InheritanceSpecificator,     "fcf::InheritanceSpecifica
 FCF_TEMPLATE_TYPEID_DECLARE((fcf, CallArgumentOptions), "fcf::CallArgumentOptions", (unsigned int Flags), (Flags), ( std::to_string(Flags) ));
 namespace fcf {
   template<unsigned int Flags> 
-  struct Type<CallArgumentOptions<Flags>, InheritanceSpecificator> : public TypeImpl<CallArgumentOptions<Flags>, InheritanceSpecificator, BaseCallArgumentOptions> {
+  struct Type<CallArgumentOptions<Flags>, InheritanceSpecificator> : public TypeImpl<CallArgumentOptions<Flags>, InheritanceSpecificator, BasicCallArgumentOptions> {
   };
 }
 FCF_TEMPLATE_SPECIFICATOR_REGISTRY((fcf, CallArgumentOptions), InheritanceSpecificator);

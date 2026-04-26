@@ -15,6 +15,7 @@ add_executable("basis-test"
                            PartStaticVector/StaticVectorNotReduce.cpp
                            PartStaticVector/StaticVectorPush.cpp
                            PartCall/Call.cpp
+                           PartCall/CallArgumentOptions.cpp
                            PartCall/CallDeclare.cpp
                            PartCall/CallDeep.cpp
                            PartCall/CallExternalStorage.cpp
