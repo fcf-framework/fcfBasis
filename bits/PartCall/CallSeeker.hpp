@@ -5,6 +5,7 @@
 #include "NDetails/CallArguments.hpp"
 #include "NDetails/CallSelectorHandler.hpp"
 #include "NDetails/CallPairArgumentNode.hpp"
+#include "CallOptions.hpp"
 #include "../../PartConvert.hpp"
 #include "../../PartException.hpp"
 
@@ -21,16 +22,16 @@ namespace fcf{
         bool             strictSource;
       };
 
-      const CallStorage* _storage;
+      const CallOptions* _options;
 
     public:
 
       CallSeeker()
-        : _storage(&getCallStorage()){
+        : _options(0){
       }
 
-      CallSeeker(const CallStorage& a_storage)
-        : _storage(&a_storage){
+      CallSeeker(const CallOptions& a_options)
+        : _options(&a_options){
       }
 
       template <typename... TCurrentArgPack>
@@ -78,8 +79,9 @@ namespace fcf{
           currentFunctionSignature = a_functionSignature;
         }
 
-        CallStorageSelectionFunctionGroups::const_iterator groupIt = _storage->groups.find(a_functionName);
-        if (groupIt == _storage->groups.cend()) {
+        const CallStorage* storage = _options && _options->storage ? _options->storage : & getCallStorage();
+        CallStorageSelectionFunctionGroups::const_iterator groupIt = storage->groups.find(a_functionName);
+        if (groupIt == storage->groups.cend()) {
           throw CallNotFoundException(__FILE__, __LINE__, a_functionName, convert<std::string>((const BaseFunctionSignature&)*currentFunctionSignature));
         }
 
@@ -93,7 +95,7 @@ namespace fcf{
         }
 
         ::fcf::NDetails::CallSelectorState iasd = {
-                                                    _storage,
+                                                    storage,
                                                     a_functionName, 
                                                     a_resultFunctionSignature, 
                                                     a_result, 
