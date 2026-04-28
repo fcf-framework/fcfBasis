@@ -34,6 +34,10 @@ namespace fcf{
         : _options(&a_options){
       }
 
+      CallSeeker(const CallOptions* a_options)
+        : _options(a_options){
+      }
+
       template <typename... TCurrentArgPack>
       void operator()(const char* a_functionName, Call* a_result, const TCurrentArgPack&... a_argPack){
         NDetails::CallArguments ca(Nop(), a_argPack...);
@@ -96,6 +100,7 @@ namespace fcf{
 
         ::fcf::NDetails::CallSelectorState iasd = {
                                                     storage,
+                                                    _options,
                                                     a_functionName, 
                                                     a_resultFunctionSignature, 
                                                     a_result, 

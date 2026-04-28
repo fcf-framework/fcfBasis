@@ -84,17 +84,43 @@ namespace fcf {
             unsigned int specificatorTypeIndex = (*state.placeHolderSpecificators)[a_argumentIndex][i];
             std::map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
             int pointerCounter = 0;
-            if (specificatorIt == currentInputArgument->specificators->cend()) {
+            void* universalCall = 0;
+            if (specificatorIt != currentInputArgument->specificators->cend()) {
+              universalCall = (void*)specificatorIt->second.universalCall;
+            } else {
               if (currentInputArgument->rawSpecificators){
                 pointerCounter = 1;
                 specificatorIt = currentInputArgument->rawSpecificators->find(specificatorTypeIndex);
-                if (specificatorIt == currentInputArgument->rawSpecificators->cend()){
-                  continue;
+                if (specificatorIt != currentInputArgument->rawSpecificators->cend()){
+                  universalCall = (void*)specificatorIt->second.universalCall;
                 }
-              } else {
-                continue;
               }
             }
+            const Variant* values = 0;
+            if (state.options && state.options->argumentOptionsCount) {
+              for(size_t j = 0; j < state.options->argumentOptionsCount; ++j){
+                const CallArgument& ca = state.options->argumentOptions[j];
+                if (ca.specificator == specificatorTypeIndex && ca.argumentNumber == a_inputArgumentIndex+1) {
+                  bool exist = false;
+                  CallConversionNode* node = a_node;
+                  while(node && node->conversion.sourceIndex == a_inputArgumentIndex) {
+                    if (node->conversion.specificatorIndex == specificatorTypeIndex){
+                      exist = true;
+                      break;
+                    }
+                    node = node->prev;
+                  }
+                  if (!exist){
+                    values = &ca.values;
+                  }
+                }
+              }
+            }
+
+            if (!values && !universalCall){
+              continue;
+            }
+
             if (curSpecNodesSize == curSpecNodesMaxSize){
               throw CallPlaceholderBufferOverflowException(__FILE__, __LINE__, state.name, convert<std::string>(state.functionSignature));
             }
@@ -110,7 +136,8 @@ namespace fcf {
             curnode.conversion.type = currentInputArgument->clearTypeIndex;
             curnode.conversion.mode = CCM_PLACE_HOLDER;
             curnode.conversion.invariantIteration = false;
-            curnode.conversion.converter = (void*)specificatorIt->second.universalCall;
+            curnode.conversion.converter = (void*)universalCall;
+            curnode.conversion.values    = (void*)values;
             if (a_node) {
               a_node->next = &curnode;
               curnode.prev = a_node;
@@ -296,7 +323,7 @@ namespace fcf {
             )
           ) {
           Variant viterator = currentInputArgument->containerAccessResolver ? currentInputArgument->containerAccessResolver(0, 0, 0)
-                                                                            : currentInputArgument->ptrContainerAccessResolver(0, 0, 0); 
+                                                                            : currentInputArgument->ptrContainerAccessResolver(0, 0, 0);
           DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
           if (iterator) {
             unsigned int ptrTypeIndex = iterator->getValueTypeIndex();
@@ -736,6 +763,10 @@ namespace fcf {
       void _complete(CallConversionNode* a_node, bool /*a_dynamicCaller*/) {
         const CallStorageSelectionFunctionInfo* pCall = 0;
 
+        size_t placeHolderInsertionBufferCapacity = 8;
+        CallConversionNode placeHolderInsertionBuffer[placeHolderInsertionBufferCapacity];
+        size_t placeHolderInsertionBufferSize = 0;
+
         if (!state.dynamicCaller && state.invariantIteration) {
           state.result->complete = true;
           state.result->caller   = 0;
@@ -846,9 +877,9 @@ namespace fcf {
               }
               if (
                     (
-                      begNode->conversion.mode == CCM_RESOLVE || 
-                      begNode->conversion.mode == CCM_POINTER_RESOLVE || 
-                      begNode->conversion.mode == CCM_CONVERT || 
+                      begNode->conversion.mode == CCM_RESOLVE ||
+                      begNode->conversion.mode == CCM_POINTER_RESOLVE ||
+                      begNode->conversion.mode == CCM_CONVERT ||
                       begNode->conversion.mode == CCM_PTR_CONVERT
                     ) &&
                     begNode->conversion.invariantIteration &&
@@ -860,13 +891,13 @@ namespace fcf {
 
               if (begNode->conversion.mode == CCM_PLACE_HOLDER){
                 currentPHIndex = begNode->conversion.index;
-              } else if ( begNode->conversion.mode == CCM_FLAT_ITERATOR && 
+              } else if ( begNode->conversion.mode == CCM_FLAT_ITERATOR &&
                           (
                             currentPHIndex == begNode->conversion.index ||
                             (
                               lastIterationConvertion && lastIterationConvertion->index == begNode->conversion.index
                             )
-                          ) 
+                          )
                         ) {
                 begNode->conversion.mode = CCM_ITERATOR;
                 state.requiredArgumentsFlags.push_back({begNode->conversion.index, CAO_PAIR_SEGMENTATION});
@@ -908,33 +939,36 @@ namespace fcf {
             while(node){
               bool ignore = false;
 
-              node->conversion.index += phmapOffset;
-              while(phmapIndex <= node->conversion.index){
-                if (phmapIndex >= phmap.size()){
-                  throw LogicException(__FILE__, __LINE__, "into CallSelectorHandler (complete step filling flags)");
-                }
-                if (phmap[phmapIndex] == UINT_MAX){               // if PLACE HOLDER insertion
-                  ++phmapOffset;
-                  ++node->conversion.index;
-                  ++phmapIndex;
-                } else if (phmap[phmapIndex] == (UINT_MAX - 1)) { // if CCM_FLAT_ITERATOR insertion
-                  ++phmapIndex;
-                } else {
-                  /*
-                  if (phmapIndex != node->conversion.index) {     // if insertion without converter
-                    CallConversion conversion;
-                    conversion.index        = phmapIndex;
-                    conversion.sourceIndex  = phmapArgCounter;
-                    conversion.type         = 0;
-                    conversion.mode         = CCM_SKIP;
-                    conversion.invariantIteration = false;
-                    conversion.converter    = 0;
-                    state.result->conversions.push_back(conversion);
+              if (node->conversion.mode != CCM_PLACE_HOLDER_ARGUMENT_EXPANSION) {
+                node->conversion.index += phmapOffset;
+
+                while(phmapIndex <= node->conversion.index){
+                  if (phmapIndex >= phmap.size()){
+                    throw LogicException(__FILE__, __LINE__, "into CallSelectorHandler (complete step filling flags)");
                   }
-                  */
-                  phmap[phmapIndex] = phmapArgCounter;
-                  ++phmapArgCounter;
-                  ++phmapIndex;
+                  if (phmap[phmapIndex] == UINT_MAX){               // if PLACE HOLDER insertion
+                    ++phmapOffset;
+                    ++node->conversion.index;
+                    ++phmapIndex;
+                  } else if (phmap[phmapIndex] == (UINT_MAX - 1)) { // if CCM_FLAT_ITERATOR insertion
+                    ++phmapIndex;
+                  } else {
+                    /*
+                    if (phmapIndex != node->conversion.index) {     // if insertion without converter
+                      CallConversion conversion;
+                      conversion.index        = phmapIndex;
+                      conversion.sourceIndex  = phmapArgCounter;
+                      conversion.type         = 0;
+                      conversion.mode         = CCM_SKIP;
+                      conversion.invariantIteration = false;
+                      conversion.converter    = 0;
+                      state.result->conversions.push_back(conversion);
+                    }
+                    */
+                    phmap[phmapIndex] = phmapArgCounter;
+                    ++phmapArgCounter;
+                    ++phmapIndex;
+                  }
                 }
               }
 
@@ -959,6 +993,59 @@ namespace fcf {
                     phe.placeHolderArgument = ph.placeHolderArgument;
                     phe.type = pCall->callerSignature.pacodes[ph.argument];
                     node->conversion.placeHolders.push_back(phe);
+
+                    CallConversionNode* cnode = node;
+                    while(cnode){
+                      if (!cnode->next || cnode->next->conversion.index >= phe.argument) {
+                        if (placeHolderInsertionBufferSize == placeHolderInsertionBufferCapacity){
+                          throw std::runtime_error("Переполнение буфера placeholder команд");
+                        }
+                        bool exists = false;
+                        CallConversionNode* chnode = cnode;
+                        while(chnode){
+                          if (chnode->conversion.mode == CCM_PLACE_HOLDER_ARGUMENT_EXPANSION && chnode->conversion.index == phe.argument) {
+                            exists = true;
+                            break;
+                          }
+                          chnode = chnode->prev;
+                        }
+                        chnode = cnode;
+                        while(chnode && !exists){
+                          if (chnode->conversion.mode == CCM_PLACE_HOLDER_ARGUMENT_EXPANSION && chnode->conversion.index == phe.argument) {
+                            exists = true;
+                            break;
+                          }
+                          chnode = chnode->next;
+                        }
+
+                        if (exists){
+                          break;
+                        }
+                        CallConversionNode& ccn           = placeHolderInsertionBuffer[placeHolderInsertionBufferSize];
+                        ++placeHolderInsertionBufferSize;
+                        ccn.conversion.mode               = CCM_PLACE_HOLDER_ARGUMENT_EXPANSION;
+                        ccn.conversion.type               = phe.type;
+                        ccn.conversion.index              = phe.argument;
+                        ccn.conversion.sourceIndex        = node->conversion.sourceIndex;
+                        ccn.conversion.pointerCounter     = 0;
+                        ccn.conversion.invariantIteration = false;
+
+                        if (cnode->next) {
+                          ccn.next = cnode->next;
+                          ccn.prev = cnode;
+                          cnode->next->prev = &ccn;
+                          cnode->next = &ccn;
+                        } else {
+                          ccn.next = 0;
+                          ccn.prev = cnode;
+                          cnode->next = &ccn;
+                        }
+
+                        break;
+                      }
+                      cnode = cnode->next;
+                    }
+
                   }
                 } else {
                   ignore = true;

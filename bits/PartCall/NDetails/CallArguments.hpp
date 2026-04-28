@@ -126,7 +126,7 @@ namespace fcf{
         return _size;
       }
 
-      inline void resize(size_t a_size) {
+      inline void resize(size_t a_size, bool /*a_prepare*/ = true) {
         _realloc(a_size, true);
         _size = a_size;
       } 
@@ -174,11 +174,10 @@ namespace fcf{
         return &((void**)_ptr)[0];
       }
 
-      inline void extend(size_t /*a_index*/){
+      inline void extend(size_t /*a_index*/, bool /*a_initNewItem*/= true){
       }
 
-      inline void prepare(ptrdiff_t /*a_index*/, bool a_forceCopy = false){
-        (void)a_forceCopy;
+      inline void prepare(ptrdiff_t /*a_index*/, bool /*a_forceCopy*/ = false){
       }
 
       inline void prepare(){
@@ -239,13 +238,15 @@ namespace fcf{
       CallArguments  _buffer;
       CallArguments* _current;
       unsigned int   _extendCounter;
+      unsigned int   _size;
 
       public:
         inline CallArgumentsExtended(CallArguments& a_source)
           : _source(a_source)
           , _buffer(0, 0)
           , _current(&_source)
-          , _extendCounter(0) {
+          , _extendCounter(0)
+          , _size(0) {
         }
 
         inline CallArguments& getCallArguments(){
@@ -256,16 +257,22 @@ namespace fcf{
           return _source;
         }
 
-        inline void extend(size_t a_index){
+        inline void extend(size_t a_index, bool /*a_initNewItem*/ = true){
           _current = &_buffer;
           if (a_index) {
             prepare((ptrdiff_t)a_index-1);
           }
-          if (a_index < _buffer.size()) {
+          if (a_index < _size) {
             throw CallArgumentBufferOverflowException(__FILE__, __LINE__, _source.getStringRepresentationTypes());
           }
+
+          bool initNewItem = a_index >= _buffer.size();
+
           _buffer.resize(a_index+1);
-          _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{ Type<void>().index(), Type<void>().getTypeInfo() });
+          _size = a_index+1;
+          if (initNewItem) {
+            _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{ Type<void>().index(), Type<void>().getTypeInfo() });
+          }
           ++_extendCounter;
         }
 
@@ -287,11 +294,12 @@ namespace fcf{
                 _current = &_buffer;
               }
           }
-          if (a_index < (ptrdiff_t)_buffer.size()) {
+          if (a_index < (ptrdiff_t)_size) {
             return;
           }
-          size_t lastIndex = _buffer.size();
+          size_t lastIndex = _size;
           _buffer.resize(a_index+1);
+          _size = a_index+1;
           while(lastIndex <= (size_t)a_index){
             _buffer.setArgumentInfo(lastIndex, _source.getArgumentInfo(lastIndex - _extendCounter));
             _buffer.setArgument(lastIndex, _source.getArgument(lastIndex - _extendCounter));
@@ -300,13 +308,17 @@ namespace fcf{
         }
 
         inline size_t size() const{
-          return _current->size();
+          return _current == &_buffer ? _size : _current->size();
         }
 
-        inline void resize(size_t a_size) {
-          prepare((ptrdiff_t)a_size - 1);
+        inline void resize(size_t a_size, bool a_prepare = true) {
+          if (a_prepare) {
+            prepare((ptrdiff_t)a_size - 1);
+          } else {
+            prepareForceCopy();
+          }
           _current->resize(a_size);
-        } 
+        }
 
         inline unsigned int getTypeIndex(size_t a_index) const{
           return _current->getTypeIndex(a_index);

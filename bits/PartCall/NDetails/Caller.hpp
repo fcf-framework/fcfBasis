@@ -379,7 +379,7 @@ namespace fcf {
 
         bool firstCall = true;
         
-        CallSeeker<void> seeker;
+        CallSeeker<void> seeker(callOptions);
 
         while(true) {
           CallArgumentsExtended arguments(a_arguments);
@@ -550,7 +550,11 @@ namespace fcf {
           }
           return false;
         }
-        a_arguments.prepare(a_cc.index);
+        if (a_cc.mode == CCM_PLACE_HOLDER_ARGUMENT_EXPANSION) {
+          a_arguments.extend(a_cc.index, false);
+        } else {
+          a_arguments.prepare(a_cc.index);
+        }
         switch(a_cc.mode) {
           case CCM_RESOLVE:
             {
@@ -605,8 +609,8 @@ namespace fcf {
                 aptr = *(int**) aptr;
               }
 
-              UniversalCall call = (UniversalCall)a_cc.converter;
-              fcf::Variant callResult = call(aptr, 0, 0);
+              fcf::Variant callResult = !!a_cc.converter ? ((UniversalCall)a_cc.converter)(aptr, 0, 0)
+                                                         : *(Variant*)a_cc.values;
 
               Variant* callResults;
               size_t   callResultsSize;
@@ -633,7 +637,9 @@ namespace fcf {
 
                 a_state.argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].getTypeIndex());
 
-                a_arguments.extend(phae.argument);
+                if (phae.argument >= a_arguments.size()) {
+                  a_arguments.resize(phae.argument+1, false);
+                }
                 a_arguments.setArgument(phae.argument, a_state.argBuffer[argBufferIndex].ptr());
                 a_arguments.setTypeIndex(phae.argument, a_state.argBuffer[argBufferIndex].getTypeIndex());
               }

@@ -2,6 +2,7 @@
 #define ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_SELECTOR_STATE_HPP___
 
 #include "../../PartCallStorage/CallStorage.hpp"
+#include "../../PartCall/CallOptions.hpp"
 #include "../../../PartStaticVector.hpp"
 #include "../Call.hpp"
 
@@ -14,6 +15,7 @@ namespace fcf {
         unsigned int argumentNumber;
       };
       const CallStorage*                                  storage;
+      const CallOptions*                                  options;
       const char*                                         name;
       BaseFunctionSignature*                              resultFunctionSignature;
       Call*                                               result;

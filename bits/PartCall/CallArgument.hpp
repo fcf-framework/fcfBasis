@@ -9,7 +9,7 @@ namespace fcf{
     unsigned int specificator;
     unsigned int argumentNumber;
     Variant      path;
-    Variant      value;
+    Variant      values;
     bool         defaultMode;
   };
 

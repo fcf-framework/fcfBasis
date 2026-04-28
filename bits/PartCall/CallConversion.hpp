@@ -13,6 +13,7 @@ namespace fcf{
     unsigned int                                      index;
     unsigned int                                      sourceIndex;
     void*                                             converter;
+    void*                                             values;
     unsigned int                                      specificatorIndex;
     unsigned int                                      pointerCounter;
     bool                                              invariantIteration;
