@@ -110,6 +110,7 @@ namespace FcfTest {
 }
 
 FCF_TEST_DECLARE("fcfBasis", "Call", "deep call"){
+
   {
     typedef std::vector<int>   VecType;
     typedef std::list<VecType> MatType;

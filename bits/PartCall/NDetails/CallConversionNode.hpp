@@ -9,7 +9,8 @@ namespace fcf{
     struct CallConversionNode {
       CallConversionNode* prev;
       CallConversionNode* next;
-      CallConversion  conversion;
+      CallConversion      conversion;
+      bool                invariantExclude;
     };
 
   } // NDetails namespace

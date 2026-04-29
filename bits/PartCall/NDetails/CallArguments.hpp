@@ -1,6 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGUMENTS_HPP___
 #define ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGUMENTS_HPP___
 
+#include <climits>
 #include <tuple>
 #include "../../../PartStaticVector.hpp"
 #include "../../../PartType.hpp"
@@ -78,10 +79,6 @@ namespace fcf{
 
         std::tuple<TArgPack*...>  tuple{(TArgPack*)&a_argPack...};
         foreach(tuple, ArgFiller(this));
-        /*
-        ArgumentInfo* infoPtr =  (ArgumentInfo*)(((void**)_ptr) + _capacity);
-        _argFill<0>(infoPtr, a_argPack...);
-        */
       }
 
       template <typename ...TArgPack>
@@ -174,18 +171,6 @@ namespace fcf{
         return &((void**)_ptr)[0];
       }
 
-      inline void extend(size_t /*a_index*/, bool /*a_initNewItem*/= true){
-      }
-
-      inline void prepare(ptrdiff_t /*a_index*/, bool /*a_forceCopy*/ = false){
-      }
-
-      inline void prepare(){
-      }
-
-      inline void prepareForceCopy() {
-      }
-
       inline CallArguments& getCallArguments(){
         return *this;
       }
@@ -204,6 +189,10 @@ namespace fcf{
         }
         return result;
       }
+
+      inline void prepare() {
+      }
+
 
     protected:
       FCF_FOREACH_METHOD_WRAPPER(ArgFiller, CallArguments, _argFiller);
@@ -234,22 +223,32 @@ namespace fcf{
 
 
     class CallArgumentsExtended {
-      CallArguments& _source;
-      CallArguments  _buffer;
-      CallArguments* _current;
-      unsigned int   _extendCounter;
-      unsigned int   _size;
+      CallArguments&    _source;
+      CallArguments     _buffer;
+      CallArguments*    _current;
+      const Call::ArgMapType* _map;
 
       public:
-        inline CallArgumentsExtended(CallArguments& a_source)
+        inline CallArgumentsExtended(CallArguments& a_source) 
           : _source(a_source)
           , _buffer(0, 0)
           , _current(&_source)
-          , _extendCounter(0)
-          , _size(0) {
+          , _map(0) {
+        }
+
+        inline CallArgumentsExtended(CallArguments& a_source, const Call::ArgMapType& a_map)
+          : _source(a_source)
+          , _buffer(0, 0)
+          , _current(&_source)
+          , _map(&a_map){
+        }
+        
+        inline void assignMap(const Call::ArgMapType* a_map){
+          _map = a_map;
         }
 
         inline CallArguments& getCallArguments(){
+          _prepare(_map->size(), false);
           return *_current;
         }
 
@@ -257,101 +256,94 @@ namespace fcf{
           return _source;
         }
 
-        inline void extend(size_t a_index, bool /*a_initNewItem*/ = true){
-          _current = &_buffer;
-          if (a_index) {
-            prepare((ptrdiff_t)a_index-1);
-          }
-          if (a_index < _size) {
-            throw CallArgumentBufferOverflowException(__FILE__, __LINE__, _source.getStringRepresentationTypes());
-          }
-
-          bool initNewItem = a_index >= _buffer.size();
-
-          _buffer.resize(a_index+1);
-          _size = a_index+1;
-          if (initNewItem) {
-            _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{ Type<void>().index(), Type<void>().getTypeInfo() });
-          }
-          ++_extendCounter;
-        }
-
-        inline void prepare(){
-          prepare(_extendCounter + _source.size() - 1);
-        }
-
-        inline void prepareForceCopy() {
-          prepare(_extendCounter + _source.size() - 1, true);
-        }
-
-        inline void prepare(ptrdiff_t a_index, bool a_forceCopy = false){
-          if (!a_forceCopy) {
-            if (_current != &_buffer){
-              return;
-            }
-          } else {
-              if (_current != &_buffer) {
-                _current = &_buffer;
-              }
-          }
-          if (a_index < (ptrdiff_t)_size) {
-            return;
-          }
-          size_t lastIndex = _size;
-          _buffer.resize(a_index+1);
-          _size = a_index+1;
-          while(lastIndex <= (size_t)a_index){
-            _buffer.setArgumentInfo(lastIndex, _source.getArgumentInfo(lastIndex - _extendCounter));
-            _buffer.setArgument(lastIndex, _source.getArgument(lastIndex - _extendCounter));
-            ++lastIndex;
-          }
-        }
-
-        inline size_t size() const{
-          return _current == &_buffer ? _size : _current->size();
-        }
-
-        inline void resize(size_t a_size, bool a_prepare = true) {
-          if (a_prepare) {
-            prepare((ptrdiff_t)a_size - 1);
-          } else {
-            prepareForceCopy();
-          }
-          _current->resize(a_size);
+        inline void** getArguments() {
+          _prepare(_map->size(), false);
+          return _current->getArguments();
         }
 
         inline unsigned int getTypeIndex(size_t a_index) const{
+          ((CallArgumentsExtended*)this)->_prepare(a_index+1, false);
           return _current->getTypeIndex(a_index);
         }
 
-        inline void setTypeIndex(size_t a_index, unsigned int a_typeIndex){
-          _current->setTypeIndex(a_index, a_typeIndex);
-        }
-
-
         inline const TypeInfo* getTypeInfo(size_t a_index){
+          _prepare(a_index+1, false);
           return _current->getTypeInfo(a_index);
         }
 
         inline CallArguments::ArgumentInfo& getArgumentInfo(size_t a_index){
+          _prepare(a_index+1, false);
           return _current->getArgumentInfo(a_index);
         }
 
-        inline void setArgumentInfo(size_t a_index, const CallArguments::ArgumentInfo& a_argumentInfo){
-          _current->setArgumentInfo(a_index, a_argumentInfo);
-        }
-
         inline void* getArgument(size_t a_index){
+          _prepare(a_index+1, false);
           return _current->getArgument(a_index);
         }
 
+        inline void setTypeIndex(size_t a_index, unsigned int a_typeIndex){
+          _prepare(a_index);
+          _current->setTypeIndex(a_index, a_typeIndex);
+        }
+
+        inline void setArgumentInfo(size_t a_index, const CallArguments::ArgumentInfo& a_argumentInfo){
+          _prepare(a_index);
+          _current->setArgumentInfo(a_index, a_argumentInfo);
+        }
+
         inline void setArgument(size_t a_index, void* a_ptr){
+          _prepare(a_index);
           _current->setArgument(a_index, a_ptr);
         }
 
-        inline void** getArguments() {
-          return _current->getArguments();
+        inline void prepare() {
+          _prepare(_map->size(), false);
         }
+
+        inline size_t size() {
+          return _map->size();
+        }
+
+        inline void _prepare(size_t a_index, bool a_createLastElement = true) {
+          if(_current == &_buffer){
+            if (a_index < _buffer.size()){
+              return;
+            }
+            size_t size = _buffer.size();
+            _buffer.resize(a_createLastElement ? a_index+1 : a_index);
+            for(size_t i = size; i < a_index; ++i) {
+              unsigned short index = (*_map)[i];
+              if(index == USHRT_MAX){
+                _buffer.setArgumentInfo(i, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().getTypeInfo() });
+              } else {
+                _buffer.setArgument(i, _source.getArgument(index));
+                _buffer.setArgumentInfo(i, _source.getArgumentInfo(index));
+              }
+            }
+          } else if ( 
+              (a_index < _map->size() && (*_map)[a_index] != a_index) ||
+              (a_index && (*_map)[a_index-1] != a_index-1)
+            ) {
+            size_t size = _buffer.size();
+            _buffer.resize(a_createLastElement ? a_index+1 : a_index);
+            for(size_t i = size; i < a_index; ++i) {
+              unsigned short index = (*_map)[i];
+              if(index == USHRT_MAX){
+                _buffer.setArgumentInfo(i, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().getTypeInfo() });
+              } else {
+                _buffer.setArgument(i, _source.getArgument(index));
+                _buffer.setArgumentInfo(i, _source.getArgumentInfo(index));
+              }
+            }
+            _current = &_buffer;
+          }
+
+          if (a_createLastElement) {
+            _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().getTypeInfo() });
+          }
+
+        }
+
 
     };
   } // NDetails namespace

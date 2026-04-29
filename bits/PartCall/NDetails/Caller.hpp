@@ -53,6 +53,7 @@ namespace fcf {
 
         struct ConversionInfoNode {
           CallConversion                          conversion;
+          StaticVector<unsigned short, 8>         map;
           std::map<unsigned int, ConversionsNode> types;
         };
 
@@ -70,6 +71,7 @@ namespace fcf {
             auto insertIt = node->conversions.insert({ca, ConversionInfoNode()});
             ConversionInfoNode* typesConversion = &insertIt.first->second;
             typesConversion->conversion =  conversion;
+            typesConversion->map        =  a_call.rargsMap;
             auto insertTypeIt = typesConversion->types.insert({conversion.type, ConversionsNode()});
             lastDstCall = &insertTypeIt.first->second.call;
             node = &insertTypeIt.first->second;
@@ -169,17 +171,15 @@ namespace fcf {
       template <typename... TArgPack>
       inline void call(bool& a_complete, const char* a_functionName, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
-        CallArgumentsExtended argumentsEx(arguments);
         CallExecutor callExecutor;
-        callWithArguments(callExecutor, a_complete, a_functionName, a_graph, argumentsEx);
+        callWithArguments(callExecutor, a_complete, a_functionName, a_graph, arguments);
       }
 
       template <typename... TArgPack>
       inline Variant rcall(bool& a_complete, const char* a_functionName, CallGraph& a_graph, const TArgPack& ... a_argPack){
         CallArguments arguments(Nop(), a_argPack...);
-        CallArgumentsExtended argumentsEx(arguments);
         RCallExecutor callExecutor;
-        callWithArguments(callExecutor, a_complete, a_functionName, a_graph, argumentsEx);
+        callWithArguments(callExecutor, a_complete, a_functionName, a_graph, arguments);
         return callExecutor.result();
       }
 
@@ -199,11 +199,13 @@ namespace fcf {
       }
 
     protected:
-      template <typename TCallExecutor, typename... TArgPack>
-      inline void callWithArguments(TCallExecutor& a_callExecutor, bool& a_complete, const char* a_functionName, CallGraph& a_graph, CallArgumentsExtended& a_argumentsEx){
+      template <typename TCallExecutor>
+      inline void callWithArguments(TCallExecutor& a_callExecutor, bool& a_complete, const char* a_functionName, CallGraph& a_graph, CallArguments& a_arguments){
         StaticVector<GraphPosition, 16> stack;
 
         ConversionState state(a_functionName);
+
+        CallArgumentsExtended argumentsEx(a_arguments);
 
         CallGraph::ConversionsNode*            pnode     = &a_graph.conversions;
         const Call*                 pcall     = pnode->call.complete ? &pnode->call : 0;
@@ -217,10 +219,12 @@ namespace fcf {
             break;
           }
 
-          bool isNotIterationMode = _conversion(position.conversionBegin->second.conversion, state, a_argumentsEx, -1);
+          argumentsEx.assignMap(&position.conversionBegin->second.map);
+
+          bool isNotIterationMode = _conversion(position.conversionBegin->second.conversion, state, argumentsEx, -1);
 
           std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeIt    = isNotIterationMode
-                                              ? position.conversionBegin->second.types.find( a_argumentsEx.getTypeIndex(position.conversionBegin->first.argument) )
+                                              ? position.conversionBegin->second.types.find(argumentsEx.getTypeIndex(position.conversionBegin->first.argument) )
                                               : position.conversionBegin->second.types.begin();
           std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeItEnd = position.conversionBegin->second.types.end();
 
@@ -233,6 +237,7 @@ namespace fcf {
           if (pnode->call.complete){
             pcall     = &pnode->call;
             psubgraph = &pnode->graph;
+            break;
           }
 
           ++position.conversionBegin;
@@ -240,8 +245,8 @@ namespace fcf {
 
         if (pcall){
           a_complete = true;
-          a_argumentsEx.prepare();
-          _execution(a_callExecutor, state, *pcall, -1, a_argumentsEx.getCallArguments(), psubgraph);
+          argumentsEx.prepare();
+          _execution(a_callExecutor, state, *pcall, -1, argumentsEx.getCallArguments(), psubgraph);
         } else {
           a_complete = false;
         }
@@ -382,14 +387,14 @@ namespace fcf {
         CallSeeker<void> seeker(callOptions);
 
         while(true) {
-          CallArgumentsExtended arguments(a_arguments);
+          CallArguments arguments(a_arguments);
 
           size_t argBufferSize = a_state.argBuffer.size();
 
           bool complete;
           bool invariantIteration = false;
           try {
-            complete = !_executionIteration(&firstCall, a_state, a_arguments, invariantIteration);
+            complete = !_executionIteration(&firstCall, a_state, arguments, invariantIteration);
             if (complete) {
               return;
             }
@@ -410,8 +415,6 @@ namespace fcf {
             }
             return;
           }
-
-          arguments.prepareForceCopy();
 
           if (a_graph && a_graph->get()) {
             callWithArguments(a_callExecutor, complete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
@@ -472,8 +475,7 @@ namespace fcf {
               a_state.argBuffer.resize(argBufferSize);
             }
           } else { // if (invariantIteration) else
-            a_arguments.prepare();
-            a_callExecutor(a_callInfo, a_arguments.getArguments());
+            a_callExecutor(a_callInfo, arguments.getArguments());
             if (argBufferSize != a_state.argBuffer.size()){
               a_state.argBuffer.resize(argBufferSize);
             }
@@ -496,7 +498,6 @@ namespace fcf {
                                   a_arguments,
                                   a_graph);
         } else {
-          a_arguments.prepare();
           a_callExecutor(a_callInfo, a_arguments.getArguments());
         }
       }
@@ -506,7 +507,7 @@ namespace fcf {
       inline void _call(TCallExecutor& a_callExecutor, const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments){
         ConversionState state(a_callInfo.name.c_str());
 
-        CallArgumentsExtended eargs(a_arguments);
+        CallArgumentsExtended eargs(a_arguments, a_callInfo.rargsMap);
 
         const size_t conversionsSize = a_callInfo.conversions.size();
         for(size_t conversionIndex = 0; conversionIndex < conversionsSize; ++conversionIndex){
@@ -549,11 +550,6 @@ namespace fcf {
             ++a_state.iterations.back().currentIteratorConversionsEndIndex;
           }
           return false;
-        }
-        if (a_cc.mode == CCM_PLACE_HOLDER_ARGUMENT_EXPANSION) {
-          a_arguments.extend(a_cc.index, false);
-        } else {
-          a_arguments.prepare(a_cc.index);
         }
         switch(a_cc.mode) {
           case CCM_RESOLVE:
@@ -637,9 +633,6 @@ namespace fcf {
 
                 a_state.argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].getTypeIndex());
 
-                if (phae.argument >= a_arguments.size()) {
-                  a_arguments.resize(phae.argument+1, false);
-                }
                 a_arguments.setArgument(phae.argument, a_state.argBuffer[argBufferIndex].ptr());
                 a_arguments.setTypeIndex(phae.argument, a_state.argBuffer[argBufferIndex].getTypeIndex());
               }
@@ -670,9 +663,7 @@ namespace fcf {
               iterator->setEndPosition();
 
               a_state.argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
-              if (a_pairMode == 0) {
-                a_arguments.extend(a_cc.index+1);
-              } else {
+              if (a_pairMode != 0) {
                 *a_pairMode = true;
               }
               a_arguments.setArgument(a_cc.index+1, a_state.argBuffer.back().ptr());
@@ -696,7 +687,6 @@ namespace fcf {
 
               unsigned int ptrTypeIndex = TypeIndexConverter<>::addLevelPointer( iterator->getValueTypeIndex() );
               a_arguments.setTypeIndex(a_cc.index, ptrTypeIndex);
-              a_arguments.extend(a_cc.index+1);
               a_arguments.setTypeIndex(a_cc.index+1, ptrTypeIndex);
             }
             break;

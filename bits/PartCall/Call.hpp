@@ -7,6 +7,7 @@
 namespace fcf{
 
   struct Call {
+    typedef StaticVector<unsigned short, 8> ArgMapType;
     bool                            complete;
     bool                            dynamicCaller;
     void*                           function;
@@ -14,6 +15,7 @@ namespace fcf{
     void*                           rcaller;
     StaticVector<CallConversion, 8> conversions;
     StaticVector<unsigned short, 8> argsMap;
+    StaticVector<unsigned short, 8> rargsMap;
     std::string                     name;
     unsigned char                   argCount;
 

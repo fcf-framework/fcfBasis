@@ -2,7 +2,12 @@
 #include "../../../basis.hpp"
 #include "../bits/functions.hpp"
 
-FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call"){
+FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call (dim:1)"){
+
+  //
+  //  Simple options tests for loop (dim: 1)
+  //
+
   {
     fcf::CallOptions co;
     fcf::CallArgument argumentOptions[1];
@@ -91,5 +96,4 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call"){
     }
     FCF_TEST(c == 5, c);
   }
-
 }

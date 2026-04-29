@@ -19,6 +19,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # -Og оптимизирует код, сохраняя отладочную информацию, вместо -fno-inline-functions
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -O0 -g -fno-inline -fstandalone-debug -gdwarf-4")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -O0 -g")
   else()
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
