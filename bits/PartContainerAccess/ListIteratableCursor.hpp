@@ -25,7 +25,7 @@ namespace fcf {
 
     ListIteratableCursor(TContainer& a_container)
       : container((container_type*)&a_container)
-      , iterator(std::begin(*container))
+      , iterator(container->empty() ? std::end(*container) : std::begin(*container))
       , key(0) {
     }
 
@@ -34,7 +34,7 @@ namespace fcf {
       if (a_position < s) {
         if (key > a_position){
           key = 0;
-          iterator = std::begin(*container);
+          iterator = container->empty() ? std::end(*container) : std::begin(*container);
         }
         for(; key != a_position; ++key, ++iterator);
       } else {
@@ -87,12 +87,12 @@ namespace fcf {
     }
 
     inline void setBeginPosition() {
-      iterator = container->begin();
+      iterator = container->empty() ? std::end(*container) : std::begin(*container);
       key = 0;
     }
 
     inline void setEndPosition() {
-      iterator = container->end();
+      iterator = std::end(*container);
       key = container->size();
     }
 
