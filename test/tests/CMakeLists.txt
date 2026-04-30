@@ -49,3 +49,4 @@ add_executable("basis-test"
                            PartVariant/VariantRefTest.cpp
                          )
 
+target_include_directories("basis-test" PRIVATE "${CMAKE_SOURCE_DIR}/test/libraries")

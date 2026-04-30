@@ -809,7 +809,7 @@ namespace fcf {
       void _complete(CallConversionNode* a_node, bool /*a_dynamicCaller*/) {
         const CallStorageSelectionFunctionInfo* pCall = 0;
 
-        size_t placeHolderInsertionBufferCapacity = 8;
+        const size_t placeHolderInsertionBufferCapacity = 8;
         CallConversionNode placeHolderInsertionBuffer[placeHolderInsertionBufferCapacity];
         size_t placeHolderInsertionBufferSize = 0;
 
