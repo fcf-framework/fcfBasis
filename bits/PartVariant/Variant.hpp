@@ -1136,9 +1136,14 @@ namespace fcf{
     }
     void* p              = ptr();
     const TypeInfo* ti   = _typeInfo;
+    size_t rcounter      = FCF_BASIS_VARIANT_MAX_REF_NESTING;
     while (ti && ti->isVariant) {
       ti = ((BasicVariant*)p)->getTypeInfo();
       p = ((BasicVariant*)p)->ptr();
+      --rcounter;
+      if (!rcounter){
+        throw VariantMaxRefNesting(__FILE__, __LINE__);
+      }
     }
     return DataEndpoint{ti, p};
   }
@@ -1170,9 +1175,14 @@ namespace fcf{
     }
     void* p              = ptr();
     const TypeInfo* ti   = _typeInfo;
+    size_t rcounter       = FCF_BASIS_VARIANT_MAX_REF_NESTING;
     while (ti && ti->isVariant) {
       ti = ((BasicVariant*)p)->getTypeInfo();
       p = ((BasicVariant*)p)->ptr();
+      --rcounter;
+      if (!rcounter){
+        throw VariantMaxRefNesting(__FILE__, __LINE__);
+      }
     }
     return DataEndpointEx{ti, p};
   }

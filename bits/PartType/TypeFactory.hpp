@@ -23,17 +23,37 @@ namespace fcf {
       }
 
       static void* _clone(void* a_mem, const void* a_pdata){
+        bool allocMode = false;
         if (!a_mem){
           a_mem = new char[sizeof(Ty)];
+          allocMode = true;
         }
-        return (void*)(new (a_mem) Ty(*(const Ty*)a_pdata));
+        try {
+          new (a_mem) Ty(*(const Ty*)a_pdata);
+        } catch(...) {
+          if (allocMode) {
+            delete (char*)a_mem;
+          }
+          throw;
+        }
+        return a_mem;
       }
 
       static void* _create(void* a_mem){
+        bool allocMode = false;
         if (!a_mem){
           a_mem = new char[sizeof(Ty)];
+          allocMode = true;
         }
-        return (void*)(new (a_mem) Ty());
+        try {
+          new (a_mem) Ty();
+        } catch(...) {
+          if (allocMode) {
+            delete (char*)a_mem;
+          }
+          throw;
+        }
+        return a_mem;
       }
 
       static void _destroy(void* a_mem){

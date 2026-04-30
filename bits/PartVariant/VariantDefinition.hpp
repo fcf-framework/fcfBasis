@@ -12,6 +12,10 @@
 #include "../../bits/PartContainerAccess/VariantCursorDefinition.hpp"
 #include "../../bits/PartContainerAccess/ContainerAccess.hpp"
 
+#ifndef FCF_BASIS_VARIANT_MAX_REF_NESTING
+  #define FCF_BASIS_VARIANT_MAX_REF_NESTING 1000
+#endif
+
 namespace fcf {
 
   /**
