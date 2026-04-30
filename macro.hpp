@@ -1,6 +1,8 @@
 #ifndef ___FCF_BASIS__MACRO_HPP___
 #define ___FCF_BASIS__MACRO_HPP___
 
+#include <stdexcept>
+
 #ifdef FCF_IMPLEMENTATION
 #ifndef FCF_BASIS_IMPLEMENTATION
 #define FCF_BASIS_IMPLEMENTATION
@@ -46,13 +48,17 @@
       struct a_name {\
         inline a_name(a_class* a_owner)\
           : _owner(a_owner){\
-        }\
-        inline a_name(a_class&& a_owner)\
-          : _owner(&a_owner){\
+            if (!a_owner) {\
+              throw std::invalid_argument("The empty pointer to the object to execute foreach is specified");\
+            }\
         }\
         inline a_name(a_class& a_owner)\
           : _owner(&a_owner){\
         }\
+        inline a_name(const a_class& a_owner)\
+          : _owner((a_class*)&a_owner){\
+        }\
+        inline a_name(a_class&& a_owner) = delete;\
         template <typename ... TPack>\
         inline void operator()(TPack&&... a_args){\
           _owner->a_methodName(a_args...);\
@@ -367,7 +373,7 @@
 
 #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
 #define FCF_TYPEID_TEMPLATE2_REGISTRY(a_type, a_name) \
-      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type<T1, T2>), (typename T1, typename T2), a_name + "<" + fcf::Type<T1>().name() + "," + fcf::Type<T1>().name() + ">", 0, false)
+      FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type<T1, T2>), (typename T1, typename T2), a_name + "<" + fcf::Type<T1>().name() + "," + fcf::Type<T2>().name() + ">", 0, false)
 #endif // #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
 
 #ifndef FCF_CONVERTERS_REGISTRY_FORCE
@@ -385,24 +391,6 @@
       }
 #endif
 
-
-
-#ifndef FCF_INITIAZE_GLOBAL_PTR
-#define FCF_INITIAZE_GLOBAL_PTR__CONCAT2(a_varName, a_funcName, a_line) a_varName##_##a_funcName##_##a_line
-#define FCF_INITIAZE_GLOBAL_PTR__CONCAT(a_varName, a_funcName, a_line) FCF_INITIAZE_GLOBAL_PTR__CONCAT2(a_varName, a_funcName, a_line)
-#define FCF_INITIAZE_GLOBAL_PTR(a_variable, a_type) \
-      namespace {\
-        struct FCF_INITIAZE_GLOBAL_PTR__CONCAT(FCFInitializer_, a_variable, __LINE__){\
-          FCF_INITIAZE_GLOBAL_PTR__CONCAT(FCFInitializer_, a_variable, __LINE__)(){\
-            if (!a_variable) {\
-              a_variable = new a_type();\
-            }\
-          }\
-        };\
-        FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT FCF_INITIAZE_GLOBAL_PTR__CONCAT(FCFInitializer_, a_variable, __LINE__) \
-          FCF_INITIAZE_GLOBAL_PTR__CONCAT(_fcfinitializer_, a_variable, __LINE__);\
-      }
-#endif // #ifndef FCF_INITIAZE_GLOBAL_PTR
 
 #ifndef FCF_DECLARE_FUNCTION
 

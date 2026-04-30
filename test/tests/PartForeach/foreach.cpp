@@ -128,6 +128,8 @@ namespace FcfTest {
         FCF_TEST(keys[0] == 0 && keys[1] == 1 && keys[2] == 2, keys[0], keys[1], keys[1]);
         FCF_TEST(values[0] == "int" && values[1] == "char" && values[2] == "short", values[0], values[1], values[2]);
       }
+      /*
+       * check bad build
       {
         std::vector<size_t>                           keys;
         std::vector<std::string>                      values;
@@ -137,6 +139,7 @@ namespace FcfTest {
         FCF_TEST(keys[0] == 0 && keys[1] == 1 && keys[2] == 2, keys[0], keys[1], keys[1]);
         FCF_TEST(values[0] == "int" && values[1] == "char" && values[2] == "short", values[0], values[1], values[2]);
       }
+      */
       {
         std::vector<size_t>                           keys;
         std::vector<std::string>                      values;

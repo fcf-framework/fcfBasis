@@ -57,19 +57,21 @@ namespace fcf {
     public:
       void operator()(short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
+        int value;
         try {
-            a_destination = std::stoi(a_source);
+            value = std::stoi(a_source);
         } catch (const std::out_of_range&) {
           throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<short>().name());
         } catch (const std::invalid_argument&) {
           throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<short>().name());
         }
-        if (a_destination < SHRT_MIN){
+        if (value < SHRT_MIN){
            throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<short>().name());
         }
-        if (a_destination > SHRT_MAX){
+        if (value > SHRT_MAX){
           throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<short>().name());
         }
+        a_destination = (short)value;
       }
   };
 
@@ -79,16 +81,18 @@ namespace fcf {
     public:
       void operator()(unsigned short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;
+        unsigned int value;
         try {
-            a_destination = (unsigned short)std::stoul(a_source);
+            value = std::stoul(a_source);
         } catch (const std::out_of_range&) {
           throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
         } catch (const std::invalid_argument&) {
           throw fcf::ConvertFormatException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
         }
-        if (a_destination > USHRT_MAX){
+        if (value > USHRT_MAX){
           throw fcf::ConvertRangeExceededException(__FILE__, __LINE__, a_source, Type<unsigned short>().name());
         }
+        a_destination = value;
       }
   };
 
