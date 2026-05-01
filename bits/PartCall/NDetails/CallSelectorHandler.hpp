@@ -94,7 +94,7 @@ namespace fcf {
           if (allowPlaceHolderInsertion) {
             size_t phSize = state.placeHolderVec.size();
             CallConversionNode* phnode = a_node;
-            
+
             for(size_t i = 0; i < (*state.placeHolderSpecificators)[a_argumentIndex].size(); ++i){
               unsigned int specificatorTypeIndex = (*state.placeHolderSpecificators)[a_argumentIndex][i];
               std::map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);

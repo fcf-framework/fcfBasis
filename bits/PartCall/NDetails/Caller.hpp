@@ -383,7 +383,7 @@ namespace fcf {
         (void) a_graph;
 
         bool firstCall = true;
-        
+
         CallSeeker<void> seeker(callOptions);
 
         while(true) {
@@ -426,7 +426,7 @@ namespace fcf {
             }
             continue;
           }
-         
+
           if (invariantIteration) {
 
             BaseFunctionSignature funcSignature(arguments.size());
