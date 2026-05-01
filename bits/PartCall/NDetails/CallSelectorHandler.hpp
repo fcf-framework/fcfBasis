@@ -80,101 +80,87 @@ namespace fcf {
         CallConversionNode curSpecNodes[curSpecNodesMaxSize];
 
         if (a_argumentIndex < state.placeHolderSpecificators->size()) {
+          size_t phSize = state.placeHolderVec.size();
+          CallConversionNode* phnode = a_node;
 
-          bool allowPlaceHolderInsertion = true;
-          CallConversionNode* node = a_node;
-          while(node && node->conversion.index == a_argumentIndex){
-            if (node->conversion.mode == CCM_PLACE_HOLDER && node->conversion.type == currentInputArgument->clearTypeIndex){
-              allowPlaceHolderInsertion = false;
-              break;
+          for(size_t i = 0; i < (*state.placeHolderSpecificators)[a_argumentIndex].size(); ++i){
+            unsigned int specificatorTypeIndex = (*state.placeHolderSpecificators)[a_argumentIndex][i];
+
+            if (a_node &&
+                a_node->conversion.specificatorIndex == specificatorTypeIndex &&
+                a_node->conversion.sourceIndex == a_inputArgumentIndex &&
+                a_node->conversion.type == currentInputArgument->clearTypeIndex &&
+                a_node->conversion.mode == CCM_PLACE_HOLDER
+                ){
+              continue;
             }
-            node = node->prev;
+
+            std::map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
+            int pointerCounter = 0;
+            void* universalCall = 0;
+            if (specificatorIt != currentInputArgument->specificators->cend()) {
+              universalCall = (void*)specificatorIt->second.universalCall;
+            } else {
+              if (currentInputArgument->rawSpecificators){
+                pointerCounter = 1;
+                specificatorIt = currentInputArgument->rawSpecificators->find(specificatorTypeIndex);
+                if (specificatorIt != currentInputArgument->rawSpecificators->cend()){
+                  universalCall = (void*)specificatorIt->second.universalCall;
+                }
+              }
+            }
+            const Variant* values = 0;
+            if ((!a_node || a_node->conversion.sourceIndex != a_inputArgumentIndex) && state.options && state.options->argumentOptionsCount) {
+              for(size_t j = 0; j < state.options->argumentOptionsCount; ++j){
+                const CallArgument& ca = state.options->argumentOptions[j];
+                if (ca.specificator == specificatorTypeIndex && ca.argumentNumber == a_inputArgumentIndex+1) {
+                  values = &ca.values;
+                }
+              }
+            }
+
+            if (!values && !universalCall){
+              continue;
+            }
+
+            if (curSpecNodesSize == curSpecNodesMaxSize){
+              throw CallPlaceholderBufferOverflowException(__FILE__, __LINE__, state.name, convert<std::string>(state.functionSignature));
+            }
+
+            CallConversionNode& curnode = curSpecNodes[curSpecNodesSize];
+            ++curSpecNodesSize;
+            curnode.prev = 0;
+            curnode.next = 0;
+            curnode.conversion.index = a_argumentIndex;
+            curnode.conversion.sourceIndex = a_inputArgumentIndex;
+            curnode.conversion.specificatorIndex = specificatorTypeIndex;
+            curnode.conversion.pointerCounter    = pointerCounter;
+            curnode.conversion.type = currentInputArgument->clearTypeIndex;
+            curnode.conversion.mode = CCM_PLACE_HOLDER;
+            curnode.conversion.invariantIteration = false;
+            curnode.conversion.converter = (void*)universalCall;
+            curnode.conversion.values    = (void*)values;
+            curnode.invariantExclude     = !!values;
+            if (phnode) {
+              phnode->next = &curnode;
+              curnode.prev = phnode;
+            }
+            phnode = &curnode;
+            CallSelectorState::PlaceHolderSource phs;
+            phs.specificatorIndex = specificatorTypeIndex;
+            phs.argumentNumber = a_argumentIndex;
+            state.placeHolderVec.push_back(phs);
           }
 
-          if (allowPlaceHolderInsertion) {
-            size_t phSize = state.placeHolderVec.size();
-            CallConversionNode* phnode = a_node;
-
-            for(size_t i = 0; i < (*state.placeHolderSpecificators)[a_argumentIndex].size(); ++i){
-              unsigned int specificatorTypeIndex = (*state.placeHolderSpecificators)[a_argumentIndex][i];
-              std::map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
-              int pointerCounter = 0;
-              void* universalCall = 0;
-              if (specificatorIt != currentInputArgument->specificators->cend()) {
-                universalCall = (void*)specificatorIt->second.universalCall;
-              } else {
-                if (currentInputArgument->rawSpecificators){
-                  pointerCounter = 1;
-                  specificatorIt = currentInputArgument->rawSpecificators->find(specificatorTypeIndex);
-                  if (specificatorIt != currentInputArgument->rawSpecificators->cend()){
-                    universalCall = (void*)specificatorIt->second.universalCall;
-                  }
-                }
-              }
-              const Variant* values = 0;
-              if (state.options && state.options->argumentOptionsCount) {
-                for(size_t j = 0; j < state.options->argumentOptionsCount; ++j){
-                  const CallArgument& ca = state.options->argumentOptions[j];
-                  if (ca.specificator == specificatorTypeIndex && ca.argumentNumber == a_inputArgumentIndex+1) {
-                    bool exist = false;
-                    CallConversionNode* node = phnode;
-                    while(node && node->conversion.sourceIndex == a_inputArgumentIndex) {
-                      if (node->conversion.specificatorIndex == specificatorTypeIndex){
-                        exist = true;
-                        break;
-                      }
-                      node = node->prev;
-                    }
-                    if (!exist){
-                      values = &ca.values;
-                    }
-                  }
-                }
-              }
-
-              if (!values && !universalCall){
-                continue;
-              }
-
-              if (curSpecNodesSize == curSpecNodesMaxSize){
-                throw CallPlaceholderBufferOverflowException(__FILE__, __LINE__, state.name, convert<std::string>(state.functionSignature));
-              }
-
-              CallConversionNode& curnode = curSpecNodes[curSpecNodesSize];
-              ++curSpecNodesSize;
-              curnode.prev = 0;
-              curnode.next = 0;
-              curnode.conversion.index = a_argumentIndex;
-              curnode.conversion.sourceIndex = a_inputArgumentIndex;
-              curnode.conversion.specificatorIndex = specificatorTypeIndex;
-              curnode.conversion.pointerCounter    = pointerCounter;
-              curnode.conversion.type = currentInputArgument->clearTypeIndex;
-              curnode.conversion.mode = CCM_PLACE_HOLDER;
-              curnode.conversion.invariantIteration = false;
-              curnode.conversion.converter = (void*)universalCall;
-              curnode.conversion.values    = (void*)values;
-              curnode.invariantExclude     = !!values;
-              if (phnode) {
-                phnode->next = &curnode;
-                curnode.prev = phnode;
-              }
-              phnode = &curnode;
-              CallSelectorState::PlaceHolderSource phs;
-              phs.specificatorIndex = specificatorTypeIndex;
-              phs.argumentNumber = a_argumentIndex;
-              state.placeHolderVec.push_back(phs);
+          if (state.placeHolderVec.size() != phSize) {
+            (*this)(phnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
+            if (state.result->complete) {
+              return;
             }
-
-            if (state.placeHolderVec.size() != phSize) {
-              (*this)(phnode, currentInputArgument, a_inputArgumentIndex, a_argumentIndex, a_dynamicCaller);
-              if (state.result->complete) {
-                return;
-              }
-              if (a_node) {
-                a_node->next = 0;
-              }
-              state.placeHolderVec.resize(phSize);
+            if (a_node) {
+              a_node->next = 0;
             }
+            state.placeHolderVec.resize(phSize);
           }
         }
 
