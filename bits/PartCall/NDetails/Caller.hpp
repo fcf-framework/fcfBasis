@@ -187,14 +187,14 @@ namespace fcf {
       inline void call(const Call& a_callInfo, const TArgPack& ... a_argPack){
         CallExecutor callExecutor;
         CallArguments arguments(Nop(), a_argPack...);
-        _call(callExecutor, a_callInfo, -1, arguments);
+        _clearCall<CallExecutor, TArgPack...>(callExecutor, a_callInfo, -1, arguments);
       }
 
       template <typename... TArgPack>
       inline Variant rcall(const Call& a_callInfo, const TArgPack& ... a_argPack){
         RCallExecutor callExecutor;
         CallArguments arguments(Nop(), a_argPack...);
-        _call(callExecutor, a_callInfo, -1, arguments);
+        _clearCall<RCallExecutor, TArgPack...>(callExecutor, a_callInfo, -1, arguments);
         return callExecutor.result();
       }
 
@@ -398,7 +398,7 @@ namespace fcf {
             if (complete) {
               return;
             }
-          } catch(const std::exception&){
+          } catch(const std::exception&) {
             if (argBufferSize != a_state.argBuffer.size()){
               a_state.argBuffer.resize(argBufferSize);
             }
@@ -502,6 +502,21 @@ namespace fcf {
         }
       }
 
+      template <typename TCallExecutor, typename ... TArgPack>
+      inline void _clearCall(TCallExecutor& a_callExecutor, const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments) {
+        if (a_callInfo.rargsMap.size() == sizeof...(TArgPack) ) {
+          ConversionState state(a_callInfo.name.c_str());
+
+          const size_t conversionsSize = a_callInfo.conversions.size();
+          for(size_t conversionIndex = 0; conversionIndex < conversionsSize; ++conversionIndex){
+            _conversion(a_callInfo.conversions[conversionIndex], state, a_arguments, a_lastIterationArgumentIndex);
+          }
+
+          _execution(a_callExecutor, state, a_callInfo, a_lastIterationArgumentIndex, a_arguments);
+        } else {
+          _call(a_callExecutor, a_callInfo, a_lastIterationArgumentIndex, a_arguments);
+        }
+      }
 
       template <typename TCallExecutor, typename ... TArgPack>
       inline void _call(TCallExecutor& a_callExecutor, const Call& a_callInfo, int a_lastIterationArgumentIndex, CallArguments& a_arguments){
