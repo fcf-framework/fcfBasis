@@ -72,7 +72,8 @@ namespace fcf {
             ConversionInfoNode* typesConversion = &insertIt.first->second;
             typesConversion->conversion =  conversion;
             typesConversion->map        =  a_call.rargsMap;
-            auto insertTypeIt = typesConversion->types.insert({conversion.type, ConversionsNode()});
+            unsigned int dataIndex = TypeIndexConverter<>::getDataIndex(conversion.type);
+            auto insertTypeIt = typesConversion->types.insert({dataIndex, ConversionsNode()});
             lastDstCall = &insertTypeIt.first->second.call;
             node = &insertTypeIt.first->second;
           }
@@ -224,7 +225,10 @@ namespace fcf {
           bool isNotIterationMode = _conversion(position.conversionBegin->second.conversion, state, argumentsEx, -1);
 
           std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeIt    = isNotIterationMode
-                                              ? position.conversionBegin->second.types.find(argumentsEx.getTypeIndex(position.conversionBegin->first.argument) )
+                                              ? position.conversionBegin->second.types.find( TypeIndexConverter<>::getDataIndex(
+                                                                                                argumentsEx.getTypeIndex(position.conversionBegin->first.argument) 
+                                                                                              )
+                                                                                            )
                                               : position.conversionBegin->second.types.begin();
           std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeItEnd = position.conversionBegin->second.types.end();
 
@@ -385,6 +389,16 @@ namespace fcf {
         bool firstCall = true;
 
         CallSeeker<void> seeker(callOptions);
+        CallGraph        subGraph;
+        CallGraph*       psubGraph;
+        if (a_graph){
+          if (!a_graph->get()) {
+            a_graph->reset(new CallGraph());
+          }
+          psubGraph = a_graph->get();
+        } else {
+          psubGraph = &subGraph;
+        }
 
         while(true) {
           CallArguments arguments(a_arguments);
@@ -416,8 +430,8 @@ namespace fcf {
             return;
           }
 
-          if (a_graph && a_graph->get()) {
-            callWithArguments(a_callExecutor, complete, a_callInfo.name.c_str(), *a_graph->get(), arguments);
+          if (psubGraph->conversions.conversions.size()) {
+            callWithArguments(a_callExecutor, complete, a_callInfo.name.c_str(), *psubGraph, arguments);
           }
 
           if (complete) {
@@ -428,7 +442,6 @@ namespace fcf {
           }
 
           if (invariantIteration) {
-
             BaseFunctionSignature funcSignature(arguments.size());
             funcSignature.rcode = Type<void>().index();
             for(size_t i = 0; i < arguments.size(); ++i){
@@ -441,11 +454,11 @@ namespace fcf {
 
             try {
               seeker(a_callInfo.name.c_str(), &funcSignature, 0, &subcallInfo, arguments.getCallArguments(), true);
-              if (!subcallInfo.complete){
+              if (!subcallInfo.complete) {
                 throw std::bad_function_call();
               }
-            } catch(const std::bad_function_call&){
-              if (argBufferSize != a_state.argBuffer.size()){
+            } catch(const std::bad_function_call&) {
+              if (argBufferSize != a_state.argBuffer.size()) {
                 a_state.argBuffer.resize(argBufferSize);
               }
               if (callOptions && callOptions->flags & CO_ITERATION_SELECT_QUIET) {
@@ -453,7 +466,7 @@ namespace fcf {
               } else {
                 throw CallIterableNotFoundException(__FILE__, __LINE__, a_callInfo.name, a_arguments.getStringRepresentationTypes());
               }
-            } catch(const std::exception&){
+            } catch(const std::exception&) {
               if (argBufferSize != a_state.argBuffer.size()){
                 a_state.argBuffer.resize(argBufferSize);
               }
@@ -464,16 +477,17 @@ namespace fcf {
               }
             }
 
-            if (a_graph){
-              if (!a_graph->get()){
-                a_graph->reset(new CallGraph());
-              }
-              (*a_graph)->add(subcallInfo);
-            }
-            _call(a_callExecutor, subcallInfo,  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex), arguments.getCallArguments());
-            if (argBufferSize != a_state.argBuffer.size()){
+            psubGraph->add(subcallInfo);
+
+            _call(a_callExecutor,
+                  subcallInfo,
+                  std::max(a_lastIterationArgumentIndex, (int)a_state.iterations.back().currentIteratorConversions[0]->sourceIndex),
+                  arguments.getCallArguments());
+
+            if (argBufferSize != a_state.argBuffer.size()) {
               a_state.argBuffer.resize(argBufferSize);
             }
+
           } else { // if (invariantIteration) else
             a_callExecutor(a_callInfo, arguments.getArguments());
             if (argBufferSize != a_state.argBuffer.size()){
