@@ -16,7 +16,7 @@ namespace FcfTest {
   namespace BasisTest {
 
     FCF_TEST_DECLARE("fcfBasis", "Call", "speed call"){
-      const size_t iterationCount = 1024*1024;
+      const size_t iterationCount = 10*1024*1024;
 
       // OLD DURTION: 120ns
       // 
