@@ -35,6 +35,7 @@ namespace fcf {
     , size(a_size)
     , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
     , resolver(0)
+    , containerAccess(0)
     , initializer(0) {
   }
 
@@ -46,6 +47,7 @@ namespace fcf {
     , size(0)
     , dataIndex(0)
     , resolver(0)
+    , containerAccess(0)
     , initializer(0) {
   }
 
@@ -61,6 +63,7 @@ namespace fcf {
     , converters(a_source.converters)
     , backConverters(a_source.backConverters)
     , specificators(a_source.specificators)
+    , containerAccess(a_source.containerAccess)
     , initializer(0)
   {
     if (a_source.initializer){
@@ -83,6 +86,7 @@ namespace fcf {
     converters = a_source.converters;
     backConverters = a_source.backConverters;
     specificators = a_source.specificators;
+    containerAccess = a_source.containerAccess;
 
     if (a_source.initializer){
       initializer = a_source.initializer;
@@ -102,22 +106,55 @@ namespace fcf {
                                   >::get();
   }
 
+  namespace NDetails {
+    template <typename TSpecificator>
+    struct SpecificatorUniversalResolver {
+      UniversalCall operator()(const TypeInfo* a_typeInfo) const{
+        const unsigned int specificatorIndex = Type<TSpecificator>().index();
+        std::map<unsigned int, SpecificatorInfo>::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
+        return it != a_typeInfo->specificators.end() ? it->second.universalCall : 0;
+      }
+    };
+
+    template <typename TSpecificator>
+    struct SpecificatorResolver {
+      typename TSpecificator::CallType operator()(const TypeInfo* a_typeInfo) const{
+        const unsigned int specificatorIndex = Type<TSpecificator>().index();
+        std::map<unsigned int, SpecificatorInfo>::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
+        return it != a_typeInfo->specificators.end() ? (typename TSpecificator::CallType)it->second.call : (typename TSpecificator::CallType)0;
+      }
+    };
+
+    template <>
+    struct SpecificatorUniversalResolver<ContainerAccessSpecificator> {
+      UniversalCall operator()(const TypeInfo* a_typeInfo) const {
+        return a_typeInfo->containerAccess;
+      }
+    };
+
+    template <>
+    struct SpecificatorResolver<ResolveSpecificator> {
+      ResolveSpecificator::CallType operator()(const TypeInfo* a_typeInfo) const{
+        return a_typeInfo->resolver;
+      }
+    };
+
+  }
+
   template <typename TSpecificator>
   typename TSpecificator::CallType TypeInfo::getSpecificatorCall() const {
-    const unsigned int specificatorIndex = Type<TSpecificator>().index();
-    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-    if (it != specificators.end() && !!it->second.call) {
-      return (typename TSpecificator::CallType)it->second.call;
+    typename TSpecificator::CallType c = NDetails::SpecificatorResolver<TSpecificator>()(this);
+    if (c) {
+      return c;
     }
     throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
   }
 
   template <typename TSpecificator>
   typename TSpecificator::CallType TypeInfo::getSpecificatorCall(Exception* a_error) const {
-    const unsigned int specificatorIndex = Type<TSpecificator>().index();
-    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-    if (it != specificators.end()) {
-      return (typename TSpecificator::CallType)it->second.call;
+    typename TSpecificator::CallType c = NDetails::SpecificatorResolver<TSpecificator>()(this);
+    if (c) {
+      return c;
     }
     if (a_error){
       *a_error = fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
@@ -127,20 +164,18 @@ namespace fcf {
 
   template <typename TSpecificator>
   UniversalCall TypeInfo::getSpecificator() const {
-    const unsigned int specificatorIndex = Type<TSpecificator>().index();
-    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-    if (it != specificators.end() && !!it->second.universalCall) {
-      return (UniversalCall)it->second.universalCall;
+    UniversalCall uc = NDetails::SpecificatorUniversalResolver<TSpecificator>()(this);
+    if (uc) {
+      return uc;
     }
     throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
   }
 
   template <typename TSpecificator>
   UniversalCall TypeInfo::getSpecificator(Exception* a_error) const {
-    const unsigned int specificatorIndex = Type<TSpecificator>().index();
-    std::map<unsigned int, SpecificatorInfo>::const_iterator it = specificators.find(specificatorIndex);
-    if (it != specificators.end()) {
-      return (UniversalCall)it->second.universalCall;
+    UniversalCall uc = NDetails::SpecificatorUniversalResolver<TSpecificator>()(this);
+    if (uc) {
+      return uc;
     }
     if (a_error) {
       *a_error = fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);

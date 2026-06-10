@@ -56,6 +56,15 @@ namespace fcf {
     }
   };
 
+  template <typename Ty>
+  struct SpecificatorRegistrar<Ty, ContainerAccessSpecificator> {
+    void operator()(const SpecificatorInfo& a_si){
+      unsigned int specificatorIndex = Type<ContainerAccessSpecificator>().index();
+      Type<Ty>()._info->specificators[specificatorIndex] = a_si;
+      Type<Ty>()._info->containerAccess = a_si.universalCall;
+    }
+  };
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF__BASIS__BITS__PART_SPECIFICATOR__CONTAINER_ACCESS_SPECIFICATOR_HPP___

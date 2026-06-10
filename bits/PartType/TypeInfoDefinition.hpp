@@ -52,6 +52,8 @@ namespace fcf{
     Converters                                                    backConverters;
     /** @brief Registered specificators (e.g., Less, Equal, Add) for this type. */
     std::map<unsigned int, SpecificatorInfo>                      specificators;
+    /** @brief Container access specificator for fast access. */
+    UniversalCall                                                 containerAccess;
     /** @brief Factory used to create/destroy instances of this type. */
     BaseTypeFactory*                                              initializer;
 
