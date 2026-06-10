@@ -17,6 +17,7 @@
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/BaseTypeFactory.hpp"
 #include "TypeInfoPredefinition.hpp"
+#include "TypeInfoFlags.hpp"
 
 namespace fcf{
 
@@ -34,10 +35,8 @@ namespace fcf{
     unsigned int                                                  index;
     /** @brief Human-readable name of the type. */
     std::string                                                   name;
-    /** @brief Flag indicating if this type is a reference to a Variant. */
-    bool                                                          isVariantRef;
-    /** @brief Flag indicating if this type is a Variant itself. */
-    bool                                                          isVariant;
+    /** @brief Flags belonging to the type variant. **/
+    unsigned char                                                 flags;
     /** @brief Size of the data payload excluding reference/pointer overhead. */
     size_t                                                        innerSize;
     /** @brief Total size of the type in memory. */
@@ -66,7 +65,7 @@ namespace fcf{
      * @param a_innerSize Payload size.
      * @param a_size Total size.
      */
-    inline TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize, size_t a_size);
+    inline TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_innerSize, size_t a_size);
 
     /** @brief Default constructor. */
     inline TypeInfo();

@@ -26,11 +26,10 @@
 
 namespace fcf {
 
-  TypeInfo::TypeInfo(unsigned int a_index, const std::string& a_name, bool a_isVariantRef, bool a_isVariant, size_t a_innerSize, size_t a_size)
+  TypeInfo::TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_innerSize, size_t a_size)
     : index(a_index)
     , name(a_name)
-    , isVariantRef(a_isVariantRef)
-    , isVariant(a_isVariant)
+    , flags(a_flags)
     , innerSize(a_innerSize)
     , size(a_size)
     , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
@@ -41,8 +40,7 @@ namespace fcf {
 
   TypeInfo::TypeInfo()
     : index(0)
-    , isVariantRef(0)
-    , isVariant(0)
+    , flags(0)
     , innerSize(0)
     , size(0)
     , dataIndex(0)
@@ -54,8 +52,7 @@ namespace fcf {
   TypeInfo::TypeInfo(const TypeInfo& a_source)
     : index(a_source.index)
     , name(a_source.name)
-    , isVariantRef(a_source.isVariantRef)
-    , isVariant(a_source.isVariant)
+    , flags(a_source.flags)
     , innerSize(a_source.innerSize)
     , size(a_source.size)
     , dataIndex(a_source.dataIndex)
@@ -77,8 +74,7 @@ namespace fcf {
   inline TypeInfo& TypeInfo::operator=(const TypeInfo& a_source) {
     index = a_source.index;
     name = a_source.name;
-    isVariantRef = a_source.isVariantRef;
-    isVariant = a_source.isVariant;
+    flags = a_source.flags;
     innerSize = a_source.innerSize;
     size = a_source.size;
     dataIndex = a_source.dataIndex;

@@ -37,7 +37,9 @@ namespace fcf {
         baseTypeIndex = Type<basic_type>().index();
       }
       const unsigned int index = TypeId<Ty>().index();
-      TypeInfo initTypeInfo(index, TypeId<Ty>().name(), NDetails::IsVariantRef<Ty>::value, NDetails::IsVariant<Ty>::value, NDetails::VariantInnerSize<Ty>::value, NDetails::TypeSize<Ty>::value );
+      unsigned char flags = (NDetails::IsVariantRef<Ty>::value ? TIF_VARIANT_REF : 0) |
+                            (NDetails::IsVariant<Ty>::value    ? TIF_VARIANT : 0);
+      TypeInfo initTypeInfo(index, TypeId<Ty>().name(), flags, NDetails::VariantInnerSize<Ty>::value, NDetails::TypeSize<Ty>::value );
       _info = typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
       typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
       ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);

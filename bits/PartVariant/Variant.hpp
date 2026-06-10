@@ -884,7 +884,7 @@ namespace fcf{
         }
         BasicVariant* curVariant =  (BasicVariant*)selfEndpoint.variant;
         if (curVariant->_typeInfo && 
-            !curVariant->_typeInfo->isVariant && 
+            !(curVariant->_typeInfo->flags & TIF_VARIANT)  && 
             TypeIndexConverter<>::isReference(curVariant->_typeInfo->index)) {
           if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
             throw VariantReadOnlyException(__FILE__, __LINE__);
@@ -1033,7 +1033,7 @@ namespace fcf{
           }
           BasicVariant* curVariant =  (BasicVariant*)ve.variant;
           if (curVariant->_typeInfo &&
-              !curVariant->_typeInfo->isVariant &&
+              !(curVariant->_typeInfo->flags & TIF_VARIANT) &&
               TypeIndexConverter<>::isReference(curVariant->_typeInfo->index)) {
             if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
               throw VariantReadOnlyException(__FILE__, __LINE__);
@@ -1121,7 +1121,7 @@ namespace fcf{
   template <size_t innerBufferSize>
   typename BasicVariant<innerBufferSize>::VariantEndpoint BasicVariant<innerBufferSize>::_variantEndpoint(){
     VariantEndpoint result{this, false, innerBufferSize};
-    while((((BasicVariant*)result.variant)->_typeInfo) && (((BasicVariant*)result.variant)->_typeInfo->isVariantRef)){
+    while((((BasicVariant*)result.variant)->_typeInfo) && (((BasicVariant*)result.variant)->_typeInfo->flags & TIF_VARIANT_REF)){
       result.innerSize = ((BasicVariant*)result.variant)->_typeInfo->innerSize;
       result.isConst |= TypeIndexConverter<>::isConst( ((BasicVariant*)result.variant)->_typeInfo->index );
       result.variant  = ((BasicVariant*)result.variant)->ptr();
@@ -1137,7 +1137,7 @@ namespace fcf{
     void* p              = ptr();
     const TypeInfo* ti   = _typeInfo;
     size_t rcounter      = FCF_BASIS_VARIANT_MAX_REF_NESTING;
-    while (ti && ti->isVariant) {
+    while (ti && ti->flags & TIF_VARIANT) {
       ti = ((BasicVariant*)p)->getTypeInfo();
       p = ((BasicVariant*)p)->ptr();
       --rcounter;
@@ -1157,7 +1157,7 @@ namespace fcf{
 
     while (result.typeInfo) {
       result.isConst |= TypeIndexConverter<>::isConst(result.typeInfo->index);
-      if (result.typeInfo->isVariant) {
+      if (result.typeInfo->flags & TIF_VARIANT) {
         result.typeInfo = ((BasicVariant*)result.ptr)->getTypeInfo();
         result.ptr = ((BasicVariant*)result.ptr)->ptr();
       } else {
@@ -1176,7 +1176,7 @@ namespace fcf{
     void* p              = ptr();
     const TypeInfo* ti   = _typeInfo;
     size_t rcounter       = FCF_BASIS_VARIANT_MAX_REF_NESTING;
-    while (ti && ti->isVariant) {
+    while (ti && ti->flags & TIF_VARIANT) {
       ti = ((BasicVariant*)p)->getTypeInfo();
       p = ((BasicVariant*)p)->ptr();
       --rcounter;
