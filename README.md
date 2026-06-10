@@ -103,7 +103,7 @@ namespace math {
 //  a_sourceCode                    - Only for other engines
 FCF_DECLARE_FUNCTION(
   (math, add),
-  "engine_cpu",
+  "cpu",
   math::add,
   int(*)(int, int),
   (),

@@ -34,7 +34,7 @@ FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, "FcfTest
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, fcf::ValueSpecificator);
 
 FCF_DECLARE_FUNCTION(fill,
-                   "engine_cpu",
+                   "cpu",
                    fcf::fill,
                    void(*) (FcfTest::BasisTest::CallIterationsTest::Item*, FcfTest::BasisTest::CallIterationsTest::Item*, int),
                    (

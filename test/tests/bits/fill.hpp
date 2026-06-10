@@ -26,7 +26,7 @@ namespace fcf {
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   FCF_DECLARE_FUNCTION(fill,
-                       "engine_cpu",
+                       "cpu",
                        fcf::fill,
                        void(*) (int*, int*, int),
                        (
@@ -36,7 +36,7 @@ namespace fcf {
                       );
 
   FCF_DECLARE_FUNCTION(fill,
-                   "engine_cpu",
+                   "cpu",
                    fcf::fill,
                    void(*) (std::string*, std::string*, std::string),
                    (

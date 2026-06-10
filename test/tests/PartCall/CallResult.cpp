@@ -34,7 +34,7 @@ namespace FcfTest {
 
 FCF_DECLARE_FUNCTION(
                      (fcftest,sum),
-                     "engine_cpu",
+                     "cpu",
                      FcfTest::BasisTest::sum,
                      int (*) (int, int),
                      (),
@@ -42,7 +42,7 @@ FCF_DECLARE_FUNCTION(
 
 FCF_DECLARE_FUNCTION(
                      (fcftest,sum),
-                     "engine_cpu",
+                     "cpu",
                      FcfTest::BasisTest::sum,
                      int (*) (int*, int*),
                      (
@@ -52,7 +52,7 @@ FCF_DECLARE_FUNCTION(
 
 FCF_DECLARE_FUNCTION(
                      (fcftest,sum),
-                     "engine_cpu",
+                     "cpu",
                      FcfTest::BasisTest::sum,
                      int (*) (int*, int*, int*),
                      (

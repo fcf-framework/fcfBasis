@@ -34,7 +34,7 @@ namespace FcfTest {
 
 FCF_DECLARE_FUNCTION(
                      (QuietTest,sum),
-                     "engine_cpu",
+                     "cpu",
                      FcfTest::BasisTest::QuietTest::sum,
                      int (*) (int*, int*, int*),
                      (

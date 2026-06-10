@@ -20,7 +20,7 @@ namespace fcf {
     void CallStorage::add(std::string a_name,
                           TFunction a_function,
                           const std::tuple<TPackCallDetails...>& a_phs){
-      addEx(a_name, "engine_cpu", std::string(), a_function, a_phs, std::string());
+      addEx(a_name, "cpu", std::string(), a_function, a_phs, std::string());
     }
 
     template <typename TFunction, typename ... TPackCallDetails>
@@ -28,14 +28,14 @@ namespace fcf {
                           TFunction a_function,
                           const TPackCallDetails& ... /*a_packCallDetails*/){
       typedef std::tuple<TPackCallDetails...> DetailsTuple;
-      addEx(a_name, "engine_cpu", std::string(), a_function, DetailsTuple(), std::string());
+      addEx(a_name, "cpu", std::string(), a_function, DetailsTuple(), std::string());
     }
 
     /*
     template <typename TFunctionResult, typename... TArgPack>
     void CallStorage::add(std::string a_name,
                           TFunctionResult (*a_function)(TArgPack...)){
-      add(a_name, "engine_cpu", std::string(), a_function, std::tuple<>(), std::string());
+      add(a_name, "cpu", std::string(), a_function, std::tuple<>(), std::string());
     }
     */
 
@@ -87,7 +87,7 @@ namespace fcf {
                     );
         if (bspace != cspace && !isCh) {
           std::string str(&a_space[bspace], &a_space[cspace]);
-          if (str == "*" || str == "engine_cpu") {
+          if (str == "*" || str == "cpu") {
             weight = 1;
           }
           spaces.insert(str);

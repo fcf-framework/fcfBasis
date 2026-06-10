@@ -62,7 +62,7 @@ FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::MinMaxSpecificatorTest::Item, "Fcf
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::MinMaxSpecificatorTest::Item, fcf::MinMaxSpecificator);
 
 FCF_DECLARE_FUNCTION(random,
-                     "engine_cpu",
+                     "cpu",
                      fcf::random,
                      void(*) (int*, int*, const int&, const int&),
                      (
@@ -74,7 +74,7 @@ FCF_DECLARE_FUNCTION(random,
 typedef FcfTest::BasisTest::MinMaxSpecificatorTest::Item Item;
 
 FCF_DECLARE_FUNCTION(random,
-                     "engine_cpu",
+                     "cpu",
                      fcf::random,
                      void(*) (Item*, Item*, const int&, const int&),
                      (

@@ -41,7 +41,7 @@ FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueS
 
 
 FCF_DECLARE_FUNCTION(fill,
-                   "engine_cpu",
+                   "cpu",
                    fcf::fill,
                    void(*) (FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, int),
                    (
