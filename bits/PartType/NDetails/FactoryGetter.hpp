@@ -1,7 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__NDETAILS__FACTORY_GETTER_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__NDETAILS__FACTORY_GETTER_HPP___
 
-#include "../../bits/PartType/TypeFactory.hpp"
+#include "../../../bits/PartType/TypeFactory.hpp"
 
 namespace fcf{
   namespace NDetails {
