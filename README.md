@@ -284,7 +284,7 @@ To use the library in your project:
 
 ```cmake
 add_executable(my_app main.cpp)
-target_include_directories(my_app PRIVATE /path/to/fcfBasis)
+target_include_directories(my_app PRIVATE /path/to/libraries/directory/with/fcfBasis)
 ```
 
 **main.cpp Example:**
