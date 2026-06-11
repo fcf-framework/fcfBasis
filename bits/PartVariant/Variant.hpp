@@ -1122,7 +1122,7 @@ namespace fcf{
   typename BasicVariant<innerBufferSize>::VariantEndpoint BasicVariant<innerBufferSize>::_variantEndpoint(){
     VariantEndpoint result{this, false, innerBufferSize};
     while((((BasicVariant*)result.variant)->_typeInfo) && (((BasicVariant*)result.variant)->_typeInfo->flags & TIF_VARIANT_REF)){
-      result.innerSize = ((BasicVariant*)result.variant)->_typeInfo->innerSize;
+      result.innerSize = ((BasicVariant*)result.variant)->_typeInfo->variantInnerSize;
       result.isConst |= TypeIndexConverter<>::isConst( ((BasicVariant*)result.variant)->_typeInfo->index );
       result.variant  = ((BasicVariant*)result.variant)->ptr();
     }

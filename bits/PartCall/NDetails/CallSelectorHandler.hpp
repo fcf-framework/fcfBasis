@@ -758,7 +758,6 @@ namespace fcf {
         if (a_currentInputArgument->singleStepIteration ||
             (a_currentInputArgument->pairCounter && a_currentInputArgument->nextArgument) ||
             a_isIterationMode ) {
-          //const TypeInfo* ti = ::fcf::getTypeInfo(a_currentInputArgument->clearTypeIndex);
           unsigned int lastTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex+1];
           state.ptrFunctionSignature->pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->pacodes[a_argumentIndex];
           a_inputArgumentIndex += a_currentInputArgument->singleStepIteration || a_isIterationMode ? 2 : 1;

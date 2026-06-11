@@ -26,26 +26,26 @@
 
 namespace fcf {
 
-  TypeInfo::TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_innerSize, size_t a_size)
+  TypeInfo::TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_size, size_t a_variantInnerSize)
     : index(a_index)
     , name(a_name)
     , flags(a_flags)
-    , innerSize(a_innerSize)
     , size(a_size)
     , dataIndex(TypeIndexConverter<>::getDataIndex(a_index))
     , resolver(0)
     , containerAccess(0)
+    , variantInnerSize(a_variantInnerSize)
     , initializer(0) {
   }
 
   TypeInfo::TypeInfo()
     : index(0)
     , flags(0)
-    , innerSize(0)
     , size(0)
     , dataIndex(0)
     , resolver(0)
     , containerAccess(0)
+    , variantInnerSize(0)
     , initializer(0) {
   }
 
@@ -53,7 +53,6 @@ namespace fcf {
     : index(a_source.index)
     , name(a_source.name)
     , flags(a_source.flags)
-    , innerSize(a_source.innerSize)
     , size(a_source.size)
     , dataIndex(a_source.dataIndex)
     , resolver(a_source.resolver)
@@ -61,6 +60,7 @@ namespace fcf {
     , backConverters(a_source.backConverters)
     , specificators(a_source.specificators)
     , containerAccess(a_source.containerAccess)
+    , variantInnerSize(a_source.variantInnerSize)
     , initializer(0)
   {
     if (a_source.initializer){
@@ -75,7 +75,6 @@ namespace fcf {
     index = a_source.index;
     name = a_source.name;
     flags = a_source.flags;
-    innerSize = a_source.innerSize;
     size = a_source.size;
     dataIndex = a_source.dataIndex;
     resolver = a_source.resolver;
@@ -83,6 +82,7 @@ namespace fcf {
     backConverters = a_source.backConverters;
     specificators = a_source.specificators;
     containerAccess = a_source.containerAccess;
+    variantInnerSize = a_source.variantInnerSize;
 
     if (a_source.initializer){
       initializer = a_source.initializer;

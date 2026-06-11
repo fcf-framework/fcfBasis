@@ -37,8 +37,6 @@ namespace fcf{
     std::string                                                   name;
     /** @brief Flags belonging to the type variant. **/
     unsigned char                                                 flags;
-    /** @brief Size of the data payload excluding reference/pointer overhead. */
-    size_t                                                        innerSize;
     /** @brief Total size of the type in memory. */
     size_t                                                        size;
     /** @brief Index of the underlying data type (ignoring const/ref qualifiers). */
@@ -53,6 +51,8 @@ namespace fcf{
     std::map<unsigned int, SpecificatorInfo>                      specificators;
     /** @brief Container access specificator for fast access. */
     UniversalCall                                                 containerAccess;
+    /** @brief filled for type Variant, stores the size of the inner buffer. */
+    size_t                                                        variantInnerSize;
     /** @brief Factory used to create/destroy instances of this type. */
     BaseTypeFactory*                                              initializer;
 
@@ -62,10 +62,10 @@ namespace fcf{
      * @param a_name Type name.
      * @param a_isVariantRef Is it a variant reference.
      * @param a_isVariant Is it a variant.
-     * @param a_innerSize Payload size.
+     * @param a_variantInnerSize Payload size.
      * @param a_size Total size.
      */
-    inline TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_innerSize, size_t a_size);
+    inline TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_size, size_t a_variantInnerSize);
 
     /** @brief Default constructor. */
     inline TypeInfo();
