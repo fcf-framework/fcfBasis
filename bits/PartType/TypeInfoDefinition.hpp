@@ -39,8 +39,6 @@ namespace fcf{
     unsigned char                                                 flags;
     /** @brief Total size of the type in memory. */
     size_t                                                        size;
-    /** @brief Index of the underlying data type (ignoring const/ref qualifiers). */
-    unsigned int                                                  dataIndex;
     /** @brief Function pointer to resolve the type to its underlying data. */
     ResolveSpecificator::CallFunctionType                         resolver;
     /** @brief Converters for converting FROM this type. */

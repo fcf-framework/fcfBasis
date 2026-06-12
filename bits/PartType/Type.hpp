@@ -62,7 +62,7 @@ namespace fcf {
 
   template <typename Ty>
   unsigned int Type<Ty, Nop>::dataIndex() {
-    return _info->dataIndex;
+    return TypeIndexConverter<>::getDataIndex(_info->index);
   }
 
   template <typename Ty>
