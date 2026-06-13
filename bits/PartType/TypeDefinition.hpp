@@ -86,7 +86,7 @@ namespace fcf{
        * @brief Returns the map of specificators registered for this type.
        * @return A constant reference to the map of specificator information.
        */
-      inline const std::map<unsigned int, SpecificatorInfo>& specificators();
+      inline const std::unordered_map<unsigned int, SpecificatorInfo>& specificators();
 
       /**
        * @brief Retrieves a specificator call for a given specificator type.

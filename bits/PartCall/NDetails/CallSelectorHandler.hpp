@@ -27,8 +27,8 @@ namespace fcf {
         UniversalCall                                       containerAccessResolver;
         UniversalCall                                       ptrContainerAccessResolver;
         void*                                               ptrArg;
-        const std::map<unsigned int, SpecificatorInfo>*     specificators;
-        const std::map<unsigned int, SpecificatorInfo>*     rawSpecificators;
+        const std::unordered_map<unsigned int, SpecificatorInfo>*     specificators;
+        const std::unordered_map<unsigned int, SpecificatorInfo>*     rawSpecificators;
         unsigned int                                        pairCounter;
         bool                                                ignoreConvertSeeker;
         bool                                                enablePtrSpecificators;
@@ -95,7 +95,7 @@ namespace fcf {
               continue;
             }
 
-            std::map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
+            std::unordered_map<unsigned int, SpecificatorInfo>::const_iterator specificatorIt = currentInputArgument->specificators->find(specificatorTypeIndex);
             int pointerCounter = 0;
             void* universalCall = 0;
             if (specificatorIt != currentInputArgument->specificators->cend()) {

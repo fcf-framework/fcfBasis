@@ -5,7 +5,7 @@
 
 namespace fcf{
 
-  typedef Variant (*UniversalCall)(void*, Variant*, size_t);
+  typedef Variant (*UniversalCall)(void* a_object, Variant* a_argv, size_t a_argc);
 
 } // fcf namespace
 

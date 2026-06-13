@@ -103,7 +103,7 @@ namespace fcf {
     struct SpecificatorUniversalResolver {
       UniversalCall operator()(const TypeInfo* a_typeInfo) const{
         const unsigned int specificatorIndex = Type<TSpecificator>().index();
-        std::map<unsigned int, SpecificatorInfo>::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
+        TypeInfo::Specificators::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
         return it != a_typeInfo->specificators.end() ? it->second.universalCall : 0;
       }
     };
@@ -112,7 +112,7 @@ namespace fcf {
     struct SpecificatorResolver {
       typename TSpecificator::CallType operator()(const TypeInfo* a_typeInfo) const{
         const unsigned int specificatorIndex = Type<TSpecificator>().index();
-        std::map<unsigned int, SpecificatorInfo>::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
+        fcf::TypeInfo::Specificators::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
         return it != a_typeInfo->specificators.end() ? (typename TSpecificator::CallType)it->second.call : (typename TSpecificator::CallType)0;
       }
     };

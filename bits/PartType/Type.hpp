@@ -71,7 +71,7 @@ namespace fcf {
   }
 
   template <typename Ty>
-  const std::map<unsigned int, SpecificatorInfo>& Type<Ty, Nop>::specificators() {
+  const std::unordered_map<unsigned int, SpecificatorInfo>& Type<Ty, Nop>::specificators() {
     return _info->specificators;
   }
 
