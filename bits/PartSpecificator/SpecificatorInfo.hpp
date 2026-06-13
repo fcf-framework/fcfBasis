@@ -18,7 +18,7 @@ namespace fcf{
      * 
      * Used for direct, high-performance execution of part-specific logic.
      *
-     * This field may be left blank if the function specifier signature 
+     * This field may be zero if the function specifier signature 
      * cannot be represented in a generic way 
      * (if it returns different data types depending on the type being processed).
      */
