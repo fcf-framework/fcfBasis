@@ -6,17 +6,21 @@
 namespace fcf{
 
   /**
-   * @brief Structure containing information about a specific part's operator.
+   * @brief Structure containing information about a specificator operator.
    * 
-   * This structure stores pointers to functions used for executing 
-   * operations specific to a particular part, supporting both 
-   * specialized and universal calling mechanisms.
+   * This structure stores pointers to functions used to perform 
+   * the specifier operations, supporting both 
+   * specialized and generic calling mechanisms.
    */
   struct SpecificatorInfo {
     /**
      * @brief Pointer to a specialized function.
      * 
      * Used for direct, high-performance execution of part-specific logic.
+     *
+     * This field may be left blank if the function specifier signature 
+     * cannot be represented in a generic way 
+     * (if it returns different data types depending on the type being processed).
      */
     void*         call;
 
