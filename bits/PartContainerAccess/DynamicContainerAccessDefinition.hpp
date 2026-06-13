@@ -61,7 +61,7 @@ namespace fcf{
 
       virtual const void* getConstValuePtr() const;
 
-      virtual Variant getValue() const;
+      virtual Variant value() const;
 
       virtual Variant getRefValue();
 
@@ -127,7 +127,7 @@ namespace fcf{
 
       virtual const void* getConstValuePtr() const;
 
-      virtual Variant getValue() const;
+      virtual Variant value() const;
 
       virtual Variant getRefValue();
 

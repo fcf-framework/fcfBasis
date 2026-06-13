@@ -22,7 +22,7 @@ namespace fcf {
       virtual void*         getValuePtr() = 0;
       virtual const void*   getConstValuePtr() const = 0;
       virtual Variant       getRefValue() = 0;
-      virtual Variant       getValue() const = 0;
+      virtual Variant       value() const = 0;
       virtual void          setValue(const Variant& a_value) = 0;
       virtual unsigned int  getValueTypeIndex() const = 0;
       virtual const TypeInfo* getValueTypeInfo() const = 0;

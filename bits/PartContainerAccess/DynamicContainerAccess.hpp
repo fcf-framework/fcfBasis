@@ -107,7 +107,7 @@ namespace fcf {
   };
 
   template <typename TContainerAccess>
-  Variant DynamicContainerAccess<TContainerAccess>::getValue() const {
+  Variant DynamicContainerAccess<TContainerAccess>::value() const {
     return Variant(((TContainerAccess&)_containerAccess).value());
   }
 
@@ -249,7 +249,7 @@ namespace fcf {
   };
 
   template <typename TContainer>
-  Variant DynamicContainerAccess< ContainerAccess<const TContainer> >::getValue() const {
+  Variant DynamicContainerAccess< ContainerAccess<const TContainer> >::value() const {
     return Variant(((ContainerAccessType&)_containerAccess).value());
   }
 
