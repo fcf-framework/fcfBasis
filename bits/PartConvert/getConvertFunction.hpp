@@ -52,7 +52,7 @@ namespace fcf {
     const ::fcf::TypeInfo::Converters& converters = Type<TDestination>().backConverters(); 
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_sourceTypeIndex);
     if (convIt == converters.end()) {
-      const TypeInfo* destinationTypeInfo = Type<TDestination>(). getTypeInfo();
+      const TypeInfo* destinationTypeInfo = Type<TDestination>(). typeInfo();
       const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex);
       throw ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeInfo->name);
     }
@@ -78,7 +78,7 @@ namespace fcf {
     ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
     if (convIt == converters.end()) {
       const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex);
-      const TypeInfo* sourceTypeInfo = Type<TSource>(). getTypeInfo();
+      const TypeInfo* sourceTypeInfo = Type<TSource>(). typeInfo();
       throw ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeInfo->name);
     }
     return (ConvertFunction)convIt->second;

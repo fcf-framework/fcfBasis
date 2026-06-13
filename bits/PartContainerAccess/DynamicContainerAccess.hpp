@@ -93,7 +93,7 @@ namespace fcf {
 
   template <typename TContainerAccess>
   const TypeInfo* DynamicContainerAccess<TContainerAccess>::getValueTypeInfo() const {
-    return Type<typename TContainerAccess::value_type>().getTypeInfo();
+    return Type<typename TContainerAccess::value_type>().typeInfo();
   }
 
   template <typename TContainerAccess>
@@ -234,7 +234,7 @@ namespace fcf {
 
   template <typename TContainer>
   const TypeInfo* DynamicContainerAccess< ContainerAccess<const TContainer> >::getValueTypeInfo() const {
-    return Type<typename ContainerAccessType::value_type>().getTypeInfo();
+    return Type<typename ContainerAccessType::value_type>().typeInfo();
   }
 
   template <typename TContainer>

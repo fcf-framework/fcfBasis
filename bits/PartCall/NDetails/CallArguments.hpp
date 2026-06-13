@@ -200,7 +200,7 @@ namespace fcf{
       void _argFiller(size_t a_index, TArg* a_arg) {
         ((void**)_ptr)[a_index] = (void*)a_arg;
         ArgumentInfo* infoPtr =  (ArgumentInfo*)(((void**)_ptr) + _capacity) + a_index;
-        infoPtr->typeInfo = Type<TArg>().getTypeInfo();
+        infoPtr->typeInfo = Type<TArg>().typeInfo();
         infoPtr->typeIndex = infoPtr->typeInfo->index;
       }
 
@@ -209,7 +209,7 @@ namespace fcf{
       inline void _argFill(ArgumentInfo* a_infoPtr, const TArg& a_arg, TPackArg&... a_packArg) {
         ((void**)_ptr)[Index] = (void*)&a_arg;
         ArgumentInfo* infoPtr = a_infoPtr + Index;
-        infoPtr->typeInfo = Type<TArg>().getTypeInfo();
+        infoPtr->typeInfo = Type<TArg>().typeInfo();
         infoPtr->typeIndex = infoPtr->typeInfo->index;
         _argFill<Index+1>(a_infoPtr, a_packArg...);
       }
@@ -314,7 +314,7 @@ namespace fcf{
             for(size_t i = size; i < a_index; ++i) {
               unsigned short index = (*_map)[i];
               if(index == USHRT_MAX){
-                _buffer.setArgumentInfo(i, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().getTypeInfo() });
+                _buffer.setArgumentInfo(i, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().typeInfo() });
               } else {
                 _buffer.setArgument(i, _source.getArgument(index));
                 _buffer.setArgumentInfo(i, _source.getArgumentInfo(index));
@@ -329,7 +329,7 @@ namespace fcf{
             for(size_t i = size; i < a_index; ++i) {
               unsigned short index = (*_map)[i];
               if(index == USHRT_MAX){
-                _buffer.setArgumentInfo(i, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().getTypeInfo() });
+                _buffer.setArgumentInfo(i, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().typeInfo() });
               } else {
                 _buffer.setArgument(i, _source.getArgument(index));
                 _buffer.setArgumentInfo(i, _source.getArgumentInfo(index));
@@ -339,7 +339,7 @@ namespace fcf{
           }
 
           if (a_createLastElement) {
-            _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().getTypeInfo() });
+            _buffer.setArgumentInfo(a_index, CallArguments::ArgumentInfo{Type<void>().index(), Type<void>().typeInfo() });
           }
 
         }

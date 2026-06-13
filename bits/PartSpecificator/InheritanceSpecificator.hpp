@@ -31,7 +31,7 @@ namespace fcf{
 
     struct ContainerValue {
       ContainerValue() {
-        value.push_back(Type<TBase>().getTypeInfo());
+        value.push_back(Type<TBase>().typeInfo());
         InheritanceSpecificator::InheritanceVector bases(Type<TBase, InheritanceSpecificator>().call());
         value.insert(value.end(), bases.begin(), bases.end());
       }

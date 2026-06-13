@@ -43,13 +43,13 @@ namespace FcfTest {
       }
       {
         typedef int type;
-        fcf::Variant v(fcf::Type<type>().getTypeInfo());
+        fcf::Variant v(fcf::Type<type>().typeInfo());
         FCF_TEST(v.getTypeIndex() == fcf::Type<type>().index(), v.getTypeIndex(), fcf::Type<type>().index());
         FCF_TEST(v.isInnerMemory() == true);
       }
       {
         typedef ConstructorTest::BigItem type;
-        fcf::Variant v(fcf::Type<type>().getTypeInfo());
+        fcf::Variant v(fcf::Type<type>().typeInfo());
         FCF_TEST(v.getTypeIndex() == fcf::Type<type>().index(), v.getTypeIndex(), fcf::Type<type>().index());
         FCF_TEST(v.isInnerMemory() == false);
       }
@@ -85,14 +85,14 @@ namespace FcfTest {
       {
         typedef int type;
         fcf::Variant v = "asd";
-        v.reset(fcf::Type<type>().getTypeInfo());
+        v.reset(fcf::Type<type>().typeInfo());
         FCF_TEST(v.getTypeIndex() == fcf::Type<type>().index(), v.getTypeIndex(), fcf::Type<type>().index());
         FCF_TEST(v.isInnerMemory() == true);
       }
       {
         typedef ConstructorTest::BigItem type;
         fcf::Variant v = "asd";
-        v.reset(fcf::Type<type>().getTypeInfo());
+        v.reset(fcf::Type<type>().typeInfo());
         FCF_TEST(v.getTypeIndex() == fcf::Type<type>().index(), v.getTypeIndex(), fcf::Type<type>().index());
         FCF_TEST(v.isInnerMemory() == false);
       }

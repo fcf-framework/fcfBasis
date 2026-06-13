@@ -69,13 +69,13 @@ int main() {
         fcf::Type<int> intType;
         std::cout << "Type Name: " << intType.name() << std::endl;
         std::cout << "Type Index: " << intType.index() << std::endl;
-        std::cout << "Type Size: " << intType.getTypeInfo()->size << " bytes" << std::endl;
+        std::cout << "Type Size: " << intType.typeInfo()->size << " bytes" << std::endl;
 
         // Get the type descriptor for std::string
         fcf::Type<std::string> stringType;
         std::cout << "\nType Name: " << stringType.name() << std::endl;
         std::cout << "Type Index: " << stringType.index() << std::endl;
-        std::cout << "Type Size: " << stringType.getTypeInfo()->size << " bytes" << std::endl;
+        std::cout << "Type Size: " << stringType.typeInfo()->size << " bytes" << std::endl;
     }
 
     std::cout << "\n=== [2] Working with pointers and constness ===" << std::endl;

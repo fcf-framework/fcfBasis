@@ -40,7 +40,7 @@ namespace fcf {
       void initialize(CallArguments& a_callArguments) {
         inputArguments.resize(a_callArguments.size());
         for(size_t i = 0; i < a_callArguments.size(); ++i) {
-          const TypeInfo* ti = a_callArguments.getTypeInfo(i);
+          const TypeInfo* ti         = a_callArguments.getTypeInfo(i);
           InputArgument& ia          = inputArguments[i];
           ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.getArgument(i) : (void*)0;
           ia.typeIndex               = ti->index;

@@ -31,8 +31,8 @@ namespace fcf {
     , name(a_name)
     , flags(a_flags)
     , size(a_size)
-    , resolver(0)
     , containerAccess(0)
+    , resolver(0)
     , variantInnerSize(a_variantInnerSize)
     , initializer(0) {
   }
@@ -41,8 +41,8 @@ namespace fcf {
     : index(0)
     , flags(0)
     , size(0)
-    , resolver(0)
     , containerAccess(0)
+    , resolver(0)
     , variantInnerSize(0)
     , initializer(0) {
   }
@@ -52,11 +52,11 @@ namespace fcf {
     , name(a_source.name)
     , flags(a_source.flags)
     , size(a_source.size)
-    , resolver(a_source.resolver)
     , converters(a_source.converters)
     , backConverters(a_source.backConverters)
     , specificators(a_source.specificators)
     , containerAccess(a_source.containerAccess)
+    , resolver(a_source.resolver)
     , variantInnerSize(a_source.variantInnerSize)
     , initializer(0)
   {
@@ -73,11 +73,11 @@ namespace fcf {
     name = a_source.name;
     flags = a_source.flags;
     size = a_source.size;
-    resolver = a_source.resolver;
     converters = a_source.converters;
     backConverters = a_source.backConverters;
     specificators = a_source.specificators;
     containerAccess = a_source.containerAccess;
+    resolver = a_source.resolver;
     variantInnerSize = a_source.variantInnerSize;
 
     if (a_source.initializer){

@@ -66,7 +66,7 @@ namespace fcf {
   }
 
   template <typename Ty>
-  const TypeInfo* Type<Ty, Nop>::getTypeInfo() {
+  const TypeInfo* Type<Ty, Nop>::typeInfo() {
     return _info;
   }
 

@@ -7,7 +7,7 @@
 struct TupleViewer {
   template <typename ItemTy>
   void operator()(size_t a_index, const ItemTy& a_item) {
-    std::cout << "  Key: " << a_index << ", Value: " << a_item << ", Type: " << fcf::Type<ItemTy>().getTypeInfo()->name << std::endl;
+    std::cout << "  Key: " << a_index << ", Value: " << a_item << ", Type: " << fcf::Type<ItemTy>().typeInfo()->name << std::endl;
   }
 };
 

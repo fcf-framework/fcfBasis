@@ -80,7 +80,7 @@ namespace fcf{
        * @brief Retrieves the TypeInfo structure for this type.
        * @return A pointer to the constant TypeInfo object.
        */
-      inline const TypeInfo* getTypeInfo();
+      inline const TypeInfo* typeInfo();
 
       /**
        * @brief Returns the map of specificators registered for this type.

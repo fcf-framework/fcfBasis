@@ -39,8 +39,6 @@ namespace fcf{
     unsigned char                                                 flags;
     /** @brief Total size of the type in memory. */
     size_t                                                        size;
-    /** @brief Function pointer to resolve the type to its underlying data. */
-    ResolveSpecificator::CallFunctionType                         resolver;
     /** @brief Converters for converting FROM this type. */
     Converters                                                    converters;
     /** @brief Converters for converting TO this type. */
@@ -49,6 +47,8 @@ namespace fcf{
     std::map<unsigned int, SpecificatorInfo>                      specificators;
     /** @brief Container access specificator for fast access. */
     UniversalCall                                                 containerAccess;
+    /** @brief Function pointer to resolve the type to its underlying data. */
+    ResolveSpecificator::CallFunctionType                         resolver;
     /** @brief filled for type Variant, stores the size of the inner buffer. */
     size_t                                                        variantInnerSize;
     /** @brief Factory used to create/destroy instances of this type. */

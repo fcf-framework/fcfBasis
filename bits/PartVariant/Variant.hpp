@@ -158,8 +158,8 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename Ty>
   BasicVariant<innerBufferSize>::BasicVariant(Type<Ty, Nop> a_type){
-    _ptr = a_type.getTypeInfo()->initializer->create(_size(a_type.getTypeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
-    _typeInfo = a_type.getTypeInfo();
+    _ptr = a_type.typeInfo()->initializer->create(_size(a_type.typeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
+    _typeInfo = a_type.typeInfo();
   }
 
   template <size_t innerBufferSize>
@@ -238,8 +238,8 @@ namespace fcf{
       return;
     }
 
-    _ptr = a_type.getTypeInfo()->initializer->create(_size(a_type.getTypeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
-    _typeInfo = a_type.getTypeInfo();
+    _ptr = a_type.typeInfo()->initializer->create(_size(a_type.typeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
+    _typeInfo = a_type.typeInfo();
   }
 
   template <size_t innerBufferSize>
@@ -971,7 +971,7 @@ namespace fcf{
         typedef typename std::remove_reference< ReferenceType >::type& EndpointType;
         *(void**)(&_mem[0]) = (void*)&a_variant;
         _ptr = (void*)&a_variant;
-        _typeInfo = Type<EndpointType>().getTypeInfo();
+        _typeInfo = Type<EndpointType>().typeInfo();
       }
       break;
       case REFERENCE:
@@ -1005,7 +1005,7 @@ namespace fcf{
         {
           typedef typename std::remove_reference< typename Type<DataType, StoredDataTypeSpecificator>::type >::type StoredType;
           _ptr = (void*)NDetails::VariantAllocator<StoredType, innerBufferSize>()(&_mem[0], a_value);
-          _typeInfo = Type<StoredType>().getTypeInfo();
+          _typeInfo = Type<StoredType>().typeInfo();
         }
         break;
       case FORCE_REFERENCE:
@@ -1017,7 +1017,7 @@ namespace fcf{
           typedef typename std::remove_reference< ReferenceType >::type EndpointType;
           typedef EndpointType& RefEndpointType;
           _ptr = *(void**)NDetails::VariantAllocator<EndpointType*, innerBufferSize>()(&_mem[0], (EndpointType*)&a_value);
-          _typeInfo = Type<RefEndpointType>().getTypeInfo();
+          _typeInfo = Type<RefEndpointType>().typeInfo();
         }
         break;
     }
@@ -1068,11 +1068,11 @@ namespace fcf{
             }
             typedef typename Type<DataType, StoredDataTypeSpecificator>::type StroredType;
             if (Type<StroredType>().dataIndex() == Type<DataType>().dataIndex()){
-              const TypeInfo* ti = Type<StroredType>().getTypeInfo();
+              const TypeInfo* ti = Type<StroredType>().typeInfo();
               curVariant->_ptr = ti->initializer->clone(_size(ti) <= ve.innerSize ? (void*)&curVariant->_mem[0] : 0, &a_value);
               curVariant->_typeInfo = ti;
             } else {
-              const TypeInfo* storedTypeInfo    = Type<StroredType>().getTypeInfo();
+              const TypeInfo* storedTypeInfo    = Type<StroredType>().typeInfo();
               Variant buffer(storedTypeInfo->index, &a_value, Type<DataType>().dataIndex());
               curVariant->_ptr      = storedTypeInfo->initializer->clone(_size(storedTypeInfo) <= ve.innerSize ? (void*)&curVariant->_mem[0] : 0, buffer.ptr());
               curVariant->_typeInfo = storedTypeInfo;
@@ -1088,7 +1088,7 @@ namespace fcf{
           _ptr = 0;
           _typeInfo = 0;
           _ptr = NDetails::VariantAllocator<type, innerBufferSize>()(&_mem[0], a_value);
-          _typeInfo = Type<type>().getTypeInfo();
+          _typeInfo = Type<type>().typeInfo();
         }
         break;
       case FORCE_REFERENCE:
@@ -1100,7 +1100,7 @@ namespace fcf{
           _typeInfo = 0;
           *(void**)&_mem[0] = (void*)&a_value;
           _ptr = (void*)&a_value;
-          _typeInfo = Type<type&>().getTypeInfo();
+          _typeInfo = Type<type&>().typeInfo();
         }
         break;
     }

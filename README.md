@@ -27,10 +27,10 @@ FCF_TYPEID_REGISTRY(MyStruct, "MyStruct", 0);
 int main() {
     // Getting metadata
     fcf::Type<MyStruct> type;
-    std::cout << "Name:  " << type.getTypeInfo()->name << std::endl;
-    std::cout << "Index: " << type.getTypeInfo()->index
-              << "; hex: 0x" << std::hex << type.getTypeInfo()->index << std::dec << std::endl;
-    std::cout << "Size:  " << type.getTypeInfo()->size << std::endl;
+    std::cout << "Name:  " << type.typeInfo()->name << std::endl;
+    std::cout << "Index: " << type.typeInfo()->index
+              << "; hex: 0x" << std::hex << type.typeInfo()->index << std::dec << std::endl;
+    std::cout << "Size:  " << type.typeInfo()->size << std::endl;
     return 0;
 }
 ```
@@ -185,7 +185,7 @@ The `fcf::foreach` macro provides a unified interface for iterating over element
 struct TupleViewer {
   template <typename ItemTy>
   void operator()(size_t a_index, const ItemTy& a_item) {
-    std::cout << "  Key: " << a_index << ", Value: " << a_item << ", Type: " << fcf::Type<ItemTy>().getTypeInfo()->name << std::endl;
+    std::cout << "  Key: " << a_index << ", Value: " << a_item << ", Type: " << fcf::Type<ItemTy>().typeInfo()->name << std::endl;
   }
 };
 
