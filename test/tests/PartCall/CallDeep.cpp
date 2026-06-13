@@ -166,7 +166,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "deep call"){
     banch([&m](){
       fcf::fill(m, 13579);
     });
-    fcf::NTest::inf() << "  Duration for " << fcf::Type<MatType>().name() << " 3x3: "<< banch.getDuration().count() << std::endl;
+    fcf::NTest::inf() << "  Duration for " << fcf::Type<MatType>().name() << " 3x3: "<< banch.duration().count() << std::endl;
   }
 
   {
@@ -182,7 +182,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "deep call"){
     banch([&m](){
       fcf::fill(m, 13579);
     });
-    fcf::NTest::inf() << "  Duration for " << fcf::Type<MatType>().name() << " 3x3: " << banch.getDuration().count() << std::endl;
+    fcf::NTest::inf() << "  Duration for " << fcf::Type<MatType>().name() << " 3x3: " << banch.duration().count() << std::endl;
   }
 
 }

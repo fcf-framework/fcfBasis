@@ -816,7 +816,6 @@ namespace fcf{
   TResult BasicVariant<innerBufferSize>::cast() const{
     typedef typename std::remove_const<TResult>::type ResultType;
 
-    
     static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
     static const unsigned int variantTypeIndex      = Type<Variant>().index();
     const unsigned int selfDataIndex = getDataTypeIndex();

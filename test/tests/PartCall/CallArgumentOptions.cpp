@@ -85,7 +85,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call (dim:1)"){
     duration([&var, &co](){
         fcf::call(co, "fill", var);
     });
-    fcf::NTest::inf() << "  call fill(Variant(std::vector<Variant> = {1,2,3,4,5}))() [no cache]: " << duration.getDuration().count() << "ns"<< std::endl;
+    fcf::NTest::inf() << "  call fill(Variant(std::vector<Variant> = {1,2,3,4,5}))() [no cache]: " << duration.duration().count() << "ns"<< std::endl;
     for(size_t i = 0; i < vec.size(); ++i){
       FCF_TEST(vec[i] == 999, vec[i], i);
     }
