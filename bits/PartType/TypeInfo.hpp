@@ -31,8 +31,8 @@ namespace fcf {
     , name(a_name)
     , flags(a_flags)
     , size(a_size)
-    , containerAccess(0)
-    , resolver(0)
+    , containerAccessUniversalCall(0)
+    , resolveCall(0)
     , variantInnerSize(a_variantInnerSize)
     , initializer(0) {
   }
@@ -41,8 +41,8 @@ namespace fcf {
     : index(0)
     , flags(0)
     , size(0)
-    , containerAccess(0)
-    , resolver(0)
+    , containerAccessUniversalCall(0)
+    , resolveCall(0)
     , variantInnerSize(0)
     , initializer(0) {
   }
@@ -55,8 +55,8 @@ namespace fcf {
     , converters(a_source.converters)
     , backConverters(a_source.backConverters)
     , specificators(a_source.specificators)
-    , containerAccess(a_source.containerAccess)
-    , resolver(a_source.resolver)
+    , containerAccessUniversalCall(a_source.containerAccessUniversalCall)
+    , resolveCall(a_source.resolveCall)
     , variantInnerSize(a_source.variantInnerSize)
     , initializer(0)
   {
@@ -76,8 +76,8 @@ namespace fcf {
     converters = a_source.converters;
     backConverters = a_source.backConverters;
     specificators = a_source.specificators;
-    containerAccess = a_source.containerAccess;
-    resolver = a_source.resolver;
+    containerAccessUniversalCall = a_source.containerAccessUniversalCall;
+    resolveCall = a_source.resolveCall;
     variantInnerSize = a_source.variantInnerSize;
 
     if (a_source.initializer){
@@ -120,14 +120,14 @@ namespace fcf {
     template <>
     struct SpecificatorUniversalResolver<ContainerAccessSpecificator> {
       UniversalCall operator()(const TypeInfo* a_typeInfo) const {
-        return a_typeInfo->containerAccess;
+        return a_typeInfo->containerAccessUniversalCall;
       }
     };
 
     template <>
     struct SpecificatorResolver<ResolveSpecificator> {
       ResolveSpecificator::CallType operator()(const TypeInfo* a_typeInfo) const{
-        return a_typeInfo->resolver;
+        return a_typeInfo->resolveCall;
       }
     };
 

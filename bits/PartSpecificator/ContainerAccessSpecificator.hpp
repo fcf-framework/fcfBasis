@@ -61,7 +61,7 @@ namespace fcf {
     void operator()(const SpecificatorInfo& a_si){
       unsigned int specificatorIndex = Type<ContainerAccessSpecificator>().index();
       Type<Ty>()._info->specificators[specificatorIndex] = a_si;
-      Type<Ty>()._info->containerAccess = a_si.universalCall;
+      Type<Ty>()._info->containerAccessUniversalCall = a_si.universalCall;
     }
   };
 

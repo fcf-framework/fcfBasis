@@ -45,7 +45,7 @@ namespace fcf {
           ia.ptrArg                  = state.strictSource ? (void*)a_callArguments.getArgument(i) : (void*)0;
           ia.typeIndex               = ti->index;
           ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(ti->index);
-          ia.resolver                = ti->resolver;
+          ia.resolver                = ti->resolveCall;
           ia.containerAccessResolver = ti->template getSpecificator<ContainerAccessSpecificator>(0);
           ia.specificators           = &ti->specificators;
           ia.pairCounter             = 0;
@@ -227,7 +227,7 @@ namespace fcf {
            ){
           unsigned int typeIndex = TypeIndexConverter<>::getUnpointerSingleIndex(currentInputArgument->typeIndex);
           const TypeInfo* typeInfo = ::fcf::getTypeInfo(typeIndex);
-          ResolveSpecificator::CallType resolver = typeInfo->resolver;
+          ResolveSpecificator::CallType resolver = typeInfo->resolveCall;
           void* ptr = currentInputArgument->ptrArg ? (void*)*(int**)currentInputArgument->ptrArg : 0;
           if (resolver) {
             ResolveData rd  = resolver(ptr);
@@ -611,7 +611,7 @@ namespace fcf {
         //a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(a_type);
         a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(a_type);
         const fcf::TypeInfo* typeInfo           = typeStorage.get(a_inputArgument.clearTypeIndex);
-        a_inputArgument.resolver                = typeInfo->resolver;
+        a_inputArgument.resolver                = typeInfo->resolveCall;
         a_inputArgument.containerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
         a_inputArgument.specificators           = &typeInfo->specificators;
         a_inputArgument.ignoreConvertSeeker     = false;

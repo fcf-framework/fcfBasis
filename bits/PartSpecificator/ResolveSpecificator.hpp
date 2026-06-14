@@ -25,7 +25,7 @@ namespace fcf{
     void operator()(const SpecificatorInfo& a_si){
       unsigned int specificatorIndex = Type<ResolveSpecificator>().index();
       Type<TContainer>()._info->specificators[specificatorIndex] = a_si;
-      Type<TContainer>()._info->resolver = (ResolveSpecificator::CallType)a_si.call;
+      Type<TContainer>()._info->resolveCall = (ResolveSpecificator::CallType)a_si.call;
     }
   };
 
