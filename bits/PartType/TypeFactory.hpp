@@ -1,7 +1,7 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_HPP___
 
-#include "BaseTypeFactory.hpp"
+#include "TypeFactoryBase.hpp"
 #include "NDetails/AssigmentWrapper.hpp"
 #include "../../bits/PartException/Exception.hpp"
 #include "../../bits/PartException/exceptions.hpp"
@@ -9,9 +9,9 @@
 namespace fcf {
 
   template <typename Ty>
-  class TypeFactory : public BaseTypeFactory {
+  class TypeFactory : public TypeFactoryBase {
     public:
-      friend class BaseTypeFactory;
+      friend class TypeFactoryBase;
 
       TypeFactory() {
         initialize< TypeFactory<Ty> >();
@@ -32,7 +32,7 @@ namespace fcf {
           new (a_mem) Ty(*(const Ty*)a_pdata);
         } catch(...) {
           if (allocMode) {
-            delete (char*)a_mem;
+            TypeFactoryBase::deallocate(a_mem);
           }
           throw;
         }
@@ -49,7 +49,7 @@ namespace fcf {
           new (a_mem) Ty();
         } catch(...) {
           if (allocMode) {
-            delete (char*)a_mem;
+            TypeFactoryBase::deallocate(a_mem);
           }
           throw;
         }
@@ -62,9 +62,9 @@ namespace fcf {
 
   };
 
-  class BaseRefTypeFactory : public BaseTypeFactory {
+  class BaseRefTypeFactory : public TypeFactoryBase {
     public:
-      friend class BaseTypeFactory;
+      friend class TypeFactoryBase;
 
       static void* _clone(void* a_mem, const void* a_pdata){
         if (!a_mem){
@@ -87,7 +87,7 @@ namespace fcf {
   template <typename Ty>
   class TypeFactory<Ty&> : public BaseRefTypeFactory {
     public:
-      friend class BaseTypeFactory;
+      friend class TypeFactoryBase;
 
       TypeFactory() {
         initialize< TypeFactory<Ty&> >();
@@ -101,7 +101,7 @@ namespace fcf {
   };
 
   template <typename Ty>
-  BaseTypeFactory* getTypeFactory(){
+  TypeFactoryBase* getTypeFactory(){
     static TypeFactory<Ty> factory;
     return &factory;
   }

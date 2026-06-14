@@ -1,10 +1,10 @@
-#ifndef ___FCF_BASIS__BITS__PART_TYPE__BASE_TYPE_FACTORY_HPP___
-#define ___FCF_BASIS__BITS__PART_TYPE__BASE_TYPE_FACTORY_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
+#define ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
 
 #include "../../macro.hpp"
 namespace fcf{
 
-  class BaseTypeFactory {
+  class TypeFactoryBase {
     public:
       typedef void  (*SetFunction)(void* a_destination, const void* a_source);
       typedef void* (*CloneFunction)(void* a_mem, const void* a_pdata);
@@ -19,6 +19,10 @@ namespace fcf{
         destroy = TFactory::_destroy;
       }
 
+      static inline void deallocate(void* a_mem){
+        delete[] static_cast<char*>(a_mem);
+      }
+
       SetFunction     set;
       CloneFunction   clone;
       CreateFunction  create;
@@ -27,4 +31,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__BASE_TYPE_FACTORY_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___

@@ -17,7 +17,7 @@
 #include "../../bits/PartType/TypeDefinition.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
-#include "../../bits/PartType/BaseTypeFactory.hpp"
+#include "../../bits/PartType/TypeFactoryBase.hpp"
 #include "../../bits/PartMetaType/MetaTypeRemoveDeepConst.hpp"
 
 #include "../../bits/PartType/TypeIndexConverter.hpp"

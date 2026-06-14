@@ -8,21 +8,21 @@ namespace fcf{
 
     template <bool IsPointer, typename Ty>
     struct FactoryGetter2{
-      inline static BaseTypeFactory* get(){
+      inline static TypeFactoryBase* get(){
         return getTypeFactory< Ty >();
       }
     };
 
     template <typename Ty>
     struct FactoryGetter2<true, Ty>{
-      inline static BaseTypeFactory* get(){
+      inline static TypeFactoryBase* get(){
         return getTypeFactory< void*& >();
       }
     };
 
     template <bool IsReference, typename Ty>
     struct FactoryGetter{
-      inline static BaseTypeFactory* get(){
+      inline static TypeFactoryBase* get(){
         typedef typename std::remove_reference<Ty>::type UnrefType;
         return FactoryGetter2< std::is_pointer<UnrefType>::value && std::is_reference<Ty>::value, Ty >::get();
       }
@@ -30,7 +30,7 @@ namespace fcf{
 
     template <typename Ty>
     struct FactoryGetter<true, Ty>{
-      inline static BaseTypeFactory* get(){
+      inline static TypeFactoryBase* get(){
         return getTypeFactory< int*  >();
       }
     };

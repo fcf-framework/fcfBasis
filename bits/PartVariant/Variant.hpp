@@ -851,7 +851,7 @@ namespace fcf{
     if (_typeInfo) {
       _typeInfo->initializer->destroy(_ptr);
       if (!isInnerMemory()){
-        delete (char*)_ptr;
+        TypeFactoryBase::deallocate(_ptr);
       }
     }
   }
@@ -916,7 +916,7 @@ namespace fcf{
             }
             curVariant->_typeInfo->initializer->destroy( curVariant->_ptr );
             if (_size(curVariant->_typeInfo) > selfEndpoint.innerSize ){
-              delete (char*)curVariant->_ptr;
+              TypeFactoryBase::deallocate(curVariant->_ptr);
             }
             curVariant->_ptr = 0;
             curVariant->_typeInfo = 0;
