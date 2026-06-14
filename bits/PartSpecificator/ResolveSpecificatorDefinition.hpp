@@ -12,7 +12,6 @@ namespace fcf{
   };
 
   struct ResolveSpecificator {
-    typedef ResolveData (*CallFunctionType)(void*);
     typedef ResolveData (*CallType)(void*);
   };
 

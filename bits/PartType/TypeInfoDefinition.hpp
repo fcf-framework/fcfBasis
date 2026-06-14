@@ -51,7 +51,7 @@ namespace fcf{
     /** @brief Container access specificator for fast access. */
     UniversalCall                                                 containerAccess;
     /** @brief Function pointer to resolve the type to its underlying data. */
-    ResolveSpecificator::CallFunctionType                         resolver;
+    ResolveSpecificator::CallType                                 resolver;
     /** @brief filled for type Variant, stores the size of the inner buffer. */
     size_t                                                        variantInnerSize;
     /** @brief Factory used to create/destroy instances of this type. */

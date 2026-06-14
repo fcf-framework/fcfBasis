@@ -583,7 +583,7 @@ namespace fcf {
         switch(a_cc.mode) {
           case CCM_RESOLVE:
             {
-              ResolveSpecificator::CallFunctionType converter = (ResolveSpecificator::CallFunctionType)a_cc.converter;
+              ResolveSpecificator::CallType converter = (ResolveSpecificator::CallType)a_cc.converter;
               ResolveData rd = converter((arg_type*)a_arguments.getArgument(a_cc.index));
               a_arguments.setArgument(a_cc.index, rd.data);
               a_arguments.setTypeIndex(a_cc.index, rd.typeIndex);
@@ -591,7 +591,7 @@ namespace fcf {
             break;
           case CCM_POINTER_RESOLVE:
             {
-              ResolveSpecificator::CallFunctionType converter = (ResolveSpecificator::CallFunctionType)a_cc.converter;
+              ResolveSpecificator::CallType converter = (ResolveSpecificator::CallType)a_cc.converter;
               ResolveData rd = converter(*(arg_type**)a_arguments.getArgument(a_cc.index));
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex) >= ConversionState::BUFFER_CAPACITY){

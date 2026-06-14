@@ -22,7 +22,7 @@ namespace fcf {
       struct InputArgument {
         unsigned int                                        typeIndex;
         unsigned int                                        clearTypeIndex;
-        ResolveSpecificator::CallFunctionType               resolver;
+        ResolveSpecificator::CallType                       resolver;
         ResolveData                                         resolveData;
         UniversalCall                                       containerAccessResolver;
         UniversalCall                                       ptrContainerAccessResolver;
