@@ -25,7 +25,7 @@ namespace fcf {
       static void* _clone(void* a_mem, const void* a_pdata){
         bool allocMode = false;
         if (!a_mem){
-          a_mem = new char[sizeof(Ty)];
+          a_mem = TypeFactoryBase::allocate(sizeof(Ty));
           allocMode = true;
         }
         try {
@@ -42,7 +42,7 @@ namespace fcf {
       static void* _create(void* a_mem){
         bool allocMode = false;
         if (!a_mem){
-          a_mem = new char[sizeof(Ty)];
+          a_mem = TypeFactoryBase::allocate(sizeof(Ty));
           allocMode = true;
         }
         try {

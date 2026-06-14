@@ -19,6 +19,10 @@ namespace fcf{
         destroy = TFactory::_destroy;
       }
 
+      static inline void* allocate(size_t a_size){
+        return new char[a_size];
+      }
+
       static inline void deallocate(void* a_mem){
         delete[] static_cast<char*>(a_mem);
       }
