@@ -2,6 +2,9 @@
 
 The library is designed for creating systems where data types, functions, and their interactions are defined or modified at runtime, while maintaining performance through caching and compile-time optimizations.
 
+
+### Attention! Now the library is being sorted. The names of variables can be changed.
+
 ## Core Concepts
 
 ### 1. Meta-Type System (`fcf::Type`)
