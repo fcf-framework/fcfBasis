@@ -20,8 +20,8 @@ namespace fcf {
         const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
         if (!pti)
           break;
-        const ::fcf::TypeInfo::Converters& converters = pti->converters; 
-        ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
+        const ::fcf::TypeInfo::ConvertersType& converters = pti->converters; 
+        ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_destinationTypeIndex);
         if (convIt == converters.end()) {
           break;
         }
@@ -49,8 +49,8 @@ namespace fcf {
   template <typename TDestination>
   ConvertFunction getConvertFunctionByDestination(unsigned int a_sourceTypeIndex){
     a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
-    const ::fcf::TypeInfo::Converters& converters = Type<TDestination>().backConverters(); 
-    ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_sourceTypeIndex);
+    const ::fcf::TypeInfo::ConvertersType& converters = Type<TDestination>().backConverters(); 
+    ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_sourceTypeIndex);
     if (convIt == converters.end()) {
       const TypeInfo* destinationTypeInfo = Type<TDestination>(). typeInfo();
       const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex);
@@ -74,8 +74,8 @@ namespace fcf {
   template <typename TSource>
   ConvertFunction getConvertFunctionBySource(unsigned int a_destinationTypeIndex){
     a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
-    const ::fcf::TypeInfo::Converters& converters = Type<TSource>().converters(); 
-    ::fcf::TypeInfo::Converters::const_iterator convIt = converters.find(a_destinationTypeIndex);
+    const ::fcf::TypeInfo::ConvertersType& converters = Type<TSource>().converters(); 
+    ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_destinationTypeIndex);
     if (convIt == converters.end()) {
       const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex);
       const TypeInfo* sourceTypeInfo = Type<TSource>(). typeInfo();

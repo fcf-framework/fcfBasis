@@ -29,10 +29,10 @@ namespace fcf{
    */
   struct TypeInfo{
     /** @brief Map of destination type index to conversion function. */
-    typedef std::unordered_map<unsigned int, ConvertFunction> Converters;
+    typedef std::unordered_map<unsigned int, ConvertFunction> ConvertersType;
 
     /** @brief Map of the mapping from the specificator type index to the specificator information. */
-    typedef std::unordered_map<unsigned int, SpecificatorInfo> Specificators;
+    typedef std::unordered_map<unsigned int, SpecificatorInfo> SpecificatorsType;
 
     /** @brief Unique identifier for the type. */
     unsigned int                                                  index;
@@ -43,11 +43,11 @@ namespace fcf{
     /** @brief Total size of the type in memory. */
     size_t                                                        size;
     /** @brief Converters for converting FROM this type. */
-    Converters                                                    converters;
+    ConvertersType                                                converters;
     /** @brief Converters for converting TO this type. */
-    Converters                                                    backConverters;
+    ConvertersType                                                backConverters;
     /** @brief Registered specificators (e.g., Less, Equal, Add) for this type. */
-    Specificators                                                 specificators;
+    SpecificatorsType                                             specificators;
     /** @brief Container access specificator for fast access. */
     UniversalCall                                                 containerAccess;
     /** @brief Function pointer to resolve the type to its underlying data. */

@@ -71,7 +71,7 @@ namespace fcf {
   }
 
   template <typename Ty>
-  const std::unordered_map<unsigned int, SpecificatorInfo>& Type<Ty, Nop>::specificators() {
+  const TypeInfo::SpecificatorsType& Type<Ty, Nop>::specificators() {
     return _info->specificators;
   }
 
@@ -82,12 +82,12 @@ namespace fcf {
   }
 
   template <typename Ty>
-  const TypeInfo::Converters& Type<Ty, Nop>::converters(){
+  const TypeInfo::ConvertersType& Type<Ty, Nop>::converters(){
     return _info->converters;
   }
 
   template <typename Ty>
-  const TypeInfo::Converters& Type<Ty, Nop>::backConverters(){
+  const TypeInfo::ConvertersType& Type<Ty, Nop>::backConverters(){
     return _info->backConverters;
   }
 

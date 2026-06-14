@@ -86,7 +86,7 @@ namespace fcf{
        * @brief Returns the map of specificators registered for this type.
        * @return A constant reference to the map of specificator information.
        */
-      inline const std::unordered_map<unsigned int, SpecificatorInfo>& specificators();
+      inline const TypeInfo::SpecificatorsType& specificators();
 
       /**
        * @brief Retrieves a specificator call for a given specificator type.
@@ -101,13 +101,13 @@ namespace fcf{
        * @brief Returns the map of converters for this type.
        * @return A constant reference to the map of converters.
        */
-      inline const TypeInfo::Converters& converters();
+      inline const TypeInfo::ConvertersType& converters();
 
       /**
        * @brief Returns the map of back-converters for this type.
        * @return A constant reference to the map of back-converters.
        */
-      inline const TypeInfo::Converters& backConverters();
+      inline const TypeInfo::ConvertersType& backConverters();
 
     protected:
       /** @brief Static pointer to the type's metadata in the global storage. */
