@@ -2,6 +2,9 @@
 
 The library is designed for creating systems where data types, functions, and their interactions are defined or modified at runtime, while maintaining performance through caching and compile-time optimizations.
 
+### Links:
+
+Official page with documentation: https://fcf-framework.is-a-fullstack.dev/cpp-libraries/fcfBasis
 
 ### Attention! The library is currently being refactored. Variable names may change.
 
