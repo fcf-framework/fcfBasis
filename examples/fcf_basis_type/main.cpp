@@ -103,8 +103,8 @@ int main() {
         int b = 20;
 
         // Get the comparison specificator for the int type
-        // getSpecificator() returns a universal function pointer (UniversalCall)
-        fcf::UniversalCall lessFunc = fcf::Type<int>().getSpecificator<fcf::LessSpecificator>();
+        // specificatorUniversalCall() returns a universal function pointer (UniversalCall)
+        fcf::UniversalCall lessFunc = fcf::Type<int>().specificatorUniversalCall<fcf::LessSpecificator>();
 
         if (lessFunc) {
             // Create a Variant object and bind a reference to variable b to it
@@ -136,7 +136,7 @@ int main() {
         fcf::Variant var2(obj2);
         fcf::Variant var3(obj3);
 
-        fcf::UniversalCall lessFunc = fcf::Type<MyCustomStruct>().getSpecificator<fcf::LessSpecificator>();
+        fcf::UniversalCall lessFunc = fcf::Type<MyCustomStruct>().specificatorUniversalCall<fcf::LessSpecificator>();
 
         if (lessFunc) {
             // Compare Alice < Bob

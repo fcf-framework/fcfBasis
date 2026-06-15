@@ -343,7 +343,7 @@ namespace fcf{
     if (!_typeInfo){
       return 0;
     }
-    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+    UniversalCall call = _typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
     if (!call) {
       return 0;
     }
@@ -358,7 +358,7 @@ namespace fcf{
     if (!_typeInfo){
       return false;
     }
-    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+    UniversalCall call = _typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
     return !!call;
   }
 
@@ -368,7 +368,7 @@ namespace fcf{
     if (!_typeInfo){
       return;
     }
-    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+    UniversalCall call = _typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
     if (!call) {
       return;
     }
@@ -389,7 +389,7 @@ namespace fcf{
     if (!_typeInfo){
       return;
     }
-    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+    UniversalCall call = _typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
     if (!call) {
       return;
     }
@@ -406,7 +406,7 @@ namespace fcf{
     if (!_typeInfo){
       return;
     }
-    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+    UniversalCall call = _typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
     if (!call) {
       return;
     }
@@ -417,7 +417,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   Variant BasicVariant<innerBufferSize>::operator[](const Variant& a_key){
-    UniversalCall call = _typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+    UniversalCall call = _typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
     if (!call) {
       return Variant();
     }
@@ -444,7 +444,7 @@ namespace fcf{
     if (!p) {
       return false;
     }
-    BoolSpecificator::CallType c = _typeInfo->getSpecificatorCall<BoolSpecificator>(0);
+    BoolSpecificator::CallType c = _typeInfo->specificatorCall<BoolSpecificator>(0);
     if (!c) {
       return true;
     }
@@ -465,10 +465,10 @@ namespace fcf{
     const unsigned int argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
     try {
       if (selfDataIndex == argDataIndex) {
-        return selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, argUnref.ptr);
+        return selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, argUnref.ptr);
       } else {
         Variant buffer(selfDataIndex, argUnref.ptr, argDataIndex);
-        return selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
+        return selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
       }
     } catch(...) {
       return selfDataIndex < argDataIndex;
@@ -499,18 +499,18 @@ namespace fcf{
     const unsigned int argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
     try {
       if (selfDataIndex == argDataIndex) {
-        bool res = selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, argUnref.ptr);
+        bool res = selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, argUnref.ptr);
         if (res){
           return true;
         }
-        return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, argUnref.ptr);
+        return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, argUnref.ptr);
       } else {
         Variant buffer(selfDataIndex, argUnref.ptr, argDataIndex);
-        bool res = selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
+        bool res = selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
         if (res) {
           return true;
         }
-        return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
+        return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
       }
     } catch(...){
       return selfDataIndex < argDataIndex;
@@ -541,10 +541,10 @@ namespace fcf{
     const unsigned int argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
     try {
       if (selfDataIndex == argDataIndex) {
-        return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, argUnref.ptr);
+        return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, argUnref.ptr);
       } else {
         Variant buffer(selfDataIndex, argUnref.ptr, argDataIndex);
-        return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
+        return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
       }
     } catch(...) {
       return false;
@@ -789,7 +789,7 @@ namespace fcf{
     if (getDataTypeIndex() != Type<TResult>().dataIndex()){
       const TypeInfo* ti = _typeInfo;
       while (ti) {
-        ResolveSpecificator::CallType resolveCall = ti->getSpecificatorCall<ResolveSpecificator>(0);
+        ResolveSpecificator::CallType resolveCall = ti->specificatorCall<ResolveSpecificator>(0);
         if (resolveCall) {
           ResolveData rd = resolveCall(ptr());
           if (rd.data){
@@ -1213,11 +1213,11 @@ namespace fcf{
     unsigned int argTypeIndex = Type<ArgType>().index();
     const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
-      return selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, &a_value);
+      return selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, &a_value);
     } else {
       try {
         Variant buffer(selfUnref.typeInfo->index, &a_value, argTypeIndex);
-        return selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
+        return selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
       } catch(...) {
         return selfDataIndex < argTypeIndex;
       }
@@ -1237,19 +1237,19 @@ namespace fcf{
     unsigned int argTypeIndex = Type<ArgType>().index();
     const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
-      bool res = selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, &a_value);
+      bool res = selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, &a_value);
       if (res) {
         return true;
       }
-      return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, &a_value);
+      return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, &a_value);
     } else {
       try {
         Variant buffer(selfDataIndex, &a_value, argTypeIndex);
-        bool res = selfUnref.typeInfo->template getSpecificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
+        bool res = selfUnref.typeInfo->template specificatorCall<LessSpecificator>()(selfUnref.ptr, buffer.ptr());
         if (res) {
           return true;
         }
-        return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
+        return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
       } catch(...) {
         return selfDataIndex < argTypeIndex;
       }
@@ -1269,12 +1269,12 @@ namespace fcf{
     const unsigned int argTypeIndex = Type<ArgType>().index();
     const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
-      return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, &a_value);
+      return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, &a_value);
     }
 
     try {
       Variant buffer(selfDataIndex, &a_value, argTypeIndex);
-      return selfUnref.typeInfo->template getSpecificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
+      return selfUnref.typeInfo->template specificatorCall<EqualSpecificator>()(selfUnref.ptr, buffer.ptr());
     } catch(...) {
     }
 
@@ -1293,11 +1293,11 @@ namespace fcf{
     } else if (!sde.typeInfo) {
       return *this;
     } else if (TypeIndexConverter<>::getDataIndex(dde.typeInfo->index) == TypeIndexConverter<>::getDataIndex(sde.typeInfo->index)) {
-      dde.typeInfo->template getSpecificatorCall<TSpecificator>()(dde.ptr, dde.ptr, sde.ptr);
+      dde.typeInfo->template specificatorCall<TSpecificator>()(dde.ptr, dde.ptr, sde.ptr);
     } else {
       try {
         BasicVariant<innerBufferSize> buffer(TypeIndexConverter<>::getDataIndex(dde.typeInfo->index), sde.ptr, TypeIndexConverter<>::getDataIndex(sde.typeInfo->index));
-        dde.typeInfo->template getSpecificatorCall<TSpecificator>()(dde.ptr, dde.ptr, buffer.ptr());
+        dde.typeInfo->template specificatorCall<TSpecificator>()(dde.ptr, dde.ptr, buffer.ptr());
       } catch(...){
       }
     }
@@ -1315,13 +1315,13 @@ namespace fcf{
       return BasicVariant<innerBufferSize>(*this);
     } else if (selfDataIndex == sourceDataIndex) {
       BasicVariant<innerBufferSize> result(::fcf::getTypeInfo(selfDataIndex));
-      _typeInfo->getSpecificatorCall<TSpecificator>()(result.ptr(), dde.ptr, sde.ptr);
+      _typeInfo->specificatorCall<TSpecificator>()(result.ptr(), dde.ptr, sde.ptr);
       return result;
     } else {
       BasicVariant<innerBufferSize> result(::fcf::getTypeInfo(selfDataIndex));
       try {
         BasicVariant<innerBufferSize> buffer(selfDataIndex, sde.ptr, sourceDataIndex);
-        _typeInfo->getSpecificatorCall<TSpecificator>()(result.ptr(), dde.ptr, buffer.ptr());
+        _typeInfo->specificatorCall<TSpecificator>()(result.ptr(), dde.ptr, buffer.ptr());
       } catch(...){
         return BasicVariant<innerBufferSize>(*this);
       }
@@ -1347,13 +1347,13 @@ namespace fcf{
     unsigned int argTypeIndex = Type<ArgType>().index();
     unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
-      dde.typeInfo->template getSpecificatorCall<TSpecificator>()(dde.ptr, dde.ptr, &a_value);
+      dde.typeInfo->template specificatorCall<TSpecificator>()(dde.ptr, dde.ptr, &a_value);
       return *this;
     }
 
     try {
       Variant buffer(selfDataIndex, &a_value, argTypeIndex);
-      dde.typeInfo->template getSpecificatorCall<TSpecificator>()(dde.ptr, dde.ptr, buffer.ptr());
+      dde.typeInfo->template specificatorCall<TSpecificator>()(dde.ptr, dde.ptr, buffer.ptr());
     } catch(...) {
     }
 
@@ -1377,13 +1377,13 @@ namespace fcf{
     const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
 
     if (selfDataIndex == argTypeIndex) {
-      dde.typeInfo->template getSpecificatorCall<TSpecificator>()(result.ptr(), dde.ptr, &a_value);
+      dde.typeInfo->template specificatorCall<TSpecificator>()(result.ptr(), dde.ptr, &a_value);
       return result;
     }
 
     try {
       Variant buffer(selfDataIndex, &a_value, argTypeIndex);
-      dde.typeInfo->template getSpecificatorCall<TSpecificator>()(result.ptr(), dde.ptr, buffer.ptr());
+      dde.typeInfo->template specificatorCall<TSpecificator>()(result.ptr(), dde.ptr, buffer.ptr());
     } catch(...){
       return BasicVariant<innerBufferSize>(*this);
     }

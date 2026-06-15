@@ -95,7 +95,7 @@ namespace fcf{
        * @return A UniversalCall function pointer. If the specifier is not found, a null pointer is returned.
        */
       template <typename TSubSpecificator>
-      inline UniversalCall getSpecificator() const;
+      inline UniversalCall specificatorUniversalCall() const;
 
       /**
        * @brief Returns the map of converters for this type.

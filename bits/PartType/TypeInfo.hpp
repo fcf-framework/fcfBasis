@@ -134,7 +134,7 @@ namespace fcf {
   }
 
   template <typename TSpecificator>
-  typename TSpecificator::CallType TypeInfo::getSpecificatorCall() const {
+  typename TSpecificator::CallType TypeInfo::specificatorCall() const {
     typename TSpecificator::CallType c = NDetails::SpecificatorResolver<TSpecificator>()(this);
     if (c) {
       return c;
@@ -143,7 +143,7 @@ namespace fcf {
   }
 
   template <typename TSpecificator>
-  typename TSpecificator::CallType TypeInfo::getSpecificatorCall(Exception* a_error) const {
+  typename TSpecificator::CallType TypeInfo::specificatorCall(Exception* a_error) const {
     typename TSpecificator::CallType c = NDetails::SpecificatorResolver<TSpecificator>()(this);
     if (c) {
       return c;
@@ -155,7 +155,7 @@ namespace fcf {
   }
 
   template <typename TSpecificator>
-  UniversalCall TypeInfo::getSpecificator() const {
+  UniversalCall TypeInfo::specificatorUniversalCall() const {
     UniversalCall uc = NDetails::SpecificatorUniversalResolver<TSpecificator>()(this);
     if (uc) {
       return uc;
@@ -164,7 +164,7 @@ namespace fcf {
   }
 
   template <typename TSpecificator>
-  UniversalCall TypeInfo::getSpecificator(Exception* a_error) const {
+  UniversalCall TypeInfo::specificatorUniversalCall(Exception* a_error) const {
     UniversalCall uc = NDetails::SpecificatorUniversalResolver<TSpecificator>()(this);
     if (uc) {
       return uc;

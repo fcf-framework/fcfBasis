@@ -94,7 +94,7 @@ namespace fcf{
      * @throws SpecificatorNotFoundException if not registered.
      */
     template <typename TSpecificator>
-    typename TSpecificator::CallType getSpecificatorCall() const;
+    typename TSpecificator::CallType specificatorCall() const;
 
     /**
      * @brief Retrieves a specificator call without throwing exceptions.
@@ -103,7 +103,7 @@ namespace fcf{
      * @return Function pointer or nullptr.
      */
     template <typename TSpecificator>
-    typename TSpecificator::CallType getSpecificatorCall(Exception* a_error) const;
+    typename TSpecificator::CallType specificatorCall(Exception* a_error) const;
 
     /**
      * @brief Retrieves a specificator call as a universal function pointer.
@@ -112,7 +112,7 @@ namespace fcf{
      * @throws SpecificatorNotFoundException if not registered.
      */
     template <typename TSpecificator>
-    UniversalCall getSpecificator() const;
+    UniversalCall specificatorUniversalCall() const;
 
     /**
      * @brief Retrieves a specificator call as a universal function pointer without throwing.
@@ -121,7 +121,7 @@ namespace fcf{
      * @return UniversalCall function pointer or nullptr.
      */
     template <typename TSpecificator>
-    UniversalCall getSpecificator(Exception* a_error) const;
+    UniversalCall specificatorUniversalCall(Exception* a_error) const;
 
   };
 

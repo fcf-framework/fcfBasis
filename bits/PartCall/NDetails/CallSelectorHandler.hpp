@@ -46,7 +46,7 @@ namespace fcf {
           ia.typeIndex               = ti->index;
           ia.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(ti->index);
           ia.resolver                = ti->resolveCall;
-          ia.containerAccessResolver = ti->template getSpecificator<ContainerAccessSpecificator>(0);
+          ia.containerAccessResolver = ti->template specificatorUniversalCall<ContainerAccessSpecificator>(0);
           ia.specificators           = &ti->specificators;
           ia.pairCounter             = 0;
           ia.enablePtrSpecificators  = false;
@@ -612,7 +612,7 @@ namespace fcf {
         a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(a_type);
         const fcf::TypeInfo* typeInfo           = typeStorage.get(a_inputArgument.clearTypeIndex);
         a_inputArgument.resolver                = typeInfo->resolveCall;
-        a_inputArgument.containerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+        a_inputArgument.containerAccessResolver = typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
         a_inputArgument.specificators           = &typeInfo->specificators;
         a_inputArgument.ignoreConvertSeeker     = false;
         a_inputArgument.enablePtrSpecificators  = a_enablePtrSpecificators;
@@ -623,7 +623,7 @@ namespace fcf {
           unsigned int rawTypeIndex     =  TypeIndexConverter<>::getRawIndex(a_type);
           const fcf::TypeInfo* typeInfo = getTypeInfo(rawTypeIndex);
           a_inputArgument.rawSpecificators = &typeInfo->specificators;
-          a_inputArgument.ptrContainerAccessResolver = typeInfo->getSpecificator<ContainerAccessSpecificator>(0);
+          a_inputArgument.ptrContainerAccessResolver = typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
         } else {
           a_inputArgument.rawSpecificators = 0;
           a_inputArgument.ptrContainerAccessResolver = 0;
