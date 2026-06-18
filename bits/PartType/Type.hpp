@@ -61,6 +61,11 @@ namespace fcf {
   }
 
   template <typename Ty>
+  size_t Type<Ty, Nop>::size() {
+    return _info->size;
+  }
+
+  template <typename Ty>
   unsigned int Type<Ty, Nop>::dataIndex() {
     return TypeIndexConverter<>::getDataIndex(_info->index);
   }

@@ -69,6 +69,12 @@ namespace fcf{
       inline unsigned int index();
 
       /**
+       * @brief Returns the size of the data for the type.
+       * @return Type size in bytes
+       */
+      inline size_t size();
+
+      /**
        * @brief Returns the data index of the type.
        *
        * The data index is used for type matching regardless of const/reference qualifiers.
