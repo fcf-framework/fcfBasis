@@ -78,13 +78,25 @@ namespace fcf {
   template <typename Ty>
   template <typename TSubSpecificator>
   UniversalCall Type<Ty, Nop>::specificatorUniversalCall() const {
-    return _info->specificatorUniversalCall<TSubSpecificator>(0);
+    return _info->specificatorUniversalCall<TSubSpecificator>();
+  }
+
+  template <typename Ty>
+  template <typename TSubSpecificator>
+  UniversalCall Type<Ty, Nop>::specificatorUniversalCall(fcf::Exception* a_dstError) const {
+    return _info->specificatorUniversalCall<TSubSpecificator>(a_dstError);
   }
 
   template <typename Ty>
   template <typename TSpecificator>
   typename TSpecificator::CallType Type<Ty, Nop>::specificatorCall() const {
-    return _info->specificatorCall<TSpecificator>(0);
+    return _info->specificatorCall<TSpecificator>();
+  }
+
+  template <typename Ty>
+  template <typename TSpecificator>
+  typename TSpecificator::CallType Type<Ty, Nop>::specificatorCall(fcf::Exception* a_dstError) const {
+    return _info->specificatorCall<TSpecificator>(a_dstError);
   }
 
   template <typename Ty>

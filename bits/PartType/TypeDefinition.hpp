@@ -91,20 +91,46 @@ namespace fcf{
       /**
        * @brief Retrieves a specificator universal call for a given specificator type.
        *
+       * If the specifier is not found, throw fcf::SpecificatorNotFoundException.
+       *
        * @tparam TSpecificator The type of the specificator to retrieve.
-       * @return A UniversalCall function pointer. If the specifier is not found, a null pointer is returned.
+       * @return A UniversalCall function pointer.
        */
       template <typename TSubSpecificator>
       inline UniversalCall specificatorUniversalCall() const;
 
       /**
-       * @brief Retrieves a specificator call for a given specificator type.
+       * @brief Retrieves a specificator universal call for a given specificator type.
        *
        * @tparam TSpecificator The type of the specificator to retrieve.
-       * @return A TSpecificator::CallType function pointer. If the specifier is not found, a null pointer is returned.
+       * @param fcf::Exception* a_dstError - Pointer to an error object whose fields 
+       *                                     will be filled in case of failure. May be zero.
+       * @return A UniversalCall function pointer. If the specifier is not found, a null pointer is returned.
+       */
+      template <typename TSubSpecificator>
+      inline UniversalCall specificatorUniversalCall(fcf::Exception* a_dstError) const;
+
+      /**
+       * @brief Retrieves a specificator call for a given specificator type.
+       *
+       * If the specifier is not found, throw fcf::SpecificatorNotFoundException.
+       * 
+       * @tparam TSpecificator The type of the specificator to retrieve.
+       * @return A TSpecificator::CallType function pointer.
        */
       template <typename TSpecificator>
       inline typename TSpecificator::CallType specificatorCall() const;
+
+      /**
+       * @brief Retrieves a specificator call for a given specificator type.
+       *
+       * @tparam TSpecificator The type of the specificator to retrieve.
+       * @param fcf::Exception* a_dstError - Pointer to an error object whose fields 
+       *                                     will be filled in case of failure. May be zero.
+       * @return A TSpecificator::CallType function pointer. If the specifier is not found, a null pointer is returned.
+       */
+      template <typename TSpecificator>
+      inline typename TSpecificator::CallType specificatorCall(fcf::Exception* a_dstError) const;
 
       /**
        * @brief Returns the map of converters for this type.
