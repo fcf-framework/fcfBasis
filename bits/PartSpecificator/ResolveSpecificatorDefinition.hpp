@@ -12,7 +12,7 @@ namespace fcf{
   };
 
   struct ResolveSpecificator {
-    typedef ResolveData (*CallType)(void*);
+    typedef ResolveData (*CallType)(void* a_object);
   };
 
   template <typename Ty>

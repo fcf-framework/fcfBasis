@@ -89,13 +89,22 @@ namespace fcf{
       inline const TypeInfo::SpecificatorsType& specificators();
 
       /**
-       * @brief Retrieves a specificator call for a given specificator type.
+       * @brief Retrieves a specificator universal call for a given specificator type.
        *
        * @tparam TSpecificator The type of the specificator to retrieve.
        * @return A UniversalCall function pointer. If the specifier is not found, a null pointer is returned.
        */
       template <typename TSubSpecificator>
       inline UniversalCall specificatorUniversalCall() const;
+
+      /**
+       * @brief Retrieves a specificator call for a given specificator type.
+       *
+       * @tparam TSpecificator The type of the specificator to retrieve.
+       * @return A TSpecificator::CallType function pointer. If the specifier is not found, a null pointer is returned.
+       */
+      template <typename TSpecificator>
+      inline typename TSpecificator::CallType specificatorCall() const;
 
       /**
        * @brief Returns the map of converters for this type.

@@ -82,6 +82,12 @@ namespace fcf {
   }
 
   template <typename Ty>
+  template <typename TSpecificator>
+  typename TSpecificator::CallType Type<Ty, Nop>::specificatorCall() const {
+    return _info->specificatorCall<TSpecificator>(0);
+  }
+
+  template <typename Ty>
   const TypeInfo::ConvertersType& Type<Ty, Nop>::converters(){
     return _info->converters;
   }
