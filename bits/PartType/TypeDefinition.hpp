@@ -9,7 +9,7 @@
 #include "TypePredefinition.hpp"
 
 #include "../../bits/PartType/TypeStorageDefinition.hpp"
-#include "../../bits/PartConvert/NDetails/setConverterDefinition.hpp"
+#include "../../bits/PartConvert/ConvertRegistrationDefinition.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartSpecificator/NDetails/SpecificatorRefRegistrarDefinition.hpp"
@@ -44,7 +44,7 @@ namespace fcf{
       friend struct NDetails::SpecificatorRegistrarIfTypeDeclaredImpl;
 
       template <typename TDestination, typename TSource>
-      friend void ::fcf::NDetails::setConverter();
+      friend void convertRegistration();
 
       /** @brief The underlying type owned by this Type descriptor. */
       typedef Ty         owner_type;

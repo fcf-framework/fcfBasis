@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include "../../../PartType.hpp"
-#include "../../../bits/PartConvert/NDetails/setConverter.hpp"
+#include "../../../bits/PartConvert/ConvertRegistration.hpp"
 
 namespace fcf {
   namespace NDetails {
@@ -41,8 +41,8 @@ namespace fcf {
 
     template <typename TItem>
     void operator()(const TItem&){
-      setConverter<TCurrent, TItem>();
-      setConverter<TItem, TCurrent>();
+      convertRegistration<TCurrent, TItem>();
+      convertRegistration<TItem, TCurrent>();
     }
   };
 
@@ -52,7 +52,7 @@ namespace fcf {
     }
     template <typename TItem>
     void operator()(const TItem&){
-      setConverter<TItem, TCurrent>();
+      convertRegistration<TItem, TCurrent>();
     }
   };
 
@@ -62,7 +62,7 @@ namespace fcf {
     }
     template <typename TItem>
     void operator()(const TItem&){
-      setConverter<TCurrent, TItem>();
+      convertRegistration<TCurrent, TItem>();
     }
   };
 
