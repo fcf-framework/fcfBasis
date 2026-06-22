@@ -376,8 +376,8 @@
       FCF_TYPEID_REGISTRY_IMPL_DECL_CLASSES((a_type<T1, T2>), (typename T1, typename T2), a_name + "<" + fcf::Type<T1>().name() + "," + fcf::Type<T2>().name() + ">", 0, false)
 #endif // #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
 
-#ifndef FCF_CONVERTERS_REGISTRY_FORCE
-#define FCF_CONVERTERS_REGISTRY_FORCE(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion) \
+#ifndef FCF_CONVERTERS_REGISTRATION_FORCE
+#define FCF_CONVERTERS_REGISTRATION_FORCE(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion) \
       namespace fcf { \
         namespace NDetails { \
           template <>\
@@ -390,6 +390,31 @@
         }\
       }
 #endif
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  #define FCF_CONVERTERS_REGISTRATION(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion) \
+    FCF_CONVERTERS_REGISTRATION_FORCE(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion)
+#else
+  #define FCF_CONVERTERS_REGISTRATION(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion)
+#endif
+
+
+#define FCF_CONVERTER_REGISTRATION_FORCE(am_destinationType, am_sourceType) \
+  namespace fcf { \
+    namespace NDetails { \
+      namespace {\
+        ::fcf::ConverterRegistration<am_destinationType, am_sourceType> FCF_BASIS_VARNAME(_g_fcf_convert_registration, __COUNTER__);\
+      }\
+    }\
+  }\
+
+#ifdef FCF_BASIS_IMPLEMENTATION
+  #define FCF_CONVERTER_REGISTRATION(am_destinationType, am_sourceType) \
+    FCF_CONVERTER_REGISTRATION_FORCE(am_destinationType, am_sourceType)
+#else
+  #define FCF_CONVERTER_REGISTRATION(am_destinationType, am_sourceType)
+#endif
+
 
 
 #ifndef FCF_DECLARE_FUNCTION

@@ -8,13 +8,20 @@ namespace fcf{
 
   FCF_ATTRIBUTE_MINIMIZE_BEGIN
   template <typename TDestination, typename TSource>
-  inline void FCF_ATTRIBUTE_MINIMIZE convertRegistration() {
+  inline void FCF_ATTRIBUTE_MINIMIZE converterRegistration() {
     TypeInfo* srcti = Type<TSource>()._info;
     TypeInfo* dstti = Type<TDestination>()._info;
     srcti->converters[dstti->index] = (ConvertFunction)NDetails::convertWrapper<TDestination, TSource>;
     dstti->backConverters[srcti->index] = (ConvertFunction)NDetails::convertWrapper<TDestination, TSource>;
   }
   FCF_ATTRIBUTE_MINIMIZE_END
+
+  template <typename TDestination, typename TSource>
+  struct ConverterRegistration{
+    inline ConverterRegistration() {
+      converterRegistration<TDestination, TSource>();
+    }
+  };
 
 } // fcf namespace
 
