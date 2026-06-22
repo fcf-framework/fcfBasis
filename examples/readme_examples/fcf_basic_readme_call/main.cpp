@@ -15,7 +15,7 @@ namespace math {
 //  signature,
 //  placeholders,
 //  a_sourceCode                    - only for other engines
-FCF_DECLARE_FUNCTION(
+FCF_FUNCTION_REGISTRATION(
   (math, add),
   "cpu",
   math::add,

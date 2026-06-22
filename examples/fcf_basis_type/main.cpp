@@ -56,7 +56,7 @@ namespace fcf {
  * @param MyCustomStruct The type that supports the specificator.
  * @param fcf::LessSpecificator The specificator being registered.
  */
-FCF_SPECIFICATOR_REGISTRY(MyCustomStruct,  fcf::LessSpecificator);
+FCF_SPECIFICATOR_REGISTRATION(MyCustomStruct,  fcf::LessSpecificator);
 
 // To allow fcf::Type to work with our type in the context of specificators (e.g., comparison),
 // it must be registered. In this example, we just show basic registration.

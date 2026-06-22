@@ -19,7 +19,7 @@ namespace fcf {
 }
 
 // Specifier Registration
-FCF_SPECIFICATOR_REGISTRY(Person, fcf::LessSpecificator);
+FCF_SPECIFICATOR_REGISTRATION(Person, fcf::LessSpecificator);
 
 int main() {
     Person p1{25, "Alice"};

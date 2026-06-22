@@ -32,7 +32,7 @@ namespace FcfTest {
   } // namespace BasisTest
 } // namespace FcfTest
 
-FCF_DECLARE_FUNCTION(
+FCF_FUNCTION_REGISTRATION(
                      (QuietTest,sum),
                      "cpu",
                      FcfTest::BasisTest::QuietTest::sum,

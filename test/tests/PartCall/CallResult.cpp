@@ -32,7 +32,7 @@ namespace FcfTest {
   } // namespace BasisTest
 } // namespace FcfTest
 
-FCF_DECLARE_FUNCTION(
+FCF_FUNCTION_REGISTRATION(
                      (fcftest,sum),
                      "cpu",
                      FcfTest::BasisTest::sum,
@@ -40,7 +40,7 @@ FCF_DECLARE_FUNCTION(
                      (),
                     );
 
-FCF_DECLARE_FUNCTION(
+FCF_FUNCTION_REGISTRATION(
                      (fcftest,sum),
                      "cpu",
                      FcfTest::BasisTest::sum,
@@ -50,7 +50,7 @@ FCF_DECLARE_FUNCTION(
                      ),
                     );
 
-FCF_DECLARE_FUNCTION(
+FCF_FUNCTION_REGISTRATION(
                      (fcftest,sum),
                      "cpu",
                      FcfTest::BasisTest::sum,

@@ -20,7 +20,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
                                                                       " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
-                                        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),)
+                                        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(void(),)
                                        );
     FCF_TEST(str == expected, str, expected);
   }
@@ -35,22 +35,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
                                                                       " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
-                                        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),())
-                                       );
-    FCF_TEST(str == expected, str, expected);
-  }
-  {
-    std::string expected = "typename ::fcf::CallDetails<"
-                                                                      " 1-1, 1-2 "
-                                                                    ">::active_type, "
-                           "typename ::fcf::CallDetails<"
-                                                                      " ::fcf::Nop "
-                                                                    ">::active_type, "
-                           "typename ::fcf::CallDetails<"
-                                                                      " ::fcf::Nop "
-                                                                    ">::active_type";
-    std::string str = FCFTEST_STRINGIFY(
-                                        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2)))
+                                        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(void(),())
                                        );
     FCF_TEST(str == expected, str, expected);
   }
@@ -59,13 +44,13 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
                                                                       " 1-1, 1-2 "
                                                                     ">::active_type, "
                            "typename ::fcf::CallDetails<"
-                                                                      " 2 "
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type, "
                            "typename ::fcf::CallDetails<"
                                                                       " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
-                                        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2)))
+                                        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(void(),((1-1, 1-2)))
                                        );
     FCF_TEST(str == expected, str, expected);
   }
@@ -77,10 +62,10 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
                                                                       " 2 "
                                                                     ">::active_type, "
                            "typename ::fcf::CallDetails<"
-                                                                      " 3 "
+                                                                      " ::fcf::Nop "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
-                                        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2), (3)))
+                                        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2)))
                                        );
     FCF_TEST(str == expected, str, expected);
   }
@@ -95,7 +80,22 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "declare call"){
                                                                       " 3 "
                                                                     ">::active_type";
     std::string str = FCFTEST_STRINGIFY(
-                                        _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2), (3), (4)))
+                                        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2), (3)))
+                                       );
+    FCF_TEST(str == expected, str, expected);
+  }
+  {
+    std::string expected = "typename ::fcf::CallDetails<"
+                                                                      " 1-1, 1-2 "
+                                                                    ">::active_type, "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 2 "
+                                                                    ">::active_type, "
+                           "typename ::fcf::CallDetails<"
+                                                                      " 3 "
+                                                                    ">::active_type";
+    std::string str = FCFTEST_STRINGIFY(
+                                        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(void(),((1-1, 1-2), (2), (3), (4)))
                                        );
     FCF_TEST(str == expected, str, expected);
   }

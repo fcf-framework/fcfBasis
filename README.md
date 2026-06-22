@@ -107,7 +107,7 @@ namespace math {
 //  signature,
 //  placeholders,
 //  a_sourceCode                    - Only for other engines
-FCF_DECLARE_FUNCTION(
+FCF_FUNCTION_REGISTRATION(
   (math, add),
   "cpu",
   math::add,
@@ -158,7 +158,7 @@ namespace fcf {
 }
 
 // Specifier Registration
-FCF_SPECIFICATOR_REGISTRY(Person, fcf::LessSpecificator);
+FCF_SPECIFICATOR_REGISTRATION(Person, fcf::LessSpecificator);
 
 int main() {
     Person p1{25, "Alice"};

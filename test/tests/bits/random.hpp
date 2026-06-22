@@ -59,7 +59,7 @@ namespace fcf {
 
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_DECLARE_FUNCTION(random,
+  FCF_FUNCTION_REGISTRATION(random,
                        "cpu",
                        fcf::random,
                        void(*) (float*, float*, const float&, const float&),
@@ -71,7 +71,7 @@ namespace fcf {
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_DECLARE_FUNCTION(random, 
+  FCF_FUNCTION_REGISTRATION(random, 
                         "cpu", 
                         fcf::random, 
                         void(*) (int*, int*, const int&, const int&),

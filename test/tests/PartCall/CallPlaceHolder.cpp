@@ -37,10 +37,10 @@ namespace fcf {
 
 FCF_TYPE_REGISTRATION_FORCE(std::vector<FcfTest::BasisTest::PHCTestDataItem>, "std::vector<FcfTest::BasisTest::PHCTestDataItem>", 0);
 FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, "FcfTest::BasisTest::PHCTestDataItem",                           0);
-FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecificator);
+FCF_SPECIFICATOR_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecificator);
 
 
-FCF_DECLARE_FUNCTION(fill,
+FCF_FUNCTION_REGISTRATION(fill,
                    "cpu",
                    fcf::fill,
                    void(*) (FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, int),

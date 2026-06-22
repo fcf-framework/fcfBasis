@@ -79,83 +79,83 @@
       };
 #endif
 
-#ifdef _MSC_VER
-  #define FCF_ATTRIBUTE_MINIMIZE
-  #define FCF_ATTRIBUTE_MINIMIZE_BEGIN  __pragma(optimize("s", on))
-  #define FCF_ATTRIBUTE_MINIMIZE_END    __pragma(optimize("", on))
-#elif defined(__clang__)
-  #define FCF_ATTRIBUTE_MINIMIZE_BEGIN
-  #define FCF_ATTRIBUTE_MINIMIZE __attribute__((cold, minsize))
-  #define FCF_ATTRIBUTE_MINIMIZE_END
-#else
-  #define FCF_ATTRIBUTE_MINIMIZE_BEGIN
-  #define FCF_ATTRIBUTE_MINIMIZE __attribute__((cold, optimize("Os")))
-  #define FCF_ATTRIBUTE_MINIMIZE_END
+#ifndef FCF_ATTRIBUTE_MINIMIZE
+  #ifdef _MSC_VER
+    #define FCF_ATTRIBUTE_MINIMIZE
+    #define FCF_ATTRIBUTE_MINIMIZE_BEGIN  __pragma(optimize("s", on))
+    #define FCF_ATTRIBUTE_MINIMIZE_END    __pragma(optimize("", on))
+  #elif defined(__clang__)
+    #define FCF_ATTRIBUTE_MINIMIZE_BEGIN
+    #define FCF_ATTRIBUTE_MINIMIZE __attribute__((cold, minsize))
+    #define FCF_ATTRIBUTE_MINIMIZE_END
+  #else
+    #define FCF_ATTRIBUTE_MINIMIZE_BEGIN
+    #define FCF_ATTRIBUTE_MINIMIZE __attribute__((cold, optimize("Os")))
+    #define FCF_ATTRIBUTE_MINIMIZE_END
+  #endif
+#endif
+
+#ifndef _FCF_BASIS_SINGLE_EXPAND_ARGUMENTS
+  #ifndef _MSC_VER
+    #define _FCF_BASIS_SINGLE_EXPAND_ARGUMENTS(am_macro, ...) am_macro __VA_ARGS__
+  #else 
+    #define _FCF_BASIS_SINGLE_EXPAND_ARGUMENTS(am_macro, am_args) am_macro am_args
+  #endif
 #endif
 
 #ifndef _MSC_VER
-#define FCF_SINGLE_EXPAND_ARGUMENTS(am_macro, ...) am_macro __VA_ARGS__
+  #define _FCF_BASIS_EXPAND_ARGUMENTS(am_macro, ...) am_macro __VA_ARGS__
 #else 
-#define FCF_SINGLE_EXPAND_ARGUMENTS(am_macro, am_args) am_macro am_args
+  #define _FCF_BASIS_EXPAND_ARGUMENTS_1(am_arg) am_arg
+  #define _FCF_BASIS_EXPAND_ARGUMENTS_0(am_macro, am_arg) _FCF_BASIS_EXPAND_ARGUMENTS_1(am_macro am_arg)
+  #define _FCF_BASIS_EXPAND_ARGUMENTS(am_macro, am_args) _FCF_BASIS_EXPAND_ARGUMENTS_0(am_macro, am_args)
 #endif
 
-#ifndef _MSC_VER
-#define FCF_EXPAND_ARGUMENTS(am_macro, ...) am_macro __VA_ARGS__
-#else 
-#define _FCF_EXPAND_ARGUMENTS_1(am_arg) am_arg
-#define _FCF_EXPAND_ARGUMENTS_0(am_macro, am_arg) _FCF_EXPAND_ARGUMENTS_1(am_macro am_arg)
-#define FCF_EXPAND_ARGUMENTS(am_macro, am_args) _FCF_EXPAND_ARGUMENTS_0(am_macro, am_args)
+#ifndef _FCF_BASIS_REMOVE_PARENTHESIS
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT
+  #define _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT(...) _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT __VA_ARGS__
+  #define _FCF_REMOVE_PARENTHESIS_0(...) _FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
+  #define _FCF_BASIS_REMOVE_PARENTHESIS(...) _FCF_REMOVE_PARENTHESIS_0(__VA_ARGS__)
 #endif
 
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_REMOVE_PARENTHESIS_ARGUMENT
-#define FCF_REMOVE_PARENTHESIS_ARGUMENT(...) FCF_REMOVE_PARENTHESIS_ARGUMENT __VA_ARGS__
-#define FCF_REMOVE_PARENTHESIS_0(...) FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
-#define FCF_REMOVE_PARENTHESIS(...) FCF_REMOVE_PARENTHESIS_0(__VA_ARGS__)
+#ifndef _FCF_BASIS_VARNAME
+  #define _FCF_BASIS_VARNAME__IMPL2(a_varName, a_suffix, a_counter) a_varName##a_suffix##a_counter
+  #define _FCF_BASIS_VARNAME__IMPL1(a_varName, a_suffix, a_counter) _FCF_BASIS_VARNAME__IMPL2(a_varName, a_suffix, a_counter)
+  #define _FCF_BASIS_VARNAME(a_varName, a_suffix) _FCF_BASIS_VARNAME__IMPL1(a_varName, a_suffix, __COUNTER__)
+#endif // #ifndef _FCF_BASIS_VARNAME
 
-#ifndef FCF_BASIS_VARNAME
-#define FCF_BASIS_VARNAME__IMPL2(a_varName, a_suffix, a_counter) a_varName##a_suffix##a_counter
-#define FCF_BASIS_VARNAME__IMPL1(a_varName, a_suffix, a_counter) FCF_BASIS_VARNAME__IMPL2(a_varName, a_suffix, a_counter)
-#define FCF_BASIS_VARNAME(a_varName, a_suffix) FCF_BASIS_VARNAME__IMPL1(a_varName, a_suffix, __COUNTER__)
-#endif // #ifndef FCF_BASIS_VARNAME
-
-#ifndef FCF_BASIS_CONCAT3
-#define FCF_BASIS_CONCAT3_IMPL2(a_varName, a_suffix, a_counter) a_varName##a_suffix##a_counter
-#define FCF_BASIS_CONCAT3_IMPL1(a_varName, a_suffix, a_counter) FCF_BASIS_CONCAT3_IMPL2(a_varName, a_suffix, a_counter)
-#define FCF_BASIS_CONCAT3(a_varName, a_suffix, a_counter) FCF_BASIS_CONCAT3_IMPL1(a_varName, a_suffix, a_counter)
+#ifndef _FCF_BASIS_CONCAT2
+  #define _FCF_BASIS_CONCAT2_IMPL2(a_varName, a_suffix) a_varName##a_suffix
+  #define _FCF_BASIS_CONCAT2_IMPL1(a_varName, a_suffix) _FCF_BASIS_CONCAT2_IMPL2(a_varName, a_suffix)
+  #define _FCF_BASIS_CONCAT2(a_varName, a_suffix) _FCF_BASIS_CONCAT2_IMPL1(a_varName, a_suffix)
 #endif // #ifndef FCF_BASIS_CONCAT3
 
-#ifndef FCF_CONCAT2
-#define FCF_CONCAT2_IMPL2(a_varName, a_suffix) a_varName##a_suffix
-#define FCF_CONCAT2_IMPL1(a_varName, a_suffix) FCF_CONCAT2_IMPL2(a_varName, a_suffix)
-#define FCF_CONCAT2(a_varName, a_suffix) FCF_CONCAT2_IMPL1(a_varName, a_suffix)
-#endif // #ifndef FCF_BASIS_CONCAT3
-
-#ifndef FCF_SPECIFICATOR_REGISTRY_FORCE
-#define __FCF_SPECIFICATOR_REGISTRY_FORCE__L2(a_itemName, a_counter) a_itemName##_##a_counter
-#define __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(a_itemName, a_counter) __FCF_SPECIFICATOR_REGISTRY_FORCE__L2(a_itemName, a_counter)
-#define FCF_SPECIFICATOR_REGISTRY_FORCE(a_type, a_specificator) \
+#ifndef FCF_SPECIFICATOR_REGISTRATION_FORCE
+  #define _FCF_SPECIFICATOR_REGISTRATION_FORCE__L2(a_itemName, a_counter) a_itemName##_##a_counter
+  #define _FCF_SPECIFICATOR_REGISTRATION_FORCE__L1(a_itemName, a_counter) _FCF_SPECIFICATOR_REGISTRATION_FORCE__L2(a_itemName, a_counter)
+  #define FCF_SPECIFICATOR_REGISTRATION_FORCE(a_type, a_specificator) \
       namespace { \
-        ::fcf::SpecificatorRegistrarHandler<a_type, a_specificator> __FCF_SPECIFICATOR_REGISTRY_FORCE__L1(specificatorReg, __COUNTER__);\
+        ::fcf::SpecificatorRegistrarHandler<a_type, a_specificator> _FCF_SPECIFICATOR_REGISTRATION_FORCE__L1(specificatorReg, __COUNTER__);\
       }
-#endif // #ifndef FCF_SPECIFICATOR_REGISTRY
+#endif // #ifndef FCF_SPECIFICATOR_REGISTRATION
 
-#ifndef FCF_SPECIFICATOR_REGISTRY
-#ifdef FCF_BASIS_IMPLEMENTATION
-#define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator) FCF_SPECIFICATOR_REGISTRY_FORCE(a_type, a_specificator)
-#else
-#define FCF_SPECIFICATOR_REGISTRY(a_type, a_specificator)
-#endif // #ifdef FCF_BASIS_IMPLEMENTATION
-#endif // #ifndef FCF_SPECIFICATOR_REGISTRY
+#ifndef FCF_SPECIFICATOR_REGISTRATION
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    #define FCF_SPECIFICATOR_REGISTRATION(a_type, a_specificator) FCF_SPECIFICATOR_REGISTRATION_FORCE(a_type, a_specificator)
+  #else
+    #define FCF_SPECIFICATOR_REGISTRATION(a_type, a_specificator)
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
+#endif // #ifndef FCF_SPECIFICATOR_REGISTRATION
 
-#ifndef FCF_BASIS_EXPAND
-#define FCF_BASIS_EXPAND(...) __VA_ARGS__
-#endif // #ifndef FCF_BASIS_EXPAND
+#ifndef _FCF_BASIS_EXPAND
+#define _FCF_BASIS_EXPAND(...) __VA_ARGS__
+#endif // #ifndef _FCF_BASIS_EXPAND
 
-#ifndef FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS
-#define FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS(a_type, a_templateArgs, a_name, a_index, a_basic_type, a_isTemplate) \
-      template < FCF_BASIS_EXPAND a_templateArgs>\
-      struct fcf::TypeId< FCF_BASIS_EXPAND a_type > {\
-        typedef FCF_BASIS_EXPAND a_basic_type basic_type;\
+#ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS
+#define _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS(a_type, a_templateArgs, a_name, a_index, a_basic_type, a_isTemplate) \
+      template < _FCF_BASIS_EXPAND a_templateArgs>\
+      struct fcf::TypeId< _FCF_BASIS_EXPAND a_type > {\
+        typedef _FCF_BASIS_EXPAND a_basic_type basic_type;\
         bool          autoIndex()   { return ((a_index) & 0x00ffffff)== 0; }\
         unsigned int  index()       { return a_index; }\
         FCF_ATTRIBUTE_MINIMIZE_BEGIN\
@@ -163,47 +163,47 @@
         FCF_ATTRIBUTE_MINIMIZE_END\
         bool          isTemplate()  { return a_isTemplate; }\
       };
-#endif // #ifndef FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS
+#endif // #ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS
 
-#ifndef FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES
-#define FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES(a_type, a_templateArgs, a_name, a_index, a_isTemplate)\
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type), (FCF_BASIS_EXPAND a_templateArgs),    a_name, a_index, a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type &), (FCF_BASIS_EXPAND a_templateArgs),  a_name + "&", a_index | (1 << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type &&), (FCF_BASIS_EXPAND a_templateArgs), a_name + "&&", a_index | (2 << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type *), (FCF_BASIS_EXPAND a_templateArgs),  a_name + "*", a_index | (8 << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type **), (FCF_BASIS_EXPAND a_templateArgs), a_name + "**", a_index | (16 << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type *&), (FCF_BASIS_EXPAND a_templateArgs),  a_name + "*&", a_index | ((1 | 8) << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((FCF_BASIS_EXPAND a_type **&), (FCF_BASIS_EXPAND a_templateArgs),  a_name + "**&", a_index | ((1 | 16) << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name , a_index | ((4) << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type &), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "&", a_index | ((1 | 4) << (24 + 1) ), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type &&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "&&", a_index | ((2 | 4) << (24 + 1)), a_type, a_isTemplate)\
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type *), (FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "*", a_index | ((8 | 4) << (24 + 1)), a_type, a_isTemplate) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type **), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**", a_index | (16 << (24 + 1) ) | (4 << (24 + 1)), a_type, a_isTemplate)\
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type *&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "*&", a_index | ((1 | 4 | 8) << (24 + 1)), a_type, a_isTemplate)\
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const FCF_BASIS_EXPAND a_type **&), (FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**&", a_index | ((1 | 4 | 16) << (24 + 1)), a_type, a_isTemplate)
-#endif // #ifndef FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES
+#ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES
+#define _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES(a_type, a_templateArgs, a_name, a_index, a_isTemplate)\
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type), (_FCF_BASIS_EXPAND a_templateArgs),    a_name, a_index, a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type &), (_FCF_BASIS_EXPAND a_templateArgs),  a_name + "&", a_index | (1 << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type &&), (_FCF_BASIS_EXPAND a_templateArgs), a_name + "&&", a_index | (2 << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type *), (_FCF_BASIS_EXPAND a_templateArgs),  a_name + "*", a_index | (8 << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type **), (_FCF_BASIS_EXPAND a_templateArgs), a_name + "**", a_index | (16 << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type *&), (_FCF_BASIS_EXPAND a_templateArgs),  a_name + "*&", a_index | ((1 | 8) << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((_FCF_BASIS_EXPAND a_type **&), (_FCF_BASIS_EXPAND a_templateArgs),  a_name + "**&", a_index | ((1 | 16) << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type), (_FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name , a_index | ((4) << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type &), (_FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "&", a_index | ((1 | 4) << (24 + 1) ), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type &&), (_FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "&&", a_index | ((2 | 4) << (24 + 1)), a_type, a_isTemplate)\
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type *), (_FCF_BASIS_EXPAND a_templateArgs),  "const " + a_name + "*", a_index | ((8 | 4) << (24 + 1)), a_type, a_isTemplate) \
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type **), (_FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**", a_index | (16 << (24 + 1) ) | (4 << (24 + 1)), a_type, a_isTemplate)\
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type *&), (_FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "*&", a_index | ((1 | 4 | 8) << (24 + 1)), a_type, a_isTemplate)\
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((const _FCF_BASIS_EXPAND a_type **&), (_FCF_BASIS_EXPAND a_templateArgs), "const " + a_name + "**&", a_index | ((1 | 4 | 16) << (24 + 1)), a_type, a_isTemplate)
+#endif // #ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES
 
-#ifndef FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR
-#define FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR(a_type, a_name, a_index) \
+#ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR
+#define _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR(a_type, a_name, a_index) \
       namespace { \
-        fcf::TypeInitializer<a_type> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<a_type*> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<a_type**> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<a_type&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<a_type&&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<const a_type*> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<const a_type*&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<const a_type**> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<const a_type**&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<const a_type&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
-        fcf::TypeInitializer<const a_type&&> FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<a_type> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<a_type*> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<a_type**> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<a_type&> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<a_type&&> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type*> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type*&> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type**> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type**&> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type&> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
+        fcf::TypeInitializer<const a_type&&> _FCF_BASIS_VARNAME(typeInfoRegistry, _);\
       }
-#endif // #ifndef FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR
+#endif // #ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR
 
 #ifndef FCF_TYPE_REGISTRATION_FORCE
 #define FCF_TYPE_REGISTRATION_FORCE(a_type, a_name, a_index) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)\
-      FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR(a_type, a_name, a_index)
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)\
+      _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR(a_type, a_name, a_index)
 #endif // #ifndef FCF_TYPE_REGISTRATION
 
 #ifndef FCF_TYPE_REGISTRATION
@@ -211,142 +211,137 @@
 #define FCF_TYPE_REGISTRATION(a_type, a_name, a_index) FCF_TYPE_REGISTRATION_FORCE(a_type, a_name, a_index)
 #else
 #define FCF_TYPE_REGISTRATION(a_type, a_name, a_index) \
-        FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)
+        _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)
 #endif
 #endif // #ifndef FCF_TYPE_REGISTRATION
 
 #ifndef FCF_TYPE_REGISTRATION_SINGLE
 #ifdef FCF_BASIS_IMPLEMENTATION
 #define FCF_TYPE_REGISTRATION_SINGLE(a_type, a_name, a_index) \
-        FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((a_type), (), a_name, a_index, (a_type), false)\
-        fcf::TypeInitializer<a_type> FCF_BASIS_VARNAME(typeInfoRegistry, _);
+        _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((a_type), (), a_name, a_index, (a_type), false)\
+        fcf::TypeInitializer<a_type> _FCF_BASIS_VARNAME(typeInfoRegistry, _);
 #else
 #define FCF_TYPE_REGISTRATION_SINGLE(a_type, a_name, a_index) \
-        FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((a_type), (), a_name, a_index, (a_type), false)
+        _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS((a_type), (), a_name, a_index, (a_type), false)
 #endif
 #endif // #ifndef FCF_TYPE_REGISTRATION_SINGLE
 
-#ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
-#define FCF_TYPEID_TEMPLATE1_REGISTRY(a_type, a_name) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type<T1>), (typename T1), a_name + "<" + fcf::Type<T1>().name() + ">", 0, true)
-#endif // #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
-
-#ifndef FCF_TEMPLATE_TYPEID_DECLARE
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT ::
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
-#define FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT(...) FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
-#define FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_0(...) FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
-#define FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS(...) FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_0(__VA_ARGS__)
-#define FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES_1(a_a1, a_a2, a_a3,...)\
-      FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a1)\
-      FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a2)\
-      FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a3)
-#define FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES_0(...)\
-      FCF_EXPAND_ARGUMENTS(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES_1, (__VA_ARGS__, (), (), ()))
-#define FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_type) \
-      FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES_0(FCF_REMOVE_PARENTHESIS( FCF_REMOVE_PARENTHESIS_ARGUMENT a_type))
+#ifndef FCF_TEMPLATE_TYPE_REGISTRATION
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT ::
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT(...) _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_0(...) _FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS(...) _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_0(__VA_ARGS__)
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_1(a_a1, a_a2, a_a3,...)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a1)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a2)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a3)
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_0(...)\
+          _FCF_BASIS_EXPAND_ARGUMENTS(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_1, (__VA_ARGS__, (), (), ()))
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_type) \
+          _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_type))
 
 
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT { namespace 
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT(...) FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_0(...) FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS(...) FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_0(__VA_ARGS__)
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES_1(a_a1, a_a2, a_a3,...)\
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a1)\
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a2)\
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a3)
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES_0(...)\
-      FCF_EXPAND_ARGUMENTS( FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES_1, (__VA_ARGS__, (), (), ()) )
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES(a_type) \
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES_0(FCF_REMOVE_PARENTHESIS( FCF_REMOVE_PARENTHESIS_ARGUMENT a_type))
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT { namespace 
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT(...) _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_0(...) _FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS(...) _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_0(__VA_ARGS__)
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_1(a_a1, a_a2, a_a3,...)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a1)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a2)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a3)
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_0(...)\
+          _FCF_BASIS_EXPAND_ARGUMENTS( _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_1, (__VA_ARGS__, (), (), ()) )
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_type) \
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_type))
 
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__INPUT_0(a_a1, a_a2, ...) a_a2
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__INPUT(a_a1, a_a2, ...) FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__INPUT_0(a_a1, a_a2, __VA_ARGS__)
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT 
-#define FCF_REMOVE_PARENTHESIS_SELECTORFCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY ,
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT(...) FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_0(...) FCF_SINGLE_EXPAND_ARGUMENTS(FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__INPUT, (FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__, }))
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS(...) FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_0(__VA_ARGS__)
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES_1(a_a1, a_a2, a_a3,...)\
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a1)\
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a2)\
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS(FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a3)
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES_0(...)\
-      FCF_EXPAND_ARGUMENTS(FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES_1, (__VA_ARGS__, (), (), ()))
-#define FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES(a_type) \
-      FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES_0(FCF_REMOVE_PARENTHESIS( FCF_REMOVE_PARENTHESIS_ARGUMENT a_type))
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT_0(a_a1, a_a2, ...) a_a2
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT(a_a1, a_a2, ...) _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT_0(a_a1, a_a2, __VA_ARGS__)
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT 
+  #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY ,
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT(...) _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_0(...) _FCF_BASIS_SINGLE_EXPAND_ARGUMENTS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT, (_FCF_REMOVE_PARENTHESIS_SELECTOR##__VA_ARGS__, }))
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS(...) _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_0(__VA_ARGS__)
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES_1(a_a1, a_a2, a_a3,...)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a1)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a2)\
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT a_a3)
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES_0(...)\
+          _FCF_BASIS_EXPAND_ARGUMENTS(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES_1, (__VA_ARGS__, (), (), ()))
+  #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES(a_type) \
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_type))
 
 
-#define FCF_TEMPLATE_TYPEID_DECLARE(a_template, a_templateName, a_templateArgumentsDeclaration, a_templateArguments, a_templateArgumentsName) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template) < FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) >), \
-                                            a_templateArgumentsDeclaration, \
-                                            a_templateName + "<" + FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsName) + ">", \
-                                            0,\
-                                            true)\
-      namespace fcf {\
-        namespace NDetails {\
-          namespace Declarations \
-            FCF_CONCAT2(FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES(a_template), _specificator_declare) {\
-              template <unsigned int Index>\
-              struct PartialSpecificatorRegistrar;\
-              template <typename TUnstatic, unsigned int UnstaticCounter, int Index, typename = void>\
-              struct PartialSpecificatorRegistrarExists {\
-                enum { value = false };\
-              };\
-              template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
-              struct PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index, decltype(void(PartialSpecificatorRegistrar<Index>()))> {\
-                enum { value = true };\
-              };\
-              template <typename TUnstatic, unsigned int UnstaticCounter, int Index = -1, bool Exisis = true>\
-              struct PartialSpecificatorRegistrarLast {\
-                enum { value = PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index+1, PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index+1>::value >::value };\
-              };\
-              template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
-              struct PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index, false> {\
-                enum { value = Index };\
-              };\
-            FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES(a_template)\
+  #define FCF_TEMPLATE_TYPE_REGISTRATION(a_template, a_templateName, a_templateArgumentsDeclaration, a_templateArguments, a_templateArgumentsName) \
+          _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) < _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments) >), \
+                                              a_templateArgumentsDeclaration, \
+                                              a_templateName + "<" + _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsName) + ">", \
+                                              0,\
+                                              true)\
+        namespace fcf {\
+          namespace NDetails {\
+            namespace Declarations \
+              _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_template), _specificator_declare) {\
+                template <unsigned int Index>\
+                struct PartialSpecificatorRegistrar;\
+                template <typename TUnstatic, unsigned int UnstaticCounter, int Index, typename = void>\
+                struct PartialSpecificatorRegistrarExists {\
+                  enum { value = false };\
+                };\
+                template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
+                struct PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index, decltype(void(PartialSpecificatorRegistrar<Index>()))> {\
+                  enum { value = true };\
+                };\
+                template <typename TUnstatic, unsigned int UnstaticCounter, int Index = -1, bool Exisis = true>\
+                struct PartialSpecificatorRegistrarLast {\
+                  enum { value = PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index+1, PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index+1>::value >::value };\
+                };\
+                template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
+                struct PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index, false> {\
+                  enum { value = Index };\
+                };\
+              _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES(a_template)\
+            }\
           }\
         }\
-      }\
-      namespace fcf {\
-        namespace NDetails {\
-          template <typename TUnstatic, unsigned int UnstaticCounter, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index, unsigned int Size >\
-          struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template) <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Size> {\
-            SpecificatorRegistrarCallerWalker(){\
-              typedef FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template) <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> type;\
-              ::fcf::NDetails::Declarations FCF_CONCAT2(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template),_specificator_declare)::PartialSpecificatorRegistrar<Index> registrar;\
-              registrar.template registry<type>();\
-              SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, type, Index+1, Size> nextCaller;\
-            }\
-          };\
-          template <typename TUnstatic, unsigned int UnstaticCounter, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index>\
-          struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template) <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Index> {\
-            SpecificatorRegistrarCallerWalker(){\
-            }\
-          };\
-          template <typename TUnstatic, unsigned int UnstaticCounter,  FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
-          struct SpecificatorRegistrarCaller<TUnstatic, UnstaticCounter, FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template) <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> > {\
-            SpecificatorRegistrarCaller(){\
-              SpecificatorRegistrarCallerWalker<TUnstatic, \
-                                                UnstaticCounter, \
-                                                FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template) <FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, \
-                                                0, \
-                                                ::fcf::NDetails::Declarations FCF_CONCAT2(FCF_TEMPLATE_TYPEID_DECLARE__NAMESPACES(a_template),_specificator_declare)::PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter>::value\
-              > registrer;\
-            }\
-          };\
-        }\
-      }
-#endif // #ifndef FCF_TEMPLATE_TYPEID_DECLARE
+        namespace fcf {\
+          namespace NDetails {\
+            template <typename TUnstatic, unsigned int UnstaticCounter, _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index, unsigned int Size >\
+            struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Size> {\
+              SpecificatorRegistrarCallerWalker(){\
+                typedef _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> type;\
+                ::fcf::NDetails::Declarations _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template),_specificator_declare)::PartialSpecificatorRegistrar<Index> registrar;\
+                registrar.template registry<type>();\
+                SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, type, Index+1, Size> nextCaller;\
+              }\
+            };\
+            template <typename TUnstatic, unsigned int UnstaticCounter, _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index>\
+            struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Index> {\
+              SpecificatorRegistrarCallerWalker(){\
+              }\
+            };\
+            template <typename TUnstatic, unsigned int UnstaticCounter,  _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
+            struct SpecificatorRegistrarCaller<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> > {\
+              SpecificatorRegistrarCaller(){\
+                SpecificatorRegistrarCallerWalker<TUnstatic, \
+                                                  UnstaticCounter, \
+                                                  _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, \
+                                                  0, \
+                                                  ::fcf::NDetails::Declarations _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template),_specificator_declare)::PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter>::value\
+                > registrer;\
+              }\
+            };\
+          }\
+        }
+#endif // #ifndef FCF_TEMPLATE_TYPE_REGISTRATION
 
-#ifndef FCF_TEMPLATE_SPECIFICATOR_REGISTRY
-#define FCF_TEMPLATE_SPECIFICATOR_REGISTRY(a_template, a_specificator)\
+#ifndef FCF_TEMPLATE_SPECIFICATOR_REGISTRATION
+#define FCF_TEMPLATE_SPECIFICATOR_REGISTRATION(a_template, a_specificator)\
       namespace fcf {\
         namespace NDetails {\
           namespace Declarations \
-            FCF_CONCAT2(FCF_TEMPLATE_TYPEID_DECLARE__DECLNAMESPACES(a_template), _specificator_declare) {\
+            _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_template), _specificator_declare) {\
               template <>\
               struct PartialSpecificatorRegistrar< PartialSpecificatorRegistrarLast<void, __COUNTER__>::value > {\
                 template <typename Ty>\
@@ -354,27 +349,12 @@
                   ::fcf::SpecificatorRegistrarHandler<Ty, a_specificator> registrar;\
                 }\
               };\
-            FCF_TEMPLATE_TYPEID_DECLARE__DECLENDNAMESPACES(a_template)\
+            _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES(a_template)\
           }\
         }\
       }
 #endif
 
-
-#ifndef FCF_TYPEID_SUBTEMPLATE1_REGISTRY
-#define FCF_TYPEID_SUBTEMPLATE1_REGISTRY(a_type, a_name) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type<T1> >), (typename T1), a_name + "<" + fcf::Type<T1>().name() + ">>", 0, false)
-#endif // #ifndef FCF_TYPEID_SUBTEMPLATE1_REGISTRY
-
-#ifndef FCF_TYPEID_TEMPLATE1_SUBTYPE_REGISTRY
-#define FCF_TYPEID_TEMPLATE1_SUBTYPE_REGISTRY(a_type, a_subtype, a_name, a_subname) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type<T1>::iterator), (typename T1), a_name + "<" + fcf::Type<T1>().name() + ">::" + a_subname, 0, false)
-#endif // #ifndef FCF_TYPEID_TEMPLATE1_REGISTRY
-
-#ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
-#define FCF_TYPEID_TEMPLATE2_REGISTRY(a_type, a_name) \
-      FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type<T1, T2>), (typename T1, typename T2), a_name + "<" + fcf::Type<T1>().name() + "," + fcf::Type<T2>().name() + ">", 0, false)
-#endif // #ifndef FCF_TYPEID_TEMPLATE2_REGISTRY
 
 #ifndef FCF_CONVERTERS_REGISTRATION_FORCE
 #define FCF_CONVERTERS_REGISTRATION_FORCE(a_crossGroup, a_type, a_enableToConversion, a_enableFromConversion) \
@@ -386,7 +366,7 @@
             enum { fromConversion = a_enableFromConversion };\
             enum { toConversion = a_enableToConversion };\
           };\
-          ConvertersRegistrarInitializer<a_crossGroup, __COUNTER__, a_type, ConvertersRegistrarMarkerEnd<a_crossGroup, __COUNTER__>::value, a_enableToConversion, a_enableFromConversion> FCF_BASIS_VARNAME(_g_converters_registrar, __COUNTER__);\
+          ConvertersRegistrarInitializer<a_crossGroup, __COUNTER__, a_type, ConvertersRegistrarMarkerEnd<a_crossGroup, __COUNTER__>::value, a_enableToConversion, a_enableFromConversion> _FCF_BASIS_VARNAME(_g_converters_registrar, __COUNTER__);\
         }\
       }
 #endif
@@ -403,7 +383,7 @@
   namespace fcf { \
     namespace NDetails { \
       namespace {\
-        ::fcf::ConverterRegistration<am_destinationType, am_sourceType> FCF_BASIS_VARNAME(_g_fcf_convert_registration, __COUNTER__);\
+        ::fcf::ConverterRegistration<am_destinationType, am_sourceType> _FCF_BASIS_VARNAME(_g_fcf_convert_registration, __COUNTER__);\
       }\
     }\
   }\
@@ -417,61 +397,60 @@
 
 
 
-#ifndef FCF_DECLARE_FUNCTION
+#ifndef FCF_FUNCTION_REGISTRATION
+  #define _FCF_FUNCTION_REGISTRATION__SELECTOR_NOP_FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR ::fcf::Nop
+  #define _FCF_FUNCTION_REGISTRATION__SELECTOR_NOP_ON_FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR
+  #define _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR(...) _ON_FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR __VA_ARGS__
+  #define _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP_0(...) _FCF_FUNCTION_REGISTRATION__SELECTOR_NOP##__VA_ARGS__
+  #define _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP(...) _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP_0(__VA_ARGS__)
 
-#define _FCF_DECLARE_FUNCTION__SELECTOR_NOP_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR ::fcf::Nop
-#define _FCF_DECLARE_FUNCTION__SELECTOR_NOP_ON_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR
-#define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR(...) _ON_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR __VA_ARGS__
-#define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP_0(...) _FCF_DECLARE_FUNCTION__SELECTOR_NOP##__VA_ARGS__
-#define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP_0(__VA_ARGS__)
+  #define _FCF_FUNCTION_REGISTRATION__SELECTOR_FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS__EMPTY_SELECTOR
+  #define _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS__EMPTY_SELECTOR(...) _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS__EMPTY_SELECTOR __VA_ARGS__
+  #define _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_0(...) _FCF_FUNCTION_REGISTRATION__SELECTOR##__VA_ARGS__
+  #define _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS(...) _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_0(__VA_ARGS__)
 
-#define _FCF_DECLARE_FUNCTION__SELECTOR_FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR
-#define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR __VA_ARGS__
-#define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(...) _FCF_DECLARE_FUNCTION__SELECTOR##__VA_ARGS__
-#define _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(...) _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_0(__VA_ARGS__)
+  #define _FCF_FUNCTION_REGISTRATION__SIGNATURE(a_signature, a_arg) \
+        typename ::fcf::CallDetails<\
+                                                  _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP(_FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
+                                                  >::active_type
 
-#define _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg) \
-      typename ::fcf::CallDetails<\
-                                                _FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS_NOP__EMPTY_SELECTOR a_arg)\
-                                                >::active_type
+  #define _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES_1(a_signature, a_arg1, a_arg2, a_arg3, ...) \
+        _FCF_FUNCTION_REGISTRATION__SIGNATURE(a_signature, a_arg1),\
+        _FCF_FUNCTION_REGISTRATION__SIGNATURE(a_signature, a_arg2),\
+        _FCF_FUNCTION_REGISTRATION__SIGNATURE(a_signature, a_arg3)
+  #define _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES_0(a_signature, ...)\
+                _FCF_BASIS_EXPAND_ARGUMENTS(_FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES_1, (a_signature, __VA_ARGS__, , , ))
 
-#define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_1(a_signature, a_arg1, a_arg2, a_arg3, ...) \
-      _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg1),\
-      _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg2),\
-      _FCF_DECLARE_FUNCTION__SIGNATURE(a_signature, a_arg3)
-#define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, ...)\
-              FCF_EXPAND_ARGUMENTS(_FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_1, (a_signature, __VA_ARGS__, , , ))
+  #define _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(a_signature, a_placeHolder) \
+        _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES_0(a_signature, _FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS(_FCF_FUNCTION_REGISTRATION__REM_PARENTHESIS__EMPTY_SELECTOR a_placeHolder) )
 
-#define _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder) \
-      _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES_0(a_signature, _FCF_DECLARE_FUNCTION__REM_PARENTHESIS(_FCF_DECLARE_FUNCTION__REM_PARENTHESIS__EMPTY_SELECTOR a_placeHolder) )
+  #define _FCF_FUNCTION_REGISTRATION__VARNAME_RESOLVE_0(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                    a_varName##_##a_arg1##_##a_arg2##_##a_arg3##_##a_arg4##_##a_arg5##_##a_line
+  #define _FCF_FUNCTION_REGISTRATION__VARNAME_RESOLVE(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                    _FCF_BASIS_EXPAND_ARGUMENTS(_FCF_FUNCTION_REGISTRATION__VARNAME_RESOLVE_0, (a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5))
 
-#define _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  a_varName##_##a_arg1##_##a_arg2##_##a_arg3##_##a_arg4##_##a_arg5##_##a_line
-#define _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE(a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  FCF_EXPAND_ARGUMENTS(_FCF_DECLARE_FUNCTION__VARNAME_RESOLVE_0, (a_varName, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5))
+  #define _FCF_FUNCTION_REGISTRATION__NAME_RESOLVE_1(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                    a_arg1 "::" a_arg2 "::" a_arg3 "::" a_arg4 "::" a_arg5
+  #define _FCF_FUNCTION_REGISTRATION__NAME_RESOLVE_0(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                    _FCF_FUNCTION_REGISTRATION__NAME_RESOLVE_1(#a_arg1, #a_arg2, #a_arg3, #a_arg4, #a_arg5)
+  #define _FCF_FUNCTION_REGISTRATION__NAME_RESOLVE(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
+                                    _FCF_BASIS_EXPAND_ARGUMENTS(_FCF_FUNCTION_REGISTRATION__NAME_RESOLVE_0, (a_arg1, a_arg2, a_arg3, a_arg4, a_arg5))
 
-#define _FCF_DECLARE_FUNCTION__NAME_RESOLVE_1(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  a_arg1 "::" a_arg2 "::" a_arg3 "::" a_arg4 "::" a_arg5
-#define _FCF_DECLARE_FUNCTION__NAME_RESOLVE_0(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  _FCF_DECLARE_FUNCTION__NAME_RESOLVE_1(#a_arg1, #a_arg2, #a_arg3, #a_arg4, #a_arg5)
-#define _FCF_DECLARE_FUNCTION__NAME_RESOLVE(a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, ...)\
-                                  FCF_EXPAND_ARGUMENTS(_FCF_DECLARE_FUNCTION__NAME_RESOLVE_0, (a_arg1, a_arg2, a_arg3, a_arg4, a_arg5))
-
-#define FCF_DECLARE_FUNCTION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
-      a_sourceCode; \
-      ::fcf::CallStorageRegistrator \
-        _FCF_DECLARE_FUNCTION__VARNAME_RESOLVE(functionRegistrator, __COUNTER__, FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_name),,,,,,,,) \
-          (\
-            _FCF_DECLARE_FUNCTION__NAME_RESOLVE( FCF_REMOVE_PARENTHESIS(FCF_REMOVE_PARENTHESIS_ARGUMENT a_name),,,,,,,,), \
-            a_space, \
-            #a_sourceName, \
-            static_cast<a_signature>(a_sourceName),\
-            ::fcf::CallDetailsPack <\
-              _FCF_DECLARE_FUNCTION__RESOLVE_SIGNATURES(a_signature, a_placeHolder )\
-            > (),\
-            #a_sourceCode\
-          );
-#endif // #ifndef FCF_DECLARE_FUNCTION
+  #define FCF_FUNCTION_REGISTRATION(a_name, a_space, a_sourceName, a_signature, a_placeHolder, a_sourceCode) \
+        a_sourceCode; \
+        ::fcf::CallStorageRegistrator \
+          _FCF_FUNCTION_REGISTRATION__VARNAME_RESOLVE(functionRegistrator, __COUNTER__, _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_name),,,,,,,,) \
+            (\
+              _FCF_FUNCTION_REGISTRATION__NAME_RESOLVE( _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_name),,,,,,,,), \
+              a_space, \
+              #a_sourceName, \
+              static_cast<a_signature>(a_sourceName),\
+              ::fcf::CallDetailsPack <\
+                _FCF_FUNCTION_REGISTRATION__RESOLVE_SIGNATURES(a_signature, a_placeHolder )\
+              > (),\
+              #a_sourceCode\
+            );
+#endif // #ifndef FCF_FUNCTION_REGISTRATION
 
 
 #ifndef FCF_GET_FUNCTION_INDEX
