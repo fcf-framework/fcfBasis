@@ -30,7 +30,7 @@ namespace fcf {
   };
 }
 
-FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, "FcfTest::BasisTest::CallIterationsTest::Item",                           0);
+FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, "FcfTest::BasisTest::CallIterationsTest::Item",                           0);
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, fcf::ValueSpecificator);
 
 FCF_DECLARE_FUNCTION(fill,

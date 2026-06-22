@@ -58,7 +58,7 @@ namespace fcf {
 
 } // fcf namespace
 
-FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::MinMaxSpecificatorTest::Item, "FcfTest::BasisTest::MinMaxSpecificatorTest::Item", 0);
+FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::MinMaxSpecificatorTest::Item, "FcfTest::BasisTest::MinMaxSpecificatorTest::Item", 0);
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::MinMaxSpecificatorTest::Item, fcf::MinMaxSpecificator);
 
 FCF_DECLARE_FUNCTION(random,

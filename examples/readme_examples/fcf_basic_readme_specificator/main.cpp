@@ -6,7 +6,7 @@ struct Person {
     std::string name;
 };
 
-FCF_TYPEID_REGISTRY(Person, "Person", 0);
+FCF_TYPE_REGISTRATION(Person, "Person", 0);
 
 // Type specialization for LessSpecificator
 namespace fcf {

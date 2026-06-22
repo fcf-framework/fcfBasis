@@ -29,7 +29,7 @@ struct MyCustomStruct {
  * @param "MyCustomStruct" The human-readable name for the type.
  * @param 0 The base type index (0 for a new root type).
  */
-FCF_TYPEID_REGISTRY(MyCustomStruct, "MyCustomStruct",  0);
+FCF_TYPE_REGISTRATION(MyCustomStruct, "MyCustomStruct",  0);
 
 
 namespace fcf {

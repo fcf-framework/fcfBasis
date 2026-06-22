@@ -20,7 +20,7 @@ namespace FcfTest {
 }
 
 
-FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::VariantRefTest::Item, "FcfTest::BasisTest::VariantRefTest::Item", 0);
+FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::VariantRefTest::Item, "FcfTest::BasisTest::VariantRefTest::Item", 0);
 namespace fcf { template<> struct Type<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecificator> : public TypeImpl<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecificator> {}; }
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::VariantRefTest::Item,  fcf::EqualSpecificator);
 

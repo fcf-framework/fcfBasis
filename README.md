@@ -14,7 +14,7 @@ Official page with documentation: https://fcf-framework.is-a-fullstack.dev/cpp-l
 
 Unlike the standard `typeid`, `fcf::Type` provides rich runtime information about a type: name, size, index, as well as access to specifiers (operations on the type) and converters.
 
-Each type must be registered in the system. For built-in types, this is done automatically. For user-defined types, use the `FCF_TYPEID_REGISTRY` macro.
+Each type must be registered in the system. For built-in types, this is done automatically. For user-defined types, use the `FCF_TYPE_REGISTRATION` macro.
 
 **Example of registering a custom type:**
 
@@ -28,7 +28,7 @@ struct MyStruct {
 };
 
 // Registering a type with the name "MyStruct" and base index 0
-FCF_TYPEID_REGISTRY(MyStruct, "MyStruct", 0);
+FCF_TYPE_REGISTRATION(MyStruct, "MyStruct", 0);
 
 int main() {
     // Getting metadata
@@ -145,7 +145,7 @@ struct Person {
     std::string name;
 };
 
-FCF_TYPEID_REGISTRY(Person, "Person", 0);
+FCF_TYPE_REGISTRATION(Person, "Person", 0);
 
 // Type specialization for LessSpecificator
 namespace fcf {

@@ -35,8 +35,8 @@ namespace fcf {
   };
 }
 
-FCF_TYPEID_REGISTRY_FORCE(std::vector<FcfTest::BasisTest::PHCTestDataItem>, "std::vector<FcfTest::BasisTest::PHCTestDataItem>", 0);
-FCF_TYPEID_REGISTRY_FORCE(FcfTest::BasisTest::PHCTestDataItem, "FcfTest::BasisTest::PHCTestDataItem",                           0);
+FCF_TYPE_REGISTRATION_FORCE(std::vector<FcfTest::BasisTest::PHCTestDataItem>, "std::vector<FcfTest::BasisTest::PHCTestDataItem>", 0);
+FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, "FcfTest::BasisTest::PHCTestDataItem",                           0);
 FCF_SPECIFICATOR_REGISTRY_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecificator);
 
 

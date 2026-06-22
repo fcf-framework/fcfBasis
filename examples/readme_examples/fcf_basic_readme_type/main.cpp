@@ -7,7 +7,7 @@ struct MyStruct {
 };
 
 // Registering a type with name "MyStruct" and base index 0
-FCF_TYPEID_REGISTRY(MyStruct, "MyStruct", 0);
+FCF_TYPE_REGISTRATION(MyStruct, "MyStruct", 0);
 
 int main() {
     // Retrieving metadata

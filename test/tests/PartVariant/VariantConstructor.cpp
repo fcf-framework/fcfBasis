@@ -11,7 +11,7 @@ namespace FcfTest {
       };
 }}}
 
-FCF_TYPEID_REGISTRY(FcfTest::BasisTest::ConstructorTest::BigItem, "FcfTest::BasisTest::ConstructorTest::BigItem", 0);
+FCF_TYPE_REGISTRATION(FcfTest::BasisTest::ConstructorTest::BigItem, "FcfTest::BasisTest::ConstructorTest::BigItem", 0);
 
 namespace FcfTest {
   namespace BasisTest {

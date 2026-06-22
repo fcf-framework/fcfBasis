@@ -70,7 +70,7 @@ namespace fcf {
 } // fcf namespace
 
 
-FCF_TYPEID_REGISTRY(FcfTest::BasisTest::ForeachTest::Container, "FcfTest::BasisTest::ForeachTest::Container", 0);
+FCF_TYPE_REGISTRATION(FcfTest::BasisTest::ForeachTest::Container, "FcfTest::BasisTest::ForeachTest::Container", 0);
 FCF_SPECIFICATOR_REGISTRY(FcfTest::BasisTest::ForeachTest::Container,  fcf::ContainerAccessSpecificator);
 
 

@@ -13,7 +13,7 @@ struct UserProfile {
 };
 
 // Register the type in the fcf system so it can participate in conversions.
-FCF_TYPEID_REGISTRY(UserProfile, "UserProfile", 100);
+FCF_TYPE_REGISTRATION(UserProfile, "UserProfile", 100);
 
 /**
  * @brief Custom converter implementation.
