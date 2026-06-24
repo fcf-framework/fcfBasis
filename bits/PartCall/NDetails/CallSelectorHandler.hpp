@@ -610,7 +610,7 @@ namespace fcf {
         a_inputArgument.typeIndex               = a_type;
         //a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(a_type);
         a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getDataIndex(a_type);
-        const fcf::TypeInfo* typeInfo           = typeStorage.get(a_inputArgument.clearTypeIndex);
+        const fcf::TypeInfo* typeInfo           = getTypeStorage().get(a_inputArgument.clearTypeIndex);
         a_inputArgument.resolver                = typeInfo->resolveCall;
         a_inputArgument.containerAccessResolver = typeInfo->specificatorUniversalCall<ContainerAccessSpecificator>(0);
         a_inputArgument.specificators           = &typeInfo->specificators;

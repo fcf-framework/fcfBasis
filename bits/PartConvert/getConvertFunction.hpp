@@ -17,7 +17,7 @@ namespace fcf {
       a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
       a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
       do {
-        const TypeInfo* pti = fcf::typeStorage.get(a_sourceTypeIndex);
+        const TypeInfo* pti = fcf::getTypeStorage().get(a_sourceTypeIndex);
         if (!pti)
           break;
         const ::fcf::TypeInfo::ConvertersType& converters = pti->converters; 

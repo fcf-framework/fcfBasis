@@ -41,8 +41,7 @@ namespace fcf {
       unsigned int  _ac;
   };
 
-  FCF_BASIS_DELC_EXTERN FCF_BASIS_DECL_EXPORT TypeStorage typeStorage;
-
+  FCF_BASIS_DECL_EXPORT TypeStorage& getTypeStorage();
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___

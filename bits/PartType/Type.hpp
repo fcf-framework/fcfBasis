@@ -40,7 +40,7 @@ namespace fcf {
       unsigned char flags = (NDetails::IsVariantRef<Ty>::value ? TIF_VARIANT_REF : 0) |
                             (NDetails::IsVariant<Ty>::value    ? TIF_VARIANT : 0);
       TypeInfo initTypeInfo(index, TypeId<Ty>().name(), flags, NDetails::TypeSize<Ty>::value, NDetails::VariantInnerSize<Ty>::value);
-      _info = typeStorage.insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
+      _info = getTypeStorage().insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
       typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
       ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);
       ::fcf::NDetails::SpecificatorRegistrarCaller<Type, __COUNTER__, simple_type> specificatorsRegistrar;

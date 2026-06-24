@@ -201,18 +201,19 @@
 #endif // #ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR
 
 #ifndef FCF_TYPE_REGISTRATION_FORCE
-#define FCF_TYPE_REGISTRATION_FORCE(a_type, a_name, a_index) \
-      _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)\
-      _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR(a_type, a_name, a_index)
+  #define FCF_TYPE_REGISTRATION_FORCE(a_type, a_name, a_index) \
+        _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)\
+        _FCF_TYPE_REGISTRATION_IMPL_DECL_INITVAR(a_type, a_name, a_index)
 #endif // #ifndef FCF_TYPE_REGISTRATION
 
 #ifndef FCF_TYPE_REGISTRATION
-#ifdef FCF_BASIS_IMPLEMENTATION
-#define FCF_TYPE_REGISTRATION(a_type, a_name, a_index) FCF_TYPE_REGISTRATION_FORCE(a_type, a_name, a_index)
-#else
-#define FCF_TYPE_REGISTRATION(a_type, a_name, a_index) \
-        _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)
-#endif
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    #define FCF_TYPE_REGISTRATION(a_type, a_name, a_index) \
+            FCF_TYPE_REGISTRATION_FORCE(a_type, a_name, a_index)
+  #else
+    #define FCF_TYPE_REGISTRATION(a_type, a_name, a_index) \
+            _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASSES((a_type), (), a_name, a_index, false)
+  #endif
 #endif // #ifndef FCF_TYPE_REGISTRATION
 
 #ifndef FCF_TYPE_REGISTRATION_SINGLE

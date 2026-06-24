@@ -42,6 +42,16 @@ namespace fcf{
     return nit->second.get();
   }
 
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    TypeStorage& getTypeStorage(){
+      TypeStorage* storage = 0;
+      if (!storage){
+        storage = new TypeStorage();
+      }
+      return *storage;
+    }
+  #endif
+
 } // fcf namespace
 
 #endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
