@@ -44,7 +44,7 @@ namespace fcf{
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     TypeStorage& getTypeStorage(){
-      TypeStorage* storage = 0;
+      static TypeStorage* storage = 0;
       if (!storage){
         storage = new TypeStorage();
       }
