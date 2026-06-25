@@ -16,7 +16,7 @@
 #include "./PartContainerAccess/DynamicContainerAccess.hpp"
 #include "../PartVariant.hpp"
 #include "../bits/PartType/NDetails/TypeRegistrar.hpp"
-#include "../bits/PartTypes/UniversalArguments.hpp"
+#include "../bits/PartTypes/UniversalPack.hpp"
 #include "../bits/PartSpecificator/PartSpecificator.hpp"
 #include "../bits/PartCall/CallOptions.hpp"
 #include "../bits/PartCall/CallArgumentOptions.hpp"
@@ -389,7 +389,7 @@ namespace fcf {
 FCF_SPECIFICATOR_REGISTRATION(fcf::Variant,  fcf::ContainerAccessSpecificator);
 
 
-FCF_TYPE_REGISTRATION(fcf::UniversalArguments,       "fcf::UniversalArguments",         0);
+FCF_TYPE_REGISTRATION(fcf::UniversalPack,       "fcf::UniversalPack",         0);
 
 
 FCF_TYPE_REGISTRATION(fcf::Nop, "fcf::Nop", 0);

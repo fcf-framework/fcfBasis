@@ -5,7 +5,7 @@
 #include "SpecificatorRegistrar.hpp"
 #include "../PartType/Type.hpp"
 #include "../../PartVariant.hpp"
-#include "../../bits/PartTypes/UniversalArguments.hpp"
+#include "../../bits/PartTypes/UniversalPack.hpp"
 #include "../../PartForeach.hpp"
 
 namespace fcf{
@@ -14,8 +14,8 @@ namespace fcf{
 
   template <typename Ty>
   struct Type<Ty, FunctionSpecificator> {
-    typedef UniversalArguments (*CallType)(void* a_container);
-    typedef UniversalArguments (*HandleType)(void* a_container);
+    typedef UniversalPack (*CallType)(void* a_container);
+    typedef UniversalPack (*HandleType)(void* a_container);
   };
 
   template <typename TResult, typename ... TArgPack>
@@ -25,8 +25,8 @@ namespace fcf{
     typedef std::tuple<TArgPack...> arguments_type;
     typedef TResult                 result_type;
 
-    inline UniversalArguments operator()(type* /*a_container*/) {
-      UniversalArguments result(sizeof...(TArgPack) + 1);
+    inline UniversalPack operator()(type* /*a_container*/) {
+      UniversalPack result(sizeof...(TArgPack) + 1);
       result[0] = Type<TResult>().index();
 
       std::tuple<TArgPack...> tuple;
@@ -36,7 +36,7 @@ namespace fcf{
       return result;
     }
 
-    inline UniversalArguments call(type* a_container) {
+    inline UniversalPack call(type* a_container) {
       return Type<TResult (TArgPack...), FunctionSpecificator>()(a_container);
     }
 
@@ -49,7 +49,7 @@ namespace fcf{
       inline void operator()(const TTuple&, size_t a_index, const Ty& /*a_item*/){
         ua[a_index + 1] = Type<Ty>().index();
       }
-      UniversalArguments& ua;
+      UniversalPack& ua;
     };
   };
 

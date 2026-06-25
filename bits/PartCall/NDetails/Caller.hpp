@@ -8,7 +8,7 @@
 #include "../../../PartConvert.hpp"
 #include "../FunctionSignature.hpp"
 #include "../../../PartException.hpp"
-#include "../../../bits/PartTypes/UniversalArguments.hpp"
+#include "../../../bits/PartTypes/UniversalPack.hpp"
 #include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
 #include "../CallConversionMode.hpp"
 #include "../CallOptions.hpp"
@@ -639,8 +639,8 @@ namespace fcf {
 
               Variant* callResults;
               size_t   callResultsSize;
-              if (callResult.getTypeIndex() == Type<UniversalArguments>().index()){
-                UniversalArguments& ua = *(UniversalArguments*)callResult.ptr();
+              if (callResult.getTypeIndex() == Type<UniversalPack>().index()){
+                UniversalPack& ua = *(UniversalPack*)callResult.ptr();
                 callResults = &ua[0];
                 callResultsSize = ua.size();
               } else {

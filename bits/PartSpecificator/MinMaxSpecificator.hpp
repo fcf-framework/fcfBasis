@@ -5,7 +5,7 @@
 #include "SpecificatorRegistrar.hpp"
 #include "../PartType/Type.hpp"
 #include "../../PartVariant.hpp"
-#include "../../bits/PartTypes/UniversalArguments.hpp"
+#include "../../bits/PartTypes/UniversalPack.hpp"
 #include "FunctionSpecificator.hpp"
 
 namespace fcf{
@@ -29,7 +29,7 @@ namespace fcf{
 
     inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) {
       auto pair = Type<Ty, MinMaxSpecificator>()(a_object);
-      Variant result(UniversalArguments{pair.first, pair.second});
+      Variant result(UniversalPack{pair.first, pair.second});
       return result;
     }
   };
