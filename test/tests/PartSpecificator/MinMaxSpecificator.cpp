@@ -50,9 +50,10 @@ namespace fcf {
   template<>
   struct Type<FcfTest::BasisTest::MinMaxSpecificatorTest::Item, MinMaxSpecificator> : public TypeImpl<FcfTest::BasisTest::MinMaxSpecificatorTest::Item, MinMaxSpecificator>{
     typedef FcfTest::BasisTest::MinMaxSpecificatorTest::Item type;
-    inline void call(type* a_object, int* a_min, int* a_max){
-      *a_min = a_object->min;
-      *a_max = a_object->max;
+
+    typedef std::pair<int, int> result_type;
+    inline std::pair<int, int> operator()(const type* a_object){
+      return std::pair<int, int>{a_object->min, a_object->max};
     }
   };
 

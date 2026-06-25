@@ -14,22 +14,18 @@ namespace fcf{
 
   template <typename Ty>
   struct Type<Ty, FunctionSpecificator> {
-    enum { enable = false };
+    typedef UniversalArguments (*CallType)(void* a_container);
+    typedef UniversalArguments (*HandleType)(void* a_container);
   };
 
   template <typename TResult, typename ... TArgPack>
   struct TypeImpl<TResult (TArgPack...), FunctionSpecificator> {
-    enum { enable = true };
 
     typedef TResult(*type)(TArgPack...);
     typedef std::tuple<TArgPack...> arguments_type;
     typedef TResult                 result_type;
 
-    inline Variant universalCall(type* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
-      return Variant(Type<type>().call(a_object));
-    }
-
-    inline UniversalArguments call(type* /*a_container*/) const {
+    inline UniversalArguments operator()(type* /*a_container*/) {
       UniversalArguments result(sizeof...(TArgPack) + 1);
       result[0] = Type<TResult>().index();
 
@@ -38,6 +34,14 @@ namespace fcf{
       fcf::foreach(tuple, filler);
 
       return result;
+    }
+
+    inline UniversalArguments call(type* a_container) {
+      return Type<TResult (TArgPack...), FunctionSpecificator>()(a_container);
+    }
+
+    inline Variant universalCall(type* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
+      return Variant(Type<type>().call(a_object));
     }
 
     struct Filler{

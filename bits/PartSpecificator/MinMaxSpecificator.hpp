@@ -13,31 +13,23 @@ namespace fcf{
   struct MinMaxSpecificator { };
 
   template <typename Ty>
-  struct Type<Ty, MinMaxSpecificator> {
-    enum { enable = false };
-  };
-
-
-  template <typename Ty>
   struct TypeImpl<Ty, MinMaxSpecificator> {
-    enum { enable = true };
+    /*
+     * Example of implementing operator() in a child class:
+     *
+     * inline std::pair<int, int> operator()(const Ty* a_object) {
+     *   return std::pair<int, int>{a_object->min, a_object->max};
+     * }
+     */
 
-    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
-      Variant result(UniversalArguments(2));
+    template <typename TArg>
+    inline auto call(const TArg* a_object) -> decltype( Type<TArg, MinMaxSpecificator>()(a_object) ) {
+      return Type<TArg, MinMaxSpecificator>()(a_object);
+    }
 
-      typedef decltype(&Type<Ty, MinMaxSpecificator>::call) call_type;
-      typedef typename Type<call_type, FunctionSpecificator>::arguments_type arguments_type;
-      typedef typename std::remove_pointer< typename std::tuple_element<1, arguments_type>::type >::type arg1_type;
-      typedef typename std::remove_pointer< typename std::tuple_element<2, arguments_type>::type >::type arg2_type;
-
-      arg1_type arg1;
-      arg2_type arg2;
-
-      Type<Ty, MinMaxSpecificator>().call(a_object, &arg1, &arg2);
-
-      result.as<UniversalArguments>()[0] = arg1;
-      result.as<UniversalArguments>()[1] = arg2;
-
+    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) {
+      auto pair = Type<Ty, MinMaxSpecificator>()(a_object);
+      Variant result(UniversalArguments{pair.first, pair.second});
       return result;
     }
   };

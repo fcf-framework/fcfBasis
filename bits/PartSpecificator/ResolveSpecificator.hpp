@@ -11,9 +11,19 @@ namespace fcf{
 
   template <typename Ty>
   struct TypeImpl<Ty, ResolveSpecificator> {
-    enum { enable = true };
+    enum { invariantValue = true };
 
-    enum { invariant_value = true };
+    inline ResolveData call(Ty* a_object) {
+      ResolveData rd;
+      rd.invariant = Type<Ty, ResolveSpecificator>::invariantValue;
+      if (a_object) {
+        Type<Ty, ResolveSpecificator>()(a_object, &rd.data, &rd.typeIndex);
+      } else {
+        rd.data = 0;
+        rd.typeIndex = 0;
+      }
+      return rd;
+    }
 
     inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
       return Variant(ResolveData(Type<Ty, ResolveSpecificator>().call(a_object)));

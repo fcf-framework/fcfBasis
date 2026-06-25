@@ -10,16 +10,23 @@ namespace fcf{
 
   struct EqualSpecificator {
     typedef bool (*CallType)(const void*, const void*);
+    typedef bool (*HandleType)(const void*, const void*);
   };
 
   template <typename Ty>
   struct Type<Ty, EqualSpecificator> {
-    enum { enable = false };
   };
 
   template <typename Ty>
   struct TypeImpl<Ty, EqualSpecificator> {
-    enum { enable = true };
+
+    inline bool operator()(const Ty* a_leftValue, const Ty* a_rightValue) {
+      return *a_leftValue == *a_rightValue;
+    }
+
+    inline bool call(const Ty* a_leftValue, const Ty* a_rightValue) {
+      return Type<Ty, EqualSpecificator>()(a_leftValue, a_rightValue);
+    }
 
     inline Variant universalCall(const Ty* a_object, const Variant* a_argv, size_t a_argc) const {
       if (!a_argc){
@@ -39,9 +46,6 @@ namespace fcf{
       return Variant(Type<Ty, EqualSpecificator>().call(a_object, ptr));
     }
 
-    inline bool call(const Ty* a_leftValue, const Ty* a_rightValue) const {
-      return *a_leftValue == *a_rightValue;
-    }
   };
 
 } // fcf namespace

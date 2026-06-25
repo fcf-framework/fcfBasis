@@ -16,8 +16,8 @@ namespace fcf{
     };
 
     template <typename Ty>
-    struct CallCacheIsInvariantType<Ty, decltype((void)::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariant_value )> {
-      enum { value = ::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariant_value };
+    struct CallCacheIsInvariantType<Ty, decltype((void)::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariantValue )> {
+      enum { value = ::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariantValue };
     };
 
     template <typename Ty, typename = void>
@@ -44,13 +44,13 @@ namespace fcf{
 
     template <typename ...TPackArg>
     struct CallCacheIsInvariant {
-      enum { invariant_value = false };
+      enum { invariantValue = false };
     };
 
     template <typename TArg, typename ...TPackArg>
     struct CallCacheIsInvariant<TArg, TPackArg...> {
       typedef typename std::remove_const< typename std::remove_reference< TArg>::type >::type type;
-      enum { invariant_value = CallCacheIsInvariantItem<type>::value | CallCacheIsInvariant<TPackArg...>::invariant_value  };
+      enum { invariantValue = CallCacheIsInvariantItem<type>::value | CallCacheIsInvariant<TPackArg...>::invariantValue  };
     };
 
     template <bool IsInvariant, typename ...TPackArg>

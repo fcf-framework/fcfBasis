@@ -10,16 +10,23 @@ namespace fcf{
 
   struct BoolSpecificator {
     typedef bool (*CallType)(const void*);
+    typedef bool (*HandleType)(const void*);
   };
 
   template <typename Ty>
   struct Type<Ty, BoolSpecificator> {
-    enum { enable = false };
   };
 
   template <typename Ty>
   struct TypeImpl<Ty, BoolSpecificator> {
-    enum { enable = true };
+
+    inline bool operator()(const Ty* a_value) {
+      return !!(*a_value);
+    }
+
+    inline bool call(const Ty* a_value) {
+      return Type<Ty, BoolSpecificator>()(a_value);
+    }
 
     inline Variant universalCall(const Ty* a_object, const Variant* /*a_argv*/, size_t a_argc) const {
       if (!a_argc){
@@ -31,9 +38,6 @@ namespace fcf{
       return Variant(Type<Ty, BoolSpecificator>().call(a_object));
     }
 
-    inline bool call(const Ty* a_value) const {
-      return !!(*a_value);
-    }
   };
 
 } // fcf namespace

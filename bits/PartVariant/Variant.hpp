@@ -1406,14 +1406,12 @@ namespace fcf {
 
   template <size_t innerBufferSize>
   struct Type<BasicVariant<innerBufferSize>, ResolveSpecificator> : public TypeImpl<BasicVariant<innerBufferSize>, ResolveSpecificator>{
-    inline ResolveData call(BasicVariant<innerBufferSize>* a_object){
-      enum { invariant_value = true };
 
-      if (a_object) {
-        return ResolveData{a_object->ptr(), a_object->getTypeIndex(), true};
-      } else {
-        return ResolveData{0, 0, true};
-      }
+    enum { invariantValue = true };
+
+    inline void operator()(BasicVariant<innerBufferSize>* a_object, void** a_dstData, unsigned int* a_dstTypeIndex){
+      *a_dstData = a_object->ptr();
+      *a_dstTypeIndex = a_object->getTypeIndex();
     }
   };
 

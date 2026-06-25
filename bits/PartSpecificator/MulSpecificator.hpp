@@ -10,18 +10,21 @@ namespace fcf{
 
   struct MulSpecificator {
     typedef void (*CallType)(void* a_destination, const void* a_leftValue, const void* a_rightValue);
-  };
-
-  template <typename Ty>
-  struct Type<Ty, MulSpecificator> {
-    enum { enable = false };
+    typedef void (*HandleType)(void* a_destination, const void* a_leftValue, const void* a_rightValue);
   };
 
   template <typename Ty>
   struct TypeImpl<Ty, MulSpecificator> {
-    enum { enable = true };
 
-    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
+    inline void operator()(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) {
+      *a_destination = (*a_leftValue) * (*a_rightValue);
+    }
+
+    inline void call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) {
+      return Type<Ty, MulSpecificator>()(a_destination, a_leftValue, a_rightValue);
+    }
+
+    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) {
       if (a_argc < 2){
         throw MathArumentCountException(__FILE__, __LINE__, "*");
       }
@@ -48,9 +51,6 @@ namespace fcf{
       return Variant();
     }
 
-    inline void call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) const {
-      *a_destination = (*a_leftValue) * (*a_rightValue);
-    }
   };
 
 } // fcf namespace

@@ -9,26 +9,28 @@ namespace fcf{
 
   struct InheritanceSpecificator {
     typedef StaticVector<const TypeInfo*, 4> InheritanceVector;
-    typedef InheritanceVector (*CallType)(const void*);
+    typedef InheritanceVector (*CallType)();
+    typedef InheritanceVector (*HandleType)();
   };
 
   template <typename Ty>
   struct Type<Ty, InheritanceSpecificator> {
-    typedef Nop BaseType;
+    inline InheritanceSpecificator::InheritanceVector operator()() {
+      return InheritanceSpecificator::InheritanceVector();
+    }
 
-    inline Variant universalCall(const Ty* /*a_object*/, Variant* /*a_argv*/, size_t /*a_argc*/) const {
+    inline InheritanceSpecificator::InheritanceVector call() {
+      return Type<Ty, InheritanceSpecificator>()();
+    }
+
+    inline Variant universalCall(const Ty* /*a_object*/, Variant* /*a_argv*/, size_t /*a_argc*/) {
       return Variant(InheritanceSpecificator::InheritanceVector());
     }
 
-    inline InheritanceSpecificator::InheritanceVector call() const {
-      return InheritanceSpecificator::InheritanceVector();
-    }
   };
 
   template <typename Ty, typename TBase>
   struct TypeImpl<Ty, InheritanceSpecificator, TBase> {
-    typedef TBase BaseType;
-
     struct ContainerValue {
       ContainerValue() {
         value.push_back(Type<TBase>().typeInfo());
@@ -38,14 +40,19 @@ namespace fcf{
       InheritanceSpecificator::InheritanceVector value;
     };
 
-    inline Variant universalCall(const Ty* /*a_object*/, Variant* /*a_argv*/, size_t /*a_argc*/) const {
-      return Type<Ty, InheritanceSpecificator>().call();
-    }
-
-    inline InheritanceSpecificator::InheritanceVector call() const {
+    InheritanceSpecificator::InheritanceVector operator()(){
       static ContainerValue cv;
       return cv.value;
     }
+
+    inline InheritanceSpecificator::InheritanceVector call() {
+      return Type<Ty, InheritanceSpecificator>()();
+    }
+
+    inline Variant universalCall(const Ty* /*a_object*/, Variant* /*a_argv*/, size_t /*a_argc*/) {
+      return Type<Ty, InheritanceSpecificator>().call();
+    }
+
   };
 
 } // fcf namespace

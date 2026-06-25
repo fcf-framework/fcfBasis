@@ -8,7 +8,10 @@
 
 namespace fcf{
 
-  struct StoredDataTypeSpecificator { };
+  struct StoredDataTypeSpecificator { 
+    typedef unsigned int (*CallType)();
+    typedef unsigned int (*HandleType)();
+  };
 
 
   template <typename Ty, typename TSpecificator, typename TArg1 = Nop>
@@ -16,44 +19,43 @@ namespace fcf{
 
   template <typename Ty>
   struct TypeImpl<Ty, StoredDataTypeSpecificator> {
-    enum { enable = true };
 
-    inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
-      return Type<Ty, StoredDataTypeSpecificator>().call(a_object);
-    }
-
-    inline unsigned int call(Ty* /*a_object*/) const {
+    inline unsigned int operator()() {
       return Type< typename Type<Ty, StoredDataTypeSpecificator>::type >().index();
     }
+
+    inline unsigned int call() {
+      return Type<Ty, StoredDataTypeSpecificator>()();
+    }
+
+    inline Variant universalCall(Ty* /*a_object*/, Variant* /*a_argv*/, size_t /*a_argc*/) {
+      return Type<Ty, StoredDataTypeSpecificator>().call();
+    }
+
   };
 
   template <typename Ty>
   struct Type<Ty, StoredDataTypeSpecificator> : public TypeImpl<Ty, StoredDataTypeSpecificator> {
-    enum { enable = false };
     typedef Ty type;
   };
 
   template <>
   struct Type<const char*, StoredDataTypeSpecificator> : public TypeImpl<const char*, StoredDataTypeSpecificator> {
-    enum { enable = true };
     typedef std::string type;
   };
 
   template <>
   struct Type<char*, StoredDataTypeSpecificator> : public TypeImpl<char*, StoredDataTypeSpecificator> {
-    enum { enable = true };
     typedef std::string type;
   };
 
   template <size_t Size>
   struct Type<char[Size], StoredDataTypeSpecificator> : public TypeImpl<char[Size], StoredDataTypeSpecificator> {
-    enum { enable = true };
     typedef std::string type;
   };
 
   template <size_t Size>
   struct Type<const char[Size], StoredDataTypeSpecificator> : public TypeImpl<const char[Size], StoredDataTypeSpecificator> {
-    enum { enable = true };
     typedef std::string type;
   };
 

@@ -9,7 +9,7 @@ namespace fcf{
   template <typename ...TPackArg>
   class CallCache {
     public:
-      enum { invariant_value = NDetails::CallCacheIsInvariant<TPackArg...>::invariant_value };
+      enum { invariantValue = NDetails::CallCacheIsInvariant<TPackArg...>::invariantValue };
 
       template <typename ...TInputPackArg>
       CallCache(const char* a_functionName, TInputPackArg&&... a_packArg)
@@ -47,7 +47,7 @@ namespace fcf{
       }
 
     private:
-      NDetails::CallCacheHandler< invariant_value, TPackArg... > _handler;
+      NDetails::CallCacheHandler< invariantValue, TPackArg... > _handler;
   };
 
 } // fcf namespace

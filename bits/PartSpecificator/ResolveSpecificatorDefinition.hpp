@@ -13,11 +13,7 @@ namespace fcf{
 
   struct ResolveSpecificator {
     typedef ResolveData (*CallType)(void* a_object);
-  };
-
-  template <typename Ty>
-  struct Type<Ty, ResolveSpecificator> {
-    enum { enable = false };
+    typedef void (*HandleType)(void* /* specific type ptr (Ty*) */ a_object, void** a_dstData, unsigned int* a_dstTypeIndex);
   };
 
 } // fcf namespace
