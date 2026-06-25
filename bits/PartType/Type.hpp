@@ -43,7 +43,7 @@ namespace fcf {
       _info = getTypeStorage().insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
       typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
       ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);
-      ::fcf::NDetails::SpecificatorRegistrarCaller<Type, __COUNTER__, simple_type> specificatorsRegistrar;
+      ::fcf::NDetails::SpecifierRegistrarCaller<Type, __COUNTER__, simple_type> specifiersRegistrar;
       if (TypeId<Ty>().isTemplate()) {
         TypeGroupInitializer<Ty> groupInitializer;
       }
@@ -76,32 +76,32 @@ namespace fcf {
   }
 
   template <typename Ty>
-  const TypeInfo::SpecificatorsType& Type<Ty, Nop>::specificators() {
-    return _info->specificators;
+  const TypeInfo::SpecifiersType& Type<Ty, Nop>::specifiers() {
+    return _info->specifiers;
   }
 
   template <typename Ty>
-  template <typename TSubSpecificator>
-  UniversalCall Type<Ty, Nop>::specificatorUniversalCall() const {
-    return _info->specificatorUniversalCall<TSubSpecificator>();
+  template <typename TSubSpecifier>
+  UniversalCall Type<Ty, Nop>::specifierUniversalCall() const {
+    return _info->specifierUniversalCall<TSubSpecifier>();
   }
 
   template <typename Ty>
-  template <typename TSubSpecificator>
-  UniversalCall Type<Ty, Nop>::specificatorUniversalCall(fcf::Exception* a_dstError) const {
-    return _info->specificatorUniversalCall<TSubSpecificator>(a_dstError);
+  template <typename TSubSpecifier>
+  UniversalCall Type<Ty, Nop>::specifierUniversalCall(fcf::Exception* a_dstError) const {
+    return _info->specifierUniversalCall<TSubSpecifier>(a_dstError);
   }
 
   template <typename Ty>
-  template <typename TSpecificator>
-  typename TSpecificator::CallType Type<Ty, Nop>::specificatorCall() const {
-    return _info->specificatorCall<TSpecificator>();
+  template <typename TSpecifier>
+  typename TSpecifier::CallType Type<Ty, Nop>::specifierCall() const {
+    return _info->specifierCall<TSpecifier>();
   }
 
   template <typename Ty>
-  template <typename TSpecificator>
-  typename TSpecificator::CallType Type<Ty, Nop>::specificatorCall(fcf::Exception* a_dstError) const {
-    return _info->specificatorCall<TSpecificator>(a_dstError);
+  template <typename TSpecifier>
+  typename TSpecifier::CallType Type<Ty, Nop>::specifierCall(fcf::Exception* a_dstError) const {
+    return _info->specifierCall<TSpecifier>(a_dstError);
   }
 
   template <typename Ty>

@@ -14,7 +14,7 @@ namespace fcf {
   FCF_EXCEPTION_DECLARE(CallIterationConversionBufferOverflowException, "FCF_CALL_ITERATION_CONVERSION_BUFFER_OWERFLOW", " Iteration conversion buffer overflow (Function: ${{1}}$; Arguments: ${{2}}$)'", 2);
   FCF_EXCEPTION_DECLARE(CallArgumentBufferOverflowException, "FCF_CALL_ARGUMENT_BUFFER_OVERFLOW", "Argument buffer overflow in dynamic call (Arguments: ${{1}}$)", 1);
   FCF_EXCEPTION_DECLARE(CallArgumentBufferOverflowExException, "FCF_CALL_ARGUMENT_BUFFER_OVERFLOW", "Argument buffer overflow in dynamic call (Function: ${{1}}$; Arguments: ${{2}}$)", 2);
-  FCF_EXCEPTION_DECLARE(CallSpecificatorArgumentCountException, "FCF_CALL_SPECIFICATOR_COUNT_ARGUMENTS", "The specificator returned an insufficient number of arguments (Argument: ${{1}}$; Call: ${{2}}$, Arguments: ${{3}}$)", 3);
+  FCF_EXCEPTION_DECLARE(CallSpecifierArgumentCountException, "FCF_CALL_SPECIFIER_COUNT_ARGUMENTS", "The specifier returned an insufficient number of arguments (Argument: ${{1}}$; Call: ${{2}}$, Arguments: ${{3}}$)", 3);
   FCF_EXCEPTION_DECLARE(CallIteratorGettingException, "FCF_CALL_ITERATOR_GETTING", "Unable to get an iterator from argument ${{1}}$ for function call '${{2}}$' (Arguments: ${{3}}$)", 3);
   FCF_EXCEPTION_DECLARE(CallPlaceholderBufferOverflowException, "FCF_CALL_PLACEHOLDER_BUFFER_OVERFLOW", "Argument placeholder buffer overflow for function call '${{1}}$' (Signature: ${{2}}$)", 2);
 
@@ -40,7 +40,7 @@ namespace fcf {
 
   FCF_EXCEPTION_DECLARE(CursorIteratorUnsetException, "FCF_CURSOR_ITERATOR_UNSET", "Iterator for type '${{1}}$' is not set", 1);
 
-  FCF_EXCEPTION_DECLARE(SpecificatorNotFoundException, "FCF_SPECIFICATOR_NOT_FOUND", "Specificator of type ${{2}}$  for type ${{1}}$ is not found", 2);
+  FCF_EXCEPTION_DECLARE(SpecifierNotFoundException, "FCF_SPECIFIER_NOT_FOUND", "Specifier of type ${{2}}$  for type ${{1}}$ is not found", 2);
 
   FCF_EXCEPTION_DECLARE(ReferenceAllocationException, "FCF_REFERENCE_ALLOCATION", "The reference could not be created with memory allocation", 0);
   FCF_EXCEPTION_DECLARE(ReferenceCreationException, "FCF_REFERENCE_CREATION", "A reference cannot be created without a data source", 0);

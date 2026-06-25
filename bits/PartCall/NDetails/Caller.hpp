@@ -9,7 +9,7 @@
 #include "../FunctionSignature.hpp"
 #include "../../../PartException.hpp"
 #include "../../../bits/PartTypes/UniversalPack.hpp"
-#include "../../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
+#include "../../../bits/PartSpecifier/ContainerAccessSpecifier.hpp"
 #include "../CallConversionMode.hpp"
 #include "../CallOptions.hpp"
 #include "CallArgsTypeIndexes.hpp"
@@ -583,7 +583,7 @@ namespace fcf {
         switch(a_cc.mode) {
           case CCM_RESOLVE:
             {
-              ResolveSpecificator::CallType converter = (ResolveSpecificator::CallType)a_cc.converter;
+              ResolveSpecifier::CallType converter = (ResolveSpecifier::CallType)a_cc.converter;
               ResolveData rd = converter((arg_type*)a_arguments.getArgument(a_cc.index));
               a_arguments.setArgument(a_cc.index, rd.data);
               a_arguments.setTypeIndex(a_cc.index, rd.typeIndex);
@@ -591,7 +591,7 @@ namespace fcf {
             break;
           case CCM_POINTER_RESOLVE:
             {
-              ResolveSpecificator::CallType converter = (ResolveSpecificator::CallType)a_cc.converter;
+              ResolveSpecifier::CallType converter = (ResolveSpecifier::CallType)a_cc.converter;
               ResolveData rd = converter(*(arg_type**)a_arguments.getArgument(a_cc.index));
               const size_t argBufferIndex = a_state.argBuffer.size();
               if ((argBufferIndex) >= ConversionState::BUFFER_CAPACITY){
@@ -657,7 +657,7 @@ namespace fcf {
                 a_state.argBuffer.resize(argBufferIndex+1);
 
                 if (phae.placeHolderArgument-1 >= callResultsSize) {
-                  throw CallSpecificatorArgumentCountException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
+                  throw CallSpecifierArgumentCountException(__FILE__, __LINE__, a_cc.index+1, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
                 }
 
                 a_state.argBuffer[argBufferIndex].set(phae.type, callResults[phae.placeHolderArgument-1].ptr(), callResults[phae.placeHolderArgument-1].getTypeIndex());

@@ -21,8 +21,8 @@ namespace FcfTest {
 
 
 FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::VariantRefTest::Item, "FcfTest::BasisTest::VariantRefTest::Item", 0);
-namespace fcf { template<> struct Type<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecificator> : public TypeImpl<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecificator> {}; }
-FCF_SPECIFICATOR_REGISTRATION_FORCE(FcfTest::BasisTest::VariantRefTest::Item,  fcf::EqualSpecificator);
+namespace fcf { template<> struct Type<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecifier> : public TypeImpl<FcfTest::BasisTest::VariantRefTest::Item, EqualSpecifier> {}; }
+FCF_SPECIFIER_REGISTRATION_FORCE(FcfTest::BasisTest::VariantRefTest::Item,  fcf::EqualSpecifier);
 
 
 namespace FcfTest {

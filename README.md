@@ -130,7 +130,7 @@ int main() {
 
 ### 4. Specifiers
 
-Specifiers are a way to bind behavior (operations) to a data type. For example, `LessSpecificator` defines how objects are compared using the `<` operator, and `AddSpecificator` defines how they are added.
+Specifiers are a way to bind behavior (operations) to a data type. For example, `LessSpecifier` defines how objects are compared using the `<` operator, and `AddSpecifier` defines how they are added.
 
 This allows `fcf::Variant` and the call system to perform operations on custom types if corresponding specifiers are registered for them.
 
@@ -147,10 +147,10 @@ struct Person {
 
 FCF_TYPE_REGISTRATION(Person, "Person", 0);
 
-// Type specialization for LessSpecificator
+// Type specialization for LessSpecifier
 namespace fcf {
     template<>
-    struct Type<Person, LessSpecificator> : public TypeImpl<Person, LessSpecificator> {
+    struct Type<Person, LessSpecifier> : public TypeImpl<Person, LessSpecifier> {
         inline bool call(const Person* a_left, const Person* a_right) const {
             return a_left->age < a_right->age;
         }
@@ -158,7 +158,7 @@ namespace fcf {
 }
 
 // Specifier Registration
-FCF_SPECIFICATOR_REGISTRATION(Person, fcf::LessSpecificator);
+FCF_SPECIFIER_REGISTRATION(Person, fcf::LessSpecifier);
 
 int main() {
     Person p1{25, "Alice"};
@@ -167,7 +167,7 @@ int main() {
     fcf::Variant vp1(p1);
     fcf::Variant vp2(p2);
 
-    // Variant comparison uses LessSpecificator
+    // Variant comparison uses LessSpecifier
     if (vp1 < vp2) {
         std::cout << "Alice is younger than Bob" << std::endl;
     }

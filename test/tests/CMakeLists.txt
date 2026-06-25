@@ -34,8 +34,8 @@ add_executable("basis-test"
                            PartForeach/foreach.cpp
                            PartMetaType/MetaTypeModifyTuple.cpp
                            PartMetaType/MetaTypeSequence.cpp
-                           PartSpecificator/ArithmeticSpecificators.cpp
-                           PartSpecificator/MinMaxSpecificator.cpp
+                           PartSpecifier/ArithmeticSpecifiers.cpp
+                           PartSpecifier/MinMaxSpecifier.cpp
                            PartType/TypeIndex.cpp
                            PartVariant/Variant.cpp
                            PartVariant/VariantArithmeticTest.cpp

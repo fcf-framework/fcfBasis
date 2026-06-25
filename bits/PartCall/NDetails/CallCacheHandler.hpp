@@ -16,8 +16,8 @@ namespace fcf{
     };
 
     template <typename Ty>
-    struct CallCacheIsInvariantType<Ty, decltype((void)::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariantValue )> {
-      enum { value = ::fcf::Type<Ty, ::fcf::ResolveSpecificator>::invariantValue };
+    struct CallCacheIsInvariantType<Ty, decltype((void)::fcf::Type<Ty, ::fcf::ResolveSpecifier>::invariantValue )> {
+      enum { value = ::fcf::Type<Ty, ::fcf::ResolveSpecifier>::invariantValue };
     };
 
     template <typename Ty, typename = void>
@@ -26,10 +26,10 @@ namespace fcf{
     };
 
     template <typename Ty>
-    struct CallCacheIsInvariantContainer<Ty, decltype((void)typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecificator>::KeyType() )> {
+    struct CallCacheIsInvariantContainer<Ty, decltype((void)typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecifier>::KeyType() )> {
       enum { 
-        value = CallCacheIsInvariantType<typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecificator>::KeyType >::value ||
-                CallCacheIsInvariantType<typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecificator>::ValueType >::value,
+        value = CallCacheIsInvariantType<typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecifier>::KeyType >::value ||
+                CallCacheIsInvariantType<typename ::fcf::Type<Ty, ::fcf::ContainerAccessSpecifier>::ValueType >::value,
       };
     };
 

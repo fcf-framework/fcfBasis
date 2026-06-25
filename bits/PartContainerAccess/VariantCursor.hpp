@@ -16,16 +16,16 @@ namespace fcf{
   VariantCursor<TContainer>::VariantCursor(TContainer& a_variant) {
     if (std::is_const<TContainer>::value) {
       if (TypeIndexConverter<>::isConst(a_variant.getTypeInfo()->index)){
-        this->iterator = a_variant.getTypeInfo()->template specificatorUniversalCall<ContainerAccessSpecificator>(0)((void*)a_variant.ptr(), 0, 0);
+        this->iterator = a_variant.getTypeInfo()->template specifierUniversalCall<ContainerAccessSpecifier>(0)((void*)a_variant.ptr(), 0, 0);
       } else {
         const TypeInfo* ti = getTypeInfo(TypeIndexConverter<>::getConstIndex(a_variant.getTypeInfo()->index));
         if (!ti){
           throw fcf::CursorIteratorUnsetException(__FILE__, __LINE__, Type<TContainer>().name());
         }
-        this->iterator = ti->template specificatorUniversalCall<ContainerAccessSpecificator>(0)((void*)a_variant.ptr(), 0, 0);
+        this->iterator = ti->template specifierUniversalCall<ContainerAccessSpecifier>(0)((void*)a_variant.ptr(), 0, 0);
       }
     } else {
-      iterator = a_variant.getTypeInfo()->template specificatorUniversalCall<ContainerAccessSpecificator>(0)((void*)a_variant.ptr(), 0, 0);
+      iterator = a_variant.getTypeInfo()->template specifierUniversalCall<ContainerAccessSpecifier>(0)((void*)a_variant.ptr(), 0, 0);
     }
   }
 

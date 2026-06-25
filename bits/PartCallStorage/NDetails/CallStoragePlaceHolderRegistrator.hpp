@@ -23,7 +23,7 @@ namespace fcf{
           groupIt->second.argumentOptions.resize(fs.asize, 0);
         }
 
-        _specificatorsData.clear();
+        _specifiersData.clear();
         _argumentOptions.clear();
         fcf::foreach(a_signatures, *this);
 
@@ -38,11 +38,11 @@ namespace fcf{
         }
 
         std::list<::fcf::CallPlaceHolderInfo> specDataState;
-        invariantMapRegistry(_specificatorsData.begin(), specDataState);
+        invariantMapRegistry(_specifiersData.begin(), specDataState);
       }
 
       void invariantMapRegistry(std::list<::fcf::CallPlaceHolderInfo>::iterator a_specDataIt, std::list<::fcf::CallPlaceHolderInfo>& a_specDataState){
-        if (a_specDataIt == _specificatorsData.end()) {
+        if (a_specDataIt == _specifiersData.end()) {
           if (a_specDataState.size()) {
             mapRegistry(a_specDataState);
           }
@@ -110,26 +110,26 @@ namespace fcf{
 
       template <typename TIndex, typename TSignature>
       void operator()(TIndex /*a_index*/, const TSignature& /*a_signatureGetter*/) {
-        unsigned int specificatorIndex = Type<typename TSignature::specificator_type>().index();
-        if (specificatorIndex == Type<CallOptions>().index()){
+        unsigned int specifierIndex = Type<typename TSignature::specifier_type>().index();
+        if (specifierIndex == Type<CallOptions>().index()){
           typename TSignature::ShortTupleArgumentsType tuple;
           ArgOptionInitializer argOptionInitializer(this);
           foreach(tuple, argOptionInitializer, (unsigned int) std::max((int)TSignature::ArgIndex-1, (int)0));
         } else {
-          if (specificatorIndex == Type<Nop>().index()){
-            specificatorIndex = 0;
+          if (specifierIndex == Type<Nop>().index()){
+            specifierIndex = 0;
           }
 
           if (!TSignature::ArgIndex) {
             return;
           }
 
-          _specificatorsData.push_back(TSignature::getPlaceHolderInfo());
+          _specifiersData.push_back(TSignature::getPlaceHolderInfo());
 
-          if (TSignature::ArgIndex > groupIt->second.specificatorsByArgIndex.size()){
-            groupIt->second.specificatorsByArgIndex.resize(TSignature::ArgIndex);
+          if (TSignature::ArgIndex > groupIt->second.specifiersByArgIndex.size()){
+            groupIt->second.specifiersByArgIndex.resize(TSignature::ArgIndex);
           }
-          groupIt->second.specificatorsByArgIndex[TSignature::ArgIndex-1].push_back(specificatorIndex);
+          groupIt->second.specifiersByArgIndex[TSignature::ArgIndex-1].push_back(specifierIndex);
         }
 
       }
@@ -139,7 +139,7 @@ namespace fcf{
       FunctionSignature<TFunction>                          fs;
       BaseFunctionSignature                                 scs;
       CallStorageSelectionFunctionGroups::iterator          groupIt;
-      std::list<::fcf::CallPlaceHolderInfo>                 _specificatorsData;
+      std::list<::fcf::CallPlaceHolderInfo>                 _specifiersData;
       std::list< std::pair<unsigned int, unsigned int> >    _argumentOptions;
     };
 

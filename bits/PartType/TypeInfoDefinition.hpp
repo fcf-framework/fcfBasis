@@ -9,9 +9,9 @@
 #include "../../macro.hpp"
 #include "../../bits/PartException/ExceptionPredefinition.hpp"
 #include "../../bits/PartConvert/ConvertFunction.hpp"
-#include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
+#include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "../../bits/PartSpecificator/ResolveSpecificatorDefinition.hpp"
+#include "../../bits/PartSpecifier/ResolveSpecifierDefinition.hpp"
 #include "../../bits/PartType/TypeDefinition.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
@@ -25,14 +25,14 @@ namespace fcf{
    * @brief Structure containing metadata and runtime information for a registered type.
    * 
    * TypeInfo is the core descriptor used by the fcf type system to perform 
-   * dynamic type checking, conversions, and specificator-based operations.
+   * dynamic type checking, conversions, and specifier-based operations.
    */
   struct TypeInfo{
     /** @brief Map of destination type index to conversion function. */
     typedef std::unordered_map<unsigned int, ConvertFunction> ConvertersType;
 
-    /** @brief Map of the mapping from the specificator type index to the specificator information. */
-    typedef std::unordered_map<unsigned int, SpecificatorInfo> SpecificatorsType;
+    /** @brief Map of the mapping from the specifier type index to the specifier information. */
+    typedef std::unordered_map<unsigned int, SpecifierInfo> SpecifiersType;
 
     /** @brief Unique identifier for the type. */
     unsigned int                                                  index;
@@ -46,12 +46,12 @@ namespace fcf{
     ConvertersType                                                converters;
     /** @brief Converters for converting TO this type. */
     ConvertersType                                                backConverters;
-    /** @brief Registered specificators (e.g., Less, Equal, Add) for this type. */
-    SpecificatorsType                                             specificators;
-    /** @brief Container access specificator for fast access. */
+    /** @brief Registered specifiers (e.g., Less, Equal, Add) for this type. */
+    SpecifiersType                                             specifiers;
+    /** @brief Container access specifier for fast access. */
     UniversalCall                                                 containerAccessUniversalCall;
     /** @brief Function pointer to resolve the type to its underlying data. */
-    ResolveSpecificator::CallType                                 resolveCall;
+    ResolveSpecifier::CallType                                 resolveCall;
     /** @brief filled for type Variant, stores the size of the inner buffer. */
     size_t                                                        variantInnerSize;
     /** @brief Factory used to create/destroy instances of this type. */
@@ -88,40 +88,40 @@ namespace fcf{
     void initialize();
 
     /**
-     * @brief Retrieves a specificator call as a typed function pointer.
-     * @tparam TSpecificator The specificator type (e.g., LessSpecificator).
-     * @return Function pointer of type TSpecificator::CallType.
-     * @throws SpecificatorNotFoundException if not registered.
+     * @brief Retrieves a specifier call as a typed function pointer.
+     * @tparam TSpecifier The specifier type (e.g., LessSpecifier).
+     * @return Function pointer of type TSpecifier::CallType.
+     * @throws SpecifierNotFoundException if not registered.
      */
-    template <typename TSpecificator>
-    typename TSpecificator::CallType specificatorCall() const;
+    template <typename TSpecifier>
+    typename TSpecifier::CallType specifierCall() const;
 
     /**
-     * @brief Retrieves a specificator call without throwing exceptions.
-     * @tparam TSpecificator The specificator type.
+     * @brief Retrieves a specifier call without throwing exceptions.
+     * @tparam TSpecifier The specifier type.
      * @param a_error Pointer to store error if not found.
      * @return Function pointer or nullptr.
      */
-    template <typename TSpecificator>
-    typename TSpecificator::CallType specificatorCall(Exception* a_error) const;
+    template <typename TSpecifier>
+    typename TSpecifier::CallType specifierCall(Exception* a_error) const;
 
     /**
-     * @brief Retrieves a specificator call as a universal function pointer.
-     * @tparam TSpecificator The specificator type.
+     * @brief Retrieves a specifier call as a universal function pointer.
+     * @tparam TSpecifier The specifier type.
      * @return UniversalCall function pointer.
-     * @throws SpecificatorNotFoundException if not registered.
+     * @throws SpecifierNotFoundException if not registered.
      */
-    template <typename TSpecificator>
-    UniversalCall specificatorUniversalCall() const;
+    template <typename TSpecifier>
+    UniversalCall specifierUniversalCall() const;
 
     /**
-     * @brief Retrieves a specificator call as a universal function pointer without throwing.
-     * @tparam TSpecificator The specificator type.
+     * @brief Retrieves a specifier call as a universal function pointer without throwing.
+     * @tparam TSpecifier The specifier type.
      * @param a_error Pointer to store error if not found.
      * @return UniversalCall function pointer or nullptr.
      */
-    template <typename TSpecificator>
-    UniversalCall specificatorUniversalCall(Exception* a_error) const;
+    template <typename TSpecifier>
+    UniversalCall specifierUniversalCall(Exception* a_error) const;
 
   };
 

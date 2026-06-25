@@ -71,7 +71,7 @@ namespace fcf {
 
 
 FCF_TYPE_REGISTRATION(FcfTest::BasisTest::ForeachTest::Container, "FcfTest::BasisTest::ForeachTest::Container", 0);
-FCF_SPECIFICATOR_REGISTRATION(FcfTest::BasisTest::ForeachTest::Container,  fcf::ContainerAccessSpecificator);
+FCF_SPECIFIER_REGISTRATION(FcfTest::BasisTest::ForeachTest::Container,  fcf::ContainerAccessSpecifier);
 
 
 namespace FcfTest { 

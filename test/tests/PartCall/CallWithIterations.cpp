@@ -23,7 +23,7 @@ namespace FcfTest {
 
 namespace fcf {
   template <>
-  struct Type<FcfTest::BasisTest::CallIterationsTest::Item, ValueSpecificator> : public TypeImpl<FcfTest::BasisTest::CallIterationsTest::Item, ValueSpecificator> {
+  struct Type<FcfTest::BasisTest::CallIterationsTest::Item, ValueSpecifier> : public TypeImpl<FcfTest::BasisTest::CallIterationsTest::Item, ValueSpecifier> {
     inline auto call(FcfTest::BasisTest::CallIterationsTest::Item* a_container) const -> decltype(a_container->defaultValue) {
       return a_container->defaultValue;
     }
@@ -31,7 +31,7 @@ namespace fcf {
 }
 
 FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, "FcfTest::BasisTest::CallIterationsTest::Item",                           0);
-FCF_SPECIFICATOR_REGISTRATION_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, fcf::ValueSpecificator);
+FCF_SPECIFIER_REGISTRATION_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, fcf::ValueSpecifier);
 
 FCF_FUNCTION_REGISTRATION(fill,
                    "cpu",
@@ -39,7 +39,7 @@ FCF_FUNCTION_REGISTRATION(fill,
                    void(*) (FcfTest::BasisTest::CallIterationsTest::Item*, FcfTest::BasisTest::CallIterationsTest::Item*, int),
                    (
                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
-                    (fcf::ValueSpecificator, 1, FcfTest::BasisTest::CallIterationsTest::Item*, FcfTest::BasisTest::CallIterationsTest::Item*, fcf::Arg1)
+                    (fcf::ValueSpecifier, 1, FcfTest::BasisTest::CallIterationsTest::Item*, FcfTest::BasisTest::CallIterationsTest::Item*, fcf::Arg1)
                    ),
                   );
 

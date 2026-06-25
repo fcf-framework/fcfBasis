@@ -12,7 +12,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call (dim:1)"){
     fcf::CallOptions co;
     fcf::CallArgument argumentOptions[1];
 
-    argumentOptions[0].specificator   = fcf::Type<fcf::ValueSpecificator>().index();
+    argumentOptions[0].specifier   = fcf::Type<fcf::ValueSpecifier>().index();
     argumentOptions[0].argumentNumber = 1;
     argumentOptions[0].values         = 999;
 
@@ -30,7 +30,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call (dim:1)"){
     fcf::CallOptions co;
     fcf::CallArgument argumentOptions[1];
 
-    argumentOptions[0].specificator   = fcf::Type<fcf::ValueSpecificator>().index();
+    argumentOptions[0].specifier   = fcf::Type<fcf::ValueSpecifier>().index();
     argumentOptions[0].argumentNumber = 1;
     argumentOptions[0].values         = 999;
 
@@ -49,7 +49,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call (dim:1)"){
     fcf::CallOptions co;
     fcf::CallArgument argumentOptions[1];
 
-    argumentOptions[0].specificator   = fcf::Type<fcf::ValueSpecificator>().index();
+    argumentOptions[0].specifier   = fcf::Type<fcf::ValueSpecifier>().index();
     argumentOptions[0].argumentNumber = 1;
     argumentOptions[0].values         = 999;
 
@@ -72,7 +72,7 @@ FCF_TEST_DECLARE("fcfBasis", "Call", "argument options call (dim:1)"){
     fcf::CallOptions co;
     fcf::CallArgument argumentOptions[1];
 
-    argumentOptions[0].specificator   = fcf::Type<fcf::ValueSpecificator>().index();
+    argumentOptions[0].specifier   = fcf::Type<fcf::ValueSpecifier>().index();
     argumentOptions[0].argumentNumber = 1;
     argumentOptions[0].values         = 999;
 

@@ -12,20 +12,20 @@
 
 namespace fcf{
 
-    template <typename TSpecificator, unsigned int SpecificatorSourceArgIndex = 0, typename... TArgPack>
+    template <typename TSpecifier, unsigned int SpecifierSourceArgIndex = 0, typename... TArgPack>
     struct CallDetails {
       enum { enable  = true };
-      enum { ArgIndex = SpecificatorSourceArgIndex };
-      typedef CallDetails<TSpecificator, SpecificatorSourceArgIndex, TArgPack...> active_type;
-      typedef TSpecificator                                                           specificator_type;
+      enum { ArgIndex = SpecifierSourceArgIndex };
+      typedef CallDetails<TSpecifier, SpecifierSourceArgIndex, TArgPack...> active_type;
+      typedef TSpecifier                                                           specifier_type;
       typedef typename NDetails::CallPlaceHolderRemover<void, TArgPack...>::function_type       _short_function_type;
       typedef typename ::fcf::FunctionSignature<_short_function_type>::args_type      ShortTupleArgumentsType;
 
       inline static CallPlaceHolderInfo getPlaceHolderInfo(){
         std::tuple<TArgPack...> tuple;
         CallPlaceHolderInfo cphi;
-        cphi.argSourceIndex = SpecificatorSourceArgIndex;
-        cphi.specificatorIndex = Type<TSpecificator>().index();
+        cphi.argSourceIndex = SpecifierSourceArgIndex;
+        cphi.specifierIndex = Type<TSpecifier>().index();
         SignatureDataFiller sdf = {cphi};
         fcf::foreach(tuple, sdf);
         return cphi;
@@ -51,7 +51,7 @@ namespace fcf{
       enum { enable  = false };
       enum { ArgIndex = 0 };
       typedef Nop active_type;
-      typedef Nop                                     specificator_type;
+      typedef Nop                                     specifier_type;
       typedef void(*_short_function_type)();
       typedef typename ::fcf::FunctionSignature<_short_function_type>::args_type      ShortTupleArgumentsType;
 
@@ -59,18 +59,18 @@ namespace fcf{
         std::tuple<TArgPack...> tuple;
         CallPlaceHolderInfo cphi;
         cphi.argSourceIndex = 0;
-        cphi.specificatorIndex = 0;
+        cphi.specifierIndex = 0;
         return cphi;
       }
 
     };
 
-    template <typename TSpecificator, typename... TArgPack>
-    struct CallDetails<TSpecificator, 0, TArgPack...>{
+    template <typename TSpecifier, typename... TArgPack>
+    struct CallDetails<TSpecifier, 0, TArgPack...>{
       enum { enable  = false };
       enum { ArgIndex = 0 };
       typedef Nop active_type;
-      typedef Nop                                     specificator_type;
+      typedef Nop                                     specifier_type;
       typedef void(*_short_function_type)();
       typedef typename ::fcf::FunctionSignature<_short_function_type>::args_type      ShortTupleArgumentsType;
 
@@ -78,7 +78,7 @@ namespace fcf{
         std::tuple<TArgPack...> tuple;
         CallPlaceHolderInfo cphi;
         cphi.argSourceIndex = 0;
-        cphi.specificatorIndex = 0;
+        cphi.specifierIndex = 0;
         return cphi;
       }
     };

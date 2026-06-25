@@ -28,7 +28,7 @@ namespace FcfTest {
 
 namespace fcf {
   template <>
-  struct Type<FcfTest::BasisTest::PHCTestDataItem, ValueSpecificator> : public TypeImpl<FcfTest::BasisTest::PHCTestDataItem, ValueSpecificator> {
+  struct Type<FcfTest::BasisTest::PHCTestDataItem, ValueSpecifier> : public TypeImpl<FcfTest::BasisTest::PHCTestDataItem, ValueSpecifier> {
     inline auto call(FcfTest::BasisTest::PHCTestDataItem* a_container) const -> decltype(a_container->defaultValue) {
       return a_container->defaultValue;
     }
@@ -37,7 +37,7 @@ namespace fcf {
 
 FCF_TYPE_REGISTRATION_FORCE(std::vector<FcfTest::BasisTest::PHCTestDataItem>, "std::vector<FcfTest::BasisTest::PHCTestDataItem>", 0);
 FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, "FcfTest::BasisTest::PHCTestDataItem",                           0);
-FCF_SPECIFICATOR_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecificator);
+FCF_SPECIFIER_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecifier);
 
 
 FCF_FUNCTION_REGISTRATION(fill,
@@ -46,7 +46,7 @@ FCF_FUNCTION_REGISTRATION(fill,
                    void(*) (FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, int),
                    (
                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
-                    (fcf::ValueSpecificator, 1, FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, fcf::Arg1)
+                    (fcf::ValueSpecifier, 1, FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, fcf::Arg1)
                    ),
                   );
 

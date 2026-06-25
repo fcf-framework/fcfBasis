@@ -8,7 +8,7 @@
 #include "../../macro.hpp"
 
 #include "../../bits/PartConvert/ConvertFunction.hpp"
-#include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
+#include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/TypeInfoDefinition.hpp"
 

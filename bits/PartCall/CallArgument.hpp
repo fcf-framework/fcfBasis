@@ -6,7 +6,7 @@
 namespace fcf{
 
   struct CallArgument {
-    unsigned int specificator;
+    unsigned int specifier;
     unsigned int argumentNumber;
     Variant      path;
     Variant      values;

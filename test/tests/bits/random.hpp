@@ -65,7 +65,7 @@ namespace fcf {
                        void(*) (float*, float*, const float&, const float&),
                        (
                         (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
-                        (fcf::MinMaxSpecificator, 1, float*, float*, fcf::Arg1, fcf::Arg2)
+                        (fcf::MinMaxSpecifier, 1, float*, float*, fcf::Arg1, fcf::Arg2)
                        ),
                       );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION

@@ -532,7 +532,7 @@ namespace fcf {
       /**
        * @brief Conversion to bool.
        *
-       * Returns true if the variant is not empty and evaluates to true according to its type's BoolSpecificator.
+       * Returns true if the variant is not empty and evaluates to true according to its type's BoolSpecifier.
        */
       operator bool() const;
 
@@ -1153,42 +1153,42 @@ namespace fcf {
 
       /**
        * @brief Performs arithmetic operation in-place.
-       * @tparam TSpecificator The specificator type (e.g., AddSpecificator).
+       * @tparam TSpecifier The specifier type (e.g., AddSpecifier).
        * @tparam InputInnerBufferSize The buffer size of the source.
        * @param a_value The source value.
        * @return Reference to this variant.
        */
-      template <typename TSpecificator, size_t InputInnerBufferSize>
+      template <typename TSpecifier, size_t InputInnerBufferSize>
       inline BasicVariant& _selfCalcTo(const BasicVariant<InputInnerBufferSize>& a_value);
 
       /**
        * @brief Performs arithmetic operation returning a new variant.
-       * @tparam TSpecificator The specificator type.
+       * @tparam TSpecifier The specifier type.
        * @tparam InputInnerBufferSize The buffer size of the source.
        * @param a_value The source value.
        * @return A new variant with the result.
        */
-      template <typename TSpecificator, size_t InputInnerBufferSize>
+      template <typename TSpecifier, size_t InputInnerBufferSize>
       inline BasicVariant _selfCalc(const BasicVariant<InputInnerBufferSize>& a_value) const;
 
       /**
        * @brief Performs arithmetic operation in-place with generic type.
-       * @tparam TSpecificator The specificator type.
+       * @tparam TSpecifier The specifier type.
        * @tparam Ty The source type.
        * @param a_value The source value.
        * @return Reference to this variant.
        */
-      template <typename TSpecificator, typename Ty>
+      template <typename TSpecifier, typename Ty>
       inline BasicVariant& _calcTo(const Ty& a_value);
 
       /**
        * @brief Performs arithmetic operation returning a new variant with generic type.
-       * @tparam TSpecificator The specificator type.
+       * @tparam TSpecifier The specifier type.
        * @tparam Ty The source type.
        * @param a_value The source value.
        * @return A new variant with the result.
        */
-      template <typename TSpecificator, typename Ty>
+      template <typename TSpecifier, typename Ty>
       inline BasicVariant _calc(const Ty& a_value) const;
 
 

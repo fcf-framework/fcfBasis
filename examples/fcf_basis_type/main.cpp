@@ -34,12 +34,12 @@ FCF_TYPE_REGISTRATION(MyCustomStruct, "MyCustomStruct",  0);
 
 namespace fcf {
   /**
-   * @brief Specialization of fcf::Type to provide runtime behavior for a specificator.
+   * @brief Specialization of fcf::Type to provide runtime behavior for a specifier.
    *
-   * Here we define how MyCustomStruct should behave when used with fcf::LessSpecificator.
+   * Here we define how MyCustomStruct should behave when used with fcf::LessSpecifier.
    * This allows the generic fcf::Type system to perform comparisons on this custom type at runtime.
    */
-  template<> struct Type<MyCustomStruct, LessSpecificator> : public TypeImpl<MyCustomStruct, LessSpecificator> {
+  template<> struct Type<MyCustomStruct, LessSpecifier> : public TypeImpl<MyCustomStruct, LessSpecifier> {
     inline bool call(const MyCustomStruct* a_left, const MyCustomStruct* a_right) const {
       return a_left->name < a_right->name;
     }
@@ -47,18 +47,18 @@ namespace fcf {
 }
 
 /**
- * @brief Links the specificator logic to the registered type.
+ * @brief Links the specifier logic to the registered type.
  *
  * This macro tells the fcf system that for the type MyCustomStruct,
- * the fcf::LessSpecificator operation is implemented by the specialization
+ * the fcf::LessSpecifier operation is implemented by the specialization
  * defined above. This is essential for the runtime dispatch mechanism.
  *
- * @param MyCustomStruct The type that supports the specificator.
- * @param fcf::LessSpecificator The specificator being registered.
+ * @param MyCustomStruct The type that supports the specifier.
+ * @param fcf::LessSpecifier The specifier being registered.
  */
-FCF_SPECIFICATOR_REGISTRATION(MyCustomStruct,  fcf::LessSpecificator);
+FCF_SPECIFIER_REGISTRATION(MyCustomStruct,  fcf::LessSpecifier);
 
-// To allow fcf::Type to work with our type in the context of specificators (e.g., comparison),
+// To allow fcf::Type to work with our type in the context of specifiers (e.g., comparison),
 // it must be registered. In this example, we just show basic registration.
 // In a real project, this is done via macros or specialized registrars.
 
@@ -94,27 +94,27 @@ int main() {
         }
     }
 
-    std::cout << "\n=== [3] Using specificators (Runtime Behavior) ===" << std::endl;
+    std::cout << "\n=== [3] Using specifiers (Runtime Behavior) ===" << std::endl;
     {
-        // Specificators allow performing operations on types using their metadata.
-        // For example, LessSpecificator (the < operator).
+        // Specifiers allow performing operations on types using their metadata.
+        // For example, LessSpecifier (the < operator).
 
         int a = 10;
         int b = 20;
 
-        // Get the comparison specificator for the int type
-        // specificatorUniversalCall() returns a universal function pointer (UniversalCall)
-        fcf::UniversalCall lessFunc = fcf::Type<int>().specificatorUniversalCall<fcf::LessSpecificator>();
+        // Get the comparison specifier for the int type
+        // specifierUniversalCall() returns a universal function pointer (UniversalCall)
+        fcf::UniversalCall lessFunc = fcf::Type<int>().specifierUniversalCall<fcf::LessSpecifier>();
 
         if (lessFunc) {
             // Create a Variant object and bind a reference to variable b to it
             fcf::Variant varB(b, fcf::Variant::REFERENCE);
-            // Call the specificator function.
+            // Call the specifier function.
             // The first argument is a pointer to the reference, the second is an array of Variant elements
             // and its size.
             fcf::Variant result = lessFunc(&a, &varB, 1);
             if (result.cast<bool>()) {
-                std::cout << "Result " << a << "<" << b << ": " << result << " (via LessSpecificator logic)" << std::endl;
+                std::cout << "Result " << a << "<" << b << ": " << result << " (via LessSpecifier logic)" << std::endl;
             }
         }
     }
@@ -130,31 +130,31 @@ int main() {
         std::cout << "Custom Type Name: " << customType.name() << std::endl;
         std::cout << "Custom Type Index: 0x" << std::hex << customType.index() << std::dec << std::endl;
 
-        // 2. Runtime comparison via Variant and Specificator
+        // 2. Runtime comparison via Variant and Specifier
         // We wrap objects in Variants to simulate runtime dispatch
         fcf::Variant var1(obj1);
         fcf::Variant var2(obj2);
         fcf::Variant var3(obj3);
 
-        fcf::UniversalCall lessFunc = fcf::Type<MyCustomStruct>().specificatorUniversalCall<fcf::LessSpecificator>();
+        fcf::UniversalCall lessFunc = fcf::Type<MyCustomStruct>().specifierUniversalCall<fcf::LessSpecifier>();
 
         if (lessFunc) {
             // Compare Alice < Bob
             fcf::Variant res1 = lessFunc(&obj1, &var2, 1);
             std::cout << "Is 'Alice' < 'Bob'?   [lessFunc comparison] " << (res1.cast<bool>() ? "Yes" : "No") << std::endl;
-            // When comparing (<) Variant objects, fcf::LessSpecificator is also used.
+            // When comparing (<) Variant objects, fcf::LessSpecifier is also used.
             std::cout << "Is 'Alice' < 'Bob'?   [Variant comparison]  " << (( var1 < var2 ) ? "Yes" : "No") << std::endl;
 
             // Compare Bob < Alice (should be false)
             fcf::Variant res2 = lessFunc(&obj2, &var1, 1);
             std::cout << "Is 'Bob' < 'Alice'?   [lessFunc comparison] " << (res2.cast<bool>() ? "Yes" : "No") << std::endl;
-            // When comparing (<) Variant objects, fcf::LessSpecificator is also used.
+            // When comparing (<) Variant objects, fcf::LessSpecifier is also used.
             std::cout << "Is 'Bob' < 'Alice'?   [Variant comparison]  " << (( var2 < var1 ) ? "Yes" : "No") << std::endl;
 
             // Compare Bob < Charlie
             fcf::Variant res3 = lessFunc(&obj2, &var3, 1);
             std::cout << "Is 'Bob' < 'Charlie'? [lessFunc comparison] " << (res3.cast<bool>() ? "Yes" : "No") << std::endl;
-            // When comparing (<) Variant objects, fcf::LessSpecificator is also used.
+            // When comparing (<) Variant objects, fcf::LessSpecifier is also used.
             std::cout << "Is 'Bob' < 'Charlie'? [Variant comparison]  " << (( var2 < var3 ) ? "Yes" : "No") << std::endl;
         }
     }

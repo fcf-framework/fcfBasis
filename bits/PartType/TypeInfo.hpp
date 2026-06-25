@@ -11,9 +11,9 @@
 #include "../../macro.hpp"
 #include "../../bits/PartException/Exception.hpp"
 #include "../../bits/PartConvert/ConvertFunction.hpp"
-#include "../../bits/PartSpecificator/SpecificatorInfo.hpp"
+#include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "../../bits/PartSpecificator/ResolveSpecificatorDefinition.hpp"
+#include "../../bits/PartSpecifier/ResolveSpecifierDefinition.hpp"
 #include "../../bits/PartType/TypeDefinition.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
@@ -54,7 +54,7 @@ namespace fcf {
     , size(a_source.size)
     , converters(a_source.converters)
     , backConverters(a_source.backConverters)
-    , specificators(a_source.specificators)
+    , specifiers(a_source.specifiers)
     , containerAccessUniversalCall(a_source.containerAccessUniversalCall)
     , resolveCall(a_source.resolveCall)
     , variantInnerSize(a_source.variantInnerSize)
@@ -75,7 +75,7 @@ namespace fcf {
     size = a_source.size;
     converters = a_source.converters;
     backConverters = a_source.backConverters;
-    specificators = a_source.specificators;
+    specifiers = a_source.specifiers;
     containerAccessUniversalCall = a_source.containerAccessUniversalCall;
     resolveCall = a_source.resolveCall;
     variantInnerSize = a_source.variantInnerSize;
@@ -99,78 +99,78 @@ namespace fcf {
   }
 
   namespace NDetails {
-    template <typename TSpecificator>
-    struct SpecificatorUniversalResolver {
+    template <typename TSpecifier>
+    struct SpecifierUniversalResolver {
       UniversalCall operator()(const TypeInfo* a_typeInfo) const{
-        const unsigned int specificatorIndex = Type<TSpecificator>().index();
-        TypeInfo::SpecificatorsType::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
-        return it != a_typeInfo->specificators.end() ? it->second.universalCall : 0;
+        const unsigned int specifierIndex = Type<TSpecifier>().index();
+        TypeInfo::SpecifiersType::const_iterator it = a_typeInfo->specifiers.find(specifierIndex);
+        return it != a_typeInfo->specifiers.end() ? it->second.universalCall : 0;
       }
     };
 
-    template <typename TSpecificator>
-    struct SpecificatorResolver {
-      typename TSpecificator::CallType operator()(const TypeInfo* a_typeInfo) const{
-        const unsigned int specificatorIndex = Type<TSpecificator>().index();
-        fcf::TypeInfo::SpecificatorsType::const_iterator it = a_typeInfo->specificators.find(specificatorIndex);
-        return it != a_typeInfo->specificators.end() ? (typename TSpecificator::CallType)it->second.call : (typename TSpecificator::CallType)0;
+    template <typename TSpecifier>
+    struct SpecifierResolver {
+      typename TSpecifier::CallType operator()(const TypeInfo* a_typeInfo) const{
+        const unsigned int specifierIndex = Type<TSpecifier>().index();
+        fcf::TypeInfo::SpecifiersType::const_iterator it = a_typeInfo->specifiers.find(specifierIndex);
+        return it != a_typeInfo->specifiers.end() ? (typename TSpecifier::CallType)it->second.call : (typename TSpecifier::CallType)0;
       }
     };
 
     template <>
-    struct SpecificatorUniversalResolver<ContainerAccessSpecificator> {
+    struct SpecifierUniversalResolver<ContainerAccessSpecifier> {
       UniversalCall operator()(const TypeInfo* a_typeInfo) const {
         return a_typeInfo->containerAccessUniversalCall;
       }
     };
 
     template <>
-    struct SpecificatorResolver<ResolveSpecificator> {
-      ResolveSpecificator::CallType operator()(const TypeInfo* a_typeInfo) const{
+    struct SpecifierResolver<ResolveSpecifier> {
+      ResolveSpecifier::CallType operator()(const TypeInfo* a_typeInfo) const{
         return a_typeInfo->resolveCall;
       }
     };
 
   }
 
-  template <typename TSpecificator>
-  typename TSpecificator::CallType TypeInfo::specificatorCall() const {
-    typename TSpecificator::CallType c = NDetails::SpecificatorResolver<TSpecificator>()(this);
+  template <typename TSpecifier>
+  typename TSpecifier::CallType TypeInfo::specifierCall() const {
+    typename TSpecifier::CallType c = NDetails::SpecifierResolver<TSpecifier>()(this);
     if (c) {
       return c;
     }
-    throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+    throw fcf::SpecifierNotFoundException(__FILE__, __LINE__, Type<TSpecifier>().name(), name);
   }
 
-  template <typename TSpecificator>
-  typename TSpecificator::CallType TypeInfo::specificatorCall(Exception* a_error) const {
-    typename TSpecificator::CallType c = NDetails::SpecificatorResolver<TSpecificator>()(this);
+  template <typename TSpecifier>
+  typename TSpecifier::CallType TypeInfo::specifierCall(Exception* a_error) const {
+    typename TSpecifier::CallType c = NDetails::SpecifierResolver<TSpecifier>()(this);
     if (c) {
       return c;
     }
     if (a_error){
-      *a_error = fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+      *a_error = fcf::SpecifierNotFoundException(__FILE__, __LINE__, Type<TSpecifier>().name(), name);
     }
-    return (typename TSpecificator::CallType)0;
+    return (typename TSpecifier::CallType)0;
   }
 
-  template <typename TSpecificator>
-  UniversalCall TypeInfo::specificatorUniversalCall() const {
-    UniversalCall uc = NDetails::SpecificatorUniversalResolver<TSpecificator>()(this);
+  template <typename TSpecifier>
+  UniversalCall TypeInfo::specifierUniversalCall() const {
+    UniversalCall uc = NDetails::SpecifierUniversalResolver<TSpecifier>()(this);
     if (uc) {
       return uc;
     }
-    throw fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+    throw fcf::SpecifierNotFoundException(__FILE__, __LINE__, Type<TSpecifier>().name(), name);
   }
 
-  template <typename TSpecificator>
-  UniversalCall TypeInfo::specificatorUniversalCall(Exception* a_error) const {
-    UniversalCall uc = NDetails::SpecificatorUniversalResolver<TSpecificator>()(this);
+  template <typename TSpecifier>
+  UniversalCall TypeInfo::specifierUniversalCall(Exception* a_error) const {
+    UniversalCall uc = NDetails::SpecifierUniversalResolver<TSpecifier>()(this);
     if (uc) {
       return uc;
     }
     if (a_error) {
-      *a_error = fcf::SpecificatorNotFoundException(__FILE__, __LINE__, Type<TSpecificator>().name(), name);
+      *a_error = fcf::SpecifierNotFoundException(__FILE__, __LINE__, Type<TSpecifier>().name(), name);
     }
     return (UniversalCall)0;
   }

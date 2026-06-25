@@ -12,7 +12,7 @@
 #include "../../bits/PartConvert/ConverterRegistrationDefinition.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/TypeId.hpp"
-#include "../../bits/PartSpecificator/NDetails/SpecificatorRefRegistrarDefinition.hpp"
+#include "../../bits/PartSpecifier/NDetails/SpecifierRefRegistrarDefinition.hpp"
 
 namespace fcf{
 
@@ -29,19 +29,19 @@ namespace fcf{
    * @brief Specialization of the Type structure for the Nop mode.
    *
    * This is the standard implementation used for most registered types.
-   * It provides access to type metadata, converters, and specificators.
+   * It provides access to type metadata, converters, and specifiers.
    */
   template <typename Ty>
   struct Type<Ty, Nop> {
 
-      template <typename TContainer, typename TSubSpecificator>
-      friend class SpecificatorRegistrar;
+      template <typename TContainer, typename TSubSpecifier>
+      friend class SpecifierRegistrar;
 
       template <typename, typename, typename>
-      friend struct NDetails::SpecificatorRefRegistrarImpl;
+      friend struct NDetails::SpecifierRefRegistrarImpl;
 
       template <typename, typename, typename, typename>
-      friend struct NDetails::SpecificatorRegistrarIfTypeDeclaredImpl;
+      friend struct NDetails::SpecifierRegistrarIfTypeDeclaredImpl;
 
       template <typename TDestination, typename TSource>
       friend void converterRegistration();
@@ -89,54 +89,54 @@ namespace fcf{
       inline const TypeInfo* typeInfo();
 
       /**
-       * @brief Returns the map of specificators registered for this type.
-       * @return A constant reference to the map of specificator information.
+       * @brief Returns the map of specifiers registered for this type.
+       * @return A constant reference to the map of specifier information.
        */
-      inline const TypeInfo::SpecificatorsType& specificators();
+      inline const TypeInfo::SpecifiersType& specifiers();
 
       /**
-       * @brief Retrieves a specificator universal call for a given specificator type.
+       * @brief Retrieves a specifier universal call for a given specifier type.
        *
-       * If the specifier is not found, throw fcf::SpecificatorNotFoundException.
+       * If the specifier is not found, throw fcf::SpecifierNotFoundException.
        *
-       * @tparam TSpecificator The type of the specificator to retrieve.
+       * @tparam TSpecifier The type of the specifier to retrieve.
        * @return A UniversalCall function pointer.
        */
-      template <typename TSubSpecificator>
-      inline UniversalCall specificatorUniversalCall() const;
+      template <typename TSubSpecifier>
+      inline UniversalCall specifierUniversalCall() const;
 
       /**
-       * @brief Retrieves a specificator universal call for a given specificator type.
+       * @brief Retrieves a specifier universal call for a given specifier type.
        *
-       * @tparam TSpecificator The type of the specificator to retrieve.
+       * @tparam TSpecifier The type of the specifier to retrieve.
        * @param fcf::Exception* a_dstError - Pointer to an error object whose fields 
        *                                     will be filled in case of failure. May be zero.
        * @return A UniversalCall function pointer. If the specifier is not found, a null pointer is returned.
        */
-      template <typename TSubSpecificator>
-      inline UniversalCall specificatorUniversalCall(fcf::Exception* a_dstError) const;
+      template <typename TSubSpecifier>
+      inline UniversalCall specifierUniversalCall(fcf::Exception* a_dstError) const;
 
       /**
-       * @brief Retrieves a specificator call for a given specificator type.
+       * @brief Retrieves a specifier call for a given specifier type.
        *
-       * If the specifier is not found, throw fcf::SpecificatorNotFoundException.
+       * If the specifier is not found, throw fcf::SpecifierNotFoundException.
        * 
-       * @tparam TSpecificator The type of the specificator to retrieve.
-       * @return A TSpecificator::CallType function pointer.
+       * @tparam TSpecifier The type of the specifier to retrieve.
+       * @return A TSpecifier::CallType function pointer.
        */
-      template <typename TSpecificator>
-      inline typename TSpecificator::CallType specificatorCall() const;
+      template <typename TSpecifier>
+      inline typename TSpecifier::CallType specifierCall() const;
 
       /**
-       * @brief Retrieves a specificator call for a given specificator type.
+       * @brief Retrieves a specifier call for a given specifier type.
        *
-       * @tparam TSpecificator The type of the specificator to retrieve.
+       * @tparam TSpecifier The type of the specifier to retrieve.
        * @param fcf::Exception* a_dstError - Pointer to an error object whose fields 
        *                                     will be filled in case of failure. May be zero.
-       * @return A TSpecificator::CallType function pointer. If the specifier is not found, a null pointer is returned.
+       * @return A TSpecifier::CallType function pointer. If the specifier is not found, a null pointer is returned.
        */
-      template <typename TSpecificator>
-      inline typename TSpecificator::CallType specificatorCall(fcf::Exception* a_dstError) const;
+      template <typename TSpecifier>
+      inline typename TSpecifier::CallType specifierCall(fcf::Exception* a_dstError) const;
 
       /**
        * @brief Returns the map of converters for this type.

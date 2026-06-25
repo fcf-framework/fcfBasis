@@ -14,11 +14,11 @@
 
 namespace fcf {
 
-  template <int Mode, typename TDestination, typename TSource, typename TSpecificator = DefaultConvertMode>
+  template <int Mode, typename TDestination, typename TSource, typename TSpecifier = DefaultConvertMode>
   class Converter;
 
-  template <typename TDestination, typename TSource, typename TSpecificator>
-  class Converter<0, TDestination, TSource, TSpecificator>{
+  template <typename TDestination, typename TSource, typename TSpecifier>
+  class Converter<0, TDestination, TSource, TSpecifier>{
     public:
       void operator()(TDestination& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions = 0){
         (void)a_convertOptions;

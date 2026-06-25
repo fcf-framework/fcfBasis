@@ -108,7 +108,7 @@ namespace fcf{
                                                     *currentFunctionSignature, 
                                                     currentFunctionSignature, 
                                                     {}, 
-                                                    &groupIt->second.specificatorsByArgIndex,
+                                                    &groupIt->second.specifiersByArgIndex,
                                                     a_state.strictSource, 
                                                     false, 
                                                     {}, 

@@ -1,7 +1,7 @@
 #ifndef ___FCF__BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
 #define ___FCF__BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
 
-#include "SpecificatorRegistrarCaller.hpp"
+#include "SpecifierRegistrarCaller.hpp"
 #include "../../../bits/PartType/TypeFactory.hpp"
 
 namespace fcf {

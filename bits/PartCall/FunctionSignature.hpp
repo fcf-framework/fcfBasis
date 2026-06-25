@@ -87,8 +87,8 @@ namespace fcf {
             bool ignoreArg = false;
             TIterator it = a_begin;
             while (it != a_end && !ignoreArg) {
-              auto specificatorData = *it;
-              for(auto& pha : specificatorData.placeHolders) {
+              auto specifierData = *it;
+              for(auto& pha : specifierData.placeHolders) {
                 if (pha.argument == i){
                   ignoreArg = true;
                   break;

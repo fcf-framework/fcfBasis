@@ -11,7 +11,7 @@ namespace fcf {
 
     struct CallSelectorState {
       struct PlaceHolderSource{
-        unsigned int specificatorIndex;
+        unsigned int specifierIndex;
         unsigned int argumentNumber;
       };
       const CallStorage*                                  storage;
@@ -24,7 +24,7 @@ namespace fcf {
       BaseFunctionSignature*                              ptrFunctionSignature;
       /*StaticVector<void*, 8>*                           arguments;*/
       std::vector<PlaceHolderSource>                      placeHolderVec;
-      const std::vector<std::vector<unsigned int> >*      placeHolderSpecificators;
+      const std::vector<std::vector<unsigned int> >*      placeHolderSpecifiers;
       bool                                                strictSource;
       bool                                                dynamicCaller;
       StaticVector<unsigned int, 4>                       ptrResolveVector;

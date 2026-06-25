@@ -130,22 +130,22 @@
   #define _FCF_BASIS_CONCAT2(a_varName, a_suffix) _FCF_BASIS_CONCAT2_IMPL1(a_varName, a_suffix)
 #endif // #ifndef FCF_BASIS_CONCAT3
 
-#ifndef FCF_SPECIFICATOR_REGISTRATION_FORCE
-  #define _FCF_SPECIFICATOR_REGISTRATION_FORCE__L2(a_itemName, a_counter) a_itemName##_##a_counter
-  #define _FCF_SPECIFICATOR_REGISTRATION_FORCE__L1(a_itemName, a_counter) _FCF_SPECIFICATOR_REGISTRATION_FORCE__L2(a_itemName, a_counter)
-  #define FCF_SPECIFICATOR_REGISTRATION_FORCE(a_type, a_specificator) \
+#ifndef FCF_SPECIFIER_REGISTRATION_FORCE
+  #define _FCF_SPECIFIER_REGISTRATION_FORCE__L2(a_itemName, a_counter) a_itemName##_##a_counter
+  #define _FCF_SPECIFIER_REGISTRATION_FORCE__L1(a_itemName, a_counter) _FCF_SPECIFIER_REGISTRATION_FORCE__L2(a_itemName, a_counter)
+  #define FCF_SPECIFIER_REGISTRATION_FORCE(a_type, a_specifier) \
       namespace { \
-        ::fcf::SpecificatorRegistrarHandler<a_type, a_specificator> _FCF_SPECIFICATOR_REGISTRATION_FORCE__L1(specificatorReg, __COUNTER__);\
+        ::fcf::SpecifierRegistrarHandler<a_type, a_specifier> _FCF_SPECIFIER_REGISTRATION_FORCE__L1(specifierReg, __COUNTER__);\
       }
-#endif // #ifndef FCF_SPECIFICATOR_REGISTRATION
+#endif // #ifndef FCF_SPECIFIER_REGISTRATION
 
-#ifndef FCF_SPECIFICATOR_REGISTRATION
+#ifndef FCF_SPECIFIER_REGISTRATION
   #ifdef FCF_BASIS_IMPLEMENTATION
-    #define FCF_SPECIFICATOR_REGISTRATION(a_type, a_specificator) FCF_SPECIFICATOR_REGISTRATION_FORCE(a_type, a_specificator)
+    #define FCF_SPECIFIER_REGISTRATION(a_type, a_specifier) FCF_SPECIFIER_REGISTRATION_FORCE(a_type, a_specifier)
   #else
-    #define FCF_SPECIFICATOR_REGISTRATION(a_type, a_specificator)
+    #define FCF_SPECIFIER_REGISTRATION(a_type, a_specifier)
   #endif // #ifdef FCF_BASIS_IMPLEMENTATION
-#endif // #ifndef FCF_SPECIFICATOR_REGISTRATION
+#endif // #ifndef FCF_SPECIFIER_REGISTRATION
 
 #ifndef _FCF_BASIS_EXPAND
 #define _FCF_BASIS_EXPAND(...) __VA_ARGS__
@@ -283,23 +283,23 @@
         namespace fcf {\
           namespace NDetails {\
             namespace Declarations \
-              _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_template), _specificator_declare) {\
+              _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_template), _specifier_declare) {\
                 template <unsigned int Index>\
-                struct PartialSpecificatorRegistrar;\
+                struct PartialSpecifierRegistrar;\
                 template <typename TUnstatic, unsigned int UnstaticCounter, int Index, typename = void>\
-                struct PartialSpecificatorRegistrarExists {\
+                struct PartialSpecifierRegistrarExists {\
                   enum { value = false };\
                 };\
                 template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
-                struct PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index, decltype(void(PartialSpecificatorRegistrar<Index>()))> {\
+                struct PartialSpecifierRegistrarExists<TUnstatic, UnstaticCounter, Index, decltype(void(PartialSpecifierRegistrar<Index>()))> {\
                   enum { value = true };\
                 };\
                 template <typename TUnstatic, unsigned int UnstaticCounter, int Index = -1, bool Exisis = true>\
-                struct PartialSpecificatorRegistrarLast {\
-                  enum { value = PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index+1, PartialSpecificatorRegistrarExists<TUnstatic, UnstaticCounter, Index+1>::value >::value };\
+                struct PartialSpecifierRegistrarLast {\
+                  enum { value = PartialSpecifierRegistrarLast<TUnstatic, UnstaticCounter, Index+1, PartialSpecifierRegistrarExists<TUnstatic, UnstaticCounter, Index+1>::value >::value };\
                 };\
                 template <typename TUnstatic, unsigned int UnstaticCounter, int Index>\
-                struct PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter, Index, false> {\
+                struct PartialSpecifierRegistrarLast<TUnstatic, UnstaticCounter, Index, false> {\
                   enum { value = Index };\
                 };\
               _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES(a_template)\
@@ -309,27 +309,27 @@
         namespace fcf {\
           namespace NDetails {\
             template <typename TUnstatic, unsigned int UnstaticCounter, _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index, unsigned int Size >\
-            struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Size> {\
-              SpecificatorRegistrarCallerWalker(){\
+            struct SpecifierRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Size> {\
+              SpecifierRegistrarCallerWalker(){\
                 typedef _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> type;\
-                ::fcf::NDetails::Declarations _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template),_specificator_declare)::PartialSpecificatorRegistrar<Index> registrar;\
+                ::fcf::NDetails::Declarations _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template),_specifier_declare)::PartialSpecifierRegistrar<Index> registrar;\
                 registrar.template registry<type>();\
-                SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, type, Index+1, Size> nextCaller;\
+                SpecifierRegistrarCallerWalker<TUnstatic, UnstaticCounter, type, Index+1, Size> nextCaller;\
               }\
             };\
             template <typename TUnstatic, unsigned int UnstaticCounter, _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration), unsigned int Index>\
-            struct SpecificatorRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Index> {\
-              SpecificatorRegistrarCallerWalker(){\
+            struct SpecifierRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, Index, Index> {\
+              SpecifierRegistrarCallerWalker(){\
               }\
             };\
             template <typename TUnstatic, unsigned int UnstaticCounter,  _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArgumentsDeclaration)>\
-            struct SpecificatorRegistrarCaller<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> > {\
-              SpecificatorRegistrarCaller(){\
-                SpecificatorRegistrarCallerWalker<TUnstatic, \
+            struct SpecifierRegistrarCaller<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)> > {\
+              SpecifierRegistrarCaller(){\
+                SpecifierRegistrarCallerWalker<TUnstatic, \
                                                   UnstaticCounter, \
                                                   _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT a_templateArguments)>, \
                                                   0, \
-                                                  ::fcf::NDetails::Declarations _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template),_specificator_declare)::PartialSpecificatorRegistrarLast<TUnstatic, UnstaticCounter>::value\
+                                                  ::fcf::NDetails::Declarations _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(a_template),_specifier_declare)::PartialSpecifierRegistrarLast<TUnstatic, UnstaticCounter>::value\
                 > registrer;\
               }\
             };\
@@ -337,17 +337,17 @@
         }
 #endif // #ifndef FCF_TEMPLATE_TYPE_REGISTRATION
 
-#ifndef FCF_TEMPLATE_SPECIFICATOR_REGISTRATION
-#define FCF_TEMPLATE_SPECIFICATOR_REGISTRATION(a_template, a_specificator)\
+#ifndef FCF_TEMPLATE_SPECIFIER_REGISTRATION
+#define FCF_TEMPLATE_SPECIFIER_REGISTRATION(a_template, a_specifier)\
       namespace fcf {\
         namespace NDetails {\
           namespace Declarations \
-            _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_template), _specificator_declare) {\
+            _FCF_BASIS_CONCAT2(_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(a_template), _specifier_declare) {\
               template <>\
-              struct PartialSpecificatorRegistrar< PartialSpecificatorRegistrarLast<void, __COUNTER__>::value > {\
+              struct PartialSpecifierRegistrar< PartialSpecifierRegistrarLast<void, __COUNTER__>::value > {\
                 template <typename Ty>\
                 void registry(){\
-                  ::fcf::SpecificatorRegistrarHandler<Ty, a_specificator> registrar;\
+                  ::fcf::SpecifierRegistrarHandler<Ty, a_specifier> registrar;\
                 }\
               };\
             _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES(a_template)\

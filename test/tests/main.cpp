@@ -8,7 +8,7 @@ FCF_TEST_GROUP_ORDER("Type", -12)
 FCF_TEST_GROUP_ORDER("Exception", -11)
 FCF_TEST_GROUP_ORDER("Foreach", -10)
 FCF_TEST_GROUP_ORDER("MetaType", -9)
-FCF_TEST_GROUP_ORDER("Specificator", -8)
+FCF_TEST_GROUP_ORDER("Specifier", -8)
 FCF_TEST_GROUP_ORDER("Variant", -7)
 
 int main(int a_argc, char* a_argv[]) {

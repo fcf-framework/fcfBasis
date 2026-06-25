@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../../libraries/fcfTest/test.hpp"
 #include "../../basis.hpp"
-#include "../../bits/PartSpecificator/ContainerAccessSpecificator.hpp"
+#include "../../bits/PartSpecifier/ContainerAccessSpecifier.hpp"
 #include <array>
 
  
@@ -12,7 +12,7 @@ FCF_TEST_DECLARE("fcfBasis", "ContainerAccess", "dynamic container access"){
     vec.push_back(1);
     vec.push_back(2);
     vec.push_back(3);
-    fcf::Variant vit = fcf::Type<type>().specificatorUniversalCall<fcf::ContainerAccessSpecificator>()(&vec, 0, 0);
+    fcf::Variant vit = fcf::Type<type>().specifierUniversalCall<fcf::ContainerAccessSpecifier>()(&vec, 0, 0);
     fcf::DynamicContainerAccessBase* it = (fcf::DynamicContainerAccessBase*)vit.ptr();
     FCF_TEST((void*)vit.ptr() != 0, (void*)vit.ptr());
 
@@ -47,7 +47,7 @@ FCF_TEST_DECLARE("fcfBasis", "ContainerAccess", "dynamic container access"){
     c.push_back(2);
     c.push_back(3);
 
-    fcf::Variant vit = fcf::Type<container_type>().specificatorUniversalCall<fcf::ContainerAccessSpecificator>()(&c, 0, 0);
+    fcf::Variant vit = fcf::Type<container_type>().specifierUniversalCall<fcf::ContainerAccessSpecifier>()(&c, 0, 0);
     fcf::DynamicContainerAccessBase& it = *(fcf::DynamicContainerAccessBase*)vit.ptr();
 
     size_t i = 0;
@@ -69,7 +69,7 @@ FCF_TEST_DECLARE("fcfBasis", "ContainerAccess", "dynamic container access"){
     c.push_back(2);
     c.push_back(3);
 
-    fcf::Variant vit = fcf::Type<container_type>().specificatorUniversalCall<fcf::ContainerAccessSpecificator>()(&c, 0, 0);
+    fcf::Variant vit = fcf::Type<container_type>().specifierUniversalCall<fcf::ContainerAccessSpecifier>()(&c, 0, 0);
     fcf::DynamicContainerAccessBase& it = *(fcf::DynamicContainerAccessBase*)vit.ptr();
 
     FCF_TEST(it == true);
@@ -88,7 +88,7 @@ FCF_TEST_DECLARE("fcfBasis", "ContainerAccess", "dynamic container access"){
     c.push_back(1);
     c.push_back(2);
     c.push_back(3);
-    fcf::Variant vit = fcf::Type<container_type>().specificatorUniversalCall<fcf::ContainerAccessSpecificator>()(&c, 0, 0);
+    fcf::Variant vit = fcf::Type<container_type>().specifierUniversalCall<fcf::ContainerAccessSpecifier>()(&c, 0, 0);
     fcf::DynamicContainerAccessBase& it = *(fcf::DynamicContainerAccessBase*)vit.ptr();
 
     FCF_TEST(it);
