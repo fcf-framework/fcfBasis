@@ -13,16 +13,19 @@ namespace fcf {
 
   template <typename Ty>
   struct Type<Ty, ValueSpecifier> {
-    enum { enable = false };
   };
 
 
   template <typename Ty>
   struct TypeImpl<Ty, ValueSpecifier> {
-    enum { enable = true };
+
+    template <typename TArg>
+    inline auto call(TArg* a_object) -> decltype( Type<TArg, ValueSpecifier>()(a_object) ) {
+      return Type<TArg, ValueSpecifier>()(a_object);
+    }
 
     inline Variant universalCall(Ty* a_object, Variant* /*a_argv*/, size_t /*a_argc*/) const {
-      return Type<Ty, ValueSpecifier>().call(a_object);
+      return Variant(Type<Ty, ValueSpecifier>()(a_object));
     }
 
     //

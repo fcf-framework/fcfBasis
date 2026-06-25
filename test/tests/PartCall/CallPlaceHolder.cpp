@@ -29,7 +29,7 @@ namespace FcfTest {
 namespace fcf {
   template <>
   struct Type<FcfTest::BasisTest::PHCTestDataItem, ValueSpecifier> : public TypeImpl<FcfTest::BasisTest::PHCTestDataItem, ValueSpecifier> {
-    inline auto call(FcfTest::BasisTest::PHCTestDataItem* a_container) const -> decltype(a_container->defaultValue) {
+    inline auto operator()(FcfTest::BasisTest::PHCTestDataItem* a_container) -> decltype(a_container->defaultValue) {
       return a_container->defaultValue;
     }
   };
@@ -62,6 +62,12 @@ namespace FcfTest {
 
     FCF_TEST_DECLARE("fcfBasis", "Call", "placeholder call"){
 
+      {
+        FcfTest::BasisTest::PHCTestDataItem obj;
+        obj.defaultValue = 789;
+        int value = fcf::Type<FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecifier>().call(&obj);
+        FCF_TEST(value == 789, value);
+      }
       {
         typedef void (function_type)(int*, int, short);
         fcf::NDetails::CallWrapper<function_type> c;

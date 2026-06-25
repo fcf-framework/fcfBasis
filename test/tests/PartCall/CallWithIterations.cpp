@@ -24,7 +24,7 @@ namespace FcfTest {
 namespace fcf {
   template <>
   struct Type<FcfTest::BasisTest::CallIterationsTest::Item, ValueSpecifier> : public TypeImpl<FcfTest::BasisTest::CallIterationsTest::Item, ValueSpecifier> {
-    inline auto call(FcfTest::BasisTest::CallIterationsTest::Item* a_container) const -> decltype(a_container->defaultValue) {
+    inline auto operator()(FcfTest::BasisTest::CallIterationsTest::Item* a_container) -> decltype(a_container->defaultValue) {
       return a_container->defaultValue;
     }
   };

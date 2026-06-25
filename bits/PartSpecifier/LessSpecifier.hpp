@@ -21,8 +21,6 @@ namespace fcf{
 
   template <typename Ty>
   struct TypeImpl<Ty, LessSpecifier> {
-    enum { enable = true };
-
     inline bool operator()(const Ty* a_leftValue, const Ty* a_rightValue) {
       return *a_leftValue < *a_rightValue;
     }

@@ -13,12 +13,18 @@ namespace fcf{
 
   template <typename Ty>
   struct Type<Ty, SubSpecifier> {
-    enum { enable = false };
   };
 
   template <typename Ty>
   struct TypeImpl<Ty, SubSpecifier> {
-    enum { enable = true };
+
+    inline void operator()(Ty* a_result, const Ty* a_leftValue, const Ty* a_rightValue){
+      *a_result = *a_leftValue - *a_rightValue;
+    }
+
+    inline void call(Ty* a_result, const Ty* a_leftValue, const Ty* a_rightValue) {
+      Type<Ty,SubSpecifier>()(a_result, a_leftValue, a_rightValue);
+    }
 
     inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) const {
       if (a_argc < 2){
@@ -47,9 +53,6 @@ namespace fcf{
       return Variant();
     }
 
-    inline void call(Ty* a_result, const Ty* a_leftValue, const Ty* a_rightValue) const {
-      *a_result = *a_leftValue - *a_rightValue;
-    }
   };
 
 
