@@ -16,6 +16,8 @@ Unlike the standard `typeid`, `fcf::Type` provides rich runtime information abou
 
 Each type must be registered in the system. For built-in types, this is done automatically. For user-defined types, use the `FCF_TYPE_REGISTRATION` macro.
 
+Detailed description of fcf::Type: http://fcf-framework.is-a-fullstack.dev/cpp-libraries/fcfBasis/classes/fcf::Type
+
 **Example of registering a custom type:**
 
 ```cpp
