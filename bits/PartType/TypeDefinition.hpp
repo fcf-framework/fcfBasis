@@ -75,14 +75,6 @@ namespace fcf{
       inline size_t size();
 
       /**
-       * @brief Returns the data index of the type.
-       *
-       * The data index is used for type matching regardless of const/reference qualifiers.
-       * @return The unsigned integer data index.
-       */
-      inline TypeIndex dataIndex();
-
-      /**
        * @brief Retrieves the TypeInfo structure for this type.
        * @return A pointer to the constant TypeInfo object.
        */

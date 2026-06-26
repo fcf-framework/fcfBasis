@@ -66,11 +66,6 @@ namespace fcf {
   }
 
   template <typename Ty>
-  TypeIndex Type<Ty, Nop>::dataIndex() {
-    return TypeIndexConverter<>::getDataIndex(_info->index);
-  }
-
-  template <typename Ty>
   const TypeInfo* Type<Ty, Nop>::typeInfo() {
     return _info;
   }

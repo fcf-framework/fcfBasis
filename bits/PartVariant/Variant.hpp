@@ -772,7 +772,7 @@ namespace fcf{
     if (!_typeInfo) {
       reset(Type<TResult>());
       return *(result_type*)ptr();
-    } else if (getDataTypeIndex() == Type<TResult>().dataIndex()){
+    } else if (getDataTypeIndex() == TypeIndexConverter<>::getDataIndex(Type<TResult>().index())){
       return *(result_type*)ptr();
     } else {
       result_type result;
@@ -786,7 +786,7 @@ namespace fcf{
   template <typename TResult>
   typename std::remove_const< typename std::remove_reference<TResult>::type >::type& BasicVariant<innerBufferSize>::get() {
     typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
-    if (getDataTypeIndex() != Type<TResult>().dataIndex()){
+    if (getDataTypeIndex() != TypeIndexConverter<>::getDataIndex( Type<TResult>().index() )){
       const TypeInfo* ti = _typeInfo;
       while (ti) {
         ResolveSpecifier::CallType resolveCall = ti->specifierCall<ResolveSpecifier>(0);
@@ -821,7 +821,7 @@ namespace fcf{
     const TypeIndex selfDataIndex = getDataTypeIndex();
     if (!_typeInfo){
       return ResultType();
-    } if (selfDataIndex == Type<ResultType>().dataIndex()){
+    } if (selfDataIndex == TypeIndexConverter<>::getDataIndex( Type<ResultType>().index() ) ){
       return *(ResultType*)ptr();
     } else if (selfDataIndex == selfVariantTypeIndex) {
       return ((BasicVariant*)ptr())->cast<ResultType>();
@@ -837,7 +837,7 @@ namespace fcf{
   template <size_t innerBufferSize>
   template <typename TType>
   bool BasicVariant<innerBufferSize>::is() const{
-    return getDataTypeIndex() == Type<TType>().dataIndex();
+    return getDataTypeIndex() == TypeIndexConverter<>::getDataIndex( Type<TType>().index() );
   }
 
   template <size_t innerBufferSize>
@@ -863,7 +863,7 @@ namespace fcf{
       throw VariantSetReferenceTypeException(__FILE__, __LINE__, (a_variant._typeInfo ? a_variant._typeInfo->name.c_str() : "undefined"), Type<Variant>().name()+"&");
     }
     if (a_dataMode & REFERENCE) {
-      if (a_variant._typeInfo && TypeIndexConverter<>::getDataIndex(a_variant._typeInfo->index) == Type<ReferenceType>().dataIndex() ){
+      if (a_variant._typeInfo && TypeIndexConverter<>::getDataIndex(a_variant._typeInfo->index) == TypeIndexConverter<>::getDataIndex( Type<ReferenceType>().index() ) ){
         if (TypeIndexConverter<>::isConst(Type<ReferenceType>().index())) {
           _clone< const BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
         } else {
@@ -1051,10 +1051,10 @@ namespace fcf{
               throw VariantReadOnlyException(__FILE__, __LINE__);
             }
             const TypeIndex curVariantDataIndex = TypeIndexConverter<>::getDataIndex(curVariant->_typeInfo->index);
-            if (curVariantDataIndex == Type<DataType>().dataIndex()) {
+            if (curVariantDataIndex == TypeIndexConverter<>::getDataIndex( Type<DataType>().index() ) ) {
               curVariant->_typeInfo->initializer->set(curVariant->_ptr, &a_value);
             } else {
-              Variant buffer(curVariantDataIndex, &a_value, Type<DataType>().dataIndex());
+              Variant buffer(curVariantDataIndex, &a_value, TypeIndexConverter<>::getDataIndex( Type<DataType>().index() ) );
               curVariant->_typeInfo->initializer->set(curVariant->_ptr, buffer.ptr());
             }
           } else {
@@ -1067,13 +1067,13 @@ namespace fcf{
               curVariant->_typeInfo = 0;
             }
             typedef typename Type<DataType, StoredDataTypeSpecifier>::type StroredType;
-            if (Type<StroredType>().dataIndex() == Type<DataType>().dataIndex()){
+            if ( TypeIndexConverter<>::getDataIndex( Type<StroredType>().index() ) == TypeIndexConverter<>::getDataIndex( Type<DataType>().index() ) ){
               const TypeInfo* ti = Type<StroredType>().typeInfo();
               curVariant->_ptr = ti->initializer->clone(_size(ti) <= ve.innerSize ? (void*)&curVariant->_mem[0] : 0, &a_value);
               curVariant->_typeInfo = ti;
             } else {
               const TypeInfo* storedTypeInfo    = Type<StroredType>().typeInfo();
-              Variant buffer(storedTypeInfo->index, &a_value, Type<DataType>().dataIndex());
+              Variant buffer(storedTypeInfo->index, &a_value, TypeIndexConverter<>::getDataIndex( Type<DataType>().index() ) );
               curVariant->_ptr      = storedTypeInfo->initializer->clone(_size(storedTypeInfo) <= ve.innerSize ? (void*)&curVariant->_mem[0] : 0, buffer.ptr());
               curVariant->_typeInfo = storedTypeInfo;
             }
