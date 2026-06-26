@@ -29,13 +29,13 @@ namespace fcf{
    */
   struct TypeInfo{
     /** @brief Map of destination type index to conversion function. */
-    typedef std::unordered_map<unsigned int, ConvertFunction> ConvertersType;
+    typedef std::unordered_map<TypeIndex, ConvertFunction> ConvertersType;
 
     /** @brief Map of the mapping from the specifier type index to the specifier information. */
-    typedef std::unordered_map<unsigned int, SpecifierInfo> SpecifiersType;
+    typedef std::unordered_map<TypeIndex, SpecifierInfo> SpecifiersType;
 
     /** @brief Unique identifier for the type. */
-    unsigned int                                                  index;
+    TypeIndex                                                  index;
     /** @brief Human-readable name of the type. */
     std::string                                                   name;
     /** @brief Flags belonging to the type variant. **/
@@ -66,7 +66,7 @@ namespace fcf{
      * @param a_variantInnerSize Payload size.
      * @param a_size Total size.
      */
-    inline TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_size, size_t a_variantInnerSize);
+    inline TypeInfo(TypeIndex a_index, const std::string& a_name, unsigned char a_flags, size_t a_size, size_t a_variantInnerSize);
 
     /** @brief Default constructor. */
     inline TypeInfo();

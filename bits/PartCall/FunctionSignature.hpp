@@ -16,13 +16,13 @@ namespace fcf {
         namespace FunctionSignature { 
           template <size_t Index, size_t IndexEnd, typename... TPack>
           struct TypeInitializer {
-            void operator()(unsigned int* /*a_codes*/){
+            void operator()(TypeIndex* /*a_codes*/){
             }
           };
 
           template <size_t Index, size_t IndexEnd, typename Ty, typename... TPack>
           struct TypeInitializer<Index, IndexEnd, Ty, TPack...> {
-            void operator()(unsigned int* a_codes){
+            void operator()(TypeIndex* a_codes){
               a_codes[Index] = Type<Ty>().index();
               TypeInitializer<Index+1, IndexEnd, TPack...>()(a_codes);
             }
@@ -30,7 +30,7 @@ namespace fcf {
 
           template <size_t Index, typename Ty>
           struct TypeInitializer<Index, Index, Ty> {
-            void operator()(unsigned int* /*a_codes*/){
+            void operator()(TypeIndex* /*a_codes*/){
             }
           };
         }
@@ -56,11 +56,11 @@ namespace fcf {
           operator=(a_value);
         }
 
-        static unsigned int getSimpleType(unsigned int a_type) {
+        static TypeIndex getSimpleType(TypeIndex a_type) {
           return a_type & (~0x0e000000); // remove const flag; remove lvalue ref; remove rvalue ref;
         }
 
-        static unsigned int getSimpleCallType(unsigned int a_type) {
+        static TypeIndex getSimpleCallType(TypeIndex a_type) {
           a_type &= ~0x0e000000; // remove const flag; remove lvalue ref; remove rvalue ref;
           a_type |= 0x0a000000;  // add const lvalue ref
           return a_type;
@@ -123,7 +123,7 @@ namespace fcf {
             return rcode < a_value.rcode;
           }
           const unsigned int size = asize < a_value.asize ? asize : a_value.asize;
-          const int res = memcmp(pacodes, a_value.pacodes, size * sizeof(unsigned int));
+          const int res = memcmp(pacodes, a_value.pacodes, size * sizeof(TypeIndex));
           if (res == 0){
             return asize < a_value.asize;
           }
@@ -134,14 +134,14 @@ namespace fcf {
           if (rcode != a_value.rcode || asize != a_value.asize) {
             return false;
           }
-          return memcmp(pacodes, a_value.pacodes, asize * sizeof(unsigned int)) == 0;
+          return memcmp(pacodes, a_value.pacodes, asize * sizeof(TypeIndex)) == 0;
         }
 
         unsigned int              asize;
-        unsigned int              rcode;
-        unsigned int*             pacodes;
-        unsigned int              aacodes[FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE];
-        std::vector<unsigned int> vacodes;
+        TypeIndex                 rcode;
+        TypeIndex*                pacodes;
+        TypeIndex                 aacodes[FCF_FUNCTION_SIGNATURE_CLASS_MEM_STORAGE_SIZE];
+        std::vector<TypeIndex>    vacodes;
       };
 
       template <typename TFunction>

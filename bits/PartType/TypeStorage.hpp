@@ -9,7 +9,7 @@ namespace fcf{
   TypeStorage::TypeStorage()
     : _ac(0) { }
 
-  const TypeInfo* TypeStorage::get(unsigned int a_index) {
+  const TypeInfo* TypeStorage::get(TypeIndex a_index) {
     IndexStorage::iterator it = _is.find(a_index);
     return it == _is.end() ? (const TypeInfo*)0 : it->second.get();
   }
@@ -24,14 +24,14 @@ namespace fcf{
     return it == _ns.end() ? (const TypeInfo*)0 : it->second.get();
   }
 
-  TypeInfo* TypeStorage::insert(const TypeInfo& a_ti, bool a_autoIndex, unsigned int a_baseIndex) {
+  TypeInfo* TypeStorage::insert(const TypeInfo& a_ti, bool a_autoIndex, TypeIndex a_baseIndex) {
     NameStorage::iterator nit = _ns.find(a_ti.name);
     if (nit == _ns.end()) {
-      unsigned int typeIndex = a_ti.index;
+      TypeIndex typeIndex = a_ti.index;
       if (a_autoIndex) {
-        unsigned int typeCounter = a_baseIndex
-                                      ? (a_baseIndex & 0x00ffffff)
-                                      : (++_ac);
+        TypeIndex typeCounter = a_baseIndex
+                                  ? (a_baseIndex & 0x00ffffff)
+                                  : (++_ac);
         typeIndex &= 0xff000000;
         typeIndex |= typeCounter | 0x01000000;
       };

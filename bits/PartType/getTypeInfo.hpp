@@ -7,7 +7,7 @@
 
 namespace fcf {
 
-  inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex){
+  inline const TypeInfo* getTypeInfo(TypeIndex a_typeIndex){
     const fcf::TypeInfo* ptr = getTypeStorage().get(a_typeIndex);
     if (!ptr) {
       throw TypeIndexNotRegisteredException(__FILE__, __LINE__, a_typeIndex);
@@ -15,7 +15,7 @@ namespace fcf {
     return ptr;
   }
 
-  inline const TypeInfo* getTypeInfo(unsigned int a_typeIndex, Exception* a_errorDst){
+  inline const TypeInfo* getTypeInfo(TypeIndex a_typeIndex, Exception* a_errorDst){
     try {
       return getTypeInfo(a_typeIndex);
     } catch(const Exception& e){

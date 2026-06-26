@@ -65,7 +65,7 @@ namespace fcf {
   template <typename Ty>
   struct SpecifierRegistrar<Ty, ContainerAccessSpecifier> {
     void operator()(const SpecifierInfo& a_si){
-      unsigned int specifierIndex = Type<ContainerAccessSpecifier>().index();
+      TypeIndex specifierIndex = Type<ContainerAccessSpecifier>().index();
       Type<Ty>()._info->specifiers[specifierIndex] = a_si;
       Type<Ty>()._info->containerAccessUniversalCall = a_si.universalCall;
     }

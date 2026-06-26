@@ -87,7 +87,7 @@ namespace fcf {
   }
 
   template <typename TContainerAccess>
-  unsigned int DynamicContainerAccess<TContainerAccess>::getValueTypeIndex() const {
+  TypeIndex DynamicContainerAccess<TContainerAccess>::getValueTypeIndex() const {
     return Type<typename TContainerAccess::value_type>().index();
   }
 
@@ -97,7 +97,7 @@ namespace fcf {
   }
 
   template <typename TContainerAccess>
-  unsigned int DynamicContainerAccess<TContainerAccess>::getKeyTypeIndex() const {
+  TypeIndex DynamicContainerAccess<TContainerAccess>::getKeyTypeIndex() const {
     return Type<typename TContainerAccess::key_type>().index();
   }
 
@@ -228,7 +228,7 @@ namespace fcf {
   }
 
   template <typename TContainer>
-  unsigned int DynamicContainerAccess< ContainerAccess<const TContainer> >::getValueTypeIndex() const {
+  TypeIndex DynamicContainerAccess< ContainerAccess<const TContainer> >::getValueTypeIndex() const {
     return Type<typename ContainerAccessType::value_type>().index();
   }
 
@@ -238,7 +238,7 @@ namespace fcf {
   }
 
   template <typename TContainer>
-  unsigned int DynamicContainerAccess< ContainerAccess<const TContainer> >::getKeyTypeIndex() const {
+  TypeIndex DynamicContainerAccess< ContainerAccess<const TContainer> >::getKeyTypeIndex() const {
     return Type<typename ContainerAccessType::key_type>().index();
   }
 

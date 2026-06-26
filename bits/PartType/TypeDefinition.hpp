@@ -66,7 +66,7 @@ namespace fcf{
        * @brief Returns the unique index of the type.
        * @return The unsigned integer index representing this type.
        */
-      inline unsigned int index();
+      inline TypeIndex index();
 
       /**
        * @brief Returns the size of the data for the type.
@@ -80,7 +80,7 @@ namespace fcf{
        * The data index is used for type matching regardless of const/reference qualifiers.
        * @return The unsigned integer data index.
        */
-      inline unsigned int dataIndex();
+      inline TypeIndex dataIndex();
 
       /**
        * @brief Retrieves the TypeInfo structure for this type.

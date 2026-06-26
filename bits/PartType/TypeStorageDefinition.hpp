@@ -10,6 +10,7 @@
 #include "../../bits/PartConvert/ConvertFunction.hpp"
 #include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartType/TypeId.hpp"
+#include "../../bits/PartType/TypeIndex.hpp"
 #include "../../bits/PartType/TypeInfoDefinition.hpp"
 
 
@@ -21,19 +22,19 @@ namespace fcf {
 
     protected:
       typedef std::map<std::string, SPTypeInfo>  NameStorage;
-      typedef std::map<unsigned int, SPTypeInfo> IndexStorage;
+      typedef std::map<TypeIndex, SPTypeInfo> IndexStorage;
 
     public:
 
       inline TypeStorage();
 
-      inline const TypeInfo* get(unsigned int a_index);
+      inline const TypeInfo* get(TypeIndex a_index);
 
       inline const TypeInfo* get(const std::string& a_name);
 
       inline const TypeInfo* get(const char* a_name);
 
-      inline TypeInfo* insert(const TypeInfo& a_ti, bool a_autoIndex, unsigned int a_baseIndex);
+      inline TypeInfo* insert(const TypeInfo& a_ti, bool a_autoIndex, TypeIndex a_baseIndex);
 
     private:
       NameStorage   _ns;

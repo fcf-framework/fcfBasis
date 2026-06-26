@@ -14,12 +14,12 @@ namespace fcf{
     , _info(0) {
   }
 
-  DynamicType::DynamicType(unsigned int a_typeIndex)
+  DynamicType::DynamicType(TypeIndex a_typeIndex)
     : _index(a_typeIndex)
     , _info(0) {
   }
 
-  unsigned int DynamicType::index() const{
+  TypeIndex DynamicType::index() const{
     return _index;
   }
 

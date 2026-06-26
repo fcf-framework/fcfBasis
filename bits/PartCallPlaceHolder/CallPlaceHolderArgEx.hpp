@@ -6,7 +6,7 @@
 namespace fcf{
 
   struct CallPlaceHolderArgEx : public CallPlaceHolderArg {
-    unsigned int type;
+    TypeIndex type;
   };
 
 } // fcf namespace

@@ -29,11 +29,11 @@ FCF_TEST_DECLARE("fcfBasis", "Variant", "variant"){
   }
 
   {
-    unsigned int intTypeIndex = fcf::Type<int>().index();
+    fcf::TypeIndex intTypeIndex = fcf::Type<int>().index();
     fcf::Variant v1( fcf::DynamicType{intTypeIndex} );
     FCF_TEST(v1.getTypeIndex() == intTypeIndex, v1.getTypeIndex(), intTypeIndex);
 
-    unsigned int charTypeIndex = fcf::Type<char>().index();
+    fcf::TypeIndex charTypeIndex = fcf::Type<char>().index();
     v1.reset(fcf::DynamicType{charTypeIndex});
     FCF_TEST(v1.getTypeIndex() == charTypeIndex, v1.getTypeIndex(), charTypeIndex);
 
@@ -45,7 +45,7 @@ FCF_TEST_DECLARE("fcfBasis", "Variant", "variant"){
     fcf::Variant v1( fcf::Type<int>{} );
     FCF_TEST(v1.getTypeIndex() == fcf::Type<int>().index(), v1.getTypeIndex(), fcf::Type<int>().index());
 
-    unsigned int charTypeIndex = fcf::Type<char>().index();
+    fcf::TypeIndex charTypeIndex = fcf::Type<char>().index();
     v1.reset(fcf::Type<char>{});
     FCF_TEST(v1.getTypeIndex() == charTypeIndex, v1.getTypeIndex(), charTypeIndex);
   }

@@ -9,8 +9,8 @@
 namespace fcf{
 
   struct StoredDataTypeSpecifier { 
-    typedef unsigned int (*CallType)();
-    typedef unsigned int (*HandleType)();
+    typedef TypeIndex (*CallType)();
+    typedef TypeIndex (*HandleType)();
   };
 
 
@@ -20,11 +20,11 @@ namespace fcf{
   template <typename Ty>
   struct TypeImpl<Ty, StoredDataTypeSpecifier> {
 
-    inline unsigned int operator()() {
+    inline TypeIndex operator()() {
       return Type< typename Type<Ty, StoredDataTypeSpecifier>::type >().index();
     }
 
-    inline unsigned int call() {
+    inline TypeIndex call() {
       return Type<Ty, StoredDataTypeSpecifier>()();
     }
 

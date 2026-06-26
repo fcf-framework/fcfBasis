@@ -20,20 +20,20 @@ namespace fcf {
     struct CallSelectorHandler {
 
       struct InputArgument {
-        unsigned int                                        typeIndex;
-        unsigned int                                        clearTypeIndex;
-        ResolveSpecifier::CallType                       resolver;
-        ResolveData                                         resolveData;
-        UniversalCall                                       containerAccessResolver;
-        UniversalCall                                       ptrContainerAccessResolver;
-        void*                                               ptrArg;
-        const std::unordered_map<unsigned int, SpecifierInfo>*     specifiers;
-        const std::unordered_map<unsigned int, SpecifierInfo>*     rawSpecifiers;
-        unsigned int                                        pairCounter;
-        bool                                                ignoreConvertSeeker;
-        bool                                                enablePtrSpecifiers;
-        bool                                                singleStepIteration;
-        InputArgument*                                      nextArgument;
+        TypeIndex                                             typeIndex;
+        TypeIndex                                             clearTypeIndex;
+        ResolveSpecifier::CallType                            resolver;
+        ResolveData                                           resolveData;
+        UniversalCall                                         containerAccessResolver;
+        UniversalCall                                         ptrContainerAccessResolver;
+        void*                                                 ptrArg;
+        const std::unordered_map<TypeIndex, SpecifierInfo>*   specifiers;
+        const std::unordered_map<TypeIndex, SpecifierInfo>*   rawSpecifiers;
+        unsigned int                                          pairCounter;
+        bool                                                  ignoreConvertSeeker;
+        bool                                                  enablePtrSpecifiers;
+        bool                                                  singleStepIteration;
+        InputArgument*                                        nextArgument;
       };
 
 
@@ -84,7 +84,7 @@ namespace fcf {
           CallConversionNode* phnode = a_node;
 
           for(size_t i = 0; i < (*state.placeHolderSpecifiers)[a_argumentIndex].size(); ++i){
-            unsigned int specifierTypeIndex = (*state.placeHolderSpecifiers)[a_argumentIndex][i];
+            TypeIndex specifierTypeIndex = (*state.placeHolderSpecifiers)[a_argumentIndex][i];
 
             if (a_node &&
                 a_node->conversion.specifierIndex == specifierTypeIndex &&
@@ -95,7 +95,7 @@ namespace fcf {
               continue;
             }
 
-            std::unordered_map<unsigned int, SpecifierInfo>::const_iterator specifierIt = currentInputArgument->specifiers->find(specifierTypeIndex);
+            std::unordered_map<TypeIndex, SpecifierInfo>::const_iterator specifierIt = currentInputArgument->specifiers->find(specifierTypeIndex);
             int pointerCounter = 0;
             void* universalCall = 0;
             if (specifierIt != currentInputArgument->specifiers->cend()) {
@@ -225,7 +225,7 @@ namespace fcf {
              (state.groupIterator->second.argumentOptions[a_argumentIndex] & (CAO_RESOLVE_POINTER | CAO_PAIR_ITERATION_POINTER)) &&
              TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex)
            ){
-          unsigned int typeIndex = TypeIndexConverter<>::getUnpointerSingleIndex(currentInputArgument->typeIndex);
+          TypeIndex typeIndex = TypeIndexConverter<>::getUnpointerSingleIndex(currentInputArgument->typeIndex);
           const TypeInfo* typeInfo = ::fcf::getTypeInfo(typeIndex);
           ResolveSpecifier::CallType resolver = typeInfo->resolveCall;
           void* ptr = currentInputArgument->ptrArg ? (void*)*(int**)currentInputArgument->ptrArg : 0;
@@ -238,7 +238,7 @@ namespace fcf {
               rd.data = &stubValuePtr;
             }
 
-            unsigned int ptrTypeIndex = TypeIndexConverter<>::getSinglePointerIndex( rd.typeIndex );
+            TypeIndex ptrTypeIndex = TypeIndexConverter<>::getSinglePointerIndex( rd.typeIndex );
 
             CallConversionNode curnode;
             curnode.prev = 0;
@@ -305,7 +305,7 @@ namespace fcf {
             curnode.prev = a_node;
           }
 
-          unsigned int origTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex];
+          TypeIndex origTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex];
           state.ptrFunctionSignature->pacodes[a_argumentIndex] = 0;
 
           bool origDynamicCaller = state.dynamicCaller;
@@ -337,7 +337,7 @@ namespace fcf {
             )
           ) {
 
-          unsigned int ptrTypeIndex;
+          TypeIndex ptrTypeIndex;
           Variant viterator = currentInputArgument->containerAccessResolver ? currentInputArgument->containerAccessResolver(0, 0, 0)
                                                                             : currentInputArgument->ptrContainerAccessResolver(0, 0, 0);
           DynamicContainerAccessBase* iterator = (DynamicContainerAccessBase*)viterator.ptr();
@@ -365,7 +365,7 @@ namespace fcf {
           if (iterator) {
             BaseFunctionSignature* ptrOriginFunctionSignature = state.ptrFunctionSignature;
             BaseFunctionSignature  fs;
-            unsigned int originArgumentTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex];
+            TypeIndex originArgumentTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex];
 
             if (!TypeIndexConverter<>::isSinglePointer(currentInputArgument->typeIndex)) {
               fs = BaseFunctionSignature(state.ptrFunctionSignature->asize + 1);
@@ -445,8 +445,8 @@ namespace fcf {
 
 
 
-      void _convertOperation(bool a_isPointerMode, unsigned int a_clearTypeIndex, CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
-        unsigned int sourceTypeIndex       = state.ptrFunctionSignature->pacodes[a_argumentIndex];
+      void _convertOperation(bool a_isPointerMode, TypeIndex a_clearTypeIndex, CallConversionNode* a_node, InputArgument* a_currentInputArgument, unsigned int a_inputArgumentIndex, unsigned int a_argumentIndex, bool a_dynamicCaller){
+        TypeIndex sourceTypeIndex       = state.ptrFunctionSignature->pacodes[a_argumentIndex];
         CallStorageSelectionFunctionsByArgNumber::const_iterator treeIt = state.groupIterator->second.callersTree.find(state.ptrFunctionSignature->asize);
         if (treeIt != state.groupIterator->second.callersTree.end()){
           BaseFunctionSignature shortSign = *state.ptrFunctionSignature;
@@ -460,9 +460,9 @@ namespace fcf {
 
           if (rightIt != treeIt->second.end()) {
             // right side
-            unsigned int rtypeIndex       = rightIt->first.pacodes[a_argumentIndex];
-            unsigned int rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
-            unsigned int converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
+            TypeIndex rtypeIndex       = rightIt->first.pacodes[a_argumentIndex];
+            TypeIndex rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
+            TypeIndex converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
             ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, 0);
             if (convertFunction) {
               bool popReqArgFlag = false;
@@ -515,9 +515,9 @@ namespace fcf {
           // left side
           if (leftIt != treeIt->second.begin()) {
             --leftIt;
-            unsigned int rtypeIndex = leftIt->first.pacodes[a_argumentIndex];
-            unsigned int rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
-            unsigned int converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
+            TypeIndex rtypeIndex = leftIt->first.pacodes[a_argumentIndex];
+            TypeIndex rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
+            TypeIndex converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
             ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, 0);
             if (convertFunction){
               bool popReqArgFlag = false;
@@ -595,7 +595,7 @@ namespace fcf {
 
 
 
-      void _createCurrentInputArgument(InputArgument& a_destinationInputArgument, const InputArgument& a_sourceInputArgument, unsigned int a_type, void* a_ptrArg, bool a_enablePtrSpecifiers) {
+      void _createCurrentInputArgument(InputArgument& a_destinationInputArgument, const InputArgument& a_sourceInputArgument, TypeIndex a_type, void* a_ptrArg, bool a_enablePtrSpecifiers) {
         _fillCurrentInputArgument(a_destinationInputArgument, a_type, a_ptrArg, a_enablePtrSpecifiers);
         a_destinationInputArgument.pairCounter = a_sourceInputArgument.pairCounter;
         a_destinationInputArgument.ignoreConvertSeeker = a_sourceInputArgument.ignoreConvertSeeker;
@@ -605,7 +605,7 @@ namespace fcf {
 
 
 
-      void _fillCurrentInputArgument(InputArgument& a_inputArgument, unsigned int a_type, void* a_ptrArg, bool a_enablePtrSpecifiers, bool a_singleStepIteration = false){
+      void _fillCurrentInputArgument(InputArgument& a_inputArgument, TypeIndex a_type, void* a_ptrArg, bool a_enablePtrSpecifiers, bool a_singleStepIteration = false){
         a_inputArgument.ptrArg                  = a_ptrArg;
         a_inputArgument.typeIndex               = a_type;
         //a_inputArgument.clearTypeIndex          = TypeIndexConverter<>::getRawIndex(a_type);
@@ -620,7 +620,7 @@ namespace fcf {
         a_inputArgument.singleStepIteration     = a_singleStepIteration;
 
         if (a_enablePtrSpecifiers && TypeIndexConverter<>::isPointer(a_type)) {
-          unsigned int rawTypeIndex     =  TypeIndexConverter<>::getRawIndex(a_type);
+          TypeIndex rawTypeIndex     =  TypeIndexConverter<>::getRawIndex(a_type);
           const fcf::TypeInfo* typeInfo = getTypeInfo(rawTypeIndex);
           a_inputArgument.rawSpecifiers = &typeInfo->specifiers;
           a_inputArgument.ptrContainerAccessResolver = typeInfo->specifierUniversalCall<ContainerAccessSpecifier>(0);
@@ -658,9 +658,9 @@ namespace fcf {
               if (inputArguments[a_inputArgumentIndex].clearTypeIndex == inputArguments[a_inputArgumentIndex+1].clearTypeIndex &&
                   TypeIndexConverter<>::isPointer(inputArguments[a_inputArgumentIndex].typeIndex)
                   ) {
-                unsigned int    tix = TypeIndexConverter<>::removeLevelPointer(inputArguments[a_inputArgumentIndex].typeIndex);
-                const TypeInfo* ti  = getTypeInfo(tix);
-                void* nextPtr = *((char**)inputArguments[a_inputArgumentIndex].ptrArg) + ti->size;
+                TypeIndex       tix     = TypeIndexConverter<>::removeLevelPointer(inputArguments[a_inputArgumentIndex].typeIndex);
+                const TypeInfo* ti      = getTypeInfo(tix);
+                void*           nextPtr = *((char**)inputArguments[a_inputArgumentIndex].ptrArg) + ti->size;
                 isSinglePair = nextPtr == *((void**)inputArguments[a_inputArgumentIndex+1].ptrArg);
               }
             }
@@ -758,7 +758,7 @@ namespace fcf {
         if (a_currentInputArgument->singleStepIteration ||
             (a_currentInputArgument->pairCounter && a_currentInputArgument->nextArgument) ||
             a_isIterationMode ) {
-          unsigned int lastTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex+1];
+          TypeIndex lastTypeIndex = state.ptrFunctionSignature->pacodes[a_argumentIndex+1];
           state.ptrFunctionSignature->pacodes[a_argumentIndex+1] = state.ptrFunctionSignature->pacodes[a_argumentIndex];
           a_inputArgumentIndex += a_currentInputArgument->singleStepIteration || a_isIterationMode ? 2 : 1;
           a_argumentIndex      += 2;
@@ -820,7 +820,7 @@ namespace fcf {
           for(; range.first != range.second; ++range.first) {
             bool found = true;
             for(size_t i = 0; i < range.first->second.placeHolder.size(); ++i) {
-              const unsigned int specifierIndex = range.first->second.placeHolder[i].specifierIndex;
+              const TypeIndex specifierIndex = range.first->second.placeHolder[i].specifierIndex;
               const unsigned int placeHolderSourceArgIndex = range.first->second.placeHolder[i].argSourceIndex-1;
               bool subFound = false;
               for(size_t j = 0; j < state.placeHolderVec.size(); ++j) {

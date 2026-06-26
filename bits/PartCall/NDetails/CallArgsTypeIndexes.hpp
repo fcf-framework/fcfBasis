@@ -24,7 +24,7 @@ namespace fcf {
         indexes[a_index] = Type<TItem>().index();
       }
 
-      unsigned int indexes[sizeof...(TArgPack)];
+      TypeIndex indexes[sizeof...(TArgPack)];
     };
 
   } // NDetails namespace

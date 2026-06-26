@@ -33,7 +33,7 @@ namespace fcf{
   template <typename TContainer>
   struct SpecifierRegistrar<TContainer, ResolveSpecifier> {
     void operator()(const SpecifierInfo& a_si){
-      unsigned int specifierIndex = Type<ResolveSpecifier>().index();
+      TypeIndex specifierIndex = Type<ResolveSpecifier>().index();
       Type<TContainer>()._info->specifiers[specifierIndex] = a_si;
       Type<TContainer>()._info->resolveCall = (ResolveSpecifier::CallType)a_si.call;
     }

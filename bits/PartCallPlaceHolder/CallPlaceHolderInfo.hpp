@@ -8,7 +8,7 @@
 namespace fcf{
 
   struct CallPlaceHolderInfo {
-    unsigned int                    specifierIndex;
+    TypeIndex                       specifierIndex;
     int                             argSourceIndex;
     std::vector<CallPlaceHolderArg> placeHolders;
   };

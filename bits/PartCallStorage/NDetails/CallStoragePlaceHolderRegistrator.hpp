@@ -110,7 +110,7 @@ namespace fcf{
 
       template <typename TIndex, typename TSignature>
       void operator()(TIndex /*a_index*/, const TSignature& /*a_signatureGetter*/) {
-        unsigned int specifierIndex = Type<typename TSignature::specifier_type>().index();
+        TypeIndex specifierIndex = Type<typename TSignature::specifier_type>().index();
         if (specifierIndex == Type<CallOptions>().index()){
           typename TSignature::ShortTupleArgumentsType tuple;
           ArgOptionInitializer argOptionInitializer(this);

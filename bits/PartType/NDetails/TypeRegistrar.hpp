@@ -10,7 +10,7 @@ namespace fcf {
     template <typename TUnstatic, unsigned int UnstaticCounter, typename Ty>
     struct TypeRegistrar {
       typedef Ty type;
-      TypeRegistrar(::fcf::TypeInfo* a_info, unsigned int /*a_index*/){
+      TypeRegistrar(::fcf::TypeInfo* a_info, TypeIndex /*a_index*/){
         a_info->initialize<Ty>();
       }
     };
@@ -18,7 +18,7 @@ namespace fcf {
     template <typename TUnstatic, unsigned int UnstaticCounter, typename Ty>
     struct TypeRegistrar<TUnstatic, UnstaticCounter, Ty&&> {
       typedef Ty type;
-      TypeRegistrar(::fcf::TypeInfo* a_info, unsigned int /*a_index*/){
+      TypeRegistrar(::fcf::TypeInfo* a_info, TypeIndex /*a_index*/){
         a_info->initialize<Ty>();
       }
     };
@@ -26,7 +26,7 @@ namespace fcf {
     template <typename TUnstatic, unsigned int UnstaticCounter>
     struct TypeRegistrar<TUnstatic, UnstaticCounter, void> {
       typedef void type;
-      TypeRegistrar(::fcf::TypeInfo* /*a_info*/, unsigned int /*a_index*/){
+      TypeRegistrar(::fcf::TypeInfo* /*a_info*/, TypeIndex /*a_index*/){
       }
     };
 

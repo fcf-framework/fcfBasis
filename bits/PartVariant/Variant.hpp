@@ -36,7 +36,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction)
+  BasicVariant<innerBufferSize>::BasicVariant(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction)
   : _typeInfo(0) {
     _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
   }
@@ -164,7 +164,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   BasicVariant<innerBufferSize>::BasicVariant(DynamicType a_dynamicType){
-    const unsigned int index = a_dynamicType.index();
+    const TypeIndex index = a_dynamicType.index();
     if (!index){
       _typeInfo = 0;
       _ptr = 0;
@@ -199,7 +199,7 @@ namespace fcf{
     _ptr = 0;
     _typeInfo = 0;
 
-    const unsigned int index = a_dynamicType.index();
+    const TypeIndex index = a_dynamicType.index();
     if (!index){
       return;
     }
@@ -215,7 +215,7 @@ namespace fcf{
     _ptr = 0;
     _typeInfo = 0;
 
-    const unsigned int index = a_typeInfo->index;
+    const TypeIndex index = a_typeInfo->index;
     if (!index){
       return;
     }
@@ -233,7 +233,7 @@ namespace fcf{
     _ptr = 0;
     _typeInfo = 0;
 
-    const unsigned int index = a_type.index();
+    const TypeIndex index = a_type.index();
     if (!index){
       return;
     }
@@ -324,7 +324,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
+  void BasicVariant<innerBufferSize>::set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
     _destroy();
     _ptr = 0;
     _typeInfo = 0;
@@ -461,8 +461,8 @@ namespace fcf{
     } else if (!selfUnref.typeInfo) {
       return true;
     }
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
-    const unsigned int argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
+    const TypeIndex argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
     try {
       if (selfDataIndex == argDataIndex) {
         return selfUnref.typeInfo->template specifierCall<LessSpecifier>()(selfUnref.ptr, argUnref.ptr);
@@ -495,8 +495,8 @@ namespace fcf{
     } else if (!argUnref.typeInfo) {
       return false;
     }
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
-    const unsigned int argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
+    const TypeIndex argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
     try {
       if (selfDataIndex == argDataIndex) {
         bool res = selfUnref.typeInfo->template specifierCall<LessSpecifier>()(selfUnref.ptr, argUnref.ptr);
@@ -537,8 +537,8 @@ namespace fcf{
     } else if (!selfUnref.typeInfo) {
       return false;
     }
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
-    const unsigned int argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
+    const TypeIndex argDataIndex = TypeIndexConverter<>::getDataIndex(argUnref.typeInfo->index);
     try {
       if (selfDataIndex == argDataIndex) {
         return selfUnref.typeInfo->template specifierCall<EqualSpecifier>()(selfUnref.ptr, argUnref.ptr);
@@ -741,7 +741,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  unsigned int BasicVariant<innerBufferSize>::getTypeIndex() const{
+  TypeIndex BasicVariant<innerBufferSize>::getTypeIndex() const{
     return _typeInfo ? _typeInfo->index : 0;
   }
 
@@ -751,7 +751,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  unsigned int BasicVariant<innerBufferSize>::getDataTypeIndex() const{
+  TypeIndex BasicVariant<innerBufferSize>::getDataTypeIndex() const{
     return _typeInfo ? TypeIndexConverter<>::getDataIndex(_typeInfo->index) : 0;
   }
 
@@ -793,8 +793,8 @@ namespace fcf{
         if (resolveCall) {
           ResolveData rd = resolveCall(ptr());
           if (rd.data){
-            unsigned int resultDataIndex = TypeIndexConverter<>::getDataIndex(Type<TResult>().index());
-            unsigned int dataDataIndex   = TypeIndexConverter<>::getDataIndex(rd.typeIndex);
+            TypeIndex resultDataIndex = TypeIndexConverter<>::getDataIndex(Type<TResult>().index());
+            TypeIndex dataDataIndex   = TypeIndexConverter<>::getDataIndex(rd.typeIndex);
             if (resultDataIndex == dataDataIndex){
               return *(result_type*)rd.data;
             } else {
@@ -816,9 +816,9 @@ namespace fcf{
   TResult BasicVariant<innerBufferSize>::cast() const{
     typedef typename std::remove_const<TResult>::type ResultType;
 
-    static const unsigned int selfVariantTypeIndex  = Type<BasicVariant>().index();
-    static const unsigned int variantTypeIndex      = Type<Variant>().index();
-    const unsigned int selfDataIndex = getDataTypeIndex();
+    static const TypeIndex selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const TypeIndex variantTypeIndex      = Type<Variant>().index();
+    const TypeIndex selfDataIndex = getDataTypeIndex();
     if (!_typeInfo){
       return ResultType();
     } if (selfDataIndex == Type<ResultType>().dataIndex()){
@@ -898,8 +898,8 @@ namespace fcf{
             throw VariantReadOnlyException(__FILE__, __LINE__);
           }
           if (sourceEndpoint.typeInfo) {
-            const unsigned int curVariantDataIndex = TypeIndexConverter<>::getDataIndex(curVariant->_typeInfo->index);
-            const unsigned int sourceDataIndex     = TypeIndexConverter<>::getDataIndex(sourceEndpoint.typeInfo->index);
+            const TypeIndex curVariantDataIndex = TypeIndexConverter<>::getDataIndex(curVariant->_typeInfo->index);
+            const TypeIndex sourceDataIndex     = TypeIndexConverter<>::getDataIndex(sourceEndpoint.typeInfo->index);
             if (curVariantDataIndex == sourceDataIndex) {
               curVariant->_typeInfo->initializer->set(curVariant->_ptr, sourceEndpoint.ptr);
             } else {
@@ -922,7 +922,7 @@ namespace fcf{
             curVariant->_typeInfo = 0;
           }
           const TypeInfo* newTypeInfo        = sourceEndpoint.typeInfo;
-          const unsigned int sourceDataIndex = TypeIndexConverter<>::getDataIndex(sourceEndpoint.typeInfo->index);
+          const TypeIndex sourceDataIndex = TypeIndexConverter<>::getDataIndex(sourceEndpoint.typeInfo->index);
           if (sourceEndpoint.typeInfo->index != sourceDataIndex){
             newTypeInfo = ::fcf::getTypeInfo(sourceDataIndex) ;
           } else {
@@ -952,7 +952,7 @@ namespace fcf{
                                                       : (void*)0,
                                                     ui.ptr
                                                   );
-            const unsigned int uiDataIndex = TypeIndexConverter<>::getDataIndex(ui.typeInfo->index);
+            const TypeIndex uiDataIndex = TypeIndexConverter<>::getDataIndex(ui.typeInfo->index);
             if (ui.typeInfo->index != uiDataIndex){
               ui.typeInfo = ::fcf::getTypeInfo(uiDataIndex);
             }
@@ -983,7 +983,7 @@ namespace fcf{
         _ptr = 0;
         _typeInfo = 0;
         if (a_variant._typeInfo) {
-          unsigned int index = std::is_const<ReferenceType>::value 
+          TypeIndex index = std::is_const<ReferenceType>::value 
                     ? TypeIndexConverter<>::getConstSingleReferenceIndex( a_variant._typeInfo->index )
                     : TypeIndexConverter<>::getSingleReferenceIndex( a_variant._typeInfo->index );
           const TypeInfo* refTypeInfo = ::fcf::getTypeInfo(index);
@@ -1050,7 +1050,7 @@ namespace fcf{
             if (TypeIndexConverter<>::isConst(curVariant->_typeInfo->index)){
               throw VariantReadOnlyException(__FILE__, __LINE__);
             }
-            const unsigned int curVariantDataIndex = TypeIndexConverter<>::getDataIndex(curVariant->_typeInfo->index);
+            const TypeIndex curVariantDataIndex = TypeIndexConverter<>::getDataIndex(curVariant->_typeInfo->index);
             if (curVariantDataIndex == Type<DataType>().dataIndex()) {
               curVariant->_typeInfo->initializer->set(curVariant->_ptr, &a_value);
             } else {
@@ -1107,7 +1107,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::_set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
+  void BasicVariant<innerBufferSize>::_set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
     a_typeIndex = a_typeIndex & ~0x0e000000;
     a_sourceTypeIndex = a_sourceTypeIndex & ~0x0e000000;
     if (a_sourceTypeIndex == a_typeIndex){
@@ -1210,8 +1210,8 @@ namespace fcf{
 
     typedef typename std::remove_reference<Ty>::type ArgType;
 
-    unsigned int argTypeIndex = Type<ArgType>().index();
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
+    TypeIndex argTypeIndex = Type<ArgType>().index();
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
       return selfUnref.typeInfo->template specifierCall<LessSpecifier>()(selfUnref.ptr, &a_value);
     } else {
@@ -1234,8 +1234,8 @@ namespace fcf{
 
     typedef typename std::remove_reference<Ty>::type ArgType;
 
-    unsigned int argTypeIndex = Type<ArgType>().index();
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
+    TypeIndex argTypeIndex = Type<ArgType>().index();
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
       bool res = selfUnref.typeInfo->template specifierCall<LessSpecifier>()(selfUnref.ptr, &a_value);
       if (res) {
@@ -1266,8 +1266,8 @@ namespace fcf{
 
     typedef typename std::remove_reference<Ty>::type ArgType;
 
-    const unsigned int argTypeIndex = Type<ArgType>().index();
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
+    const TypeIndex argTypeIndex = Type<ArgType>().index();
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(selfUnref.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
       return selfUnref.typeInfo->template specifierCall<EqualSpecifier>()(selfUnref.ptr, &a_value);
     }
@@ -1309,8 +1309,8 @@ namespace fcf{
   BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::_selfCalc(const BasicVariant<InputInnerBufferSize>& a_value) const{
     DataEndpoint                                              dde = ((BasicVariant<innerBufferSize>*)this)->_dataEndpoint();
     typename BasicVariant<InputInnerBufferSize>::DataEndpoint sde = ((BasicVariant<InputInnerBufferSize>&)a_value)._dataEndpoint();
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
-    const unsigned int sourceDataIndex = TypeIndexConverter<>::getDataIndex(sde.typeInfo->index);
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
+    const TypeIndex sourceDataIndex = TypeIndexConverter<>::getDataIndex(sde.typeInfo->index);
     if (!dde.typeInfo || !sde.typeInfo) {
       return BasicVariant<innerBufferSize>(*this);
     } else if (selfDataIndex == sourceDataIndex) {
@@ -1344,8 +1344,8 @@ namespace fcf{
 
     typedef typename std::remove_reference<Ty>::type ArgType;
 
-    unsigned int argTypeIndex = Type<ArgType>().index();
-    unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
+    TypeIndex argTypeIndex = Type<ArgType>().index();
+    TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
     if (selfDataIndex == argTypeIndex) {
       dde.typeInfo->template specifierCall<TSpecifier>()(dde.ptr, dde.ptr, &a_value);
       return *this;
@@ -1370,11 +1370,11 @@ namespace fcf{
 
     typedef typename std::remove_reference<Ty>::type ArgType;
 
-    unsigned int argTypeIndex = Type<ArgType>().index();
+    TypeIndex argTypeIndex = Type<ArgType>().index();
 
     BasicVariant<innerBufferSize> result(_typeInfo);
 
-    const unsigned int selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
+    const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
 
     if (selfDataIndex == argTypeIndex) {
       dde.typeInfo->template specifierCall<TSpecifier>()(result.ptr(), dde.ptr, &a_value);
@@ -1409,7 +1409,7 @@ namespace fcf {
 
     enum { invariantValue = true };
 
-    inline void operator()(BasicVariant<innerBufferSize>* a_object, void** a_dstData, unsigned int* a_dstTypeIndex){
+    inline void operator()(BasicVariant<innerBufferSize>* a_object, void** a_dstData, TypeIndex* a_dstTypeIndex){
       *a_dstData = a_object->ptr();
       *a_dstTypeIndex = a_object->getTypeIndex();
     }

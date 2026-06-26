@@ -3,18 +3,19 @@
 
 #include "../../PartStaticVector.hpp"
 #include "../../bits/PartCallPlaceHolder/CallPlaceHolderInfo.hpp"
+#include "../../bits/PartType/TypeIndex.hpp"
 #include "CallConversionMode.hpp"
 
 namespace fcf{
 
   struct CallConversion {
     CallConversionMode                                mode;
-    unsigned int                                      type;
+    TypeIndex                                         type;
     unsigned int                                      index;
     unsigned int                                      sourceIndex;
     void*                                             converter;
     void*                                             values;
-    unsigned int                                      specifierIndex;
+    TypeIndex                                         specifierIndex;
     unsigned int                                      pointerCounter;
     bool                                              invariantIteration;
     StaticVector<CallPlaceHolderArgEx, 2>             placeHolders;

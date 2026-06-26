@@ -14,7 +14,7 @@ namespace fcf{
     class CallArguments {
       public:
       struct ArgumentInfo {
-        unsigned int    typeIndex;
+        TypeIndex       typeIndex;
         const TypeInfo* typeInfo;
       };
       private:
@@ -128,12 +128,12 @@ namespace fcf{
         _size = a_size;
       } 
 
-      inline unsigned int getTypeIndex(size_t a_index) const{
+      inline TypeIndex getTypeIndex(size_t a_index) const{
         ArgumentInfo* infoPtr =  (ArgumentInfo*)(((void**)_ptr) + _capacity) + a_index;
         return infoPtr->typeIndex;
       }
 
-      inline void setTypeIndex(size_t a_index, unsigned int a_typeIndex) {
+      inline void setTypeIndex(size_t a_index, TypeIndex a_typeIndex) {
         ArgumentInfo* infoPtr =  (ArgumentInfo*)(((void**)_ptr) + _capacity) + a_index;
         infoPtr->typeIndex = a_typeIndex;
       }
@@ -261,7 +261,7 @@ namespace fcf{
           return _current->getArguments();
         }
 
-        inline unsigned int getTypeIndex(size_t a_index) const{
+        inline TypeIndex getTypeIndex(size_t a_index) const{
           ((CallArgumentsExtended*)this)->_prepare(a_index+1, false);
           return _current->getTypeIndex(a_index);
         }
@@ -281,7 +281,7 @@ namespace fcf{
           return _current->getArgument(a_index);
         }
 
-        inline void setTypeIndex(size_t a_index, unsigned int a_typeIndex){
+        inline void setTypeIndex(size_t a_index, TypeIndex a_typeIndex){
           _prepare(a_index);
           _current->setTypeIndex(a_index, a_typeIndex);
         }

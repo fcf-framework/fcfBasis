@@ -262,7 +262,7 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      BasicVariant(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      BasicVariant(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       /**
        * @brief Destructor.
@@ -410,7 +410,7 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      void set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      void set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       /**
        * @brief Clears the variant, destroying the stored value.
@@ -874,13 +874,13 @@ namespace fcf {
        * @brief Returns the type index of the stored value.
        * @return The type index, or 0 if empty.
        */
-      unsigned int getDataTypeIndex() const;
+      TypeIndex getDataTypeIndex() const;
 
       /**
        * @brief Returns the full type index (including reference/const info).
        * @return The type index, or 0 if empty.
        */
-      unsigned int getTypeIndex() const;
+      TypeIndex getTypeIndex() const;
 
       /**
        * @brief Returns the TypeInfo structure of the stored value.
@@ -1098,7 +1098,7 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      void _set(unsigned int a_typeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      void _set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       /**
        * @brief Resolves the variant endpoint (handles nested variants).

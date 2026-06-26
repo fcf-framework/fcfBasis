@@ -32,11 +32,11 @@ namespace fcf {
   Type<Ty, Nop>::Type(){
     if (!_info) {
       typedef typename TypeId<Ty>::basic_type basic_type;
-      unsigned int baseTypeIndex = 0;
+      TypeIndex baseTypeIndex = 0;
       if(!std::is_same<Ty, basic_type>::value){
         baseTypeIndex = Type<basic_type>().index();
       }
-      const unsigned int index = TypeId<Ty>().index();
+      const TypeIndex index = TypeId<Ty>().index();
       unsigned char flags = (NDetails::IsVariantRef<Ty>::value ? TIF_VARIANT_REF : 0) |
                             (NDetails::IsVariant<Ty>::value    ? TIF_VARIANT : 0);
       TypeInfo initTypeInfo(index, TypeId<Ty>().name(), flags, NDetails::TypeSize<Ty>::value, NDetails::VariantInnerSize<Ty>::value);
@@ -56,7 +56,7 @@ namespace fcf {
   }
 
   template <typename Ty>
-  unsigned int Type<Ty, Nop>::index() {
+  TypeIndex Type<Ty, Nop>::index() {
     return _info->index;
   }
 
@@ -66,7 +66,7 @@ namespace fcf {
   }
 
   template <typename Ty>
-  unsigned int Type<Ty, Nop>::dataIndex() {
+  TypeIndex Type<Ty, Nop>::dataIndex() {
     return TypeIndexConverter<>::getDataIndex(_info->index);
   }
 

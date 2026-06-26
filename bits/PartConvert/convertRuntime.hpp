@@ -12,7 +12,7 @@
 namespace fcf {
 
   template <typename TDestination>
-  void convertRuntimeByDestination(TDestination* a_destinationData, const void* a_source, unsigned int a_sourceTypeIndex, ConvertOptions* a_options = 0) {
+  void convertRuntimeByDestination(TDestination* a_destinationData, const void* a_source, TypeIndex a_sourceTypeIndex, ConvertOptions* a_options = 0) {
     if (std::is_pointer<TDestination>::value && TypeIndexConverter<>::isPointer(a_sourceTypeIndex)) {
       *(int**)a_destinationData = *(int**)a_source;
       return;
@@ -22,7 +22,7 @@ namespace fcf {
   }
 
   template <typename TSource>
-  void convertRuntimeBySource(void* a_destinationData, unsigned int a_destinationTypeIndex, const TSource* a_source, ConvertOptions* a_options = 0) {
+  void convertRuntimeBySource(void* a_destinationData, TypeIndex a_destinationTypeIndex, const TSource* a_source, ConvertOptions* a_options = 0) {
     if (std::is_pointer<TSource>::value && TypeIndexConverter<>::isPointer(a_destinationTypeIndex)){
       *((int**)a_destinationData) = *(int**)a_source;
       return;
@@ -31,11 +31,11 @@ namespace fcf {
     convertFunction(a_destinationData, a_source, a_options);
   }
 
-  FCF_BASIS_DECL_EXPORT void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options = 0);
-  FCF_BASIS_DECL_EXPORT void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options, Exception* a_error);
+  FCF_BASIS_DECL_EXPORT void convertRuntime(void* a_resultData, TypeIndex a_resultTypeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_options = 0);
+  FCF_BASIS_DECL_EXPORT void convertRuntime(void* a_resultData, TypeIndex a_resultTypeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_options, Exception* a_error);
 
   #ifdef FCF_BASIS_IMPLEMENTATION
-    void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options) {
+    void convertRuntime(void* a_resultData, TypeIndex a_resultTypeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_options) {
       if (TypeIndexConverter<>::isPointer(a_resultTypeIndex) && TypeIndexConverter<>::isPointer(a_sourceTypeIndex)){
         *((int**)a_resultData) = *(int**)a_sourceData;
         return;
@@ -46,7 +46,7 @@ namespace fcf {
   #endif
 
   #ifdef FCF_BASIS_IMPLEMENTATION
-    void convertRuntime(void* a_resultData, unsigned int a_resultTypeIndex, const void* a_sourceData, unsigned int a_sourceTypeIndex, ConvertOptions* a_options, Exception* a_error) {
+    void convertRuntime(void* a_resultData, TypeIndex a_resultTypeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_options, Exception* a_error) {
       if (TypeIndexConverter<>::isPointer(a_resultTypeIndex) && TypeIndexConverter<>::isPointer(a_sourceTypeIndex)){
         *((int**)a_resultData) = *(int**)a_sourceData;
         return;

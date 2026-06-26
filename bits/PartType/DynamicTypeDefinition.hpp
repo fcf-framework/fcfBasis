@@ -11,9 +11,9 @@ namespace fcf{
 
       inline DynamicType();
 
-      inline DynamicType(unsigned int a_typeIndex);
+      inline DynamicType(TypeIndex a_typeIndex);
 
-      inline unsigned int index() const;
+      inline TypeIndex index() const;
 
       inline std::string name();
 
@@ -28,7 +28,7 @@ namespace fcf{
 
       inline bool _prepare(Exception* a_errorDst);
 
-      unsigned int    _index;
+      TypeIndex       _index;
       const TypeInfo* _info;
   };
 

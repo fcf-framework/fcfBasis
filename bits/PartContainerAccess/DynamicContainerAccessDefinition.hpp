@@ -53,11 +53,11 @@ namespace fcf{
 
       virtual void setValue(const Variant& a_value);
 
-      virtual unsigned int getValueTypeIndex() const;
+      virtual TypeIndex getValueTypeIndex() const;
 
       virtual const TypeInfo* getValueTypeInfo() const;
 
-      virtual unsigned int getKeyTypeIndex() const;
+      virtual TypeIndex getKeyTypeIndex() const;
 
       virtual const void* getConstValuePtr() const;
 
@@ -119,11 +119,11 @@ namespace fcf{
 
       virtual void setValue(const Variant& a_value);
 
-      virtual unsigned int getValueTypeIndex() const;
+      virtual TypeIndex getValueTypeIndex() const;
 
       virtual const TypeInfo* getValueTypeInfo() const;
 
-      virtual unsigned int getKeyTypeIndex() const;
+      virtual TypeIndex getKeyTypeIndex() const;
 
       virtual const void* getConstValuePtr() const;
 

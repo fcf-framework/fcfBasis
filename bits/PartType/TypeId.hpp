@@ -1,6 +1,9 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_ID_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_ID_HPP___
 
+#include "TypeIndex.hpp"
+
+
 namespace fcf{
 
   template <typename Ty>
@@ -16,7 +19,7 @@ namespace fcf{
   //     return (index() & 0x00ffffff) == 0;
   //   }
   //
-  //   unsigned int index(){
+  //   TypeIndex index(){
   //     return 0;
   //   }
   //

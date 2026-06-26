@@ -52,9 +52,9 @@ namespace fcf {
         struct ConversionsNode;
 
         struct ConversionInfoNode {
-          CallConversion                          conversion;
-          StaticVector<unsigned short, 8>         map;
-          std::map<unsigned int, ConversionsNode> types;
+          CallConversion                       conversion;
+          StaticVector<unsigned short, 8>      map;
+          std::map<TypeIndex, ConversionsNode> types;
         };
 
         struct ConversionsNode {
@@ -72,7 +72,7 @@ namespace fcf {
             ConversionInfoNode* typesConversion = &insertIt.first->second;
             typesConversion->conversion =  conversion;
             typesConversion->map        =  a_call.rargsMap;
-            unsigned int dataIndex = TypeIndexConverter<>::getDataIndex(conversion.type);
+            TypeIndex dataIndex = TypeIndexConverter<>::getDataIndex(conversion.type);
             auto insertTypeIt = typesConversion->types.insert({dataIndex, ConversionsNode()});
             lastDstCall = &insertTypeIt.first->second.call;
             node = &insertTypeIt.first->second;
@@ -106,7 +106,7 @@ namespace fcf {
       struct IterationState {
         Variant               iterator;
         size_t                itemSize;
-        unsigned int          typeIndex;
+        TypeIndex             typeIndex;
         unsigned int          beginArgIndex;
         unsigned int          currentIteratorConversionsEndIndex;
         const CallConversion* currentIteratorConversions[FCF_CALL_ITERATION_CONVERSION_BUFFER_SIZE];
@@ -124,7 +124,7 @@ namespace fcf {
           , conversion(a_conversion)
         {
         }
-        IterationState(unsigned int a_typeIndex, unsigned int a_beginArgIndex, unsigned int a_currentIteratorConversionsEndIndex, const CallConversion* a_conversion, void* a_ptrArg, void* a_endPtrArg, size_t a_itemSize)
+        IterationState(TypeIndex a_typeIndex, unsigned int a_beginArgIndex, unsigned int a_currentIteratorConversionsEndIndex, const CallConversion* a_conversion, void* a_ptrArg, void* a_endPtrArg, size_t a_itemSize)
           : itemSize(a_itemSize)
           , typeIndex(a_typeIndex)
           , beginArgIndex(a_beginArgIndex)
@@ -224,13 +224,13 @@ namespace fcf {
 
           bool isNotIterationMode = _conversion(position.conversionBegin->second.conversion, state, argumentsEx, -1);
 
-          std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeIt    = isNotIterationMode
+          std::map<TypeIndex, CallGraph::ConversionsNode>::iterator typeIt    = isNotIterationMode
                                               ? position.conversionBegin->second.types.find( TypeIndexConverter<>::getDataIndex(
                                                                                                 argumentsEx.getTypeIndex(position.conversionBegin->first.argument) 
                                                                                               )
                                                                                             )
                                               : position.conversionBegin->second.types.begin();
-          std::map<unsigned int, CallGraph::ConversionsNode>::iterator typeItEnd = position.conversionBegin->second.types.end();
+          std::map<TypeIndex, CallGraph::ConversionsNode>::iterator typeItEnd = position.conversionBegin->second.types.end();
 
           if (typeIt == typeItEnd){
             break;
@@ -280,7 +280,7 @@ namespace fcf {
         if (iterator) {
           a_is.leftBufferChildArg = (void*)iterator->getValuePtr();
           a_is.rightBufferChildArg = (char*)a_is.leftBufferChildArg + iterator->getValueTypeInfo()->size;
-          unsigned int typeIndex = iterator->getValueTypeIndex();
+          TypeIndex typeIndex = iterator->getValueTypeIndex();
           typeIndex = TypeIndexConverter<>::addLevelPointer(typeIndex);
           a_arguments.setTypeIndex(a_is.beginArgIndex,   typeIndex);
           a_arguments.setTypeIndex(a_is.beginArgIndex+1, typeIndex);
@@ -619,8 +619,8 @@ namespace fcf {
               if ((argBufferIndex+1) >= ConversionState::BUFFER_CAPACITY){
                 throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
-              unsigned int currentType = TypeIndexConverter<>::removeLevelPointer( a_arguments.getTypeIndex(a_cc.index) );
-              unsigned int expectedType = TypeIndexConverter<>::removeLevelPointer(a_cc.type);
+              TypeIndex currentType = TypeIndexConverter<>::removeLevelPointer( a_arguments.getTypeIndex(a_cc.index) );
+              TypeIndex expectedType = TypeIndexConverter<>::removeLevelPointer(a_cc.type);
               a_state.argBuffer.push_back(::fcf::Variant(expectedType, *(const void**)a_arguments.getArgument(a_cc.index), currentType, (ConvertOptions*)0, (ConvertFunction)a_cc.converter));
               a_state.argBuffer.push_back(::fcf::Variant( (int*)a_state.argBuffer.back().ptr() ));
               a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
@@ -684,7 +684,7 @@ namespace fcf {
                 throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
 
-              unsigned int ptrTypeIndex = TypeIndexConverter<>::addLevelPointer( iterator->getValueTypeIndex() );
+              TypeIndex ptrTypeIndex = TypeIndexConverter<>::addLevelPointer( iterator->getValueTypeIndex() );
               a_state.argBuffer.push_back( Variant((int*)iterator->getValuePtr())  );
               a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
               a_arguments.setTypeIndex(a_cc.index, ptrTypeIndex);
@@ -714,7 +714,7 @@ namespace fcf {
               }
               a_state.currentIteratorArgumentIndex = a_cc.index;
 
-              unsigned int ptrTypeIndex = TypeIndexConverter<>::addLevelPointer( iterator->getValueTypeIndex() );
+              TypeIndex ptrTypeIndex = TypeIndexConverter<>::addLevelPointer( iterator->getValueTypeIndex() );
               a_arguments.setTypeIndex(a_cc.index, ptrTypeIndex);
               a_arguments.setTypeIndex(a_cc.index+1, ptrTypeIndex);
             }

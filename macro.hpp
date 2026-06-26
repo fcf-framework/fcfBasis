@@ -4,43 +4,43 @@
 #include <stdexcept>
 
 #ifdef FCF_IMPLEMENTATION
-#ifndef FCF_BASIS_IMPLEMENTATION
-#define FCF_BASIS_IMPLEMENTATION
-#endif // #ifndef FCF_BASIS_IMPLEMENTATION
+  #ifndef FCF_BASIS_IMPLEMENTATION
+    #define FCF_BASIS_IMPLEMENTATION
+  #endif // #ifndef FCF_BASIS_IMPLEMENTATION
 #endif // #ifdef FCF_IMPLEMENTATION
 
 #ifdef FCF_EXPORT
-#ifndef FCF_BASIS_EXPORT
-#define FCF_BASIS_EXPORT
-#endif // #ifndef FCF_BASIS_EXPORT
+  #ifndef FCF_BASIS_EXPORT
+    #define FCF_BASIS_EXPORT
+    #endif // #ifndef FCF_BASIS_EXPORT
 #endif // #ifdef FCF_EXPORT
 
 #ifdef FCF_IMPORT
-#ifndef FCF_BASIS_IMPORT
-#define FCF_BASIS_IMPORT
-#endif // #ifndef FCF_BASIS_IMPORT
+  #ifndef FCF_BASIS_IMPORT
+    #define FCF_BASIS_IMPORT
+  #endif // #ifndef FCF_BASIS_IMPORT
 #endif // #ifdef FCF_IMPORT
 
 #ifndef FCF_BASIS_DELC_EXTERN
-#ifdef FCF_BASIS_IMPLEMENTATION
-#define FCF_BASIS_DELC_EXTERN
-#else
-#define FCF_BASIS_DELC_EXTERN extern
-#endif // #ifdef FCF_BASIS_IMPLEMENTATION
+  #ifdef FCF_BASIS_IMPLEMENTATION
+    #define FCF_BASIS_DELC_EXTERN
+  #else
+    #define FCF_BASIS_DELC_EXTERN extern
+  #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 #endif // #ifndef FCF_BASIS_DELC_EXTERN
 
 #ifndef FCF_BASIS_DECL_EXPORT
-#ifdef WIN32
-#if defined(FCF_BASIS_EXPORT)
-#define FCF_BASIS_DECL_EXPORT __declspec(dllexport)
-#elif defined(FCF_BASIS_IMPORT)
-#define FCF_BASIS_DECL_EXPORT __declspec(dllimport)
-#else
-#define FCF_BASIS_DECL_EXPORT
-#endif // #if defined(FCF_BASIS_EXPORT)
-#else
-#define FCF_BASIS_DECL_EXPORT
-#endif // #ifdef WIN32
+  #ifdef WIN32
+    #if defined(FCF_BASIS_EXPORT)
+      #define FCF_BASIS_DECL_EXPORT __declspec(dllexport)
+    #elif defined(FCF_BASIS_IMPORT)
+      #define FCF_BASIS_DECL_EXPORT __declspec(dllimport)
+    #else
+      #define FCF_BASIS_DECL_EXPORT
+    #endif // #if defined(FCF_BASIS_EXPORT)
+  #else
+    #define FCF_BASIS_DECL_EXPORT
+  #endif // #ifdef WIN32
 #endif // #ifndef FCF_BASIS_DECL_EXPORT
 
 #ifndef FCF_FOREACH_METHOD_WRAPPER
@@ -157,7 +157,7 @@
       struct fcf::TypeId< _FCF_BASIS_EXPAND a_type > {\
         typedef _FCF_BASIS_EXPAND a_basic_type basic_type;\
         bool          autoIndex()   { return ((a_index) & 0x00ffffff)== 0; }\
-        unsigned int  index()       { return a_index; }\
+        TypeIndex     index()       { return a_index; }\
         FCF_ATTRIBUTE_MINIMIZE_BEGIN\
         std::string   FCF_ATTRIBUTE_MINIMIZE  name()  { return std::string() + a_name; }\
         FCF_ATTRIBUTE_MINIMIZE_END\

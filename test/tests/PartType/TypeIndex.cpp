@@ -4,8 +4,8 @@
 
 FCF_TEST_DECLARE("fcfBasis", "Type", "type index"){
   {
-    unsigned int index = FCF_INT8_TYPE_INDEX;
-    unsigned int expected = index;
+    fcf::TypeIndex index = FCF_INT8_TYPE_INDEX;
+    fcf::TypeIndex expected = index;
     FCF_TEST(fcf::Type<char>().index() == expected, fcf::Type<char>().index(), expected);
 
     expected = index | (0x0a << 24);
@@ -38,8 +38,8 @@ FCF_TEST_DECLARE("fcfBasis", "Type", "type index"){
   }
 
   {
-    unsigned int index = fcf::Type< std::vector<int> >().index();
-    unsigned int expected = index;
+    fcf::TypeIndex index = fcf::Type< std::vector<int> >().index();
+    fcf::TypeIndex expected = index;
     {
       FCF_TEST(
           fcf::Type< std::vector<unsigned int> >().index() != fcf::Type< std::vector<int> >().index(),

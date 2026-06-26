@@ -1,6 +1,8 @@
 #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_INDEX_CONVERTER_HPP___
 #define ___FCF_BASIS__BITS__PART_TYPE__TYPE_INDEX_CONVERTER_HPP___
 
+#include "TypeIndex.hpp"
+
 namespace fcf{
 
   template <unsigned int Index=0>
@@ -40,55 +42,55 @@ namespace fcf{
 
     enum { isConstValue = Index & ( 4 << (24 + 1) ) };
 
-    inline static bool isDoublePointer(unsigned int a_typeIndex) {
+    inline static bool isDoublePointer(TypeIndex a_typeIndex) {
       return a_typeIndex & ( 16 << (24 + 1) );
     }
 
-    inline static bool isSinglePointer(unsigned int a_typeIndex) {
+    inline static bool isSinglePointer(TypeIndex a_typeIndex) {
       return a_typeIndex & ( 8 << (24 + 1) );
     }
 
-    inline static bool isPointer(unsigned int a_typeIndex) {
+    inline static bool isPointer(TypeIndex a_typeIndex) {
       return isSinglePointer(a_typeIndex) || isDoublePointer(a_typeIndex);
     }
 
-    inline static bool isSingleReference(unsigned int a_typeIndex) {
+    inline static bool isSingleReference(TypeIndex a_typeIndex) {
       return a_typeIndex & ( 1 << (24 + 1) );
     }
 
-    inline static bool isDoubleReference(unsigned int a_typeIndex) {
+    inline static bool isDoubleReference(TypeIndex a_typeIndex) {
       return a_typeIndex & ( 2 << (24 + 1) );
     }
 
-    inline static bool isReference(unsigned int a_typeIndex) {
+    inline static bool isReference(TypeIndex a_typeIndex) {
       return isSingleReference(a_typeIndex) || isDoubleReference(a_typeIndex);
     }
 
-    inline static bool isConst(unsigned int a_typeIndex) {
+    inline static bool isConst(TypeIndex a_typeIndex) {
       return a_typeIndex & ( 4 << (24 + 1) );
     }
 
-    inline static unsigned int getRawIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getRawIndex(TypeIndex a_typeIndex){
       return a_typeIndex & ~( 0x1f << (24 + 1) );
     }
 
-    inline static unsigned int getDataIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getDataIndex(TypeIndex a_typeIndex){
       return a_typeIndex & ~( (1|2|4) << (24 + 1) );
     }
 
-    inline static unsigned int getUnreferenceIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getUnreferenceIndex(TypeIndex a_typeIndex){
       return a_typeIndex & ~( (1|2) << (24 + 1) );
     }
 
-    inline static unsigned int getUnpointerIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getUnpointerIndex(TypeIndex a_typeIndex){
       return a_typeIndex & ~( (8|16) << (24 + 1) );
     }
 
-    inline static unsigned int getUnpointerSingleIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getUnpointerSingleIndex(TypeIndex a_typeIndex){
       return a_typeIndex & ~( 8 << (24 + 1) );
     }
 
-    inline static unsigned int removeLevelPointer(unsigned int a_typeIndex){
+    inline static TypeIndex removeLevelPointer(TypeIndex a_typeIndex){
       if ( a_typeIndex & (16 << (24 + 1) ) ){
         return (a_typeIndex & (~( 16 << (24 + 1) ))) | ( 8 << (24 + 1) );
       } else {
@@ -96,7 +98,7 @@ namespace fcf{
       }
     }
 
-    inline static unsigned int addLevelPointer(unsigned int a_typeIndex){
+    inline static TypeIndex addLevelPointer(TypeIndex a_typeIndex){
       if ( a_typeIndex & (8 << (24 + 1) ) ){
         return (a_typeIndex & (~( 8 << (24 + 1) ))) | ( 16 << (24 + 1) );
       } else {
@@ -104,19 +106,19 @@ namespace fcf{
       }
     }
 
-    inline static unsigned int getSinglePointerIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getSinglePointerIndex(TypeIndex a_typeIndex){
       return (a_typeIndex & ~( 16 << (24 + 1) ) ) | ( (8) << (24 + 1) );
     }
 
-    inline static unsigned int getSingleReferenceIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getSingleReferenceIndex(TypeIndex a_typeIndex){
       return (a_typeIndex & ~( (2) << (24 + 1) ) ) | ( (1) << (24 + 1) );
     }
 
-    inline static unsigned int getConstSingleReferenceIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getConstSingleReferenceIndex(TypeIndex a_typeIndex){
       return (a_typeIndex & ~( (2) << (24 + 1) ) ) | ( (1) << (24 + 1) ) | ( (4) << (24 + 1) );
     }
 
-    inline static unsigned int getConstIndex(unsigned int a_typeIndex){
+    inline static TypeIndex getConstIndex(TypeIndex a_typeIndex){
       return a_typeIndex | ( (4) << (24 + 1) );
     }
 

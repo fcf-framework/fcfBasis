@@ -26,7 +26,7 @@
 
 namespace fcf {
 
-  TypeInfo::TypeInfo(unsigned int a_index, const std::string& a_name, unsigned char a_flags, size_t a_size, size_t a_variantInnerSize)
+  TypeInfo::TypeInfo(TypeIndex a_index, const std::string& a_name, unsigned char a_flags, size_t a_size, size_t a_variantInnerSize)
     : index(a_index)
     , name(a_name)
     , flags(a_flags)
@@ -102,7 +102,7 @@ namespace fcf {
     template <typename TSpecifier>
     struct SpecifierUniversalResolver {
       UniversalCall operator()(const TypeInfo* a_typeInfo) const{
-        const unsigned int specifierIndex = Type<TSpecifier>().index();
+        const TypeIndex specifierIndex = Type<TSpecifier>().index();
         TypeInfo::SpecifiersType::const_iterator it = a_typeInfo->specifiers.find(specifierIndex);
         return it != a_typeInfo->specifiers.end() ? it->second.universalCall : 0;
       }
@@ -111,7 +111,7 @@ namespace fcf {
     template <typename TSpecifier>
     struct SpecifierResolver {
       typename TSpecifier::CallType operator()(const TypeInfo* a_typeInfo) const{
-        const unsigned int specifierIndex = Type<TSpecifier>().index();
+        const TypeIndex specifierIndex = Type<TSpecifier>().index();
         fcf::TypeInfo::SpecifiersType::const_iterator it = a_typeInfo->specifiers.find(specifierIndex);
         return it != a_typeInfo->specifiers.end() ? (typename TSpecifier::CallType)it->second.call : (typename TSpecifier::CallType)0;
       }

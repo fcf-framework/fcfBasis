@@ -13,7 +13,7 @@ namespace fcf {
   typedef std::unordered_multimap<BaseFunctionSignature, CallStorageSelectionFunctionInfo>  CallStorageSelectionFunctions;
 
   struct CallStorageSelectionFunctionGroup {
-    std::vector< std::vector<unsigned int> >  specifiersByArgIndex;
+    std::vector< std::vector<TypeIndex> >     specifiersByArgIndex;
     CallStorageSelectionFunctions             callers;
     CallStorageSelectionFunctionsByArgNumber  callersTree;
     std::vector<unsigned int>                 argumentOptions;

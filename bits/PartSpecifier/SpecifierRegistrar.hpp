@@ -20,7 +20,7 @@ namespace fcf {
 
   template <typename TContainer, typename TSpecifier>
   void SpecifierRegistrar<TContainer, TSpecifier>::operator()(const fcf::SpecifierInfo& a_si){
-    unsigned int specifierIndex = Type<TSpecifier>().index();
+    TypeIndex specifierIndex = Type<TSpecifier>().index();
     Type<TContainer>()._info->specifiers[specifierIndex] = a_si;
   }
 
