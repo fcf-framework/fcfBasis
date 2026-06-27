@@ -364,9 +364,6 @@
           _FCF_BASIS_EXPAND_ARGUMENTS(_FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_1, (__VA_ARGS__, (), (), ()))
   #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(am_type) \
           _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_type))
-  #define _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_WITH_SPECIFIER_DECLARE(am_type) \
-          _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_type)##_specifier_declare)
-
 
   #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT { namespace
   #define _FCF_REMOVE_PARENTHESIS_SELECTOR_FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES__REMOVE_PARENTHESIS_ARGUMENT_EMPTY
@@ -380,7 +377,7 @@
   #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_0(...)\
           _FCF_BASIS_EXPAND_ARGUMENTS( _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_1, (__VA_ARGS__, (), (), ()) )
   #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES(am_type) \
-          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_type)##_specifier_declare)
+          _FCF_TEMPLATE_TYPE_REGISTRATION__DECLNAMESPACES_0(_FCF_BASIS_REMOVE_PARENTHESIS( _FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_type))
 
   #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT_0(am_a1, am_a2, ...) am_a2
   #define _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT(am_a1, am_a2, ...) _FCF_TEMPLATE_TYPE_REGISTRATION__DECLENDNAMESPACES__INPUT_0(am_a1, am_a2, __VA_ARGS__)
@@ -437,7 +434,7 @@
             struct SpecifierRegistrarCallerWalker<TUnstatic, UnstaticCounter, _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(am_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_templateArguments)>, Index, Size> {\
               SpecifierRegistrarCallerWalker(){\
                 typedef _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(am_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_templateArguments)> type;\
-                ::fcf::NDetails::Declarations _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_WITH_SPECIFIER_DECLARE(am_template)::PartialSpecifierRegistrar<Index> registrar;\
+                ::fcf::NDetails::Declarations _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(am_template)::PartialSpecifierRegistrar<Index> registrar;\
                 registrar.template registry<type>();\
                 SpecifierRegistrarCallerWalker<TUnstatic, UnstaticCounter, type, Index+1, Size> nextCaller;\
               }\
@@ -454,7 +451,7 @@
                                                   UnstaticCounter, \
                                                   _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(am_template) <_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_templateArguments)>, \
                                                   0, \
-                                                  ::fcf::NDetails::Declarations _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES_WITH_SPECIFIER_DECLARE(am_template)::PartialSpecifierRegistrarLast<TUnstatic, UnstaticCounter>::value\
+                                                  ::fcf::NDetails::Declarations _FCF_TEMPLATE_TYPE_REGISTRATION__NAMESPACES(am_template)::PartialSpecifierRegistrarLast<TUnstatic, UnstaticCounter>::value\
                 > registrer;\
               }\
             };\
