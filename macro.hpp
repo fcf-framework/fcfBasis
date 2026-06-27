@@ -830,4 +830,20 @@
 #define FCF_EXCEPTION_DECLARE(am_type, am_name, am_message, am_argCount) \
     _FCF_EXCEPTION_DECLARE_0(_FCF_EXCEPTION_DECLARE_A##am_argCount, am_type, am_name, am_message, am_argCount)
 
+#define FCF_INVARIANT_EXCEPTION_CALL(am_call, am_templateArgName, am_errorVariableName, am_arguments)\
+  (std::is_same<am_templateArgName, ::fcf::Exception>::value \
+    ? _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_call)\
+        (_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_arguments), (Exception*)am_errorVariableName) \
+    : _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_call)\
+        (_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_arguments) ))
+
+#define FCF_INVARIANT_EXCEPTION(am_templateArgName, am_errorVariableName, am_exception)\
+    if (std::is_same<am_templateArgName, ::fcf::Exception>::value) {\
+      if (am_errorVariableName) {\
+        *(Exception*)am_errorVariableName = _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_exception);\
+      }\
+    } else {\
+      throw _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_exception);\
+    }
+
 #endif // #ifndef ___FCF_BASIS__MACRO_HPP___
