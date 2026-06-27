@@ -16,14 +16,14 @@ namespace fcf {
   }
 
   inline const TypeInfo* getTypeInfo(TypeIndex a_typeIndex, Exception* a_errorDst){
-    try {
-      return getTypeInfo(a_typeIndex);
-    } catch(const Exception& e){
-      if (a_errorDst){
-        *a_errorDst = e;
-      }
-      return 0;
+    const fcf::TypeInfo* ptr = getTypeStorage().get(a_typeIndex);
+    if (ptr) {
+      return ptr;
     }
+    if (a_errorDst){
+      *a_errorDst = TypeIndexNotRegisteredException(__FILE__, __LINE__, a_typeIndex);
+    }
+    return 0;
   }
 
 } // fcf namespace
