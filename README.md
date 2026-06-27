@@ -103,18 +103,21 @@ namespace math {
 
 // Registering a function
 // Macro Arguments:
-//  (namespace1, namespace2, name), - Function name for storing
-//  space,
-//  function_pointer,               - Source function name
-//  signature,
-//  placeholders,
-//  a_sourceCode                    - Only for other engines
+//  function,                   - Source function pointer
+//  function_name,              - Registred function name
+//  space,                      - Engine (cpu - default CPU mode)
+//  signature,                  - Function signature
+//  placeholders,               - Options
+//  includeSourceCode           - Add sourceCode to current cpp file
+//  sourceCode                  - Only for other engines
 FCF_FUNCTION_REGISTRATION(
-  (math, add),
+   math::add,
+  "math::add",
   "cpu",
-  math::add,
   int(*)(int, int),
   (),
+  false,
+  ()
 );
 
 int main() {

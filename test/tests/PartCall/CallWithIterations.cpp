@@ -33,14 +33,16 @@ namespace fcf {
 FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, "FcfTest::BasisTest::CallIterationsTest::Item",                           0);
 FCF_SPECIFIER_REGISTRATION_FORCE(FcfTest::BasisTest::CallIterationsTest::Item, fcf::ValueSpecifier);
 
-FCF_FUNCTION_REGISTRATION(fill,
-                   "cpu",
+FCF_FUNCTION_REGISTRATION(
                    fcf::fill,
+                   "fill",
+                   "cpu",
                    void(*) (FcfTest::BasisTest::CallIterationsTest::Item*, FcfTest::BasisTest::CallIterationsTest::Item*, int),
                    (
                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                     (fcf::ValueSpecifier, 1, FcfTest::BasisTest::CallIterationsTest::Item*, FcfTest::BasisTest::CallIterationsTest::Item*, fcf::Arg1)
                    ),
+                   false,
                   );
 
 namespace FcfTest {

@@ -25,24 +25,28 @@ namespace fcf {
 
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_FUNCTION_REGISTRATION(fill,
-                       "cpu",
+  FCF_FUNCTION_REGISTRATION(
                        fcf::fill,
+                       "fill",
+                       "cpu",
                        void(*) (int*, int*, int),
                        (
                          (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                          (fcf::ValueSpecifier, 1, int*, int*, fcf::Arg1)
                        ),
+                       false,
                       );
 
-  FCF_FUNCTION_REGISTRATION(fill,
-                   "cpu",
+  FCF_FUNCTION_REGISTRATION(
                    fcf::fill,
+                   "fill",
+                   "cpu",
                    void(*) (std::string*, std::string*, std::string),
                    (
                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                     (fcf::ValueSpecifier, 1, std::string*, std::string*, fcf::Arg1)
                    ),
+                   false,
                   );
 
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION

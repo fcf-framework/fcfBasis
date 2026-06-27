@@ -62,26 +62,30 @@ namespace fcf {
 FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::MinMaxSpecifierTest::Item, "FcfTest::BasisTest::MinMaxSpecifierTest::Item", 0);
 FCF_SPECIFIER_REGISTRATION_FORCE(FcfTest::BasisTest::MinMaxSpecifierTest::Item, fcf::MinMaxSpecifier);
 
-FCF_FUNCTION_REGISTRATION(random,
-                     "cpu",
+FCF_FUNCTION_REGISTRATION(
                      fcf::random,
+                     "random",
+                     "cpu",
                      void(*) (int*, int*, const int&, const int&),
                      (
                       (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                       (fcf::MinMaxSpecifier, 1, int*, int*, fcf::Arg1, fcf::Arg2)
                      ),
+                     false,
                     );
 
 typedef FcfTest::BasisTest::MinMaxSpecifierTest::Item Item;
 
-FCF_FUNCTION_REGISTRATION(random,
-                     "cpu",
+FCF_FUNCTION_REGISTRATION(
                      fcf::random,
+                     "random",
+                     "cpu",
                      void(*) (Item*, Item*, const int&, const int&),
                      (
                        (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                        (fcf::MinMaxSpecifier, 1, Item*, Item*, fcf::Arg1, fcf::Arg2)
                      ),
+                     false,
                     );
 
 namespace FcfTest {

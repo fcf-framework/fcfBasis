@@ -40,7 +40,8 @@ namespace fcf {
                const std::tuple<TPackCallDetails...>& a_phs,
                std::string a_sourceCode = std::string());
 
-
+      template <typename TFunction>
+      unsigned int getIndex(const std::string& a_name) const;
     protected:
       inline std::string _rtrim(std::string a_str);
 

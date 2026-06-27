@@ -12,7 +12,6 @@
 #include "../PartCall/NDetails/CallWrapper.hpp"
 #include "CallStorageFunctionInfo.hpp"
 #include "CallStorage.hpp"
-
 namespace fcf {
 
     struct CallStorageRegistrator {

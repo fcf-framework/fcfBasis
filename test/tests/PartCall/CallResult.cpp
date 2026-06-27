@@ -33,31 +33,34 @@ namespace FcfTest {
 } // namespace FcfTest
 
 FCF_FUNCTION_REGISTRATION(
-                     (fcftest,sum),
-                     "cpu",
                      FcfTest::BasisTest::sum,
+                     "fcftest::sum",
+                     "cpu",
                      int (*) (int, int),
                      (),
+                     false,
                     );
 
 FCF_FUNCTION_REGISTRATION(
-                     (fcftest,sum),
-                     "cpu",
                      FcfTest::BasisTest::sum,
+                     "fcftest::sum",
+                     "cpu",
                      int (*) (int*, int*),
                      (
                        (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER>),
                      ),
+                     false,
                     );
 
 FCF_FUNCTION_REGISTRATION(
-                     (fcftest,sum),
-                     "cpu",
                      FcfTest::BasisTest::sum,
+                     "fcftest::sum",
+                     "cpu",
                      int (*) (int*, int*, int*),
                      (
                        (fcf::CallOptions, 2, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER | fcf::CAO_PAIR_SEGMENTATION  | fcf::CAO_RESOLVE_POINTER | fcf::CAO_CONVERT_POINTER >),
                      ),
+                     false,
                     );
 
 

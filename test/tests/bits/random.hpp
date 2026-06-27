@@ -59,25 +59,29 @@ namespace fcf {
 
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_FUNCTION_REGISTRATION(random,
-                       "cpu",
+  FCF_FUNCTION_REGISTRATION(
                        fcf::random,
+                       "random",
+                       "cpu",
                        void(*) (float*, float*, const float&, const float&),
                        (
                         (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                         (fcf::MinMaxSpecifier, 1, float*, float*, fcf::Arg1, fcf::Arg2)
                        ),
+                       false,
                       );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  FCF_FUNCTION_REGISTRATION(random, 
-                        "cpu", 
+  FCF_FUNCTION_REGISTRATION(
                         fcf::random, 
+                        "random", 
+                        "cpu", 
                         void(*) (int*, int*, const int&, const int&),
                         (
                           (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                         ), 
+                        false,
                         );
 #endif // #ifdef FCF_BASIS_IMPLEMENTATION
 

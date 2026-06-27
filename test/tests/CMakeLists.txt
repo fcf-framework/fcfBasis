@@ -20,6 +20,7 @@ add_executable("basis-test"
                            PartCall/CallDeclare.cpp
                            PartCall/CallDeep.cpp
                            PartCall/CallExternalStorage.cpp
+                           PartCall/CallMacro.cpp
                            PartCall/CallSpeed.cpp
                            PartCall/CallInvariantArguments.cpp
                            PartCall/CallPlaceHolder.cpp

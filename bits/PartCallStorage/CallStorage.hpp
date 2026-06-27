@@ -185,6 +185,20 @@ namespace fcf {
       placeHolderRegistrator.registry(*this, a_phs);
     }
 
+    template <typename TFunction>
+    unsigned int CallStorage::getIndex(const std::string& a_name) const{
+      const static FunctionSignature<TFunction> signature;
+      CallStorageFunctionIndexes::const_iterator it1 = indexes.find(signature);
+      if (it1 == indexes.end()){
+        return 0;
+      }
+      CallStorageFunctionIndexes::mapped_type::const_iterator it2 = it1->second.find(a_name);
+      if (it2 == it1->second.end()){
+        return 0;
+      }
+      return it2->second;
+    }
+
     std::string CallStorage::_rtrim(std::string a_str) {
       size_t len = a_str.length(), i = len;
       for(; i && a_str[i-1] == ':'; --i);

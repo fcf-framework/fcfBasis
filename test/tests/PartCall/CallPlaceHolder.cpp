@@ -40,14 +40,16 @@ FCF_TYPE_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, "FcfTest::Basis
 FCF_SPECIFIER_REGISTRATION_FORCE(FcfTest::BasisTest::PHCTestDataItem, fcf::ValueSpecifier);
 
 
-FCF_FUNCTION_REGISTRATION(fill,
-                   "cpu",
+FCF_FUNCTION_REGISTRATION(
                    fcf::fill,
+                   "fill",
+                   "cpu",
                    void(*) (FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, int),
                    (
                     (fcf::CallOptions, 1, fcf::CallArgumentOptions<fcf::CAO_RESOLVE_POINTER|fcf::CAO_PAIR_ITERATION_POINTER|fcf::CAO_PAIR_SEGMENTATION>),
                     (fcf::ValueSpecifier, 1, FcfTest::BasisTest::PHCTestDataItem*, FcfTest::BasisTest::PHCTestDataItem*, fcf::Arg1)
                    ),
+                   false,
                   );
 
 namespace FcfTest {
