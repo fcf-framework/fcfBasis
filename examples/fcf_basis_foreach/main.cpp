@@ -126,7 +126,7 @@ int main() {
     std::cout << "\n=== [5] Working with tuples (Tuple) ===" << std::endl;
     std::cout <<   "=== Processing in a separate method ===" << std::endl;
     {
-      std::tuple<int, std::string, int, char> tuple = std::make_tuple(1, "Hello", 3.14, 'A');
+      std::tuple<int, std::string, double, char> tuple = std::make_tuple(1, "Hello", 3.14, 'A');
       TuplePrinterSpec handler;
       TuplePrinterSpecWrapper wrapper(handler);
       // Using a wrapper to call the 'handler' method instead of operator()
@@ -136,7 +136,7 @@ int main() {
     std::cout << "\n=== [6] Working with tuples (Tuple) ===" << std::endl;
     std::cout <<   "===  Passing additional parameter   ===" << std::endl;
     {
-      std::tuple<int, std::string, float, char> tuple = std::make_tuple(1, "Hello", 3.14, 'A');
+      std::tuple<int, std::string, double, char> tuple = std::make_tuple(1, "Hello", 3.14, 'A');
       TupleNumTypeCouner handler;
       TupleNumTypeCounerWrapper wrapper(handler);
       size_t numCounter = 0;
