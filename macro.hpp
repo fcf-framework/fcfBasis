@@ -459,12 +459,12 @@
         }
 #endif // #ifndef FCF_TEMPLATE_TYPE_REGISTRATION
 
-/**
- * @def FCF_TEMPLATE_SPECIFIER_REGISTRATION(am_template, am_specifier)
- * @brief Регистрация спецификатора для шаблонного типа.
- * @param am_template Шаблон типа (Без аргументов шаблона и без символов <>).
- * @param am_specifier Тип спецификатора.
- */
+/** 
+* @def FCF_TEMPLATE_SPECIFIER_REGISTRATION(am_template, am_specifier) 
+* @brief Register a specifier for a template type. 
+* @param am_template Template type (No template arguments and no <> characters). 
+* @param am_specifier The type of the specifier. 
+*/
 #ifndef FCF_TEMPLATE_SPECIFIER_REGISTRATION
 #define FCF_TEMPLATE_SPECIFIER_REGISTRATION(am_template, am_specifier)\
       namespace fcf {\
