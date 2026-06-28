@@ -3,7 +3,7 @@
 
 #include "macro.hpp"
 
-#include "bits/PartTypes/nativeTypes.hpp"
+#include "bits/PartTypes/GroupNativeTypes.hpp"
 
 #include "PartType.hpp"
 
