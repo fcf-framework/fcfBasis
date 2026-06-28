@@ -3,6 +3,14 @@
 
 namespace fcf{
 
+  /**
+   * @class Nop
+   * @brief A placeholder class used to represent a "No Operation" or an empty type.
+   *
+   * This class is primarily used in template metaprogramming within the fcf framework
+   * to provide a default, non-functional type for template parameters where no
+   * specific type is required or provided.
+   */
   class Nop {
   };
 
