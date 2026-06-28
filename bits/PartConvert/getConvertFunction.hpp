@@ -30,7 +30,7 @@ namespace fcf {
           }
           return (ConvertFunction)convIt->second;
         } while(false);
-        const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex);
+        const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex, 0);
         const char*     destinationTypeName = destinationTypeInfo ? destinationTypeInfo->name.c_str() : "(Invalid type index)";
         const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex, 0);
         const char*     sourceTypeName = sourceTypeInfo ? sourceTypeInfo->name.c_str() : "(Invalid type index)";
