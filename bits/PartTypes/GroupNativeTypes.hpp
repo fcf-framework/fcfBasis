@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_TYPES__NATIVE_TYPES_HPP___
-#define ___FCF_BASIS__BITS__PART_TYPES__NATIVE_TYPES_HPP___
+#ifndef ___FCF_BASIS__BITS__PART_TYPES__GROUP_NATIVE_TYPES_HPP___
+#define ___FCF_BASIS__BITS__PART_TYPES__GROUP_NATIVE_TYPES_HPP___
 
 /**
  * @file GroupNativeTypes.hpp
@@ -120,4 +120,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPES__NATIVE_TYPES_HPP___
+#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPES__GROUP_NATIVE_TYPES_HPP___
