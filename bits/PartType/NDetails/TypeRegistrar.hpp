@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
-#define ___FCF__BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
+#ifndef _FCF_BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
+#define _FCF_BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
 
 #include "SpecifierRegistrarCaller.hpp"
 #include "../../../bits/PartType/TypeFactory.hpp"
@@ -33,4 +33,4 @@ namespace fcf {
   } // NDetails namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_TYPE__NDETAILS__TYPE_REGISTRAR_HPP___

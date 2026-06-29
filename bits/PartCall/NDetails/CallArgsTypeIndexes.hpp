@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGS_TYPE_INDEXES_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGS_TYPE_INDEXES_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGS_TYPE_INDEXES_HPP___
+#define _FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGS_TYPE_INDEXES_HPP___
 
 #include "../../../PartForeach.hpp"
 
@@ -30,4 +30,4 @@ namespace fcf {
   } // NDetails namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGS_TYPE_INDEXES_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_ARGS_TYPE_INDEXES_HPP___

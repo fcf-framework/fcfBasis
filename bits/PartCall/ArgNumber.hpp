@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL__ARG_NUMBER_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL__ARG_NUMBER_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL__ARG_NUMBER_HPP___
+#define _FCF_BASIS__BITS__PART_CALL__ARG_NUMBER_HPP___
 
 #include "Arg.hpp"
 
@@ -40,4 +40,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__ARG_NUMBER_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL__ARG_NUMBER_HPP___

@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
-#define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
+#define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
 
 #include <vector>
 #include "Cursor.hpp"
@@ -132,4 +132,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___

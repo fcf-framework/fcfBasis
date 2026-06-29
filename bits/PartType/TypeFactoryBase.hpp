@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
-#define ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
+#ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
+#define _FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
 
 #include "../../macro.hpp"
 namespace fcf{
@@ -35,4 +35,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_FACTORY_BASE_HPP___

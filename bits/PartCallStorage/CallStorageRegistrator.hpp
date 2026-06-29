@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
-#define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
+#ifndef _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
+#define _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
 
 #include "NDetails/CallStoragePlaceHolderRegistrator.hpp"
 #include <algorithm>
@@ -31,4 +31,4 @@ namespace fcf {
 } // fcf namespace
 
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_REGISTRATOR_HPP___

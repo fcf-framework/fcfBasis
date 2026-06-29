@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
-#define ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
+#ifndef _FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
+#define _FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
 
 #include "StaticVectorDefinition.hpp"
 #include "../../bits/PartContainerAccess/ContainerAccess.hpp"
@@ -666,4 +666,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_HPP___

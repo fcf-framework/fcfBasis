@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___
-#define ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___
+#ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___
+#define _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___
 
 #include <string>
 #include <map>
@@ -45,4 +45,4 @@ namespace fcf {
   FCF_BASIS_DECL_EXPORT TypeStorage& getTypeStorage();
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_DEFINITION_HPP___

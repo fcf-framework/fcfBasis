@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
-#define ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
+#ifndef _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
+#define _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
 
 #include <exception>
 #include "ExceptionDefinition.hpp"
@@ -355,4 +355,4 @@ void Exception::_fillArgs(size_t, const TType& a_value){
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___

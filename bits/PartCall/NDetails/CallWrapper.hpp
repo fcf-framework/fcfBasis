@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_WRAPPER_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_WRAPPER_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_WRAPPER_HPP___
+#define _FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_WRAPPER_HPP___
 
 #include <tuple>
 #include <type_traits>
@@ -115,4 +115,4 @@ namespace fcf {
   } // NDetails namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_WRAPPER_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL__NDETAILS__CALL_WRAPPER_HPP___

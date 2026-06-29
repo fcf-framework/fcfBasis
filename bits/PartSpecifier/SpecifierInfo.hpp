@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_INFO_HPP___
-#define ___FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_INFO_HPP___
+#ifndef _FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_INFO_HPP___
+#define _FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_INFO_HPP___
 
 #include "../../bits/PartTypes/UniversalCall.hpp"
 
@@ -35,4 +35,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_INFO_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_INFO_HPP___

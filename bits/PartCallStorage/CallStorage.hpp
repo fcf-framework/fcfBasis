@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_HPP___
-#define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_HPP___
+#ifndef _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_HPP___
+#define _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_HPP___
 
 #include "../../PartForeach.hpp"
 #include "CallStorageSpace.hpp"
@@ -209,4 +209,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_HPP___

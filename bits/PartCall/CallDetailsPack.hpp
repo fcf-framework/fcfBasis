@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_DETAILS_PACK_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL__CALL_DETAILS_PACK_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL__CALL_DETAILS_PACK_HPP___
+#define _FCF_BASIS__BITS__PART_CALL__CALL_DETAILS_PACK_HPP___
 
 #include <tuple>
 #include "../../bits/PartTypes/Nop.hpp"
@@ -32,4 +32,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_DETAILS_PACK_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL__CALL_DETAILS_PACK_HPP___

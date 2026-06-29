@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___
+#define _FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___
 
 #include "../../../bits/PartMetaType/MetaTypeTupleInsert.hpp"
 #include "../../../bits/PartCall/NDetails/CallFunctionBuilderByTuple.hpp"
@@ -47,4 +47,4 @@ namespace fcf {
   } // NDetails namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL_PLACE_HOLDER__NDETAILS__CALL_PLACE_HOLDER_REMOVER_HPP___

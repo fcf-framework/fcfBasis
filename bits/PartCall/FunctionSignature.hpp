@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
+#define _FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
 
 #include <cstring>
 #include <vector>
@@ -188,4 +188,4 @@ struct std::hash<fcf::BaseFunctionSignature>
 };
 
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL__FUNCTION_SIGNATURE_HPP___

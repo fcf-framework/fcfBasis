@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
-#define ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
+#define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 
 #include "ContainerAccessDefinition.hpp"
 #include "../../PartType.hpp"
@@ -331,5 +331,5 @@ namespace fcf {
 } // fcf namespace
 
 
-#endif // #ifndef ___FCF__BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 

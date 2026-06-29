@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL__CALL_HPP___
+#define _FCF_BASIS__BITS__PART_CALL__CALL_HPP___
 
 #include "CallConversion.hpp"
 #include "../../PartStaticVector.hpp"
@@ -30,4 +30,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL__CALL_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL__CALL_HPP___

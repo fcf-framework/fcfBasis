@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
-#define ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
+#ifndef _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
+#define _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
 
 #include "ExceptionDefinition.hpp"
 
@@ -49,4 +49,4 @@ namespace fcf {
 
 #include "Exception.hpp"
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___

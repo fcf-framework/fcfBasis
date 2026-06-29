@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SPACE_HPP___
-#define ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SPACE_HPP___
+#ifndef _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SPACE_HPP___
+#define _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SPACE_HPP___
 
 #include <string>
 #include <set>
@@ -15,4 +15,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF__BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SPACE_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__CALL_STORAGE__CALL_STORAGE_SPACE_HPP___

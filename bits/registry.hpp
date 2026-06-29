@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__REGISTRY_HPP___
-#define ___FCF_BASIS__BITS__REGISTRY_HPP___
+#ifndef _FCF_BASIS__BITS__REGISTRY_HPP___
+#define _FCF_BASIS__BITS__REGISTRY_HPP___
 
 #include <string.h>
 #include <string>
@@ -451,4 +451,4 @@ namespace fcf {
 } // fcf namespace
 FCF_TEMPLATE_SPECIFIER_REGISTRATION((std, map), ContainerAccessSpecifier);
 
-#endif // #ifndef ___FCF_BASIS__BITS__REGISTRY_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__REGISTRY_HPP___

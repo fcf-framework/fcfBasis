@@ -1,5 +1,5 @@
-#ifndef ___FCF__BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
-#define ___FCF__BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
+#ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
+#define _FCF_BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
 
 #include "TypeInfoDefinition.hpp"
 
@@ -179,4 +179,4 @@ namespace fcf {
 
 
 
-#endif // #ifndef ___FCF__BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___

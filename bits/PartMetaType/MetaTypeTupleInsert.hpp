@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_TUPLE_INSERT_HPP___
-#define ___FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_TUPLE_INSERT_HPP___
+#ifndef _FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_TUPLE_INSERT_HPP___
+#define _FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_TUPLE_INSERT_HPP___
 
 #include "NDetails/MetaTypeTupleInsertImpl.hpp"
 
@@ -12,4 +12,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_TUPLE_INSERT_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_TUPLE_INSERT_HPP___

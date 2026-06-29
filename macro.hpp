@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__MACRO_HPP___
-#define ___FCF_BASIS__MACRO_HPP___
+#ifndef _FCF_BASIS__MACRO_HPP___
+#define _FCF_BASIS__MACRO_HPP___
 
 #include <stdexcept>
 
@@ -891,4 +891,4 @@
       }
 #endif
 
-#endif // #ifndef ___FCF_BASIS__MACRO_HPP___
+#endif // #ifndef _FCF_BASIS__MACRO_HPP___

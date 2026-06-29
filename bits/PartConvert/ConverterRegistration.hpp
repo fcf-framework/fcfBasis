@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_REGISTRATION_HPP___
-#define ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_REGISTRATION_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONVERT__CONVERT_REGISTRATION_HPP___
+#define _FCF_BASIS__BITS__PART_CONVERT__CONVERT_REGISTRATION_HPP___
 
 #include "NDetails/convertWrapper.hpp"
 #include "../../bits/PartType/Type.hpp"
@@ -25,4 +25,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__CONVERT_REGISTRATION_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__CONVERT_REGISTRATION_HPP___

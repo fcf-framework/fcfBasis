@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_FOREACH__NDETAILS__TUPLE_FOREACH_HPP___
-#define ___FCF_BASIS__BITS__PART_FOREACH__NDETAILS__TUPLE_FOREACH_HPP___
+#ifndef _FCF_BASIS__BITS__PART_FOREACH__NDETAILS__TUPLE_FOREACH_HPP___
+#define _FCF_BASIS__BITS__PART_FOREACH__NDETAILS__TUPLE_FOREACH_HPP___
 
 #include <tuple>
 
@@ -27,4 +27,4 @@ namespace fcf {
   } // Details namespace
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_FOREACH__NDETAILS__TUPLE_FOREACH_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_FOREACH__NDETAILS__TUPLE_FOREACH_HPP___

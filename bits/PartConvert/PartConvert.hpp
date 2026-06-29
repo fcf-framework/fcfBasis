@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CONVERT__PART_CONVERT_HPP___
-#define ___FCF_BASIS__BITS__PART_CONVERT__PART_CONVERT_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONVERT__PART_CONVERT_HPP___
+#define _FCF_BASIS__BITS__PART_CONVERT__PART_CONVERT_HPP___
 
 #include "Converter.hpp"
 #include "ConvertFunction.hpp"
@@ -11,4 +11,4 @@
 #include "getConvertFunction.hpp"
 #include "NDetails/registry.hpp"
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__PART_CONVERT_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__PART_CONVERT_HPP___

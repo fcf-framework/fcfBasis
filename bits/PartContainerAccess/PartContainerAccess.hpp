@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CONTAINER_ACCESS__PART_CONTAINER_ACCESS_HPP___
-#define ___FCF_BASIS__BITS__PART_CONTAINER_ACCESS__PART_CONTAINER_ACCESS_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__PART_CONTAINER_ACCESS_HPP___
+#define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__PART_CONTAINER_ACCESS_HPP___
 
 #include "ContainerAccessDefinition.hpp"
 #include "ContainerAccess.hpp"
@@ -16,4 +16,4 @@
 #include "VariantCursorDefinition.hpp"
 #include "VariantCursor.hpp"
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CONTAINER_ACCESS__PART_CONTAINER_ACCESS_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__PART_CONTAINER_ACCESS_HPP___

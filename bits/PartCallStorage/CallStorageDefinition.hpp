@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
-#define ___FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
+#define _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
 
 #include "CallStorageFunctionIndexes.hpp"
 #include "CallStorageFunctionInfoVector.hpp"
@@ -58,4 +58,4 @@ namespace fcf {
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___

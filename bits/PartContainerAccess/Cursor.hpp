@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CURSOR_HPP___
-#define ___FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CURSOR_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CURSOR_HPP___
+#define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CURSOR_HPP___
 
 namespace fcf{
 
@@ -8,4 +8,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CURSOR_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CURSOR_HPP___

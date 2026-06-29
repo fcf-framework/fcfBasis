@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
-#define ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
+#ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
+#define _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
 
 #include "TypeStorageDefinition.hpp"
 #include "../../bits/PartType/TypeInfo.hpp"
@@ -54,4 +54,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___

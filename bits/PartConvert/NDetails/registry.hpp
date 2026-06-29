@@ -1,5 +1,5 @@
-#ifndef ___FCF_BASIS__BITS__PART_CONVERT__NDETAILS__REGISTRY_HPP___
-#define ___FCF_BASIS__BITS__PART_CONVERT__NDETAILS__REGISTRY_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONVERT__NDETAILS__REGISTRY_HPP___
+#define _FCF_BASIS__BITS__PART_CONVERT__NDETAILS__REGISTRY_HPP___
 
 #include "ConvertersRegistrar.hpp"
 
@@ -40,4 +40,4 @@ FCF_CONVERTERS_REGISTRATION(BoolCrossConvert, bool, true, true);
 FCF_CONVERTERS_REGISTRATION(BoolCrossConvert, std::string, true, true);
 
 
-#endif // #ifndef ___FCF_BASIS__BITS__PART_CONVERT__NDETAILS__REGISTRY_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__NDETAILS__REGISTRY_HPP___
