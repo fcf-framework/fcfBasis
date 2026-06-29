@@ -15,8 +15,7 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     namespace NDetails {
-      template <typename TException>
-      inline ConvertFunction getConvertFunctionImpl(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, TException* a_error) {
+      ConvertFunction getConvertFunctionImpl(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Exception* a_error, bool a_enableThrow) {
         a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
         a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
         do {
@@ -34,7 +33,7 @@ namespace fcf {
         const char*     destinationTypeName = destinationTypeInfo ? destinationTypeInfo->name.c_str() : "(Invalid type index)";
         const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex, 0);
         const char*     sourceTypeName = sourceTypeInfo ? sourceTypeInfo->name.c_str() : "(Invalid type index)";
-        FCF_INVARIANT_EXCEPTION(TException, a_error, (ConversionNotFoundException(__FILE__, __LINE__, destinationTypeName, sourceTypeName)));
+        FCF_INVARIANT_EXCEPTION(a_enableThrow, a_error, (ConversionNotFoundException(__FILE__, __LINE__, destinationTypeName, sourceTypeName)));
         return (ConvertFunction)0;
       }
     } // NDetails namespace
@@ -42,20 +41,20 @@ namespace fcf {
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex) {
-      return NDetails::getConvertFunctionImpl<Nop>(a_destinationTypeIndex, a_sourceTypeIndex, nullptr);
+      return NDetails::getConvertFunctionImpl(a_destinationTypeIndex, a_sourceTypeIndex, nullptr, true);
     }
   #endif
 
   #ifdef FCF_BASIS_IMPLEMENTATION
     ConvertFunction getConvertFunction(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Exception* a_error) {
-      return NDetails::getConvertFunctionImpl<Exception>(a_destinationTypeIndex, a_sourceTypeIndex, a_error);
+      return NDetails::getConvertFunctionImpl(a_destinationTypeIndex, a_sourceTypeIndex, a_error, false);
     }
   #endif
 
 
   namespace NDetails{
-    template <typename TDestination, typename TException>
-    inline ConvertFunction getConvertFunctionByDestinationImpl(TypeIndex a_sourceTypeIndex, TException* a_error){
+    template <typename TDestination>
+    ConvertFunction getConvertFunctionByDestinationImpl(TypeIndex a_sourceTypeIndex, Exception* a_error, bool a_enableThrow){
       a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
       const ::fcf::TypeInfo::ConvertersType& converters = Type<TDestination>().backConverters(); 
       ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_sourceTypeIndex);
@@ -63,7 +62,7 @@ namespace fcf {
         const TypeInfo* destinationTypeInfo = Type<TDestination>().typeInfo();
         const TypeInfo* sourceTypeInfo = getTypeInfo(a_sourceTypeIndex, 0);
         const char*     sourceTypeName = sourceTypeInfo ? sourceTypeInfo->name.c_str() : "(Invalid type index)";
-        FCF_INVARIANT_EXCEPTION(TException, a_error, (ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeName)));
+        FCF_INVARIANT_EXCEPTION(a_enableThrow, a_error, (ConversionNotFoundException(__FILE__, __LINE__, destinationTypeInfo->name, sourceTypeName)));
         return (ConvertFunction)0;
       }
       return (ConvertFunction)convIt->second;
@@ -72,17 +71,17 @@ namespace fcf {
 
   template <typename TDestination>
   ConvertFunction getConvertFunctionByDestination(TypeIndex a_sourceTypeIndex){
-    return NDetails::getConvertFunctionByDestinationImpl<TDestination, Nop>(a_sourceTypeIndex, nullptr);
+    return NDetails::getConvertFunctionByDestinationImpl<TDestination>(a_sourceTypeIndex, nullptr, true);
   }
 
   template <typename TDestination>
   ConvertFunction getConvertFunctionByDestination(TypeIndex a_sourceTypeIndex, Exception* a_error){
-    return NDetails::getConvertFunctionByDestinationImpl<TDestination, Exception>(a_sourceTypeIndex, a_error);
+    return NDetails::getConvertFunctionByDestinationImpl<TDestination>(a_sourceTypeIndex, a_error, false);
   }
 
   namespace NDetails {
-    template <typename TSource, typename TException>
-    inline ConvertFunction getConvertFunctionBySourceImpl(TypeIndex a_destinationTypeIndex, TException* a_error){
+    template <typename TSource>
+    ConvertFunction getConvertFunctionBySourceImpl(TypeIndex a_destinationTypeIndex, Exception* a_error, bool a_enableThrow){
       a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
       const ::fcf::TypeInfo::ConvertersType& converters = Type<TSource>().converters(); 
       ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_destinationTypeIndex);
@@ -90,7 +89,7 @@ namespace fcf {
         const TypeInfo* destinationTypeInfo = getTypeInfo(a_destinationTypeIndex, 0);
         const char*     destinationTypeName = destinationTypeInfo ? destinationTypeInfo->name.c_str() : "(Invalid type index)";
         const TypeInfo* sourceTypeInfo = Type<TSource>().typeInfo();
-        FCF_INVARIANT_EXCEPTION(TException, a_error, (ConversionNotFoundException(__FILE__, __LINE__, destinationTypeName, sourceTypeInfo->name)));
+        FCF_INVARIANT_EXCEPTION(a_enableThrow, a_error, (ConversionNotFoundException(__FILE__, __LINE__, destinationTypeName, sourceTypeInfo->name)));
         return (ConvertFunction)0;
       }
       return (ConvertFunction)convIt->second;
@@ -99,12 +98,12 @@ namespace fcf {
 
   template <typename TSource>
   ConvertFunction getConvertFunctionBySource(TypeIndex a_destinationTypeIndex){
-    return NDetails::getConvertFunctionBySourceImpl<TSource, Nop>(a_destinationTypeIndex, nullptr);
+    return NDetails::getConvertFunctionBySourceImpl<TSource>(a_destinationTypeIndex, nullptr, true);
   }
 
   template <typename TSource>
   ConvertFunction getConvertFunctionBySource(TypeIndex a_destinationTypeIndex, Exception* a_error){
-    return NDetails::getConvertFunctionBySourceImpl<TSource, Exception>(a_destinationTypeIndex, a_error);
+    return NDetails::getConvertFunctionBySourceImpl<TSource>(a_destinationTypeIndex, a_error, false);
   }
 
 } // fcf namespace

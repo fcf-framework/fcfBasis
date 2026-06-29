@@ -32,6 +32,7 @@ add_executable("basis-test"
                            PartContainerAccess/ContainerAccess.cpp
                            PartContainerAccess/DynamicContainerAccess.cpp
                            PartException/Exception.cpp
+                           PartException/ExceptionMacro.cpp
                            PartForeach/foreach.cpp
                            PartMetaType/MetaTypeModifyTuple.cpp
                            PartMetaType/MetaTypeSequence.cpp

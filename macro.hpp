@@ -459,11 +459,11 @@
         }
 #endif // #ifndef FCF_TEMPLATE_TYPE_REGISTRATION
 
-/** 
-* @def FCF_TEMPLATE_SPECIFIER_REGISTRATION(am_template, am_specifier) 
-* @brief Register a specifier for a template type. 
-* @param am_template Template type (No template arguments and no <> characters). 
-* @param am_specifier The type of the specifier. 
+/**
+* @def FCF_TEMPLATE_SPECIFIER_REGISTRATION(am_template, am_specifier)
+* @brief Register a specifier for a template type.
+* @param am_template Template type (No template arguments and no <> characters).
+* @param am_specifier The type of the specifier.
 */
 #ifndef FCF_TEMPLATE_SPECIFIER_REGISTRATION
 #define FCF_TEMPLATE_SPECIFIER_REGISTRATION(am_template, am_specifier)\
@@ -563,12 +563,12 @@
  *                           If the function is a template and has commas in its name,
  *                           the entire argument can be enclosed in parentheses.
  * @param am_name Function name (including namespace).
- * @param am_space Execution engine name. Multiple can be specified via comma 
+ * @param am_space Execution engine name. Multiple can be specified via comma
  *                       (For normal operation, use "cpu" - only on cpu, or "*" - for all).
  * @param am_signature Function signature.
  *                     If the return value is a template class and has commas,
  *                     the entire argument can be enclosed in parentheses.
- * @param am_placeHolder Function call options. 
+ * @param am_placeHolder Function call options.
  *                       Multiple parameters enclosed in parentheses can be passed.
  *                       Each parameter consists of at least three arguments:
  *                         1. A specifier or fcf::CallOptions type.
@@ -578,7 +578,7 @@
  *                            For a specifier, it is the argument number from which data is taken.
  *                            For fcf::CallOptions type, it is the argument number for which options will be specified.
  *                         3. Further parameters depending on the first argument.
- *                            If a specifier is provided, function argument types follow, specifying 
+ *                            If a specifier is provided, function argument types follow, specifying
  *                            Placeholder insertion using fcf::Arg1 ... fcf::ArgN types.
  *                            If fcf::CallOptions type is provided, parameter flags are passed via fcf::CallArgumentOptions object.
  *                       )
@@ -830,20 +830,70 @@
 #define FCF_EXCEPTION_DECLARE(am_type, am_name, am_message, am_argCount) \
     _FCF_EXCEPTION_DECLARE_0(_FCF_EXCEPTION_DECLARE_A##am_argCount, am_type, am_name, am_message, am_argCount)
 
-#define FCF_INVARIANT_EXCEPTION_CALL(am_call, am_templateArgName, am_errorVariableName, am_arguments)\
-  (std::is_same<am_templateArgName, ::fcf::Exception>::value \
-    ? _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_call)\
-        (_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_arguments), (Exception*)am_errorVariableName) \
-    : _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_call)\
-        (_FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_arguments) ))
+/**
+ * @def FCF_INVARIANT_EXCEPTION_CALL(am_call, am_enableThrow, am_errorVariableName, ...)
+ * @brief Performs a call and handles potential exceptions based on a toggle.
+ * @details If `am_enableThrow` is true, the call is executed normally, and any exception is thrown.
+ *          If false, the call is executed, and if it fails, the resulting exception is assigned to `am_errorVariableName`.
+ * @param am_call The function or expression to be called.
+ * @param am_enableThrow Boolean flag: true to throw exception, false to assign it to a variable.
+ * @param am_errorVariableName The variable where the exception will be stored if `am_enableThrow` is false.
+ * @param ... Additional arguments to be passed to the `am_call`.
+ */
+#ifndef FCF_INVARIANT_EXCEPTION_CALL
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_A20(am_a1, am_a2, am_a3, am_a4, am_a5, am_a6, am_a7, am_a8, am_a9, am_a10, \
+                                               am_a11, am_a12, am_a13, am_a14, am_a15, am_a16, am_a17, am_a18, am_a19, am_a20, \
+                                               ...) am_a20
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_LIST(...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_A20(__VA_ARGS__, CM, CM, CM, CM, CM, CM, CM, CM, CM, \
+                                                              CM, CM, CM, CM, CM, CM, CM, CM, CM, CM)
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__PARENTHESIS(...) , , , , , , , , , , \
+                                                        , , , , , , , , , ,
 
-#define FCF_INVARIANT_EXCEPTION(am_templateArgName, am_errorVariableName, am_exception)\
-    if (std::is_same<am_templateArgName, ::fcf::Exception>::value) {\
-      if (am_errorVariableName) {\
-        *(Exception*)am_errorVariableName = _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_exception);\
-      }\
-    } else {\
-      throw _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_exception);\
-    }
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR_TEST(...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__PARENTHESIS  __VA_ARGS__ ( )
+  #define CONCAT_ARGS_TEST(am_error, ...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR_TEST(__VA_ARGS__)
+
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR(...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_LIST ( FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__PARENTHESIS  __VA_ARGS__ ( ))
+
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__RESULT(am_argument, ...) am_argument
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__RESULTCM(am_argument, ...) __VA_ARGS__, am_argument
+
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__CALL_RESULT1(am_macro, am_argument, ...) am_macro(am_argument, __VA_ARGS__)
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__CALL_RESULT0(am_macro, am_argument, ...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__CALL_RESULT1(FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__RESULT##am_macro, am_argument, __VA_ARGS__)
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__CALL_RESULT(am_macro, am_argument, ...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__CALL_RESULT0(am_macro, am_argument, __VA_ARGS__)
+
+  #define FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS(am_error, ...) \
+            FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__CALL_RESULT(FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR(__VA_ARGS__), am_error, __VA_ARGS__)
+
+  #define FCF_INVARIANT_EXCEPTION_CALL(am_call, am_enableThrow, am_errorVariableName, ...)\
+    ((am_enableThrow) \
+      ? _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_call)(__VA_ARGS__))\
+      : _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_call)(FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS(am_errorVariableName, __VA_ARGS__))
+#endif
+
+/**
+ * @def FCF_INVARIANT_EXCEPTION(am_enableThrow, am_errorVariableName, am_exception)
+ * @brief Conditional exception throwing or assignment.
+ * @details If `am_enableThrow` is true, the specified `am_exception` is thrown.
+ *          If false, the exception is assigned to `am_errorVariableName` instead of being thrown.
+ * @param am_enableThrow Boolean flag: true to throw, false to assign.
+ * @param am_errorVariableName The variable to receive the exception if not thrown.
+ * @param am_exception The exception object to be thrown or assigned.
+ */
+#ifndef FCF_INVARIANT_EXCEPTION
+  #define FCF_INVARIANT_EXCEPTION(am_enableThrow, am_errorVariableName, am_exception)\
+      if (am_enableThrow) {\
+        throw _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_exception);\
+      } else {\
+        if (am_errorVariableName) {\
+          *(Exception*)am_errorVariableName = _FCF_BASIS_REMOVE_PARENTHESIS(_FCF_BASIS_REMOVE_PARENTHESIS_ARGUMENT am_exception);\
+        }\
+      }
+#endif
 
 #endif // #ifndef ___FCF_BASIS__MACRO_HPP___
