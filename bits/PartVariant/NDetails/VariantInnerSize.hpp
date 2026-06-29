@@ -9,22 +9,22 @@ namespace fcf{
     };
 
     template <size_t InnerBufferSize>
-    struct VariantInnerSize< BasicVariant<InnerBufferSize> >{
+    struct VariantInnerSize< VariantBasic<InnerBufferSize> >{
       enum { value = InnerBufferSize };
     };
 
     template <size_t InnerBufferSize>
-    struct VariantInnerSize< const BasicVariant<InnerBufferSize> >{
+    struct VariantInnerSize< const VariantBasic<InnerBufferSize> >{
       enum { value = InnerBufferSize };
     };
 
     template <size_t InnerBufferSize>
-    struct VariantInnerSize< BasicVariant<InnerBufferSize>& >{
+    struct VariantInnerSize< VariantBasic<InnerBufferSize>& >{
       enum { value = InnerBufferSize };
     };
 
     template <size_t InnerBufferSize>
-    struct VariantInnerSize< const BasicVariant<InnerBufferSize>& >{
+    struct VariantInnerSize< const VariantBasic<InnerBufferSize>& >{
       enum { value = InnerBufferSize };
     };
   } // NDetails namespace

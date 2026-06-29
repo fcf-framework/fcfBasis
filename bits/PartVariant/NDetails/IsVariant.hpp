@@ -12,22 +12,22 @@ namespace fcf{
     };
 
     template <size_t InnerBufferSize>
-    struct IsVariant< BasicVariant<InnerBufferSize> >{
+    struct IsVariant< VariantBasic<InnerBufferSize> >{
       enum { value = true };
     };
 
     template <size_t InnerBufferSize>
-    struct IsVariant< const BasicVariant<InnerBufferSize> >{
+    struct IsVariant< const VariantBasic<InnerBufferSize> >{
       enum { value = true };
     };
 
     template <size_t InnerBufferSize>
-    struct IsVariant< BasicVariant<InnerBufferSize>& >{
+    struct IsVariant< VariantBasic<InnerBufferSize>& >{
       enum { value = true };
     };
 
     template <size_t InnerBufferSize>
-    struct IsVariant< const BasicVariant<InnerBufferSize>& >{
+    struct IsVariant< const VariantBasic<InnerBufferSize>& >{
       enum { value = true };
     };
 

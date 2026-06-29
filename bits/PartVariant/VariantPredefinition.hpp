@@ -14,9 +14,9 @@ namespace fcf{
                           >::size };
 
   template <size_t InnerBufferSize = DefaultVariantBufferSize>
-  class BasicVariant;
+  class VariantBasic;
 
-  typedef BasicVariant<DefaultVariantBufferSize> Variant;
+  typedef VariantBasic<DefaultVariantBufferSize> Variant;
 
 } // fcf namespace
 

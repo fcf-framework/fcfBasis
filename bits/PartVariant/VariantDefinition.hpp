@@ -25,14 +25,14 @@ namespace fcf {
    *                         If the stored type's size is less than or equal to this value, the data
    *                         is stored directly within the object, avoiding heap allocation.
    *
-   * BasicVariant acts as a universal container that can store any registered type in the FCF type system.
+   * VariantBasic acts as a universal container that can store any registered type in the FCF type system.
    * It supports automatic type conversion, reference semantics, and dynamic type introspection.
    *
    * @note The class manages its own memory. If the stored type exceeds @p innerBufferSize,
    *       memory is allocated on the heap.
    */
   template <size_t innerBufferSize>
-  class BasicVariant {
+  class VariantBasic {
     public:
 
       /**
@@ -46,10 +46,10 @@ namespace fcf {
       };
 
       /**
-       * @brief Friend declaration to allow access to private members from other BasicVariant instantiations.
+       * @brief Friend declaration to allow access to private members from other VariantBasic instantiations.
        */
       template <size_t InputInnerBufferSize>
-      friend class BasicVariant;
+      friend class VariantBasic;
 
       /**
        * @brief Function pointer type for custom conversion functions.
@@ -59,12 +59,12 @@ namespace fcf {
       /**
        * @brief Iterator type for traversing container-like variants.
        */
-      typedef ContainerAccess< BasicVariant<innerBufferSize> >        iterator;
+      typedef ContainerAccess< VariantBasic<innerBufferSize> >        iterator;
 
       /**
        * @brief Const iterator type for traversing container-like variants.
        */
-      typedef ContainerAccess< const BasicVariant<innerBufferSize> >  const_iterator;
+      typedef ContainerAccess< const VariantBasic<innerBufferSize> >  const_iterator;
 
       // ---------------------------------------------------------------------------
       // Constructors
@@ -75,14 +75,14 @@ namespace fcf {
        *
        * Creates an empty variant with no type information.
        */
-      BasicVariant();
+      VariantBasic();
 
       /**
        * @brief Copy constructor.
        *
        * @param a_variant The variant to copy from.
        */
-      BasicVariant(const BasicVariant& a_variant);
+      VariantBasic(const VariantBasic& a_variant);
 
       /**
        * @brief Copy constructor with specific data mode.
@@ -90,7 +90,7 @@ namespace fcf {
        * @param a_variant The variant to copy from.
        * @param a_dataMode The mode of data transfer (e.g., WRITE, REFERENCE).
        */
-      BasicVariant(const BasicVariant& a_variant, DataSetMode a_dataMode);
+      VariantBasic(const VariantBasic& a_variant, DataSetMode a_dataMode);
 
       /**
        * @brief Move-like constructor with specific data mode.
@@ -98,7 +98,7 @@ namespace fcf {
        * @param a_variant The variant to copy from.
        * @param a_dataMode The mode of data transfer.
        */
-      BasicVariant(BasicVariant& a_variant, DataSetMode a_dataMode);
+      VariantBasic(VariantBasic& a_variant, DataSetMode a_dataMode);
 
       /**
        * @brief Template constructor from a generic value.
@@ -107,7 +107,7 @@ namespace fcf {
        * @param a_value The value to store.
        */
       template <typename Ty>
-      BasicVariant(const Ty& a_value);
+      VariantBasic(const Ty& a_value);
 
       /**
        * @brief Template constructor with explicit type and data mode.
@@ -119,7 +119,7 @@ namespace fcf {
        * @param a_dataMode The mode of data transfer.
        */
       template <typename Ty, typename TSource>
-      BasicVariant(const Type<Ty>& a_type, TSource& a_value, DataSetMode a_dataMode = WRITE);
+      VariantBasic(const Type<Ty>& a_type, TSource& a_value, DataSetMode a_dataMode = WRITE);
 
       /**
        * @brief Template constructor with explicit type and const source.
@@ -131,10 +131,10 @@ namespace fcf {
        * @param a_dataMode The mode of data transfer.
        */
       template <typename Ty, typename TSource>
-      BasicVariant(const Type<Ty>& a_type, const TSource& a_value, DataSetMode a_dataMode = WRITE);
+      VariantBasic(const Type<Ty>& a_type, const TSource& a_value, DataSetMode a_dataMode = WRITE);
 
       /**
-       * @brief Template constructor from another BasicVariant with explicit type.
+       * @brief Template constructor from another VariantBasic with explicit type.
        *
        * @tparam Ty The target type.
        * @tparam InputInnerBufferSize The buffer size of the source variant.
@@ -143,10 +143,10 @@ namespace fcf {
        * @param a_dataMode The mode of data transfer.
        */
       template <typename Ty, size_t InputInnerBufferSize>
-      BasicVariant(const Type<Ty>& a_type, BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode = WRITE);
+      VariantBasic(const Type<Ty>& a_type, VariantBasic<InputInnerBufferSize>& a_value, DataSetMode a_dataMode = WRITE);
 
       /**
-       * @brief Template constructor from a const BasicVariant with explicit type.
+       * @brief Template constructor from a const VariantBasic with explicit type.
        *
        * @tparam Ty The target type.
        * @tparam InputInnerBufferSize The buffer size of the source variant.
@@ -155,7 +155,7 @@ namespace fcf {
        * @param a_dataMode The mode of data transfer.
        */
       template <typename Ty, size_t InputInnerBufferSize>
-      BasicVariant(const Type<Ty>& a_type, const BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode = WRITE);
+      VariantBasic(const Type<Ty>& a_type, const VariantBasic<InputInnerBufferSize>& a_value, DataSetMode a_dataMode = WRITE);
 
       /**
        * @brief Template constructor from a generic source with data mode.
@@ -165,7 +165,7 @@ namespace fcf {
        * @param a_dataMode The mode of data transfer.
        */
       template <typename TSource>
-      BasicVariant(const TSource& a_value, DataSetMode a_dataMode);
+      VariantBasic(const TSource& a_value, DataSetMode a_dataMode);
 
       /**
        * @brief Template constructor from a generic source reference with data mode.
@@ -175,14 +175,14 @@ namespace fcf {
        * @param a_dataMode The mode of data transfer.
        */
       template <typename TSource>
-      BasicVariant(TSource& a_value, DataSetMode a_dataMode);
+      VariantBasic(TSource& a_value, DataSetMode a_dataMode);
 
       /**
        * @brief Constructor from a C-style string.
        *
        * @param a_value The C-string to store.
        */
-      BasicVariant(const char* a_value);
+      VariantBasic(const char* a_value);
 
       /**
        * @brief Constructor from a C-style string with data mode.
@@ -190,45 +190,45 @@ namespace fcf {
        * @param a_value The C-string to store.
        * @param a_dataMode The mode of data transfer.
        */
-      BasicVariant(const char* a_value, DataSetMode a_dataMode);
+      VariantBasic(const char* a_value, DataSetMode a_dataMode);
 
       /**
-       * @brief Template constructor from another BasicVariant (different buffer size).
+       * @brief Template constructor from another VariantBasic (different buffer size).
        *
        * @tparam InputInnerBufferSize The buffer size of the source variant.
        * @param a_variant The source variant.
        */
       template <size_t InputInnerBufferSize>
-      BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant);
+      VariantBasic(const VariantBasic<InputInnerBufferSize>& a_variant);
 
       /**
-       * @brief Template constructor from another BasicVariant (different buffer size, non-const).
+       * @brief Template constructor from another VariantBasic (different buffer size, non-const).
        *
        * @tparam InputInnerBufferSize The buffer size of the source variant.
        * @param a_variant The source variant.
        */
       template <size_t InputInnerBufferSize>
-      BasicVariant(BasicVariant<InputInnerBufferSize>& a_variant);
+      VariantBasic(VariantBasic<InputInnerBufferSize>& a_variant);
 
       /**
-       * @brief Template constructor from another BasicVariant with data mode.
-       *
-       * @tparam InputInnerBufferSize The buffer size of the source variant.
-       * @param a_variant The source variant.
-       * @param a_dataMode The mode of data transfer.
-       */
-      template <size_t InputInnerBufferSize>
-      BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode);
-
-      /**
-       * @brief Template constructor from another BasicVariant (non-const) with data mode.
+       * @brief Template constructor from another VariantBasic with data mode.
        *
        * @tparam InputInnerBufferSize The buffer size of the source variant.
        * @param a_variant The source variant.
        * @param a_dataMode The mode of data transfer.
        */
       template <size_t InputInnerBufferSize>
-      BasicVariant(BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode);
+      VariantBasic(const VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode);
+
+      /**
+       * @brief Template constructor from another VariantBasic (non-const) with data mode.
+       *
+       * @tparam InputInnerBufferSize The buffer size of the source variant.
+       * @param a_variant The source variant.
+       * @param a_dataMode The mode of data transfer.
+       */
+      template <size_t InputInnerBufferSize>
+      VariantBasic(VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode);
 
       /**
        * @brief Constructor from a Type descriptor (creates default instance of that type).
@@ -237,21 +237,21 @@ namespace fcf {
        * @param a_type The type descriptor.
        */
       template <typename Ty>
-      BasicVariant(Type<Ty, Nop> a_type);
+      VariantBasic(Type<Ty, Nop> a_type);
 
       /**
        * @brief Constructor from a DynamicType.
        *
        * @param a_dynamicType The dynamic type descriptor.
        */
-      BasicVariant(DynamicType a_dynamicType);
+      VariantBasic(DynamicType a_dynamicType);
 
       /**
        * @brief Constructor from a TypeInfo pointer.
        *
        * @param a_typeInfo Pointer to the type information.
        */
-      BasicVariant(const TypeInfo* a_typeInfo);
+      VariantBasic(const TypeInfo* a_typeInfo);
 
       /**
        * @brief Low-level constructor using type indices and raw data.
@@ -262,14 +262,14 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      BasicVariant(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
 
       /**
        * @brief Destructor.
        *
        * Destroys the stored value and frees any allocated memory.
        */
-      ~BasicVariant();
+      ~VariantBasic();
 
       // ---------------------------------------------------------------------------
       // Reset and Assignment
@@ -304,17 +304,17 @@ namespace fcf {
        * @param a_variant The variant to assign from.
        * @return Reference to this variant.
        */
-      BasicVariant& operator=(const BasicVariant& a_variant);
+      VariantBasic& operator=(const VariantBasic& a_variant);
 
       /**
-       * @brief Assignment from a BasicVariant with different buffer size.
+       * @brief Assignment from a VariantBasic with different buffer size.
        *
        * @tparam InputInnerBufferSize The buffer size of the source variant.
        * @param a_variant The variant to assign from.
        * @return Reference to this variant.
        */
       template <size_t InputInnerBufferSize>
-      BasicVariant& operator=(const BasicVariant<InputInnerBufferSize>& a_variant);
+      VariantBasic& operator=(const VariantBasic<InputInnerBufferSize>& a_variant);
 
       /**
        * @brief Assignment from a generic value.
@@ -324,7 +324,7 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename Ty>
-      BasicVariant& operator=(const Ty& a_value);
+      VariantBasic& operator=(const Ty& a_value);
 
       /**
        * @brief Assignment from a C-style string.
@@ -332,14 +332,14 @@ namespace fcf {
        * @param a_value The C-string to assign.
        * @return Reference to this variant.
        */
-      BasicVariant& operator=(const char* a_value);
+      VariantBasic& operator=(const char* a_value);
 
       /**
        * @brief Sets the value from another variant.
        *
        * @param a_variant The variant to copy from.
        */
-      void set(const BasicVariant& a_variant);
+      void set(const VariantBasic& a_variant);
 
       /**
        * @brief Sets the value from another variant with specific mode.
@@ -347,7 +347,7 @@ namespace fcf {
        * @param a_variant The variant to copy from.
        * @param a_dataMode The mode of data transfer.
        */
-      void set(const BasicVariant& a_variant, DataSetMode a_dataMode);
+      void set(const VariantBasic& a_variant, DataSetMode a_dataMode);
 
       /**
        * @brief Sets the value from a non-const variant with specific mode.
@@ -355,7 +355,7 @@ namespace fcf {
        * @param a_variant The variant to copy from.
        * @param a_dataMode The mode of data transfer.
        */
-      void set(BasicVariant& a_variant, DataSetMode a_dataMode);
+      void set(VariantBasic& a_variant, DataSetMode a_dataMode);
 
       /**
        * @brief Sets the value from a generic value.
@@ -438,7 +438,7 @@ namespace fcf {
        *
        * @param a_key The key of the element to erase.
        */
-      void erase(const BasicVariant& a_key);
+      void erase(const VariantBasic& a_key);
 
       /**
        * @brief Erases an element at the specified iterator position.
@@ -545,7 +545,7 @@ namespace fcf {
        * @param a_value The value to compare against.
        * @return true if *this < a_value.
        */
-      bool operator<(const BasicVariant& a_value) const;
+      bool operator<(const VariantBasic& a_value) const;
 
       /**
        * @brief Less than operator (template).
@@ -568,7 +568,7 @@ namespace fcf {
        * @param a_value The value to compare against.
        * @return true if *this <= a_value.
        */
-      bool operator<=(const BasicVariant& a_value) const;
+      bool operator<=(const VariantBasic& a_value) const;
 
       /**
        * @brief Less than or equal operator (template).
@@ -591,7 +591,7 @@ namespace fcf {
        * @param a_value The value to compare against.
        * @return true if *this == a_value.
        */
-      bool operator==(const BasicVariant& a_value) const;
+      bool operator==(const VariantBasic& a_value) const;
 
       /**
        * @brief Equality operator (template).
@@ -614,7 +614,7 @@ namespace fcf {
        * @param a_value The value to compare against.
        * @return true if *this != a_value.
        */
-      bool operator!=(const BasicVariant& a_value) const;
+      bool operator!=(const VariantBasic& a_value) const;
 
       /**
        * @brief Inequality operator (template).
@@ -637,7 +637,7 @@ namespace fcf {
        * @param a_value The value to compare against.
        * @return true if *this > a_value.
        */
-      bool operator>(const BasicVariant& a_value) const;
+      bool operator>(const VariantBasic& a_value) const;
 
       /**
        * @brief Greater than operator (template).
@@ -660,7 +660,7 @@ namespace fcf {
        * @param a_value The value to compare against.
        * @return true if *this >= a_value.
        */
-      bool operator>=(const BasicVariant& a_value) const;
+      bool operator>=(const VariantBasic& a_value) const;
 
       /**
        * @brief Greater than or equal operator (template).
@@ -687,7 +687,7 @@ namespace fcf {
        * @param a_value The value to add.
        * @return Reference to this variant.
        */
-      BasicVariant& operator+=(const BasicVariant& a_value);
+      VariantBasic& operator+=(const VariantBasic& a_value);
 
       /**
        * @brief Addition assignment operator (template).
@@ -696,21 +696,21 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename Ty>
-      BasicVariant& operator+=(const Ty& a_value);
+      VariantBasic& operator+=(const Ty& a_value);
 
       /**
        * @brief Addition assignment operator (C-string).
        * @param a_value The C-string to add.
        * @return Reference to this variant.
        */
-      BasicVariant& operator+=(const char* a_value);
+      VariantBasic& operator+=(const char* a_value);
 
       /**
        * @brief Addition operator.
        * @param a_value The value to add.
        * @return A new variant with the result.
        */
-      BasicVariant operator+(const BasicVariant& a_value) const;
+      VariantBasic operator+(const VariantBasic& a_value) const;
 
       /**
        * @brief Addition operator (template).
@@ -719,21 +719,21 @@ namespace fcf {
        * @return A new variant with the result.
        */
       template <typename Ty>
-      BasicVariant operator+(const Ty& a_value) const;
+      VariantBasic operator+(const Ty& a_value) const;
 
       /**
        * @brief Addition operator (C-string).
        * @param a_value The C-string to add.
        * @return A new variant with the result.
        */
-      BasicVariant operator+(const char* a_value) const;
+      VariantBasic operator+(const char* a_value) const;
 
       /**
        * @brief Subtraction assignment operator.
        * @param a_value The value to subtract.
        * @return Reference to this variant.
        */
-      BasicVariant& operator-=(const BasicVariant& a_value);
+      VariantBasic& operator-=(const VariantBasic& a_value);
 
       /**
        * @brief Subtraction assignment operator (template).
@@ -742,21 +742,21 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename Ty>
-      BasicVariant& operator-=(const Ty& a_value);
+      VariantBasic& operator-=(const Ty& a_value);
 
       /**
        * @brief Subtraction assignment operator (C-string).
        * @param a_value The C-string to subtract.
        * @return Reference to this variant.
        */
-      BasicVariant& operator-=(const char* a_value);
+      VariantBasic& operator-=(const char* a_value);
 
       /**
        * @brief Subtraction operator.
        * @param a_value The value to subtract.
        * @return A new variant with the result.
        */
-      BasicVariant operator-(const BasicVariant& a_value) const;
+      VariantBasic operator-(const VariantBasic& a_value) const;
 
       /**
        * @brief Subtraction operator (template).
@@ -765,21 +765,21 @@ namespace fcf {
        * @return A new variant with the result.
        */
       template <typename Ty>
-      BasicVariant operator-(const Ty& a_value) const;
+      VariantBasic operator-(const Ty& a_value) const;
 
       /**
        * @brief Subtraction operator (C-string).
        * @param a_value The C-string to subtract.
        * @return A new variant with the result.
        */
-      BasicVariant operator-(const char* a_value) const;
+      VariantBasic operator-(const char* a_value) const;
 
       /**
        * @brief Multiplication assignment operator.
        * @param a_value The value to multiply by.
        * @return Reference to this variant.
        */
-      BasicVariant& operator*=(const BasicVariant& a_value);
+      VariantBasic& operator*=(const VariantBasic& a_value);
 
       /**
        * @brief Multiplication assignment operator (template).
@@ -788,21 +788,21 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename Ty>
-      BasicVariant& operator*=(const Ty& a_value);
+      VariantBasic& operator*=(const Ty& a_value);
 
       /**
        * @brief Multiplication assignment operator (C-string).
        * @param a_value The C-string to multiply by.
        * @return Reference to this variant.
        */
-      BasicVariant& operator*=(const char* a_value);
+      VariantBasic& operator*=(const char* a_value);
 
       /**
        * @brief Multiplication operator.
        * @param a_value The value to multiply by.
        * @return A new variant with the result.
        */
-      BasicVariant operator*(const BasicVariant& a_value) const;
+      VariantBasic operator*(const VariantBasic& a_value) const;
 
       /**
        * @brief Multiplication operator (template).
@@ -811,21 +811,21 @@ namespace fcf {
        * @return A new variant with the result.
        */
       template <typename Ty>
-      BasicVariant operator*(const Ty& a_value) const;
+      VariantBasic operator*(const Ty& a_value) const;
 
       /**
        * @brief Multiplication operator (C-string).
        * @param a_value The C-string to multiply by.
        * @return A new variant with the result.
        */
-      BasicVariant operator*(const char* a_value) const;
+      VariantBasic operator*(const char* a_value) const;
 
       /**
        * @brief Division assignment operator.
        * @param a_value The value to divide by.
        * @return Reference to this variant.
        */
-      BasicVariant& operator/=(const BasicVariant& a_value);
+      VariantBasic& operator/=(const VariantBasic& a_value);
 
       /**
        * @brief Division assignment operator (template).
@@ -834,21 +834,21 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename Ty>
-      BasicVariant& operator/=(const Ty& a_value);
+      VariantBasic& operator/=(const Ty& a_value);
 
       /**
        * @brief Division assignment operator (C-string).
        * @param a_value The C-string to divide by.
        * @return Reference to this variant.
        */
-      BasicVariant& operator/=(const char* a_value);
+      VariantBasic& operator/=(const char* a_value);
 
       /**
        * @brief Division operator.
        * @param a_value The value to divide by.
        * @return A new variant with the result.
        */
-      BasicVariant operator/(const BasicVariant& a_value) const;
+      VariantBasic operator/(const VariantBasic& a_value) const;
 
       /**
        * @brief Division operator (template).
@@ -857,14 +857,14 @@ namespace fcf {
        * @return A new variant with the result.
        */
       template <typename Ty>
-      BasicVariant operator/(const Ty& a_value) const;
+      VariantBasic operator/(const Ty& a_value) const;
 
       /**
        * @brief Division operator (C-string).
        * @param a_value The C-string to divide by.
        * @return A new variant with the result.
        */
-      BasicVariant operator/(const char* a_value) const;
+      VariantBasic operator/(const char* a_value) const;
 
       // ---------------------------------------------------------------------------
       // Type Information and Accessors
@@ -1033,7 +1033,7 @@ namespace fcf {
        * @param a_mode The data mode.
        */
       template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
-      void _clone(std::false_type a_enableConvert, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
+      void _clone(std::false_type a_enableConvert, const VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
 
       /**
        * @brief Clones data from another variant (with conversion).
@@ -1045,7 +1045,7 @@ namespace fcf {
        * @param a_mode The data mode.
        */
       template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
-      void _clone(std::true_type a_enableConvert, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
+      void _clone(std::true_type a_enableConvert, const VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_mode);
 
       /**
        * @brief Resets and sets a new value.
@@ -1159,7 +1159,7 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename TSpecifier, size_t InputInnerBufferSize>
-      inline BasicVariant& _selfCalcTo(const BasicVariant<InputInnerBufferSize>& a_value);
+      inline VariantBasic& _selfCalcTo(const VariantBasic<InputInnerBufferSize>& a_value);
 
       /**
        * @brief Performs arithmetic operation returning a new variant.
@@ -1169,7 +1169,7 @@ namespace fcf {
        * @return A new variant with the result.
        */
       template <typename TSpecifier, size_t InputInnerBufferSize>
-      inline BasicVariant _selfCalc(const BasicVariant<InputInnerBufferSize>& a_value) const;
+      inline VariantBasic _selfCalc(const VariantBasic<InputInnerBufferSize>& a_value) const;
 
       /**
        * @brief Performs arithmetic operation in-place with generic type.
@@ -1179,7 +1179,7 @@ namespace fcf {
        * @return Reference to this variant.
        */
       template <typename TSpecifier, typename Ty>
-      inline BasicVariant& _calcTo(const Ty& a_value);
+      inline VariantBasic& _calcTo(const Ty& a_value);
 
       /**
        * @brief Performs arithmetic operation returning a new variant with generic type.
@@ -1189,7 +1189,7 @@ namespace fcf {
        * @return A new variant with the result.
        */
       template <typename TSpecifier, typename Ty>
-      inline BasicVariant _calc(const Ty& a_value) const;
+      inline VariantBasic _calc(const Ty& a_value) const;
 
 
       const TypeInfo* _typeInfo; ///< Pointer to the type information of the stored value.

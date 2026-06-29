@@ -349,39 +349,39 @@ namespace fcf { template<> struct Type<std::string, BoolSpecifier> : public Type
 FCF_SPECIFIER_REGISTRATION(std::string,  fcf::BoolSpecifier);
 
 
-FCF_TEMPLATE_TYPE_REGISTRATION((fcf, BasicVariant),
-                            "fcf::BasicVariant",
+FCF_TEMPLATE_TYPE_REGISTRATION((fcf, VariantBasic),
+                            "fcf::VariantBasic",
                             (size_t InnerBufferSize),
                             (InnerBufferSize),
                             (std::to_string(InnerBufferSize))
                             );
 
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant), ResolveSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, LessSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, LessSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant), LessSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, EqualSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, EqualSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant), EqualSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, AddSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, AddSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant),  AddSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, SubSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, SubSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant),  SubSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, BoolSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, BoolSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant),  BoolSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, MulSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, MulSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant),  MulSpecifier);
-namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::BasicVariant<InnerBufferSize>, DivSpecifier> : public TypeImpl<fcf::BasicVariant<InnerBufferSize>, DivSpecifier> {}; }
-FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, BasicVariant),  DivSpecifier);
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic), ResolveSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, LessSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, LessSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic), LessSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, EqualSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, EqualSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic), EqualSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, AddSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, AddSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic),  AddSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, SubSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, SubSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic),  SubSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, BoolSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, BoolSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic),  BoolSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, MulSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, MulSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic),  MulSpecifier);
+namespace fcf { template<size_t InnerBufferSize> struct Type<fcf::VariantBasic<InnerBufferSize>, DivSpecifier> : public TypeImpl<fcf::VariantBasic<InnerBufferSize>, DivSpecifier> {}; }
+FCF_TEMPLATE_SPECIFIER_REGISTRATION((fcf, VariantBasic),  DivSpecifier);
 
 namespace fcf {
 
   template <size_t InnerBufferSize>
-  struct Cursor< BasicVariant<InnerBufferSize> > : public VariantCursor< BasicVariant<InnerBufferSize> >{
-    typedef VariantCursor< BasicVariant<InnerBufferSize> > BaseType;
-    using VariantCursor< BasicVariant<InnerBufferSize> >::VariantCursor;
+  struct Cursor< VariantBasic<InnerBufferSize> > : public VariantCursor< VariantBasic<InnerBufferSize> >{
+    typedef VariantCursor< VariantBasic<InnerBufferSize> > BaseType;
+    using VariantCursor< VariantBasic<InnerBufferSize> >::VariantCursor;
   };
 
   template <size_t InnerBufferSize>
-  struct Type<BasicVariant<InnerBufferSize>, ContainerAccessSpecifier>: public TypeImpl<BasicVariant<InnerBufferSize>, ContainerAccessSpecifier>{
+  struct Type<VariantBasic<InnerBufferSize>, ContainerAccessSpecifier>: public TypeImpl<VariantBasic<InnerBufferSize>, ContainerAccessSpecifier>{
   };
 
 

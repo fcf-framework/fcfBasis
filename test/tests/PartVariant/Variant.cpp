@@ -16,13 +16,13 @@ FCF_TEST_DECLARE("fcfBasis", "Variant", "variant"){
   }
   {
     fcf::Variant v1((int)1);
-    fcf::BasicVariant<128> v2(v1);
+    fcf::VariantBasic<128> v2(v1);
     FCF_TEST(v1.get<int>() == 1, v1.get<int>());
     FCF_TEST(v1.get<int>() == v2.get<int>(), v1.get<int>(), v2.get<int>());
   }
   {
     fcf::Variant v1((int)1);
-    fcf::BasicVariant<128> v2;
+    fcf::VariantBasic<128> v2;
     v2 = v1;
     FCF_TEST(v1.get<int>() == 1, v1.get<int>());
     FCF_TEST(v1.get<int>() == v2.get<int>(), v1.get<int>(), v2.get<int>());

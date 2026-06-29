@@ -24,86 +24,86 @@
 namespace fcf{
 
   template <size_t innerBufferSize>
-  std::ostream& operator<<(std::ostream& a_stream, const BasicVariant<innerBufferSize>& a_variant){
+  std::ostream& operator<<(std::ostream& a_stream, const VariantBasic<innerBufferSize>& a_variant){
     a_stream << a_variant. template cast<std::string>();
     return a_stream;
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant()
+  VariantBasic<innerBufferSize>::VariantBasic()
     : _typeInfo(0)
     , _ptr(0) {
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction)
+  VariantBasic<innerBufferSize>::VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction)
   : _typeInfo(0) {
     _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant)
+  VariantBasic<innerBufferSize>::VariantBasic(const VariantBasic<InputInnerBufferSize>& a_variant)
     : _typeInfo(0) {
-    _clone<BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, RESET);
+    _clone<VariantBasic<InputInnerBufferSize>, const VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(BasicVariant<InputInnerBufferSize>& a_variant)
+  VariantBasic<innerBufferSize>::VariantBasic(VariantBasic<InputInnerBufferSize>& a_variant)
     : _typeInfo(0) {
-    _clone<BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, RESET);
+    _clone<VariantBasic<InputInnerBufferSize>, VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _clone<BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+    _clone<VariantBasic<InputInnerBufferSize>, const VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _clone<BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+    _clone<VariantBasic<InputInnerBufferSize>, VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant)
+  VariantBasic<innerBufferSize>::VariantBasic(const VariantBasic& a_variant)
     : _typeInfo(0) {
-    _clone<BasicVariant, const BasicVariant >(std::false_type(), a_variant, RESET);
+    _clone<VariantBasic, const VariantBasic >(std::false_type(), a_variant, RESET);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const BasicVariant& a_variant, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const VariantBasic& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _clone<BasicVariant, const BasicVariant >(std::false_type(), a_variant, a_dataMode);
+    _clone<VariantBasic, const VariantBasic >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(BasicVariant& a_variant, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(VariantBasic& a_variant, DataSetMode a_dataMode)
     : _typeInfo(0) {
-    _clone<BasicVariant, BasicVariant>(std::false_type(), a_variant, a_dataMode);
+    _clone<VariantBasic, VariantBasic>(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value)
+  VariantBasic<innerBufferSize>::VariantBasic(const Ty& a_value)
     : _typeInfo(0) {
     _init<Ty, Ty>(std::false_type(), a_value, RESET);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>::BasicVariant(const Ty& a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const Ty& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     _init<Ty, const Ty>(std::false_type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>::BasicVariant(Ty& a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(Ty& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     _init<Ty, Ty>(std::false_type(), a_value, a_dataMode);
   }
@@ -111,7 +111,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty, typename TSource>
-  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, TSource& a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const Type<Ty>& /*a_type*/, TSource& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
     typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
@@ -120,7 +120,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty, typename TSource>
-  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, const TSource& a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const Type<Ty>& /*a_type*/, const TSource& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
     typedef typename std::remove_reference< typename std::remove_const<TSource>::type >::type SrcType;
@@ -129,41 +129,41 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty, size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const Type<Ty>& /*a_type*/, VariantBasic<InputInnerBufferSize>& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
-    _clone<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, BasicVariant<InputInnerBufferSize> >::value >::Type(), a_value, a_dataMode);
+    _clone<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, VariantBasic<InputInnerBufferSize> >::value >::Type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty, size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const Type<Ty>& /*a_type*/, const BasicVariant<InputInnerBufferSize>& a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const Type<Ty>& /*a_type*/, const VariantBasic<InputInnerBufferSize>& a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     typedef typename std::remove_reference< typename std::remove_const<Ty>::type >::type      ResType;
-    _clone<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, BasicVariant<InputInnerBufferSize> >::value >::Type(), a_value, a_dataMode);
+    _clone<Ty, Ty>(typename MetaTypeBoolean< !std::is_same<ResType, VariantBasic<InputInnerBufferSize> >::value >::Type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const char* a_value)
+  VariantBasic<innerBufferSize>::VariantBasic(const char* a_value)
     : _typeInfo(0) {
     _init<const char*, const char*>(std::false_type(), a_value, RESET);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const char* a_value, DataSetMode a_dataMode)
+  VariantBasic<innerBufferSize>::VariantBasic(const char* a_value, DataSetMode a_dataMode)
     : _typeInfo(0) {
     _init<const char*, const char*>(std::false_type(), a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>::BasicVariant(Type<Ty, Nop> a_type){
+  VariantBasic<innerBufferSize>::VariantBasic(Type<Ty, Nop> a_type){
     _ptr = a_type.typeInfo()->initializer->create(_size(a_type.typeInfo()) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
     _typeInfo = a_type.typeInfo();
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(DynamicType a_dynamicType){
+  VariantBasic<innerBufferSize>::VariantBasic(DynamicType a_dynamicType){
     const TypeIndex index = a_dynamicType.index();
     if (!index){
       _typeInfo = 0;
@@ -176,7 +176,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::BasicVariant(const TypeInfo* a_typeInfo) {
+  VariantBasic<innerBufferSize>::VariantBasic(const TypeInfo* a_typeInfo) {
     if (!a_typeInfo) {
       _typeInfo = 0;
       _ptr = 0;
@@ -188,12 +188,12 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::~BasicVariant(){
+  VariantBasic<innerBufferSize>::~VariantBasic(){
     _destroy();
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::reset(DynamicType a_dynamicType)
+  void VariantBasic<innerBufferSize>::reset(DynamicType a_dynamicType)
   {
     _destroy();
     _ptr = 0;
@@ -210,7 +210,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::reset(const TypeInfo* a_typeInfo){
+  void VariantBasic<innerBufferSize>::reset(const TypeInfo* a_typeInfo){
     _destroy();
     _ptr = 0;
     _typeInfo = 0;
@@ -227,7 +227,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  void BasicVariant<innerBufferSize>::reset(Type<Ty, Nop> a_type)
+  void VariantBasic<innerBufferSize>::reset(Type<Ty, Nop> a_type)
   {
     _destroy();
     _ptr = 0;
@@ -243,88 +243,88 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const BasicVariant<innerBufferSize>& a_variant)
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator=(const VariantBasic<innerBufferSize>& a_variant)
   {
-    _clone<BasicVariant<innerBufferSize>, const BasicVariant<innerBufferSize> >(std::false_type(), a_variant, WRITE);
+    _clone<VariantBasic<innerBufferSize>, const VariantBasic<innerBufferSize> >(std::false_type(), a_variant, WRITE);
     return *this;
   }
 
   template <size_t innerBufferSize>
   template <size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const BasicVariant<InputInnerBufferSize>& a_variant)
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator=(const VariantBasic<InputInnerBufferSize>& a_variant)
   {
-    _clone<BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, WRITE);
+    _clone<VariantBasic<InputInnerBufferSize>, const VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, WRITE);
     return *this;
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const Ty& a_value)
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator=(const Ty& a_value)
   {
     _reset<Ty, Ty>(a_value, WRITE);
     return *this;
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator=(const char* a_value)
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator=(const char* a_value)
   {
     _reset<const char*, const char*>(a_value, WRITE);
     return *this;
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(const BasicVariant<innerBufferSize>& a_variant)
+  void VariantBasic<innerBufferSize>::set(const VariantBasic<innerBufferSize>& a_variant)
   {
-    _clone<BasicVariant<innerBufferSize>, const BasicVariant<innerBufferSize> >(std::false_type(), a_variant, WRITE);
+    _clone<VariantBasic<innerBufferSize>, const VariantBasic<innerBufferSize> >(std::false_type(), a_variant, WRITE);
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(const BasicVariant<innerBufferSize>& a_variant, DataSetMode a_dataMode)
+  void VariantBasic<innerBufferSize>::set(const VariantBasic<innerBufferSize>& a_variant, DataSetMode a_dataMode)
   {
-    _clone<BasicVariant<innerBufferSize>, const BasicVariant<innerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+    _clone<VariantBasic<innerBufferSize>, const VariantBasic<innerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(BasicVariant<innerBufferSize>& a_variant, DataSetMode a_dataMode)
+  void VariantBasic<innerBufferSize>::set(VariantBasic<innerBufferSize>& a_variant, DataSetMode a_dataMode)
   {
-    _clone<BasicVariant<innerBufferSize>, BasicVariant<innerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+    _clone<VariantBasic<innerBufferSize>, VariantBasic<innerBufferSize> >(std::false_type(), a_variant, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  void BasicVariant<innerBufferSize>::set(const Ty& a_value)
+  void VariantBasic<innerBufferSize>::set(const Ty& a_value)
   {
     _reset<Ty, Ty>(a_value, WRITE);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  void BasicVariant<innerBufferSize>::set(Ty& a_value, DataSetMode a_dataMode)
+  void VariantBasic<innerBufferSize>::set(Ty& a_value, DataSetMode a_dataMode)
   {
     _reset<Ty, Ty>(a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  void BasicVariant<innerBufferSize>::set(const Ty& a_value, DataSetMode a_dataMode)
+  void VariantBasic<innerBufferSize>::set(const Ty& a_value, DataSetMode a_dataMode)
   {
     _reset<Ty, const Ty>(a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(const char* a_value)
+  void VariantBasic<innerBufferSize>::set(const char* a_value)
   {
     _reset<const char*, const char*>(a_value, WRITE);
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(const char* a_value, DataSetMode a_dataMode)
+  void VariantBasic<innerBufferSize>::set(const char* a_value, DataSetMode a_dataMode)
   {
     _reset<const char*, const char*>(a_value, a_dataMode);
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
+  void VariantBasic<innerBufferSize>::set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
     _destroy();
     _ptr = 0;
     _typeInfo = 0;
@@ -332,14 +332,14 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::clear() {
+  void VariantBasic<innerBufferSize>::clear() {
     _destroy();
     _ptr = 0;
     _typeInfo = 0;
   }
 
   template <size_t innerBufferSize>
-  size_t BasicVariant<innerBufferSize>::containerSize() const{
+  size_t VariantBasic<innerBufferSize>::containerSize() const{
     if (!_typeInfo){
       return 0;
     }
@@ -354,7 +354,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::isContainer() const {
+  bool VariantBasic<innerBufferSize>::isContainer() const {
     if (!_typeInfo){
       return false;
     }
@@ -364,7 +364,7 @@ namespace fcf{
 
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::erase(const BasicVariant& a_key){
+  void VariantBasic<innerBufferSize>::erase(const VariantBasic& a_key){
     if (!_typeInfo){
       return;
     }
@@ -385,7 +385,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::erase(const iterator& a_iterator){
+  void VariantBasic<innerBufferSize>::erase(const iterator& a_iterator){
     if (!_typeInfo){
       return;
     }
@@ -402,7 +402,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::erase(const iterator& a_begin, const iterator& a_end){
+  void VariantBasic<innerBufferSize>::erase(const iterator& a_begin, const iterator& a_end){
     if (!_typeInfo){
       return;
     }
@@ -416,7 +416,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  Variant BasicVariant<innerBufferSize>::operator[](const Variant& a_key){
+  Variant VariantBasic<innerBufferSize>::operator[](const Variant& a_key){
     UniversalCall call = _typeInfo->specifierUniversalCall<ContainerAccessSpecifier>(0);
     if (!call) {
       return Variant();
@@ -429,17 +429,17 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  Variant BasicVariant<innerBufferSize>::operator[](const Ty& a_key){
+  Variant VariantBasic<innerBufferSize>::operator[](const Ty& a_key){
     return operator[](fcf::Variant(a_key));
   }
 
   template <size_t innerBufferSize>
-  Variant BasicVariant<innerBufferSize>::operator[](const char* a_key){
+  Variant VariantBasic<innerBufferSize>::operator[](const char* a_key){
     return operator[](fcf::Variant(a_key));
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>::operator bool() const{
+  VariantBasic<innerBufferSize>::operator bool() const{
     const void* p = ptr();
     if (!p) {
       return false;
@@ -453,9 +453,9 @@ namespace fcf{
 
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator<(const BasicVariant<innerBufferSize>& a_value) const {
-    auto selfUnref = ((BasicVariant*)this)->_dataEndpoint();
-    auto argUnref  = ((BasicVariant<innerBufferSize>&)a_value)._dataEndpoint();
+  bool VariantBasic<innerBufferSize>::operator<(const VariantBasic<innerBufferSize>& a_value) const {
+    auto selfUnref = ((VariantBasic*)this)->_dataEndpoint();
+    auto argUnref  = ((VariantBasic<innerBufferSize>&)a_value)._dataEndpoint();
     if (!argUnref.typeInfo) {
       return false;
     } else if (!selfUnref.typeInfo) {
@@ -477,19 +477,19 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::operator<(const Ty& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator<(const Ty& a_value) const {
     return _less(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator<(const char* a_value) const {
+  bool VariantBasic<innerBufferSize>::operator<(const char* a_value) const {
     return _less(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator<=(const BasicVariant<innerBufferSize>& a_value) const {
-    auto selfUnref = ((BasicVariant*)this)->_dataEndpoint();
-    auto argUnref  = ((BasicVariant<innerBufferSize>&)a_value)._dataEndpoint();
+  bool VariantBasic<innerBufferSize>::operator<=(const VariantBasic<innerBufferSize>& a_value) const {
+    auto selfUnref = ((VariantBasic*)this)->_dataEndpoint();
+    auto argUnref  = ((VariantBasic<innerBufferSize>&)a_value)._dataEndpoint();
     if (!selfUnref.typeInfo) {
       return true;
     } else if (!argUnref.typeInfo) {
@@ -519,19 +519,19 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::operator<=(const Ty& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator<=(const Ty& a_value) const {
     return _lessEqual(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator<=(const char* a_value) const {
+  bool VariantBasic<innerBufferSize>::operator<=(const char* a_value) const {
     return _lessEqual(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator==(const BasicVariant<innerBufferSize>& a_value) const {
-    auto selfUnref = ((BasicVariant*)this)->_dataEndpoint();
-    auto argUnref  = ((BasicVariant<innerBufferSize>&)a_value)._dataEndpoint();
+  bool VariantBasic<innerBufferSize>::operator==(const VariantBasic<innerBufferSize>& a_value) const {
+    auto selfUnref = ((VariantBasic*)this)->_dataEndpoint();
+    auto argUnref  = ((VariantBasic<innerBufferSize>&)a_value)._dataEndpoint();
     if (!argUnref.typeInfo) {
       return !selfUnref.typeInfo;
     } else if (!selfUnref.typeInfo) {
@@ -553,221 +553,221 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::operator==(const Ty& a_value) const{
+  bool VariantBasic<innerBufferSize>::operator==(const Ty& a_value) const{
     return _equal(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator==(const char* a_value) const{
+  bool VariantBasic<innerBufferSize>::operator==(const char* a_value) const{
     return _equal(a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator!=(const BasicVariant<innerBufferSize>& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator!=(const VariantBasic<innerBufferSize>& a_value) const {
     return !((*this) == a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::operator!=(const Ty& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator!=(const Ty& a_value) const {
     return !((*this) == a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator!=(const char* a_value) const {
+  bool VariantBasic<innerBufferSize>::operator!=(const char* a_value) const {
     return !((*this) == a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator>(const BasicVariant<innerBufferSize>& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator>(const VariantBasic<innerBufferSize>& a_value) const {
     return !((*this) <= a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::operator>(const Ty& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator>(const Ty& a_value) const {
     return !((*this) <= a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator>(const char* a_value) const {
+  bool VariantBasic<innerBufferSize>::operator>(const char* a_value) const {
     return !((*this) <= a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator>=(const BasicVariant<innerBufferSize>& a_value) const {
+  bool VariantBasic<innerBufferSize>::operator>=(const VariantBasic<innerBufferSize>& a_value) const {
     return !((*this) < a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::operator>=(const Ty& a_value) const{
+  bool VariantBasic<innerBufferSize>::operator>=(const Ty& a_value) const{
     return !((*this) < a_value);
   }
 
   template <size_t innerBufferSize>
-  bool BasicVariant<innerBufferSize>::operator>=(const char* a_value) const{
+  bool VariantBasic<innerBufferSize>::operator>=(const char* a_value) const{
     return !((*this) < a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator+=(const BasicVariant<innerBufferSize>& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator+=(const VariantBasic<innerBufferSize>& a_value){
     return _selfCalcTo<AddSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator+=(const Ty& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator+=(const Ty& a_value){
     return _calcTo<AddSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator+=(const char* a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator+=(const char* a_value){
     return _calcTo<AddSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator+(const BasicVariant<innerBufferSize>& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator+(const VariantBasic<innerBufferSize>& a_value) const{
     return _selfCalc<AddSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator+(const Ty& a_value) const {
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator+(const Ty& a_value) const {
     return _calc<AddSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator+(const char* a_value) const {
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator+(const char* a_value) const {
     return _calc<AddSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator-=(const BasicVariant<innerBufferSize>& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator-=(const VariantBasic<innerBufferSize>& a_value){
     return _selfCalcTo<SubSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator-=(const Ty& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator-=(const Ty& a_value){
     return _calcTo<SubSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator-=(const char* a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator-=(const char* a_value){
     return _calcTo<SubSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator-(const BasicVariant<innerBufferSize>& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator-(const VariantBasic<innerBufferSize>& a_value) const{
     return _selfCalc<SubSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator-(const Ty& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator-(const Ty& a_value) const{
     return _calc<SubSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator-(const char* a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator-(const char* a_value) const{
     return _calc<SubSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator*=(const BasicVariant<innerBufferSize>& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator*=(const VariantBasic<innerBufferSize>& a_value){
     return _selfCalcTo<MulSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator*=(const Ty& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator*=(const Ty& a_value){
     return _calcTo<MulSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator*=(const char* a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator*=(const char* a_value){
     return _calcTo<MulSpecifier>(a_value);
   }
 
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator*(const BasicVariant<innerBufferSize>& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator*(const VariantBasic<innerBufferSize>& a_value) const{
     return _selfCalc<MulSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator*(const Ty& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator*(const Ty& a_value) const{
     return _calc<MulSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator*(const char* a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator*(const char* a_value) const{
     return _calc<MulSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator/=(const BasicVariant<innerBufferSize>& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator/=(const VariantBasic<innerBufferSize>& a_value){
     return _selfCalcTo<DivSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator/=(const Ty& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator/=(const Ty& a_value){
     return _calcTo<DivSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::operator/=(const char* a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::operator/=(const char* a_value){
     return _calcTo<DivSpecifier>(a_value);
   }
 
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator/(const BasicVariant<innerBufferSize>& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator/(const VariantBasic<innerBufferSize>& a_value) const{
     return _selfCalc<DivSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator/(const Ty& a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator/(const Ty& a_value) const{
     return _calc<DivSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::operator/(const char* a_value) const{
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::operator/(const char* a_value) const{
     return _calc<DivSpecifier>(a_value);
   }
 
   template <size_t innerBufferSize>
-  TypeIndex BasicVariant<innerBufferSize>::getTypeIndex() const{
+  TypeIndex VariantBasic<innerBufferSize>::getTypeIndex() const{
     return _typeInfo ? _typeInfo->index : 0;
   }
 
   template <size_t innerBufferSize>
-  const TypeInfo* BasicVariant<innerBufferSize>::getTypeInfo() const{
+  const TypeInfo* VariantBasic<innerBufferSize>::getTypeInfo() const{
     return _typeInfo;
   }
 
   template <size_t innerBufferSize>
-  TypeIndex BasicVariant<innerBufferSize>::getDataTypeIndex() const{
+  TypeIndex VariantBasic<innerBufferSize>::getDataTypeIndex() const{
     return _typeInfo ? TypeIndexConverter<>::getDataIndex(_typeInfo->index) : 0;
   }
 
   template <size_t innerBufferSize>
-  void* BasicVariant<innerBufferSize>::ptr(){
+  void* VariantBasic<innerBufferSize>::ptr(){
     return _ptr;
   }
 
   template <size_t innerBufferSize>
-  const void* BasicVariant<innerBufferSize>::ptr() const{
+  const void* VariantBasic<innerBufferSize>::ptr() const{
     return _ptr;
   }
 
   template <size_t innerBufferSize>
   template <typename TResult>
-  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& BasicVariant<innerBufferSize>::as() {
+  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& VariantBasic<innerBufferSize>::as() {
     typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
     if (!_typeInfo) {
       reset(Type<TResult>());
@@ -784,7 +784,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TResult>
-  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& BasicVariant<innerBufferSize>::get() {
+  typename std::remove_const< typename std::remove_reference<TResult>::type >::type& VariantBasic<innerBufferSize>::get() {
     typedef typename std::remove_const< typename std::remove_reference<TResult>::type >::type result_type;
     if (getDataTypeIndex() != TypeIndexConverter<>::getDataIndex( Type<TResult>().index() )){
       const TypeInfo* ti = _typeInfo;
@@ -813,10 +813,10 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TResult>
-  TResult BasicVariant<innerBufferSize>::cast() const{
+  TResult VariantBasic<innerBufferSize>::cast() const{
     typedef typename std::remove_const<TResult>::type ResultType;
 
-    static const TypeIndex selfVariantTypeIndex  = Type<BasicVariant>().index();
+    static const TypeIndex selfVariantTypeIndex  = Type<VariantBasic>().index();
     static const TypeIndex variantTypeIndex      = Type<Variant>().index();
     const TypeIndex selfDataIndex = getDataTypeIndex();
     if (!_typeInfo){
@@ -824,7 +824,7 @@ namespace fcf{
     } if (selfDataIndex == TypeIndexConverter<>::getDataIndex( Type<ResultType>().index() ) ){
       return *(ResultType*)ptr();
     } else if (selfDataIndex == selfVariantTypeIndex) {
-      return ((BasicVariant*)ptr())->cast<ResultType>();
+      return ((VariantBasic*)ptr())->cast<ResultType>();
     } else if (selfDataIndex == variantTypeIndex) {
       return ((Variant*)ptr())->cast<ResultType>();
     } else {
@@ -836,18 +836,18 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TType>
-  bool BasicVariant<innerBufferSize>::is() const{
+  bool VariantBasic<innerBufferSize>::is() const{
     return getDataTypeIndex() == TypeIndexConverter<>::getDataIndex( Type<TType>().index() );
   }
 
   template <size_t innerBufferSize>
   template <typename TType>
-  bool BasicVariant<innerBufferSize>::strictIs() const{
+  bool VariantBasic<innerBufferSize>::strictIs() const{
     return getTypeIndex() == Type<TType>().index();
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::_destroy(){
+  void VariantBasic<innerBufferSize>::_destroy(){
     if (_typeInfo) {
       _typeInfo->initializer->destroy(_ptr);
       if (!isInnerMemory()){
@@ -858,16 +858,16 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
-  void BasicVariant<innerBufferSize>::_clone(std::true_type /*a_enableConvert*/, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
+  void VariantBasic<innerBufferSize>::_clone(std::true_type /*a_enableConvert*/, const VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
     if (a_dataMode & FORCE_REFERENCE) {
       throw VariantSetReferenceTypeException(__FILE__, __LINE__, (a_variant._typeInfo ? a_variant._typeInfo->name.c_str() : "undefined"), Type<Variant>().name()+"&");
     }
     if (a_dataMode & REFERENCE) {
       if (a_variant._typeInfo && TypeIndexConverter<>::getDataIndex(a_variant._typeInfo->index) == TypeIndexConverter<>::getDataIndex( Type<ReferenceType>().index() ) ){
         if (TypeIndexConverter<>::isConst(Type<ReferenceType>().index())) {
-          _clone< const BasicVariant<InputInnerBufferSize>, const BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+          _clone< const VariantBasic<InputInnerBufferSize>, const VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
         } else {
-          _clone< BasicVariant<InputInnerBufferSize>, BasicVariant<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
+          _clone< VariantBasic<InputInnerBufferSize>, VariantBasic<InputInnerBufferSize> >(std::false_type(), a_variant, a_dataMode);
         }
         return;
       } else {
@@ -880,17 +880,17 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename DataType, typename ReferenceType, size_t InputInnerBufferSize>
-  void BasicVariant<innerBufferSize>::_clone(std::false_type /*a_enableConvert*/, const BasicVariant<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
+  void VariantBasic<innerBufferSize>::_clone(std::false_type /*a_enableConvert*/, const VariantBasic<InputInnerBufferSize>& a_variant, DataSetMode a_dataMode) {
     switch (a_dataMode){
       case WRITE:
       {
         VariantEndpoint                                             selfEndpoint   = _variantEndpoint();
-        typename BasicVariant<InputInnerBufferSize>::DataEndpointEx sourceEndpoint = ((BasicVariant<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
+        typename VariantBasic<InputInnerBufferSize>::DataEndpointEx sourceEndpoint = ((VariantBasic<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
 
         if (selfEndpoint.isConst){
           throw VariantReadOnlyException(__FILE__, __LINE__);
         }
-        BasicVariant* curVariant =  (BasicVariant*)selfEndpoint.variant;
+        VariantBasic* curVariant =  (VariantBasic*)selfEndpoint.variant;
         if (curVariant->_typeInfo && 
             !(curVariant->_typeInfo->flags & TIF_VARIANT)  && 
             TypeIndexConverter<>::isReference(curVariant->_typeInfo->index)) {
@@ -945,7 +945,7 @@ namespace fcf{
           _destroy();
           _ptr = 0;
           _typeInfo = 0;
-          auto ui = ((BasicVariant<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
+          auto ui = ((VariantBasic<InputInnerBufferSize>&)a_variant)._dataEndpointEx();
           if (ui.typeInfo) {
             _ptr = ui.typeInfo->initializer->clone((_size(ui.typeInfo) <= innerBufferSize) 
                                                       ? (void*)&_mem[0]
@@ -998,7 +998,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename DataType, typename ReferenceType, typename ArgTy>
-  void BasicVariant<innerBufferSize>::_init(std::false_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
+  void VariantBasic<innerBufferSize>::_init(std::false_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
     switch (a_dataMode){
       case RESET:
       case WRITE:
@@ -1025,7 +1025,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename DataType, typename ReferenceType, typename ArgTy>
-  void BasicVariant<innerBufferSize>::_init(std::true_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
+  void VariantBasic<innerBufferSize>::_init(std::true_type /*a_enableConvert*/, ArgTy& a_value, DataSetMode a_dataMode) {
     if (a_dataMode & (REFERENCE|FORCE_REFERENCE)) {
       throw VariantSetReferenceTypeException(__FILE__, __LINE__, Type<ArgTy>().name()+"&", Type<Variant>().name()+"&");
     }
@@ -1035,7 +1035,7 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename DataType, typename ReferenceType, typename Ty>
-  void BasicVariant<innerBufferSize>::_reset(const Ty& a_value, DataSetMode a_dataMode) {
+  void VariantBasic<innerBufferSize>::_reset(const Ty& a_value, DataSetMode a_dataMode) {
     switch (a_dataMode){
       case WRITE:
         {
@@ -1043,7 +1043,7 @@ namespace fcf{
           if (ve.isConst){
             throw VariantReadOnlyException(__FILE__, __LINE__);
           }
-          BasicVariant* curVariant =  (BasicVariant*)ve.variant;
+          VariantBasic* curVariant =  (VariantBasic*)ve.variant;
           if (curVariant->_typeInfo &&
               !(curVariant->_typeInfo->flags & TIF_VARIANT) &&
               TypeIndexConverter<>::isReference(curVariant->_typeInfo->index)) {
@@ -1107,7 +1107,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void BasicVariant<innerBufferSize>::_set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
+  void VariantBasic<innerBufferSize>::_set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
     a_typeIndex = a_typeIndex & ~0x0e000000;
     a_sourceTypeIndex = a_sourceTypeIndex & ~0x0e000000;
     if (a_sourceTypeIndex == a_typeIndex){
@@ -1132,18 +1132,18 @@ namespace fcf{
 
 
   template <size_t innerBufferSize>
-  typename BasicVariant<innerBufferSize>::VariantEndpoint BasicVariant<innerBufferSize>::_variantEndpoint(){
+  typename VariantBasic<innerBufferSize>::VariantEndpoint VariantBasic<innerBufferSize>::_variantEndpoint(){
     VariantEndpoint result{this, false, innerBufferSize};
-    while((((BasicVariant*)result.variant)->_typeInfo) && (((BasicVariant*)result.variant)->_typeInfo->flags & TIF_VARIANT_REF)){
-      result.innerSize = ((BasicVariant*)result.variant)->_typeInfo->variantInnerSize;
-      result.isConst |= TypeIndexConverter<>::isConst( ((BasicVariant*)result.variant)->_typeInfo->index );
-      result.variant  = ((BasicVariant*)result.variant)->ptr();
+    while((((VariantBasic*)result.variant)->_typeInfo) && (((VariantBasic*)result.variant)->_typeInfo->flags & TIF_VARIANT_REF)){
+      result.innerSize = ((VariantBasic*)result.variant)->_typeInfo->variantInnerSize;
+      result.isConst |= TypeIndexConverter<>::isConst( ((VariantBasic*)result.variant)->_typeInfo->index );
+      result.variant  = ((VariantBasic*)result.variant)->ptr();
     }
     return result;
   }
 
   template <size_t innerBufferSize>
-  typename BasicVariant<innerBufferSize>::DataEndpoint BasicVariant<innerBufferSize>::_dataEndpoint() {
+  typename VariantBasic<innerBufferSize>::DataEndpoint VariantBasic<innerBufferSize>::_dataEndpoint() {
     if (!_typeInfo){
       return DataEndpoint{0, 0};
     }
@@ -1151,8 +1151,8 @@ namespace fcf{
     const TypeInfo* ti   = _typeInfo;
     size_t rcounter      = FCF_BASIS_VARIANT_MAX_REF_NESTING;
     while (ti && ti->flags & TIF_VARIANT) {
-      ti = ((BasicVariant*)p)->getTypeInfo();
-      p = ((BasicVariant*)p)->ptr();
+      ti = ((VariantBasic*)p)->getTypeInfo();
+      p = ((VariantBasic*)p)->ptr();
       --rcounter;
       if (!rcounter){
         throw VariantMaxRefNesting(__FILE__, __LINE__);
@@ -1162,7 +1162,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  typename BasicVariant<innerBufferSize>::ConstDataEndpoint BasicVariant<innerBufferSize>::_constDataEndpoint() {
+  typename VariantBasic<innerBufferSize>::ConstDataEndpoint VariantBasic<innerBufferSize>::_constDataEndpoint() {
     if (!_typeInfo){
       return ConstDataEndpoint{0, 0, false};
     }
@@ -1171,8 +1171,8 @@ namespace fcf{
     while (result.typeInfo) {
       result.isConst |= TypeIndexConverter<>::isConst(result.typeInfo->index);
       if (result.typeInfo->flags & TIF_VARIANT) {
-        result.typeInfo = ((BasicVariant*)result.ptr)->getTypeInfo();
-        result.ptr = ((BasicVariant*)result.ptr)->ptr();
+        result.typeInfo = ((VariantBasic*)result.ptr)->getTypeInfo();
+        result.ptr = ((VariantBasic*)result.ptr)->ptr();
       } else {
         break;
       }
@@ -1182,7 +1182,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  typename BasicVariant<innerBufferSize>::DataEndpointEx BasicVariant<innerBufferSize>::_dataEndpointEx() {
+  typename VariantBasic<innerBufferSize>::DataEndpointEx VariantBasic<innerBufferSize>::_dataEndpointEx() {
     if (!_typeInfo){
       return DataEndpointEx{0, 0};
     }
@@ -1190,8 +1190,8 @@ namespace fcf{
     const TypeInfo* ti   = _typeInfo;
     size_t rcounter       = FCF_BASIS_VARIANT_MAX_REF_NESTING;
     while (ti && ti->flags & TIF_VARIANT) {
-      ti = ((BasicVariant*)p)->getTypeInfo();
-      p = ((BasicVariant*)p)->ptr();
+      ti = ((VariantBasic*)p)->getTypeInfo();
+      p = ((VariantBasic*)p)->ptr();
       --rcounter;
       if (!rcounter){
         throw VariantMaxRefNesting(__FILE__, __LINE__);
@@ -1202,8 +1202,8 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::_less(const Ty& a_value) const{
-    auto selfUnref = ((BasicVariant*)this)->_dataEndpoint();
+  bool VariantBasic<innerBufferSize>::_less(const Ty& a_value) const{
+    auto selfUnref = ((VariantBasic*)this)->_dataEndpoint();
     if (!selfUnref.typeInfo) {
       return true;
     }
@@ -1226,8 +1226,8 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::_lessEqual(const Ty& a_value) const {
-    auto selfUnref = ((BasicVariant*)this)->_dataEndpoint();
+  bool VariantBasic<innerBufferSize>::_lessEqual(const Ty& a_value) const {
+    auto selfUnref = ((VariantBasic*)this)->_dataEndpoint();
     if (!selfUnref.typeInfo) {
       return true;
     }
@@ -1258,8 +1258,8 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename Ty>
-  bool BasicVariant<innerBufferSize>::_equal(const Ty& a_value) const {
-    auto selfUnref = ((BasicVariant*)this)->_dataEndpoint();
+  bool VariantBasic<innerBufferSize>::_equal(const Ty& a_value) const {
+    auto selfUnref = ((VariantBasic*)this)->_dataEndpoint();
     if (!selfUnref.typeInfo) {
       return false;
     }
@@ -1283,9 +1283,9 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TSpecifier, size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::_selfCalcTo(const BasicVariant<InputInnerBufferSize>& a_value){
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::_selfCalcTo(const VariantBasic<InputInnerBufferSize>& a_value){
     ConstDataEndpoint                                         dde = _constDataEndpoint();
-    typename BasicVariant<InputInnerBufferSize>::DataEndpoint sde = ((BasicVariant<InputInnerBufferSize>&)a_value)._dataEndpoint();
+    typename VariantBasic<InputInnerBufferSize>::DataEndpoint sde = ((VariantBasic<InputInnerBufferSize>&)a_value)._dataEndpoint();
     if (!dde.typeInfo) {
       return *this;
     } else if (dde.isConst){
@@ -1296,7 +1296,7 @@ namespace fcf{
       dde.typeInfo->template specifierCall<TSpecifier>()(dde.ptr, dde.ptr, sde.ptr);
     } else {
       try {
-        BasicVariant<innerBufferSize> buffer(TypeIndexConverter<>::getDataIndex(dde.typeInfo->index), sde.ptr, TypeIndexConverter<>::getDataIndex(sde.typeInfo->index));
+        VariantBasic<innerBufferSize> buffer(TypeIndexConverter<>::getDataIndex(dde.typeInfo->index), sde.ptr, TypeIndexConverter<>::getDataIndex(sde.typeInfo->index));
         dde.typeInfo->template specifierCall<TSpecifier>()(dde.ptr, dde.ptr, buffer.ptr());
       } catch(...){
       }
@@ -1306,24 +1306,24 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TSpecifier, size_t InputInnerBufferSize>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::_selfCalc(const BasicVariant<InputInnerBufferSize>& a_value) const{
-    DataEndpoint                                              dde = ((BasicVariant<innerBufferSize>*)this)->_dataEndpoint();
-    typename BasicVariant<InputInnerBufferSize>::DataEndpoint sde = ((BasicVariant<InputInnerBufferSize>&)a_value)._dataEndpoint();
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::_selfCalc(const VariantBasic<InputInnerBufferSize>& a_value) const{
+    DataEndpoint                                              dde = ((VariantBasic<innerBufferSize>*)this)->_dataEndpoint();
+    typename VariantBasic<InputInnerBufferSize>::DataEndpoint sde = ((VariantBasic<InputInnerBufferSize>&)a_value)._dataEndpoint();
     const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
     const TypeIndex sourceDataIndex = TypeIndexConverter<>::getDataIndex(sde.typeInfo->index);
     if (!dde.typeInfo || !sde.typeInfo) {
-      return BasicVariant<innerBufferSize>(*this);
+      return VariantBasic<innerBufferSize>(*this);
     } else if (selfDataIndex == sourceDataIndex) {
-      BasicVariant<innerBufferSize> result(::fcf::getTypeInfo(selfDataIndex));
+      VariantBasic<innerBufferSize> result(::fcf::getTypeInfo(selfDataIndex));
       _typeInfo->specifierCall<TSpecifier>()(result.ptr(), dde.ptr, sde.ptr);
       return result;
     } else {
-      BasicVariant<innerBufferSize> result(::fcf::getTypeInfo(selfDataIndex));
+      VariantBasic<innerBufferSize> result(::fcf::getTypeInfo(selfDataIndex));
       try {
-        BasicVariant<innerBufferSize> buffer(selfDataIndex, sde.ptr, sourceDataIndex);
+        VariantBasic<innerBufferSize> buffer(selfDataIndex, sde.ptr, sourceDataIndex);
         _typeInfo->specifierCall<TSpecifier>()(result.ptr(), dde.ptr, buffer.ptr());
       } catch(...){
-        return BasicVariant<innerBufferSize>(*this);
+        return VariantBasic<innerBufferSize>(*this);
       }
       return result;
     }
@@ -1332,8 +1332,8 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TSpecifier, typename Ty>
-  BasicVariant<innerBufferSize>& BasicVariant<innerBufferSize>::_calcTo(const Ty& a_value){
-    ConstDataEndpoint dde = ((BasicVariant<innerBufferSize>*)this)->_constDataEndpoint();
+  VariantBasic<innerBufferSize>& VariantBasic<innerBufferSize>::_calcTo(const Ty& a_value){
+    ConstDataEndpoint dde = ((VariantBasic<innerBufferSize>*)this)->_constDataEndpoint();
     if (!dde.typeInfo) {
       return *this;
     }
@@ -1362,17 +1362,17 @@ namespace fcf{
 
   template <size_t innerBufferSize>
   template <typename TSpecifier, typename Ty>
-  BasicVariant<innerBufferSize> BasicVariant<innerBufferSize>::_calc(const Ty& a_value) const{
-    DataEndpoint dde = ((BasicVariant<innerBufferSize>*)this)->_dataEndpoint();
+  VariantBasic<innerBufferSize> VariantBasic<innerBufferSize>::_calc(const Ty& a_value) const{
+    DataEndpoint dde = ((VariantBasic<innerBufferSize>*)this)->_dataEndpoint();
     if (!dde.typeInfo) {
-      return BasicVariant<innerBufferSize>(*this);
+      return VariantBasic<innerBufferSize>(*this);
     }
 
     typedef typename std::remove_reference<Ty>::type ArgType;
 
     TypeIndex argTypeIndex = Type<ArgType>().index();
 
-    BasicVariant<innerBufferSize> result(_typeInfo);
+    VariantBasic<innerBufferSize> result(_typeInfo);
 
     const TypeIndex selfDataIndex = TypeIndexConverter<>::getDataIndex(dde.typeInfo->index);
 
@@ -1385,7 +1385,7 @@ namespace fcf{
       Variant buffer(selfDataIndex, &a_value, argTypeIndex);
       dde.typeInfo->template specifierCall<TSpecifier>()(result.ptr(), dde.ptr, buffer.ptr());
     } catch(...){
-      return BasicVariant<innerBufferSize>(*this);
+      return VariantBasic<innerBufferSize>(*this);
     }
 
     return result;
@@ -1397,7 +1397,7 @@ namespace fcf{
 
 namespace std {
   template <size_t innerBufferSize>
-  std::string to_string(const fcf::BasicVariant<innerBufferSize>& a_variant){
+  std::string to_string(const fcf::VariantBasic<innerBufferSize>& a_variant){
     return a_variant.template cast<std::string>();
   }
 }
@@ -1405,11 +1405,11 @@ namespace std {
 namespace fcf {
 
   template <size_t innerBufferSize>
-  struct Type<BasicVariant<innerBufferSize>, ResolveSpecifier> : public TypeImpl<BasicVariant<innerBufferSize>, ResolveSpecifier>{
+  struct Type<VariantBasic<innerBufferSize>, ResolveSpecifier> : public TypeImpl<VariantBasic<innerBufferSize>, ResolveSpecifier>{
 
     enum { invariantValue = true };
 
-    inline void operator()(BasicVariant<innerBufferSize>* a_object, void** a_dstData, TypeIndex* a_dstTypeIndex){
+    inline void operator()(VariantBasic<innerBufferSize>* a_object, void** a_dstData, TypeIndex* a_dstTypeIndex){
       *a_dstData = a_object->ptr();
       *a_dstTypeIndex = a_object->getTypeIndex();
     }
