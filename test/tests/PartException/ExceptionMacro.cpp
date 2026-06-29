@@ -8,25 +8,31 @@
 #define STR(x) STR0(x)
 
 FCF_TEST_DECLARE("fcfBasis", "Exception", "exception macro"){
+
   {
     std::string string = STR((FCF_INVARIANT_EXCEPTION_CALL(func, false, a_error)));
-    FCF_TEST(string == "(((false) ? func()) : func(a_error))", string)
+    FCF_TEST(string == "(((false) ? func()) : func(a_error))" || string == "(((false) ?  func()) :  func(a_error))", string)
   }
   {
     std::string string = STR((FCF_INVARIANT_EXCEPTION_CALL(func, false, a_error, 1)));
-    FCF_TEST(string == "(((false) ? func(1)) : func(1, a_error))", string)
+    FCF_TEST(string == "(((false) ? func(1)) : func(1, a_error))" || string == "(((false) ?  func(1)) :  func(1, a_error))", string)
   }
   {
     std::string string = STR((FCF_INVARIANT_EXCEPTION_CALL(func, false, a_error, 1, 2)));
-    FCF_TEST(string == "(((false) ? func(1, 2)) : func(1, 2, a_error))", string)
+    FCF_TEST(string == "(((false) ? func(1, 2)) : func(1, 2, a_error))" || string == "(((false) ?  func(1, 2)) :  func(1, 2, a_error))", string)
   }
   {
     std::string string = STR((FCF_INVARIANT_EXCEPTION_CALL(func, false, a_error, 1, class::some<int, int, std::vector<std::string, char>>())));
-    FCF_TEST(string == "(((false) ? func(1, class::some<int, int, std::vector<std::string, char>>())) : func(1, class::some<int, int, std::vector<std::string, char>>(), a_error))", string)
+    FCF_TEST(string == "(((false) ? func(1, class::some<int, int, std::vector<std::string, char>>())) : func(1, class::some<int, int, std::vector<std::string, char>>(), a_error))" || 
+             string == "(((false) ?  func(1, class::some<int, int, std::vector<std::string, char>>())) :  func(1, class::some<int, int, std::vector<std::string, char>>(), a_error))", 
+             string)
   }
   {
     std::string string = STR((FCF_INVARIANT_EXCEPTION_CALL((std::map<int,int>::insert), false, a_error, 1, class::some<int, int, std::vector<std::string, char>>())));
-    FCF_TEST(string == "(((false) ? std::map<int,int>::insert(1, class::some<int, int, std::vector<std::string, char>>())) : std::map<int,int>::insert(1, class::some<int, int, std::vector<std::string, char>>(), a_error))", string)
+    FCF_TEST(string == "(((false) ? std::map<int,int>::insert(1, class::some<int, int, std::vector<std::string, char>>())) : std::map<int,int>::insert(1, class::some<int, int, std::vector<std::string, char>>(), a_error))" ||
+             string == "(((false) ?  std::map<int,int>::insert(1, class::some<int, int, std::vector<std::string, char>>())) :  std::map<int,int>::insert(1, class::some<int, int, std::vector<std::string, char>>(), a_error))", 
+             string)
   }
+
 }
 

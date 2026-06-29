@@ -845,15 +845,10 @@
                                                am_a11, am_a12, am_a13, am_a14, am_a15, am_a16, am_a17, am_a18, am_a19, am_a20, \
                                                ...) am_a20
   #define _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_LIST(...) \
-            _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_A20(__VA_ARGS__, CM, CM, CM, CM, CM, CM, CM, CM, CM, \
-                                                              CM, CM, CM, CM, CM, CM, CM, CM, CM, CM)
+            _FCF_BASIS_EXPAND(_FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_A20(__VA_ARGS__, CM, CM, CM, CM, CM, CM, CM, CM, CM, \
+                                                              CM, CM, CM, CM, CM, CM, CM, CM, CM, CM))
   #define _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__PARENTHESIS(...) , , , , , , , , , , \
                                                         , , , , , , , , , ,
-
-  #define _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR_TEST(...) \
-            _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__PARENTHESIS  __VA_ARGS__ ( )
-  #define CONCAT_ARGS_TEST(am_error, ...) \
-            _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR_TEST(__VA_ARGS__)
 
   #define _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR(...) \
             _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__ARG_LIST ( _FCF_INVARIANT_EXCEPTION_CALL__CONCAT_ARGS__COMMA_SELECTOR__PARENTHESIS  __VA_ARGS__ ( ))
