@@ -39,6 +39,7 @@ add_executable("basis-test"
                            PartSpecifier/ArithmeticSpecifiers.cpp
                            PartSpecifier/MinMaxSpecifier.cpp
                            PartType/TypeIndex.cpp
+                           PartTypes/UniversalCall.cpp
                            PartVariant/Variant.cpp
                            PartVariant/VariantArithmeticTest.cpp
                            PartVariant/VariantAssignmentTest.cpp
