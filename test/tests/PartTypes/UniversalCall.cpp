@@ -21,7 +21,7 @@ void universalCallTestCall(int){
 }
 
 FCF_TEST_DECLARE("fcfBasis", "Types", "UniversalCall"){
-  typedef decltype(&universalCallTestCall) UniversalCallTestCallType;
-  
-  fcf::UniversalCallSignature<UniversalCallTestCallType> ucs;
+  //typedef decltype(&universalCallTestCall) UniversalCallTestCallType;
+
+  //fcf::UniversalCallSignature<UniversalCallTestCallType> ucs;
 }

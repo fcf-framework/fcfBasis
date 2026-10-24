@@ -1,6 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
 #define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__FLAT_CURSOR_HPP___
 
+#include <stdint.h>
 #include <vector>
 #include "Cursor.hpp"
 

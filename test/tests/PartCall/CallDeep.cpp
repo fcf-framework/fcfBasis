@@ -22,14 +22,10 @@ namespace FcfTest {
       };
 
       fcf::call("fill", m, 13579);
-      size_t row = 0;
       for(auto& item : m){
-        size_t col = 0;
         for(auto& subIitem : item){
           FCF_TEST(subIitem == 13579, subIitem);
-          ++col;
         }
-        ++row;
       }
     }
     template <typename TType>
@@ -41,27 +37,19 @@ namespace FcfTest {
       };
 
       fcf::fill(m, 13579);
-      size_t row = 0;
       for(auto& item : m){
-        size_t col = 0;
         for(auto& subIitem : item){
           FCF_TEST(subIitem == 13579, subIitem);
-          ++col;
         }
-        ++row;
       }
     }
     template <typename TType>
     void fill2LevelCachedForDataDeepCallTest(TType& a_data){
       fcf::fill(a_data, 13579);
-      size_t row = 0;
       for(auto& item : a_data){
-        size_t col = 0;
         for(auto& subIitem : item){
           FCF_TEST(subIitem == 13579, subIitem);
-          ++col;
         }
-        ++row;
       }
     }
 
