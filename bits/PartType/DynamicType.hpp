@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_HPP___
 #define _FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_HPP___
 
-#include "DynamicTypeDefinition.hpp"
+#include "DynamicTypeDecl.hpp"
 #include "TypeInfo.hpp"
 #include "getTypeInfo.hpp"
 #include "../../PartException.hpp"

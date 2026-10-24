@@ -2,7 +2,7 @@
 #define _FCF_BASIS__BITS__PART_SPECIFIER__NDETAILS__SPECIFIER_REF_REGISTRAR_HPP___
 
 #include <tuple>
-#include "SpecifierRefRegistrarDefinition.hpp"
+#include "SpecifierRefRegistrarDecl.hpp"
 #include "SpecifierCallRegistrarGetter.hpp"
 #include "SpecifierRegistrarSelector.hpp"
 #include "../SpecifierRegistrarGetter.hpp"

@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
 #define _FCF_BASIS__BITS__PART_TYPE__TYPE_INFO_HPP___
 
-#include "TypeInfoDefinition.hpp"
+#include "TypeInfoDecl.hpp"
 
 #include <iostream>
 #include <string>
@@ -13,8 +13,8 @@
 #include "../../bits/PartConvert/ConvertFunction.hpp"
 #include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
-#include "../../bits/PartSpecifier/ResolveSpecifierDefinition.hpp"
-#include "../../bits/PartType/TypeDefinition.hpp"
+#include "../../bits/PartSpecifier/ResolveSpecifierDecl.hpp"
+#include "../../bits/PartType/TypeDecl.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/TypeFactoryBase.hpp"

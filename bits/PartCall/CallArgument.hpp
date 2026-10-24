@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_CALL__CALL_ARGUMENT_HPP___
 #define _FCF_BASIS__BITS__PART_CALL__CALL_ARGUMENT_HPP___
 
-#include "../../bits/PartVariant/VariantDefinition.hpp"
+#include "../../bits/PartVariant/VariantDecl.hpp"
 
 namespace fcf{
 

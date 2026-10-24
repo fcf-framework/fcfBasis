@@ -3,7 +3,7 @@
 
 #include "CallArgumentOptions.hpp"
 #include "CallArgument.hpp"
-#include "../../bits/PartCallStorage/CallStorageDefinition.hpp"
+#include "../../bits/PartCallStorage/CallStorageDecl.hpp"
 
 namespace fcf{
 

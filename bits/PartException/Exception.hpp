@@ -2,7 +2,7 @@
 #define _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
 
 #include <exception>
-#include "ExceptionDefinition.hpp"
+#include "ExceptionDecl.hpp"
 #include "../../PartForeach.hpp"
 #include "../../PartStaticVector.hpp"
 #include "../../PartVariant.hpp"

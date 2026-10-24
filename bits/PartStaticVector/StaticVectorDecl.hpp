@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <cmath>
-#include "../../bits/PartContainerAccess/ContainerAccessDefinition.hpp"
+#include "../../bits/PartContainerAccess/ContainerAccessDecl.hpp"
 
 namespace FcfTest {
   namespace BasisTest {

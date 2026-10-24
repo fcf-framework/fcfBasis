@@ -6,10 +6,10 @@
 #include <stdexcept>
 #include "../../macro.hpp"
 #include "../../bits/PartVariant/VariantPredefinition.hpp"
-#include "../../bits/PartType/DynamicTypeDefinition.hpp"
+#include "../../bits/PartType/DynamicTypeDecl.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartMetaType/MetaTypeBoolean.hpp"
-#include "../../bits/PartContainerAccess/VariantCursorDefinition.hpp"
+#include "../../bits/PartContainerAccess/VariantCursorDecl.hpp"
 #include "../../bits/PartContainerAccess/ContainerAccess.hpp"
 
 #ifndef FCF_BASIS_VARIANT_MAX_REF_NESTING

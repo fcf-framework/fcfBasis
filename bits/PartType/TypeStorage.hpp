@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
 #define _FCF_BASIS__BITS__PART_TYPE__TYPE_STORAGE_HPP___
 
-#include "TypeStorageDefinition.hpp"
+#include "TypeStorageDecl.hpp"
 #include "../../bits/PartType/TypeInfo.hpp"
 
 namespace fcf{

@@ -8,11 +8,11 @@
 
 #include "TypePredefinition.hpp"
 
-#include "../../bits/PartType/TypeStorageDefinition.hpp"
-#include "../../bits/PartConvert/ConverterRegistrationDefinition.hpp"
+#include "../../bits/PartType/TypeStorageDecl.hpp"
+#include "../../bits/PartConvert/ConverterRegistrationDecl.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
 #include "../../bits/PartType/TypeId.hpp"
-#include "../../bits/PartSpecifier/NDetails/SpecifierRefRegistrarDefinition.hpp"
+#include "../../bits/PartSpecifier/NDetails/SpecifierRefRegistrarDecl.hpp"
 
 namespace fcf{
 

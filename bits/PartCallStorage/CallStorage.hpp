@@ -10,7 +10,7 @@
 #include "../PartCall/NDetails/CallWrapper.hpp"
 #include "./NDetails/CallStoragePlaceHolderRegistrator.hpp"
 #include "CallStorageFunctionInfo.hpp"
-#include "CallStorageDefinition.hpp"
+#include "CallStorageDecl.hpp"
 
 
 

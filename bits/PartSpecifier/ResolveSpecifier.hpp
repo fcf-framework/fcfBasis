@@ -5,7 +5,7 @@
 #include "SpecifierRegistrar.hpp"
 #include "../PartType/PartType.hpp"
 #include "../../PartVariant.hpp"
-#include "ResolveSpecifierDefinition.hpp"
+#include "ResolveSpecifierDecl.hpp"
 
 namespace fcf{
 

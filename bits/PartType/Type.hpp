@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_TYPE__TYPE_HPP___
 #define _FCF_BASIS__BITS__PART_TYPE__TYPE_HPP___
 
-#include "TypeDefinition.hpp"
+#include "TypeDecl.hpp"
 #include "../../bits/PartType/TypeStorage.hpp"
 #include "../../bits/PartType/NDetails/TypeRegistrar.hpp"
 #include "../../bits/PartVariant/NDetails/IsVariantRef.hpp"

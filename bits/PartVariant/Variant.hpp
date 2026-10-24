@@ -19,7 +19,7 @@
 #include "../../bits/PartContainerAccess/VariantCursor.hpp"
 #include "../../PartException.hpp"
 
-#include "VariantDefinition.hpp"
+#include "VariantDecl.hpp"
 
 namespace fcf{
 

@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
 #define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__DYNAMIC_CONTAINER_ACCESS_HPP___
 
-#include "DynamicContainerAccessDefinition.hpp"
+#include "DynamicContainerAccessDecl.hpp"
 #include <stdexcept>
 #include "../../PartException.hpp"
 #include "../../PartVariant.hpp"

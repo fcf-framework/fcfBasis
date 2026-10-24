@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
 #define _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTIONS_HPP___
 
-#include "ExceptionDefinition.hpp"
+#include "ExceptionDecl.hpp"
 
 namespace fcf {
 

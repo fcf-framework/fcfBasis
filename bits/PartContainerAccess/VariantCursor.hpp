@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__VARIANT_CURSOR_HPP___
 #define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__VARIANT_CURSOR_HPP___
 
-#include "VariantCursorDefinition.hpp"
+#include "VariantCursorDecl.hpp"
 #include "../../PartVariant.hpp"
 #include "../../PartType.hpp"
 #include "../PartException/exceptions.hpp"

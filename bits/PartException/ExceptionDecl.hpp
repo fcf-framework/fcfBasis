@@ -2,8 +2,8 @@
 #define _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_DEFINITION_HPP___
 
 #include <exception>
-#include "../../bits/PartStaticVector/StaticVectorDefinition.hpp"
-#include "../../bits/PartVariant/VariantDefinition.hpp"
+#include "../../bits/PartStaticVector/StaticVectorDecl.hpp"
+#include "../../bits/PartVariant/VariantDecl.hpp"
 
 
 namespace fcf{

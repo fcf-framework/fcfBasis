@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 #define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__CONTAINER_ACCESS_HPP___
 
-#include "ContainerAccessDefinition.hpp"
+#include "ContainerAccessDecl.hpp"
 #include "../../PartType.hpp"
 namespace fcf {
 

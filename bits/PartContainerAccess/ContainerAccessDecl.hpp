@@ -15,7 +15,7 @@
 #include "MapIteratableCursor.hpp"
 #include "SetIteratableCursor.hpp"
 #include "ListIteratableCursor.hpp"
-#include "VariantCursorDefinition.hpp"
+#include "VariantCursorDecl.hpp"
 
 namespace fcf{
 

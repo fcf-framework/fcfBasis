@@ -11,7 +11,7 @@
 #include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/TypeIndex.hpp"
-#include "../../bits/PartType/TypeInfoDefinition.hpp"
+#include "../../bits/PartType/TypeInfoDecl.hpp"
 
 
 namespace fcf {
