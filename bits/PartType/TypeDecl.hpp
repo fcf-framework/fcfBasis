@@ -6,7 +6,7 @@
 #include <vector>
 #include <type_traits>
 
-#include "TypePredefinition.hpp"
+#include "TypePredecl.hpp"
 
 #include "../../bits/PartType/TypeStorageDecl.hpp"
 #include "../../bits/PartConvert/ConverterRegistrationDecl.hpp"

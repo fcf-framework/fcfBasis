@@ -3,7 +3,7 @@
 
 #include "../../macro.hpp"
 #include "ContainerPosition.hpp"
-#include "../../bits/PartVariant/VariantPredefinition.hpp"
+#include "../../bits/PartVariant/VariantPredecl.hpp"
 
 namespace fcf {
 

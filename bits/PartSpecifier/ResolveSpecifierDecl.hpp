@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_SPECIFIER__RESOLVE_SPECIFIER_DEFINITION_HPP___
 #define _FCF_BASIS__BITS__PART_SPECIFIER__RESOLVE_SPECIFIER_DEFINITION_HPP___
 
-#include "../../bits/PartType/TypePredefinition.hpp"
+#include "../../bits/PartType/TypePredecl.hpp"
 
 namespace fcf{
 

@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_TYPES__UNIVERSAL_CALL_HPP___
 #define _FCF_BASIS__BITS__PART_TYPES__UNIVERSAL_CALL_HPP___
 
-#include "../PartVariant/VariantPredefinition.hpp"
+#include "../PartVariant/VariantPredecl.hpp"
 
 namespace fcf{
 

@@ -2,7 +2,7 @@
 #define _FCF_BASIS__BITS__PART_CONTAINER_ACCESS__VARIANT_CURSOR_DEFINITION_HPP___
 
 #include "../../bits/PartTypes/Nop.hpp"
-#include "../../bits/PartVariant/VariantPredefinition.hpp"
+#include "../../bits/PartVariant/VariantPredecl.hpp"
 
 namespace fcf{
 

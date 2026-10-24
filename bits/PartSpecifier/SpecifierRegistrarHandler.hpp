@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_REGISTRAR_HANDLER_HPP___
 #define _FCF_BASIS__BITS__PART_SPECIFIER__SPECIFIER_REGISTRAR_HANDLER_HPP___
 
-#include "../PartVariant/VariantPredefinition.hpp"
+#include "../PartVariant/VariantPredecl.hpp"
 
 namespace fcf{
 

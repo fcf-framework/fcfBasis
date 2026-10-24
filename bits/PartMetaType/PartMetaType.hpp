@@ -7,7 +7,7 @@
 #include "MetaTypeRemoveDeepConst.hpp"
 #include "MetaTypeRemoveRightReference.hpp"
 #include "MetaTypeSequence.hpp"
-#include "MetaTypeSequencePredefinition.hpp"
+#include "MetaTypeSequencePredecl.hpp"
 #include "MetaTypeTupleInsert.hpp"
 #include "MetaTypeTupleReplace.hpp"
 

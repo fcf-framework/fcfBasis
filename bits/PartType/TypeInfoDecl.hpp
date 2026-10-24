@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <memory>
 #include "../../macro.hpp"
-#include "../../bits/PartException/ExceptionPredefinition.hpp"
+#include "../../bits/PartException/ExceptionPredecl.hpp"
 #include "../../bits/PartConvert/ConvertFunction.hpp"
 #include "../../bits/PartSpecifier/SpecifierInfo.hpp"
 #include "../../bits/PartTypes/UniversalCall.hpp"
@@ -16,7 +16,7 @@
 #include "../../bits/PartType/TypeId.hpp"
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/TypeFactoryBase.hpp"
-#include "TypeInfoPredefinition.hpp"
+#include "TypeInfoPredecl.hpp"
 #include "TypeInfoFlags.hpp"
 
 namespace fcf{

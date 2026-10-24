@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_VARIANT__NDETAILS__IS_VARIANT_HPP___
 #define _FCF_BASIS__BITS__PART_VARIANT__NDETAILS__IS_VARIANT_HPP___
 
-#include "../VariantPredefinition.hpp"
+#include "../VariantPredecl.hpp"
 
 namespace fcf{
   namespace NDetails {

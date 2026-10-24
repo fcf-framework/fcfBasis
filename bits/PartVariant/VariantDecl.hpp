@@ -5,7 +5,7 @@
 #include <map>
 #include <stdexcept>
 #include "../../macro.hpp"
-#include "../../bits/PartVariant/VariantPredefinition.hpp"
+#include "../../bits/PartVariant/VariantPredecl.hpp"
 #include "../../bits/PartType/DynamicTypeDecl.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartMetaType/MetaTypeBoolean.hpp"

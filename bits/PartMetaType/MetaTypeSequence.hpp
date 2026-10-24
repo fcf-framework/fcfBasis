@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_SEQUENCE_HPP___
 #define _FCF_BASIS__BITS__PART_META_TYPE__META_TYPE_SEQUENCE_HPP___
 
-#include "MetaTypeSequencePredefinition.hpp"
+#include "MetaTypeSequencePredecl.hpp"
 #include "NDetails/MetaTypeSequenceSelector.hpp"
 
 namespace fcf {
