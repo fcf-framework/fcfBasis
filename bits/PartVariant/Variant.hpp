@@ -1126,7 +1126,8 @@ namespace fcf{
     if (a_sourceTypeIndex && !a_convertFunction) {
       convertRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions);
     } else if (a_convertFunction) {
-      a_convertFunction(ptr(), a_sourceData, a_convertOptions);
+      Error error(false);
+      a_convertFunction(ptr(), a_sourceData, a_convertOptions, error);
     }
   }
 

@@ -463,7 +463,7 @@ namespace fcf {
             TypeIndex rtypeIndex       = rightIt->first.pacodes[a_argumentIndex];
             TypeIndex rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
             TypeIndex converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
-            ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, 0);
+            ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, Error{});
             if (convertFunction) {
               bool popReqArgFlag = false;
               bool ignore = false;
@@ -518,7 +518,7 @@ namespace fcf {
             TypeIndex rtypeIndex = leftIt->first.pacodes[a_argumentIndex];
             TypeIndex rtypeSimpleIndex = BaseFunctionSignature::getSimpleType(rtypeIndex);
             TypeIndex converTypeIndex  = a_isPointerMode ? TypeIndexConverter<>::removeLevelPointer(rtypeSimpleIndex) : rtypeSimpleIndex;
-            ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, 0);
+            ConvertFunction convertFunction = getConvertFunction(converTypeIndex, a_clearTypeIndex, Error{});
             if (convertFunction){
               bool popReqArgFlag = false;
               bool ignore = false;

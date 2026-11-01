@@ -693,6 +693,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A1(am_type, am_name, am_message) \
@@ -706,6 +707,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A2(am_type, am_name, am_message) \
@@ -719,6 +721,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A3(am_type, am_name, am_message) \
@@ -732,6 +735,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A4(am_type, am_name, am_message) \
@@ -745,6 +749,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A5(am_type, am_name, am_message) \
@@ -758,6 +763,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 
@@ -772,6 +778,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A7(am_type, am_name, am_message) \
@@ -785,6 +792,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A8(am_type, am_name, am_message) \
@@ -798,6 +806,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7, const TArg8& a_arg8)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7, a_arg8){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_A9(am_type, am_name, am_message) \
@@ -811,6 +820,7 @@
         am_type(const Exception& a_subexception, const char* a_file, unsigned int a_line, const TArg1& a_arg1, const TArg2& a_arg2, const TArg3& a_arg3, const TArg4& a_arg4, const TArg5& a_arg5, const TArg6& a_arg6, const TArg7& a_arg7, const TArg8& a_arg8, const TArg9& a_arg9)\
           : ::fcf::Exception(a_subexception, am_name, am_message, a_file, a_line, a_arg1, a_arg2, a_arg3, a_arg4, a_arg5, a_arg6, a_arg7, a_arg8, a_arg9){\
         }\
+        static const char* registeredName(){ return am_name; }\
     };
 
 #define _FCF_EXCEPTION_DECLARE_0(a_macro, am_type, am_name, am_message, am_argCount) \
