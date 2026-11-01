@@ -1,19 +1,13 @@
 #ifndef _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
 #define _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_DEFINITION_HPP___
 
-#include "CallStorageFunctionIndexes.hpp"
-#include "CallStorageFunctionInfoVector.hpp"
-#include "CallStorageSelectionFunctionGroup.hpp"
 #include "../../bits/PartCall/CallDetailsPack.hpp"
+#include "CallStorageBaseDecl.hpp"
 
 namespace fcf {
 
-  struct CallStorage {
+  struct CallStorage : public CallStorageBase {
     public:
-      CallStorageFunctionIndexes         indexes;
-      CallStorageFunctionInfoVector      functions;
-      CallStorageSelectionFunctionGroups groups;
-
       template <typename TFunction, typename ... TPackCallDetails>
       inline void add(std::string a_name,
                       TFunction a_function,

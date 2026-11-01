@@ -11,6 +11,8 @@
 #include "./NDetails/CallStoragePlaceHolderRegistrator.hpp"
 #include "CallStorageFunctionInfo.hpp"
 #include "CallStorageDecl.hpp"
+#include "CallStorageBase.hpp"
+
 
 
 
@@ -62,6 +64,29 @@ namespace fcf {
              TFunction a_function,
              const std::tuple<TPackCallDetails...>& a_phs,
              std::string a_sourceCode) {
+      FunctionSignature<TFunction> fs;
+
+      typedef typename FunctionSignature<TFunction>::args_type ArgsTupleType;
+      unsigned int argc = (unsigned int)std::tuple_size<ArgsTupleType>::value;
+
+      CallStorageSelectionFunctionGroups::iterator groupIterator;
+      BaseFunctionSignature simpleCallSignature = fs.getSimpleCallSignature();
+      unsigned int index;
+
+      this->_add(a_name,
+                 a_space,
+                 a_sourceName,
+                 fs,
+                 simpleCallSignature,
+                 (void*)a_function,
+                 argc,
+                 a_sourceCode,
+                 NDetails::CallWrapper<TFunction>::getWrapper(),
+                 NDetails::CallWrapper<TFunction>::getRWrapper(),
+                 index,
+                 groupIterator
+               );
+/*
       a_name = _rtrim(a_name);
       FunctionSignature<TFunction> fs;
       CallStorageFunctionIndexes::iterator it = indexes.find(fs);
@@ -175,13 +200,13 @@ namespace fcf {
                     CallStorageSelectionFunctionInfo::PlaceHolderType()
                   }
                 });
-
+*/
       NDetails::CallStoragePlaceHolderRegistrator<TFunction> placeHolderRegistrator;
       placeHolderRegistrator.function = a_function;
       placeHolderRegistrator.index = index;
       placeHolderRegistrator.fs = fs;
-      placeHolderRegistrator.scs = scs;
-      placeHolderRegistrator.groupIt = groupIt;
+      placeHolderRegistrator.scs = simpleCallSignature;
+      placeHolderRegistrator.groupIt = groupIterator;
       placeHolderRegistrator.registry(*this, a_phs);
     }
 

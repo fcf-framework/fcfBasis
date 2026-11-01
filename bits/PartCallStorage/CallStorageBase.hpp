@@ -1,0 +1,7 @@
+#ifndef _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_BASE_HPP___
+#define _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_BASE_HPP___
+
+#include "CallStorageBaseDecl.hpp"
+#include "CallStorageBase.ipp"
+
+#endif // #ifndef _FCF_BASIS__BITS__PART_CALL_STORAGE__CALL_STORAGE_BASE_HPP___

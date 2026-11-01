@@ -1,41 +1,30 @@
 #ifndef _FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___
 #define _FCF_BASIS__BITS__PART_CALL__CALL_SEEKER_HPP___
 
+#include "CallSeekerBase.hpp"
+
 #include "NDetails/CallPairArgumentNode.hpp"
 #include "NDetails/CallArguments.hpp"
 #include "NDetails/CallSelectorHandler.hpp"
 #include "NDetails/CallPairArgumentNode.hpp"
-#include "CallOptions.hpp"
 #include "../../PartConvert.hpp"
 #include "../../PartException.hpp"
+
 
 namespace fcf{
 
   template <typename TRes, typename... TArgPack>
-  class CallSeeker {
-    protected:
-
-      struct State {
-        typedef StaticVector<CallConversion, 8> conversions_type;
-        bool             init;
-        conversions_type conversions;
-        bool             strictSource;
-      };
-
-      const CallOptions* _options;
-
+  class CallSeeker : public CallSeekerBase {
     public:
-
-      CallSeeker()
-        : _options(0){
+      CallSeeker() {
       }
 
       CallSeeker(const CallOptions& a_options)
-        : _options(&a_options){
+        : CallSeekerBase(a_options) {
       }
 
       CallSeeker(const CallOptions* a_options)
-        : _options(a_options){
+        : CallSeekerBase(a_options) {
       }
 
       template <typename... TCurrentArgPack>
@@ -66,67 +55,6 @@ namespace fcf{
         state.init = true;
         state.strictSource = true;
         this->_call(a_functionName, a_functionSignature, a_resultFunctionSignature, a_result, state, a_arguments);
-      }
-
-    protected:
-      void _call(const char* a_functionName, BaseFunctionSignature* a_functionSignature, BaseFunctionSignature* a_resultFunctionSignature, Call* a_result, State& a_state, NDetails::CallArguments& a_callArguments, bool a_quiet = false){
-        BaseFunctionSignature functionSignature(a_callArguments.size());
-        BaseFunctionSignature* currentFunctionSignature;
-        if (!a_functionSignature){
-          functionSignature.rcode = Type<void>().index();
-          for(unsigned int i = 0; i < a_callArguments.size() ; ++i){
-            functionSignature.pacodes[i] = a_callArguments.getTypeIndex(i);
-          }
-          functionSignature.applySimpleCallSignature();
-          currentFunctionSignature = &functionSignature;
-        } else {
-          currentFunctionSignature = a_functionSignature;
-        }
-
-        const CallStorage* storage = _options && _options->storage ? _options->storage : & getCallStorage();
-        CallStorageSelectionFunctionGroups::const_iterator groupIt = storage->groups.find(a_functionName);
-        if (groupIt == storage->groups.cend()) {
-          throw CallNotFoundException(__FILE__, __LINE__, a_functionName, convert<std::string>((const BaseFunctionSignature&)*currentFunctionSignature));
-        }
-
-        if (a_state.init) {
-          a_state.init = false;
-          a_result->complete = false;
-          a_result->dynamicCaller = false;
-          a_result->caller = 0;
-          a_result->function = 0;
-          a_result->conversions.clear();
-        }
-
-        ::fcf::NDetails::CallSelectorState iasd = {
-                                                    storage,
-                                                    _options,
-                                                    a_functionName, 
-                                                    a_resultFunctionSignature, 
-                                                    a_result, 
-                                                    groupIt, 
-                                                    *currentFunctionSignature, 
-                                                    currentFunctionSignature, 
-                                                    {}, 
-                                                    &groupIt->second.specifiersByArgIndex,
-                                                    a_state.strictSource, 
-                                                    false, 
-                                                    {}, 
-                                                    {}, 
-                                                    false
-                                                  };
-        {
-          NDetails::CallSelectorHandler csh(iasd);
-          csh.initialize(a_callArguments);
-          csh(0, 0, 0, 0, false);
-          if (iasd.result->caller){
-            return;
-          }
-        }
-
-        if (!a_result->complete && !a_quiet) {
-          throw CallNotFoundException(__FILE__, __LINE__, a_functionName, convert<std::string>((const BaseFunctionSignature&)*currentFunctionSignature));
-        }
       }
   };
 
