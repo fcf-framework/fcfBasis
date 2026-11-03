@@ -7,26 +7,26 @@
 namespace fcf {
   namespace NDetails {
 
-    template <typename TUnstatic, unsigned int UnstaticCounter, typename Ty>
+    template <typename TUnstatic, typename Ty>
     struct TypeRegistrar {
       typedef Ty type;
-      TypeRegistrar(::fcf::TypeInfo* a_info, TypeIndex /*a_index*/){
+      TypeRegistrar(::fcf::TypeInfo* a_info){
         a_info->initialize<Ty>();
       }
     };
 
-    template <typename TUnstatic, unsigned int UnstaticCounter, typename Ty>
-    struct TypeRegistrar<TUnstatic, UnstaticCounter, Ty&&> {
+    template <typename TUnstatic, typename Ty>
+    struct TypeRegistrar<TUnstatic, Ty&&> {
       typedef Ty type;
-      TypeRegistrar(::fcf::TypeInfo* a_info, TypeIndex /*a_index*/){
+      TypeRegistrar(::fcf::TypeInfo* a_info){
         a_info->initialize<Ty>();
       }
     };
 
-    template <typename TUnstatic, unsigned int UnstaticCounter>
-    struct TypeRegistrar<TUnstatic, UnstaticCounter, void> {
+    template <typename TUnstatic>
+    struct TypeRegistrar<TUnstatic, void> {
       typedef void type;
-      TypeRegistrar(::fcf::TypeInfo* /*a_info*/, TypeIndex /*a_index*/){
+      TypeRegistrar(::fcf::TypeInfo* /*a_info*/){
       }
     };
 

@@ -25,6 +25,9 @@ namespace fcf{
   template <typename Ty, typename TInfoMode>
   struct Type;
 
+  template <typename Ty, typename = void>
+  struct TypeTrialInitializer;
+
   /**
    * @brief Specialization of the Type structure for the Nop mode.
    *
@@ -33,6 +36,9 @@ namespace fcf{
    */
   template <typename Ty>
   struct Type<Ty, Nop> {
+
+      template <typename, typename>
+      friend struct TypeTrialInitializer;
 
       template <typename TContainer, typename TSubSpecifier>
       friend class SpecifierRegistrar;
@@ -143,6 +149,8 @@ namespace fcf{
       inline const TypeInfo::ConvertersType& backConverters();
 
     protected:
+      static void _classInitialize();
+
       /** @brief Static pointer to the type's metadata in the global storage. */
       static TypeInfo* _info;
   };

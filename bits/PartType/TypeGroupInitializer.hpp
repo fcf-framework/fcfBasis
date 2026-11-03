@@ -3,46 +3,41 @@
 
 #include <type_traits>
 #include "TypeTrialInitializer.hpp"
+#include "../PartMetaType/MetaTypeClearType.hpp"
 
 namespace fcf{
 
-  template <typename Ty>
+  template <bool IsTemplate, typename Ty>
   struct TypeGroupInitializer{
-    typedef typename std::remove_const<
-              typename std::remove_reference<
-                typename std::remove_pointer<
-                  typename std::remove_const<
-                    typename std::remove_reference<
-                      typename std::remove_pointer<
-                        typename std::remove_const<
-                          Ty
-                        >::type
-                      >::type
-                    >::type
-                  >::type
-                >::type
-              >::type
-            >::type raw_type;
-    TypeGroupInitializer(){
-      { fcf::TypeTrialInitializer<Ty, raw_type> var; }
-      { fcf::TypeTrialInitializer<Ty, raw_type*> var; }
-      { fcf::TypeTrialInitializer<Ty, raw_type**> var; }
-      { fcf::TypeTrialInitializer<Ty, raw_type&> var; }
-      { fcf::TypeTrialInitializer<Ty, raw_type&&> var; }
-      { fcf::TypeTrialInitializer<Ty, const raw_type*> var; }
-      { fcf::TypeTrialInitializer<Ty, const raw_type*&> var; }
-      { fcf::TypeTrialInitializer<Ty, const raw_type**> var; }
-      { fcf::TypeTrialInitializer<Ty, const raw_type**&> var; }
-      { fcf::TypeTrialInitializer<Ty, const raw_type&> var; }
-      { fcf::TypeTrialInitializer<Ty, const raw_type&&> var; }
-    }
+    typedef typename MetaTypeClearType<Ty>::Type raw_type;
+    TypeGroupInitializer();
+  };
 
+  template <bool IsTemplate, typename Ty>
+  TypeGroupInitializer<IsTemplate, Ty>::TypeGroupInitializer() {
+    { fcf::TypeTrialInitializer<raw_type> var; }
+    { fcf::TypeTrialInitializer<raw_type*> var; }
+    { fcf::TypeTrialInitializer<raw_type**> var; }
+    { fcf::TypeTrialInitializer<raw_type&> var; }
+    { fcf::TypeTrialInitializer<raw_type&&> var; }
+    { fcf::TypeTrialInitializer<const raw_type*> var; }
+    { fcf::TypeTrialInitializer<const raw_type*&> var; }
+    { fcf::TypeTrialInitializer<const raw_type**> var; }
+    { fcf::TypeTrialInitializer<const raw_type**&> var; }
+    { fcf::TypeTrialInitializer<const raw_type&> var; }
+    { fcf::TypeTrialInitializer<const raw_type&&> var; }
+  }
+
+  template <typename Ty>
+  struct TypeGroupInitializer<false, Ty>{
   };
 
   template <>
-  struct TypeGroupInitializer<void>{
-    TypeGroupInitializer(){
-    }
+  struct TypeGroupInitializer<true, void>{
+  };
+
+  template <>
+  struct TypeGroupInitializer<false, void>{
   };
 
 } // fcf namespace

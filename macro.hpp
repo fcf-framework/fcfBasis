@@ -221,7 +221,7 @@
         FCF_ATTRIBUTE_MINIMIZE_BEGIN\
         std::string   FCF_ATTRIBUTE_MINIMIZE  name()  { return std::string() + am_name; }\
         FCF_ATTRIBUTE_MINIMIZE_END\
-        bool          isTemplate()  { return am_isTemplate; }\
+        enum { isTemplate = am_isTemplate ? 1 : 0  };\
       };
 #endif // #ifndef _FCF_TYPE_REGISTRATION_IMPL_DECL_CLASS
 

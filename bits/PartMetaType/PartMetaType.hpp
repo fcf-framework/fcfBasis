@@ -6,6 +6,7 @@
 #include "MetaTypeMaxTypeSize.hpp"
 #include "MetaTypeRemoveDeepConst.hpp"
 #include "MetaTypeRemoveRightReference.hpp"
+#include "MetaTypeClearType.hpp"
 #include "MetaTypeSequence.hpp"
 #include "MetaTypeSequencePredecl.hpp"
 #include "MetaTypeTupleInsert.hpp"

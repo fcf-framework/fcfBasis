@@ -15,8 +15,8 @@
 
 
 namespace fcf {
-  
-  class TypeStorage {
+
+  class FCF_BASIS_DECL_EXPORT TypeStorage {
     public:
       typedef std::shared_ptr<TypeInfo>          SPTypeInfo;
 
@@ -28,13 +28,13 @@ namespace fcf {
 
       inline TypeStorage();
 
-      inline const TypeInfo* get(TypeIndex a_index);
+      const TypeInfo* get(TypeIndex a_index);
 
-      inline const TypeInfo* get(const std::string& a_name);
+      const TypeInfo* get(const std::string& a_name);
 
-      inline const TypeInfo* get(const char* a_name);
+      const TypeInfo* get(const char* a_name);
 
-      inline TypeInfo* insert(const TypeInfo& a_ti, bool a_autoIndex, TypeIndex a_baseIndex);
+      TypeInfo* insert(const TypeInfo& a_ti, bool a_autoIndex, TypeIndex a_baseIndex);
 
     private:
       NameStorage   _ns;

@@ -31,22 +31,11 @@ namespace fcf {
   template <typename Ty>
   Type<Ty, Nop>::Type(){
     if (!_info) {
-      typedef typename TypeId<Ty>::basic_type basic_type;
-      TypeIndex baseTypeIndex = 0;
-      if(!std::is_same<Ty, basic_type>::value){
-        baseTypeIndex = Type<basic_type>().index();
-      }
-      const TypeIndex index = TypeId<Ty>().index();
-      unsigned char flags = (NDetails::IsVariantRef<Ty>::value ? TIF_VARIANT_REF : 0) |
-                            (NDetails::IsVariant<Ty>::value    ? TIF_VARIANT : 0);
-      TypeInfo initTypeInfo(index, TypeId<Ty>().name(), flags, NDetails::TypeSize<Ty>::value, NDetails::VariantInnerSize<Ty>::value);
-      _info = getTypeStorage().insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
+      _classInitialize();
       typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
-      ::fcf::NDetails::TypeRegistrar<simple_type, __COUNTER__, Ty> typeRegistrar(_info, index);
       ::fcf::NDetails::SpecifierRegistrarCaller<Type, __COUNTER__, simple_type> specifiersRegistrar;
-      if (TypeId<Ty>().isTemplate()) {
-        TypeGroupInitializer<Ty> groupInitializer;
-      }
+      typedef typename MetaTypeClearType<Ty>::Type raw_type;
+      TypeGroupInitializer<TypeId<Ty>().isTemplate, raw_type> groupInitializer;
     }
   }
 
@@ -97,6 +86,25 @@ namespace fcf {
   template <typename TSpecifier>
   typename TSpecifier::CallType Type<Ty, Nop>::specifierCall(fcf::Exception* a_dstError) const {
     return _info->specifierCall<TSpecifier>(a_dstError);
+  }
+
+  template <typename Ty>
+  void Type<Ty, Nop>::_classInitialize() {
+    if (!_info) {
+      typedef typename TypeId<Ty>::basic_type basic_type;
+      TypeIndex baseTypeIndex = 0;
+      if(!std::is_same<Ty, basic_type>::value){
+        baseTypeIndex = Type<basic_type>().index();
+      }
+      const TypeIndex index = TypeId<Ty>().index();
+      unsigned char flags = (NDetails::IsVariantRef<Ty>::value ? TIF_VARIANT_REF : 0) |
+                            (NDetails::IsVariant<Ty>::value    ? TIF_VARIANT : 0);
+      TypeInfo initTypeInfo(index, TypeId<Ty>().name(), flags, NDetails::TypeSize<Ty>::value, NDetails::VariantInnerSize<Ty>::value);
+      _info = getTypeStorage().insert(initTypeInfo, TypeId<Ty>().autoIndex(), baseTypeIndex);
+      typedef typename std::decay<typename std::decay<Ty>::type>::type simple_type;
+
+      ::fcf::NDetails::TypeRegistrar<simple_type, Ty> typeRegistrar(_info);
+    }
   }
 
   template <typename Ty>
