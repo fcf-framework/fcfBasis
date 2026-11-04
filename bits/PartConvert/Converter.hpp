@@ -6,19 +6,21 @@
 #include <string>
 #include <sstream>
 #include "ConvertOptions.hpp"
+#include "ConverterLevel.hpp"
 #include "../PartType/Type.hpp"
 #include "../PartConvert/DefaultConvertMode.hpp"
 #include "../../PartVariant.hpp"
 #include "../../bits/PartCall/FunctionSignature.hpp"
 #include "../PartException/exceptions.hpp"
 
+
 namespace fcf {
 
-  template <int Mode, typename TDestination, typename TSource, typename TSpecifier = DefaultConvertMode>
+  template <ConverterLevel Mode, typename TDestination, typename TSource, typename TSpecifier = DefaultConvertMode>
   class Converter;
 
   template <typename TDestination, typename TSource, typename TSpecifier>
-  class Converter<0, TDestination, TSource, TSpecifier>{
+  class Converter<CL_ALL, TDestination, TSource, TSpecifier>{
     public:
       void operator()(TDestination& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -27,7 +29,7 @@ namespace fcf {
   };
 
   template <typename TSource>
-  class Converter<1, std::string, TSource>{
+  class Converter<CL_DIRECT_DESTINATION, std::string, TSource>{
     public:
       void operator()(std::string& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -36,7 +38,7 @@ namespace fcf {
   };
 
   template <typename TDestination>
-  class Converter<2, TDestination, std::string>{
+  class Converter<CL_DIRECT_SOURCE, TDestination, std::string>{
     public:
       void operator()(TDestination& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -54,7 +56,7 @@ namespace fcf {
 
 
   template <>
-  class Converter<3, short, std::string>{
+  class Converter<CL_DIRECT, short, std::string>{
     public:
       void operator()(short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -82,7 +84,7 @@ namespace fcf {
 
 
   template <>
-  class Converter<3, unsigned short, std::string>{
+  class Converter<CL_DIRECT, unsigned short, std::string>{
     public:
       void operator()(unsigned short& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -105,7 +107,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, int, std::string>{
+  class Converter<CL_DIRECT, int, std::string>{
     public:
       void operator()(int& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -123,7 +125,7 @@ namespace fcf {
 
 
   template <>
-  class Converter<3, unsigned int, std::string>{
+  class Converter<CL_DIRECT, unsigned int, std::string>{
     public:
       void operator()(unsigned int& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -144,7 +146,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, long, std::string>{
+  class Converter<CL_DIRECT, long, std::string>{
     public:
       void operator()(long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -161,7 +163,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, unsigned long, std::string>{
+  class Converter<CL_DIRECT, unsigned long, std::string>{
     public:
       void operator()(unsigned long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -178,7 +180,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, long long, std::string>{
+  class Converter<CL_DIRECT, long long, std::string>{
     public:
       void operator()(long long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -195,7 +197,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, unsigned long long, std::string>{
+  class Converter<CL_DIRECT, unsigned long long, std::string>{
     public:
       void operator()(unsigned long long& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -212,7 +214,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, bool, std::string>{
+  class Converter<CL_DIRECT, bool, std::string>{
     public:
       void operator()(bool& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -232,7 +234,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, std::string, bool>{
+  class Converter<CL_DIRECT, std::string, bool>{
     public:
       void operator()(std::string& a_destination, const bool& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -241,7 +243,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, std::string, std::string>{
+  class Converter<CL_DIRECT, std::string, std::string>{
     public:
       void operator()(std::string& a_destination, const std::string& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -259,7 +261,7 @@ namespace fcf {
   };
 */
   template <>
-  class Converter<3, std::string, const char*>{
+  class Converter<CL_DIRECT, std::string, const char*>{
     public:
       void operator()(std::string& a_destination, const char* a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -268,7 +270,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, std::string, char*>{
+  class Converter<CL_DIRECT, std::string, char*>{
     public:
       void operator()(std::string& a_destination, char* a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -277,7 +279,7 @@ namespace fcf {
   };
 
   template <>
-  class Converter<3, std::string, BaseFunctionSignature>{
+  class Converter<CL_DIRECT, std::string, BaseFunctionSignature>{
     public:
       void operator()(std::string& a_destination, const BaseFunctionSignature& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -314,13 +316,13 @@ namespace fcf {
   };
 */
   template <typename TDestination>
-  class Converter<2, TDestination, const char*>{
+  class Converter<CL_DIRECT_SOURCE, TDestination, const char*>{
     public:
       void operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions, Error& a_error);
   };
 
   template <typename TDestination>
-  class Converter<2, TDestination, char*>{
+  class Converter<CL_DIRECT_SOURCE, TDestination, char*>{
     public:
       void operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions, Error& a_error);
   };
@@ -334,7 +336,7 @@ namespace fcf {
  
 
   template <typename TSource>
-  class Converter<1, Variant, TSource>{
+  class Converter<CL_DIRECT_DESTINATION, Variant, TSource>{
     public:
       void operator()(Variant& a_destination, const TSource& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -343,7 +345,7 @@ namespace fcf {
   };
 
   template <typename TDestination>
-  class Converter<2, TDestination, Variant>{
+  class Converter<CL_DIRECT_SOURCE, TDestination, Variant>{
     public:
       void operator()(TDestination& a_destination, const Variant& a_source, ConvertOptions* a_convertOptions, Error& a_error){
         (void)a_convertOptions;
@@ -359,12 +361,12 @@ namespace fcf {
 namespace fcf {
 
   template <typename TDestination>
-  void Converter<2, TDestination, const char*>::operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions, Error& a_error){
+  void Converter<CL_DIRECT_SOURCE, TDestination, const char*>::operator()(TDestination& a_destination, const char* a_source, ConvertOptions* a_convertOptions, Error& a_error){
     ConvertSelector<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions, a_error);
   };
 
   template <typename TDestination>
-  void Converter<2, TDestination, char*>::operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions, Error& a_error){
+  void Converter<CL_DIRECT_SOURCE, TDestination, char*>::operator()(TDestination& a_destination, char* a_source, ConvertOptions* a_convertOptions, Error& a_error){
     ConvertSelector<TDestination, std::string>()(a_destination, std::string(a_source), a_convertOptions, a_error);
   };
 

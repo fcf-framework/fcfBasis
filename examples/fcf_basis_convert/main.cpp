@@ -27,7 +27,7 @@ namespace fcf {
   // The second bit (0b10) indicates that the Destination type is explicitly provided, not a template parameter
   // The first bit (0b01) indicates that the Source type is explicitly provided, not a template parameter
   template <>
-  class Converter<3, UserProfile, std::string> {
+  class Converter<CL_DIRECT, UserProfile, std::string> {
     public:
     void operator()(UserProfile& a_destination, const std::string& a_source, ConvertOptions* /*a_options*/, Error& a_error) {
       size_t delimiterPos = a_source.find(':');
