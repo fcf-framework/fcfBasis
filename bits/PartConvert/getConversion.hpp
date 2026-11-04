@@ -1,5 +1,5 @@
-#ifndef _FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___
-#define _FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONVERT__GET_CONVERSION_HPP___
+#define _FCF_BASIS__BITS__PART_CONVERT__GET_CONVERSION_HPP___
 
 #include <type_traits>
 #include "../../macro.hpp"
@@ -10,14 +10,14 @@
 
 namespace fcf {
 
-  FCF_BASIS_DECL_EXPORT ConvertFunction getConvertFunction(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Error& a_error);
+  FCF_BASIS_DECL_EXPORT ConvertFunction getConversion(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Error& a_error);
 
-  inline ConvertFunction getConvertFunction(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Error&& a_error = Error{true}) {
-    return getConvertFunction(a_destinationTypeIndex, a_sourceTypeIndex, a_error);
+  inline ConvertFunction getConversion(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Error&& a_error = Error{true}) {
+    return getConversion(a_destinationTypeIndex, a_sourceTypeIndex, a_error);
   }
 
   #ifdef FCF_BASIS_IMPLEMENTATION
-    ConvertFunction getConvertFunction(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Error& a_error) {
+    ConvertFunction getConversion(TypeIndex a_destinationTypeIndex, TypeIndex a_sourceTypeIndex, Error& a_error) {
       a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
       a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
       do {
@@ -43,7 +43,7 @@ namespace fcf {
 
 
   template <typename TDestination>
-  ConvertFunction getConvertFunctionByDestination(TypeIndex a_sourceTypeIndex, Error& a_error){
+  ConvertFunction getConversionTo(TypeIndex a_sourceTypeIndex, Error& a_error){
     a_sourceTypeIndex = TypeIndexConverter<>::getDataIndex(a_sourceTypeIndex);
     const ::fcf::TypeInfo::ConvertersType& converters = Type<TDestination>().backConverters(); 
     ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_sourceTypeIndex);
@@ -58,14 +58,14 @@ namespace fcf {
   }
 
   template <typename TDestination>
-  inline ConvertFunction getConvertFunctionByDestination(TypeIndex a_sourceTypeIndex, Error&& a_error = Error{true}){
-    return getConvertFunctionByDestination<TDestination>(a_sourceTypeIndex, a_error);
+  inline ConvertFunction getConversionTo(TypeIndex a_sourceTypeIndex, Error&& a_error = Error{true}){
+    return getConversionTo<TDestination>(a_sourceTypeIndex, a_error);
   }
 
 
 
   template <typename TSource>
-  ConvertFunction getConvertFunctionBySource(TypeIndex a_destinationTypeIndex, Error& a_error){
+  ConvertFunction getConversionFrom(TypeIndex a_destinationTypeIndex, Error& a_error){
     a_destinationTypeIndex = TypeIndexConverter<>::getDataIndex(a_destinationTypeIndex);
     const ::fcf::TypeInfo::ConvertersType& converters = Type<TSource>().converters(); 
     ::fcf::TypeInfo::ConvertersType::const_iterator convIt = converters.find(a_destinationTypeIndex);
@@ -80,11 +80,11 @@ namespace fcf {
   }
 
   template <typename TSource>
-  inline ConvertFunction getConvertFunctionBySource(TypeIndex a_destinationTypeIndex, Error&& a_error = Error{true}) {
-    return getConvertFunctionBySource<TSource>(a_destinationTypeIndex, a_error);
+  inline ConvertFunction getConversionFrom(TypeIndex a_destinationTypeIndex, Error&& a_error = Error{true}) {
+    return getConversionFrom<TSource>(a_destinationTypeIndex, a_error);
   }
 
 
 } // fcf namespace
 
-#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__GET_CONVERT_FUNCTION_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__GET_CONVERSION_HPP___

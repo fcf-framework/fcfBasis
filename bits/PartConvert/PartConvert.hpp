@@ -8,10 +8,10 @@
 #include "ConvertFunction.hpp"
 #include "convert.hpp"
 #include "ConvertOptions.hpp"
-#include "convertRuntime.hpp"
+#include "convertWithRuntime.hpp"
 #include "ConvertSelector.hpp"
 #include "DefaultConvertMode.hpp"
-#include "getConvertFunction.hpp"
+#include "getConversion.hpp"
 #include "NDetails/registry.hpp"
 
 

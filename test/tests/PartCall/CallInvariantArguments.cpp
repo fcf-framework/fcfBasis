@@ -33,7 +33,7 @@ namespace FcfTest {
         unsigned int value = 1;
         unsigned int* pvalue1 = &value;
         int* pvalue2 = 0;
-        fcf::convertRuntimeByDestination(&pvalue2, &pvalue1, fcf::Type<unsigned int*>().index());
+        fcf::convertWithRuntimeSource(&pvalue2, &pvalue1, fcf::Type<unsigned int*>().index());
         FCF_TEST((void*)pvalue1 == (void*)pvalue2, pvalue1, pvalue2);
       }
 

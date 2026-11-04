@@ -5,7 +5,7 @@
 #include "../../PartType.hpp"
 #include "../../bits/registry.hpp"
 #include "../../bits/PartType/DynamicType.hpp"
-#include "../../bits/PartConvert/convertRuntime.hpp"
+#include "../../bits/PartConvert/convertWithRuntime.hpp"
 #include "../../bits/PartSpecifier/StoredDataTypeSpecifier.hpp"
 #include "../../bits/PartSpecifier/LessSpecifier.hpp"
 #include "../../bits/PartSpecifier/EqualSpecifier.hpp"
@@ -776,7 +776,7 @@ namespace fcf{
       return *(result_type*)ptr();
     } else {
       result_type result;
-      convertRuntimeByDestination(&result, ptr(), getDataTypeIndex());
+      convertWithRuntimeSource(&result, ptr(), getDataTypeIndex());
       *this = result;
       return *(result_type*)ptr();
     }
@@ -829,7 +829,7 @@ namespace fcf{
       return ((Variant*)ptr())->cast<ResultType>();
     } else {
       ResultType result;
-      convertRuntimeByDestination(&result, ptr(), getDataTypeIndex());
+      convertWithRuntimeSource(&result, ptr(), getDataTypeIndex());
       return result;
     }
   }
@@ -1124,7 +1124,7 @@ namespace fcf{
     _typeInfo = ti;
 
     if (a_sourceTypeIndex && !a_convertFunction) {
-      convertRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions);
+      convertWithRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions);
     } else if (a_convertFunction) {
       Error error(false);
       a_convertFunction(ptr(), a_sourceData, a_convertOptions, error);
