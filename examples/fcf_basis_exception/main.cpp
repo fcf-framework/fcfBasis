@@ -84,10 +84,10 @@ int main() {
         std::cout << "  Message: " << e.message() << std::endl;
         std::cout << "  Position: " << e.position() << std::endl;
         // Handling nested exceptions
-        if (e.subSize() > 0) {
-            std::cout << "  Detected " << e.subSize() << " sub-exception(s):" << std::endl;
-            for (size_t i = 0; i < e.subSize(); ++i) {
-                std::cout << "    [" << i + 1 << "] " << e.sub(i).message() << std::endl;
+        if (e.nestedSize() > 0) {
+            std::cout << "  Detected " << e.nestedSize() << " nested-exception(s):" << std::endl;
+            for (size_t i = 0; i < e.nestedSize(); ++i) {
+                std::cout << "    [" << i + 1 << "] " << e.nested(i).message() << std::endl;
             }
         }
 

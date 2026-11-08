@@ -2,6 +2,7 @@
 #define _FCF_BASIS__BITS__PART_EXCEPTION__EXCEPTION_HPP___
 
 #include <exception>
+#include <mutex>
 #include "ExceptionDecl.hpp"
 #include "../../PartForeach.hpp"
 #include "../../PartStaticVector.hpp"
@@ -20,7 +21,8 @@ namespace fcf{
 
 #ifdef FCF_BASIS_IMPLEMENTATION
   Exception::Exception()
-    : _smessage(0)
+    : _pwhat(0)
+    , _smessage(0)
   {
   }
 #endif
@@ -146,7 +148,7 @@ namespace fcf{
     return !!_smessage;
   }
 #endif
-  
+
 #ifdef FCF_BASIS_IMPLEMENTATION
   const char* Exception::what() const throw() {
     if (!_smessage){
@@ -156,7 +158,10 @@ namespace fcf{
       return _pwhat->c_str();
     }
     Exception* pthis = (Exception*)this;
-    //!!!!!!!!!!!!!! memory leak for multy tread !!!!!!!!!!!
+
+    static std::mutex mutex; 
+    std::lock_guard<std::mutex> lock(mutex);
+
     std::string* pmessage = new std::string();
     *pmessage = message();
     *pmessage += "\nPosition: ";
@@ -189,19 +194,19 @@ namespace fcf{
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  size_t Exception::subSize() const throw() {
+  size_t Exception::nestedSize() const throw() {
     return _sub.size();
   }
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  const Exception& Exception::sub(size_t a_index) const{
+  const Exception& Exception::nested(size_t a_index) const{
     return _sub[a_index];
   }
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  Exception& Exception::sub(size_t a_index) {
+  Exception& Exception::nested(size_t a_index) {
     return _sub[a_index];
   }
 #endif

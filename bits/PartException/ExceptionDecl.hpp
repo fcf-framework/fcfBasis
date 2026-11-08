@@ -15,9 +15,9 @@ namespace fcf{
 
       Exception();
 
-      Exception(const Exception& a_exception, bool a_copySub);
-
       Exception(const Exception& a_exception);
+
+      Exception(const Exception& a_exception, bool a_copySub);
 
       template <typename ...TArgPack>
       Exception(const char* a_file, unsigned int a_line, const TArgPack&... a_argPack);
@@ -43,11 +43,11 @@ namespace fcf{
 
       std::string position() const throw();
 
-      size_t subSize() const throw();
+      size_t nestedSize() const throw();
 
-      const Exception& sub(size_t a_index) const;
+      const Exception& nested(size_t a_index) const;
 
-      Exception& sub(size_t a_index);
+      Exception& nested(size_t a_index);
 
       const char* file() const throw();
 
