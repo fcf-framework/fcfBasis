@@ -45,9 +45,7 @@ namespace fcf{
 
       size_t nestedSize() const throw();
 
-      const Exception& nested(size_t a_index) const;
-
-      Exception& nested(size_t a_index);
+      const Exception& nested(size_t a_index) const throw();
 
       const char* file() const throw();
 

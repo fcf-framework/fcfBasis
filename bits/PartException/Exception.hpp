@@ -200,13 +200,11 @@ namespace fcf{
 #endif
 
 #ifdef FCF_BASIS_IMPLEMENTATION
-  const Exception& Exception::nested(size_t a_index) const{
-    return _sub[a_index];
-  }
-#endif
-
-#ifdef FCF_BASIS_IMPLEMENTATION
-  Exception& Exception::nested(size_t a_index) {
+  const Exception& Exception::nested(size_t a_index) const throw() {
+    if (a_index >= _sub.size()) {
+      static Exception empty;
+      return empty;
+    }
     return _sub[a_index];
   }
 #endif
