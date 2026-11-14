@@ -1,9 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_EXCEPTION__PART_EXCEPTION_HPP___
 #define _FCF_BASIS__BITS__PART_EXCEPTION__PART_EXCEPTION_HPP___
 
-#include "ExceptionDecl.hpp"
 #include "Exception.hpp"
-#include "ExceptionPredecl.hpp"
 #include "Error.hpp"
 #include "exceptions.hpp"
 
