@@ -19,7 +19,8 @@
 #include "../../bits/PartType/Type.hpp"
 #include "../../bits/PartType/TypeFactoryBase.hpp"
 #include "../../bits/PartMetaType/MetaTypeRemoveDeepConst.hpp"
-
+#include "../../bits/PartContainerAccess/ContainerAccess.hpp"
+#include "../../bits/PartSpecifier/ContainerAccessSpecifierDecl.hpp"
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartException/exceptions.hpp"
 #include "NDetails/FactoryGetter.hpp"

@@ -4,6 +4,7 @@
 #include <exception>
 #include <mutex>
 #include "ExceptionDecl.hpp"
+#include "exceptions.hpp"
 #include "../../PartForeach.hpp"
 #include "../../PartStaticVector.hpp"
 #include "../../PartVariant.hpp"

@@ -2,6 +2,9 @@
 #define _FCF_BASIS__BITS__PART_SPECIFIER__RESOLVE_SPECIFIER_DEFINITION_HPP___
 
 #include "../../bits/PartType/TypePredecl.hpp"
+#include "../../bits/PartType/TypeIndex.hpp"
+
+
 
 namespace fcf{
 

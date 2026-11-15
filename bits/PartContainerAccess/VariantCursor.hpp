@@ -5,6 +5,7 @@
 #include "../../PartVariant.hpp"
 #include "../../PartType.hpp"
 #include "../PartException/exceptions.hpp"
+#include "../PartContainerAccess/DynamicContainerAccess.hpp"
 
 namespace fcf{
 

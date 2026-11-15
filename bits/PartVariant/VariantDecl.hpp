@@ -10,7 +10,7 @@
 #include "../../bits/PartType/TypeIndexConverter.hpp"
 #include "../../bits/PartMetaType/MetaTypeBoolean.hpp"
 #include "../../bits/PartContainerAccess/VariantCursorDecl.hpp"
-#include "../../bits/PartContainerAccess/ContainerAccess.hpp"
+#include "../../bits/PartContainerAccess/ContainerAccessDecl.hpp"
 
 #ifndef FCF_BASIS_VARIANT_MAX_REF_NESTING
   #define FCF_BASIS_VARIANT_MAX_REF_NESTING 1000

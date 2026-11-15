@@ -1,7 +1,7 @@
 #ifndef _FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_DEFINITION_HPP___
 #define _FCF_BASIS__BITS__PART_TYPE__DYNAMIC_TYPE_DEFINITION_HPP___
 
-#include "TypeInfo.hpp"
+#include "TypeInfoDecl.hpp"
 #include "../../bits/PartException/ExceptionPredecl.hpp"
 
 namespace fcf{

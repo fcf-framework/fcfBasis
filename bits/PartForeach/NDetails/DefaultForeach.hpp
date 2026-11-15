@@ -2,7 +2,7 @@
 #define _FCF_BASIS__BITS__PART_FOREACH__NDETAILS__DEFAULT_FOREACH_HPP___
 
 
-#include "../../../bits/PartContainerAccess/ContainerAccess.hpp"
+#include "../../../bits/PartContainerAccess/ContainerAccessDecl.hpp"
 #include "../../../bits/PartContainerAccess/Cursor.hpp"
 
 namespace fcf {
