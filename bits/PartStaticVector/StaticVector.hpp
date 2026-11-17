@@ -531,8 +531,7 @@ namespace fcf{
         a_size -= OffsetSize;
       }
       if (StepModuleFrac) {
-        const long double stepMode(_getStepMode());
-        return std::max((size_t)StaticSize, (size_t)((long double)(a_size > StepSize ? a_size - StepSize : 0) / stepMode) + (size_t)OffsetSize);
+        return std::max((size_t)StaticSize, (size_t)((long double)(a_size > StepSize ? a_size - StepSize : 0) / _pps.stepMode) + (size_t)OffsetSize);
       } else {
         return std::max((size_t)StaticSize, (a_size > StepSize ? a_size - StepSize : 0) / (size_t)(StepModuleInt ? StepModuleInt : 1) + (size_t)OffsetSize);
       }
@@ -557,8 +556,7 @@ namespace fcf{
       if (!StepModuleFrac) {
         result = a_size * StepModuleInt + StepSize + OffsetSize;
       } else {
-        const long double stepMode(_getStepMode());
-        result = (size_t)((long double)a_size * stepMode + StepSize + OffsetSize);
+        result = (size_t)((long double)a_size * _pps.stepMode + StepSize + OffsetSize);
       }
       return (maxPow == 0 || result <= maxPow) ? result : _getBufferSize(a_size+1);
     } else {
@@ -578,18 +576,6 @@ namespace fcf{
   }
 
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
-  double StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow >::_getStepModeImpl() {
-    double pow = std::pow((double)StepModuleFrac, -std::ceil(std::log10((double)StepModuleFrac)));
-    return (double)StepModuleInt + (double)StepModuleFrac * pow;
-  }
-
-  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
-  double StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow >::_getStepMode() {
-    static const double result(_getStepModeImpl());
-    return result;
-  }
-
-  template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
   size_t StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow >::_getMaxPowStepImpl() {
     const size_t maxPow(_getMaxPow());
     size_t curSize = _getPowSize(maxPow);
@@ -605,39 +591,7 @@ namespace fcf{
 
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
   size_t StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow >::_getPowSize(size_t a_size, size_t a_powInc) {
-    if (StepModuleInt == 1 && StepModuleFrac == 0) {
-      if (a_size >= OffsetSize){
-        a_size -= OffsetSize;
-      }
-      size_t step = a_size / StepSize;
-      if (a_size % StepSize){
-        ++step;
-      }
-      if (step && a_powInc == 0){
-        step -= 1;
-      }
-      return step * StepSize + OffsetSize;
-    } else {
-      if (a_powInc) {
-        if (_pps.is(a_size)) {
-          return _pps.get(a_size);
-        }
-      } else  {
-        if (_pps.isp(a_size)) {
-          return _pps.getp(a_size);
-        }
-      }
-      if (a_size >= OffsetSize){
-        a_size -= OffsetSize;
-      }
-      const long double stepMode(_getStepMode());
-      long double val = ( (long double)a_size * stepMode + (long double)StepSize - (long double)a_size ) / (long double)StepSize;
-      long double log = std::log(val) / std::log(stepMode);
-      long double pow = std::ceil(log - 1);
-      long double powStepMode = std::pow(stepMode, pow + a_powInc);
-      long double bufferSize = (long double)(StepSize * (powStepMode - 1) ) / (long double)(stepMode - 1);
-      return (size_t)bufferSize + OffsetSize;
-    }
+    return StaticVectorBase::_getPowSize(a_size, a_powInc, _pps);
   }
 
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
@@ -662,7 +616,13 @@ namespace fcf{
 
 
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow>
-  typename StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>::PrebuildPowSizes StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>::_pps;
+  typename StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>::PrebuildPowSizes StaticVector<Ty, StaticSize, OffsetSize, StepSize, StepModuleInt, StepModuleFrac, MaxPow>::_pps(
+                                        StaticSize,
+                                        OffsetSize,
+                                        StepSize,
+                                        StepModuleInt,
+                                        StepModuleFrac
+                                      );
 
 } // fcf namespace
 

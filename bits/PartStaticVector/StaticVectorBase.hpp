@@ -1,0 +1,7 @@
+#ifndef _FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_BASE_HPP___
+#define _FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_BASE_HPP___
+
+#include "StaticVectorBaseDecl.hpp"
+#include "StaticVectorBase.ipp"
+
+#endif // #ifndef _FCF_BASIS__BITS__PART_STATIC_VECTOR__STATIC_VECTOR_BASE_HPP___

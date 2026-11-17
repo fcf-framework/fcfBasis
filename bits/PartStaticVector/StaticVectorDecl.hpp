@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <cmath>
+#include "StaticVectorBase.hpp"
 #include "../../bits/PartContainerAccess/ContainerAccessDecl.hpp"
 
 namespace FcfTest {
@@ -54,7 +55,7 @@ namespace fcf{
   ///                                   If the value is 0, but this functionality is not used
   ///
   template<typename Ty, unsigned int StaticSize, unsigned int OffsetSize, unsigned int StepSize, unsigned int StepModuleInt, unsigned int StepModuleFrac, unsigned int MaxPow >
-  class StaticVector {
+  class StaticVector : public StaticVectorBase {
     friend void ::FcfTest::BasisTest::staticVectorTest();
     friend void ::FcfTest::BasisTest::staticVectorPushTest();
 
@@ -135,50 +136,6 @@ namespace fcf{
       iterator erase(iterator a_begin, iterator a_end, bool a_notReduce = false);
 
     protected:
-      struct PrebuildPowSizes {
-        PrebuildPowSizes() {
-          size_t lastValue = StaticSize + 1;
-          size_t m = 0;
-          for(size_t i = 0; i < sizeof(values) / sizeof(values[0]); ++i){
-            m = _getPowSize(lastValue);
-            values[i] = m;
-            lastValue = m + 1;
-          }
-          max = m;
-        }
-
-        bool isp(size_t a_size){
-          return max >= a_size;
-        }
-
-        bool is(size_t a_size){
-          return max >= a_size;
-        }
-
-        size_t get(size_t a_size) {
-          for(size_t i = 0; i < sizeof(values) / sizeof(values[0]); ++i){
-            if (values[i] >= a_size) {
-              return values[i];
-            }
-          }
-          return _getPowSize(a_size);
-        }
-
-        size_t getp(size_t a_size) {
-          size_t last = StaticSize;
-          for(size_t i = 0; i < sizeof(values) / sizeof(values[0]); ++i){
-            if (values[i] >= a_size) {
-              return last;
-            }
-            last = values[i];
-          }
-          return _getPowSize(a_size, 0);
-        }
-
-        size_t max;
-        size_t values[10];
-      };
-
       static void _initMem(Ty* a_mem, size_t a_size, size_t& a_sdata);
 
       static void _destroyMem(Ty* a_mem, size_t a_size, size_t& a_sdata);
@@ -214,15 +171,11 @@ namespace fcf{
 
       static size_t _getMaxPow();
 
-      static double _getStepModeImpl();
-
-      static double _getStepMode();
-
       static size_t _getMaxPowStepImpl();
 
       static size_t _getMaxPowStep();
 
-      static size_t _getPowSize(size_t a_size, size_t a_powInc = 1);
+      inline static size_t _getPowSize(size_t a_size, size_t a_powInc = 1);
 
       static size_t _getOwerPowStep(size_t a_size);
 
