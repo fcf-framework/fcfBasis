@@ -1,3 +1,7 @@
+#define FCF_BASIS_IMPORT
+#include "../../basis.hpp"
+
+
 #include <iostream>
 #include "header.hpp"
 
