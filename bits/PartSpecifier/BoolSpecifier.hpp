@@ -19,26 +19,31 @@ namespace fcf{
 
   template <typename Ty>
   struct TypeImpl<Ty, BoolSpecifier> {
-
-    inline bool operator()(const Ty* a_value) {
-      return !!(*a_value);
-    }
-
-    inline bool call(const Ty* a_value) {
-      return Type<Ty, BoolSpecifier>()(a_value);
-    }
-
-    inline Variant universalCall(const Ty* a_object, const Variant* /*a_argv*/, size_t a_argc) const {
-      if (!a_argc){
-        throw MathArumentCountException(__FILE__, __LINE__, "bool");
-      }
-      if (!a_object) {
-        throw MathEmptyArgumentException(__FILE__, __LINE__, "bool", 1);
-      }
-      return Variant(Type<Ty, BoolSpecifier>().call(a_object));
-    }
-
+    bool operator()(const Ty* a_value);
+    bool call(const Ty* a_value);
+    Variant universalCall(const Ty* a_object, const Variant* /*a_argv*/, size_t a_argc) const;
   };
+
+  template <typename Ty>
+  bool TypeImpl<Ty, BoolSpecifier>::operator()(const Ty* a_value) {
+    return !!(*a_value);
+  }
+
+  template <typename Ty>
+  bool TypeImpl<Ty, BoolSpecifier>::call(const Ty* a_value) {
+    return Type<Ty, BoolSpecifier>()(a_value);
+  }
+
+  template <typename Ty>
+  Variant TypeImpl<Ty, BoolSpecifier>::universalCall(const Ty* a_object, const Variant* /*a_argv*/, size_t a_argc) const {
+    if (!a_argc){
+      throw MathArumentCountException(__FILE__, __LINE__, "bool");
+    }
+    if (!a_object) {
+      throw MathEmptyArgumentException(__FILE__, __LINE__, "bool", 1);
+    }
+    return Variant(Type<Ty, BoolSpecifier>().call(a_object));
+  }
 
 } // fcf namespace
 

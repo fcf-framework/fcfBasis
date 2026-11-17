@@ -15,43 +15,48 @@ namespace fcf{
 
   template <typename Ty>
   struct TypeImpl<Ty, MulSpecifier> {
-
-    inline void operator()(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) {
-      *a_destination = (*a_leftValue) * (*a_rightValue);
-    }
-
-    inline void call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) {
-      return Type<Ty, MulSpecifier>()(a_destination, a_leftValue, a_rightValue);
-    }
-
-    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) {
-      if (a_argc < 2){
-        throw MathArumentCountException(__FILE__, __LINE__, "*");
-      }
-      if (!a_object) {
-        throw MathEmptyResultPointerException(__FILE__, __LINE__, "*");
-      }
-      if (Type<Ty>().index() != a_argv[0].getDataTypeIndex() ||
-          Type<Ty>().index() != a_argv[1].getDataTypeIndex()
-         ){
-        const Ty left = a_argv[0].cast<Ty>();
-        const Ty right = a_argv[1].cast<Ty>();
-        Type<Ty, MulSpecifier>().call(a_object, &left, &right);
-      } else {
-        const Ty* leftPtr = (const Ty*)a_argv->ptr();
-        if (!leftPtr) {
-          throw MathEmptyArgumentException(__FILE__, __LINE__, "*", 1);
-        }
-        const Ty* rightPtr = (const Ty*)(a_argv+1)->ptr();
-        if (!rightPtr) {
-          throw MathEmptyArgumentException(__FILE__, __LINE__, "*", 2);
-        }
-        Type<Ty, MulSpecifier>().call(a_object, leftPtr, rightPtr);
-      }
-      return Variant();
-    }
-
+    inline void operator()(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue);
+    inline void call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue);
+    inline Variant universalCall(Ty* a_object, Variant* a_argv, size_t a_argc);
   };
+
+  template <typename Ty>
+  inline void TypeImpl<Ty, MulSpecifier>::operator()(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) {
+    *a_destination = (*a_leftValue) * (*a_rightValue);
+  }
+
+  template <typename Ty>
+  inline void TypeImpl<Ty, MulSpecifier>::call(Ty* a_destination, const Ty* a_leftValue, const Ty* a_rightValue) {
+    return Type<Ty, MulSpecifier>()(a_destination, a_leftValue, a_rightValue);
+  }
+
+  template <typename Ty>
+  inline Variant TypeImpl<Ty, MulSpecifier>::universalCall(Ty* a_object, Variant* a_argv, size_t a_argc) {
+    if (a_argc < 2){
+      throw MathArumentCountException(__FILE__, __LINE__, "*");
+    }
+    if (!a_object) {
+      throw MathEmptyResultPointerException(__FILE__, __LINE__, "*");
+    }
+    if (Type<Ty>().index() != a_argv[0].getDataTypeIndex() ||
+        Type<Ty>().index() != a_argv[1].getDataTypeIndex()
+       ){
+      const Ty left = a_argv[0].cast<Ty>();
+      const Ty right = a_argv[1].cast<Ty>();
+      Type<Ty, MulSpecifier>().call(a_object, &left, &right);
+    } else {
+      const Ty* leftPtr = (const Ty*)a_argv->ptr();
+      if (!leftPtr) {
+        throw MathEmptyArgumentException(__FILE__, __LINE__, "*", 1);
+      }
+      const Ty* rightPtr = (const Ty*)(a_argv+1)->ptr();
+      if (!rightPtr) {
+        throw MathEmptyArgumentException(__FILE__, __LINE__, "*", 2);
+      }
+      Type<Ty, MulSpecifier>().call(a_object, leftPtr, rightPtr);
+    }
+    return Variant();
+  }
 
 } // fcf namespace
 
