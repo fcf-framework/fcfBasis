@@ -37,9 +37,15 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  VariantBasic<innerBufferSize>::VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction)
+  VariantBasic<innerBufferSize>::VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions& a_convertOptions, ConvertFunction a_convertFunction)
   : _typeInfo(0) {
     _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
+  }
+
+  template <size_t innerBufferSize>
+  VariantBasic<innerBufferSize>::VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex)
+  : _typeInfo(0) {
+    _set(a_typeIndex, a_sourceData, a_sourceTypeIndex);
   }
 
   template <size_t innerBufferSize>
@@ -325,12 +331,21 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void VariantBasic<innerBufferSize>::set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction){
+  void VariantBasic<innerBufferSize>::set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions& a_convertOptions, ConvertFunction a_convertFunction){
     _destroy();
     _ptr = 0;
     _typeInfo = 0;
     _set(a_typeIndex, a_sourceData, a_sourceTypeIndex, a_convertOptions, a_convertFunction);
   }
+
+  template <size_t innerBufferSize>
+  void VariantBasic<innerBufferSize>::set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex){
+    _destroy();
+    _ptr = 0;
+    _typeInfo = 0;
+    _set(a_typeIndex, a_sourceData, a_sourceTypeIndex);
+  }
+
 
   template <size_t innerBufferSize>
   void VariantBasic<innerBufferSize>::clear() {
@@ -1108,7 +1123,7 @@ namespace fcf{
   }
 
   template <size_t innerBufferSize>
-  void VariantBasic<innerBufferSize>::_set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions* a_convertOptions, ConvertFunction a_convertFunction) {
+  void VariantBasic<innerBufferSize>::_set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions& a_convertOptions, ConvertFunction a_convertFunction) {
     a_typeIndex = a_typeIndex & ~0x0e000000;
     a_sourceTypeIndex = a_sourceTypeIndex & ~0x0e000000;
     if (a_sourceTypeIndex == a_typeIndex){
@@ -1132,6 +1147,28 @@ namespace fcf{
     }
   }
 
+  template <size_t innerBufferSize>
+  void VariantBasic<innerBufferSize>::_set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex) {
+    a_typeIndex = a_typeIndex & ~0x0e000000;
+    a_sourceTypeIndex = a_sourceTypeIndex & ~0x0e000000;
+    if (a_sourceTypeIndex == a_typeIndex){
+      a_sourceTypeIndex = 0;
+    }
+    DynamicType dt(a_typeIndex);
+    const TypeInfo* ti = dt.getTypeInfo();
+    if (a_sourceData && !a_sourceTypeIndex) {
+      _ptr = dt.getTypeInfo()->initializer->clone(_size(ti) <= innerBufferSize ? (void*)&_mem[0] : (void*)0, a_sourceData);
+    } else {
+      _ptr = dt.getTypeInfo()->initializer->create(_size(ti) <= innerBufferSize ? (void*)&_mem[0] : (void*)0);
+    }
+
+    _typeInfo = ti;
+
+    ConvertOptions convertOptions;
+    if (a_sourceTypeIndex) {
+      convertWithRuntime(ptr(), a_typeIndex, a_sourceData, a_sourceTypeIndex, convertOptions);
+    }
+  }
 
   template <size_t innerBufferSize>
   typename VariantBasic<innerBufferSize>::VariantEndpoint VariantBasic<innerBufferSize>::_variantEndpoint(){

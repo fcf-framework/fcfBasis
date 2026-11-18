@@ -21,6 +21,8 @@
 
 #include "bits/PartContainerAccess/DynamicContainerAccessBase.hpp"
 
+#include "bits/PartStaticVector/PartStaticVector.hpp"
+
 #include "bits/PartMetaType/MetaTypeSequence.hpp"
 #include "bits/PartMetaType/MetaTypeBoolean.hpp"
 #include "bits/PartMetaType/MetaTypeFunction.hpp"

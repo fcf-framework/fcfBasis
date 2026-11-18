@@ -29,7 +29,7 @@ namespace fcf {
   template <>
   class Converter<CL_DIRECT, UserProfile, std::string> {
     public:
-    void operator()(UserProfile& a_destination, const std::string& a_source, ConvertOptions* /*a_options*/, Error& a_error) {
+    void operator()(UserProfile& a_destination, const std::string& a_source, ConvertOptions& /*a_options*/, Error& a_error) {
       size_t delimiterPos = a_source.find(':');
       if (delimiterPos != std::string::npos) {
         try {

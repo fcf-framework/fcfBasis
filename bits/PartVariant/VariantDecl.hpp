@@ -262,7 +262,10 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions& a_options, ConvertFunction a_convertFunction = 0);
+
+      VariantBasic(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex=0);
+
 
       /**
        * @brief Destructor.
@@ -410,7 +413,10 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      void set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      void set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions& a_options, ConvertFunction a_convertFunction = 0);
+
+      void set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0);
+
 
       /**
        * @brief Clears the variant, destroying the stored value.
@@ -1098,7 +1104,9 @@ namespace fcf {
        * @param a_options Conversion options.
        * @param a_convertFunction Custom conversion function.
        */
-      void _set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0, ConvertOptions* a_options = 0, ConvertFunction a_convertFunction = 0);
+      void _set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex, ConvertOptions& a_options, ConvertFunction a_convertFunction = 0);
+
+      void _set(TypeIndex a_typeIndex, const void* a_sourceData, TypeIndex a_sourceTypeIndex = 0);
 
       /**
        * @brief Resolves the variant endpoint (handles nested variants).

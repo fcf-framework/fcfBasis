@@ -608,7 +608,8 @@ namespace fcf {
               if ((argBufferIndex) >= ConversionState::BUFFER_CAPACITY){
                 throw CallArgumentBufferOverflowExException(__FILE__, __LINE__, a_state.functionName, a_arguments.getSourceCallArguments().getStringRepresentationTypes());
               }
-              a_state.argBuffer.push_back(::fcf::Variant(a_cc.type, (const void*)a_arguments.getArgument(a_cc.index), a_arguments.getTypeIndex(a_cc.index), (ConvertOptions*)0, (ConvertFunction)a_cc.converter));
+              ConvertOptions co;
+              a_state.argBuffer.push_back(::fcf::Variant(a_cc.type, (const void*)a_arguments.getArgument(a_cc.index), a_arguments.getTypeIndex(a_cc.index), co, (ConvertFunction)a_cc.converter));
               a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
               a_arguments.setTypeIndex(a_cc.index, a_cc.type);
             }
@@ -621,7 +622,8 @@ namespace fcf {
               }
               TypeIndex currentType = TypeIndexConverter<>::removeLevelPointer( a_arguments.getTypeIndex(a_cc.index) );
               TypeIndex expectedType = TypeIndexConverter<>::removeLevelPointer(a_cc.type);
-              a_state.argBuffer.push_back(::fcf::Variant(expectedType, *(const void**)a_arguments.getArgument(a_cc.index), currentType, (ConvertOptions*)0, (ConvertFunction)a_cc.converter));
+              ConvertOptions co;
+              a_state.argBuffer.push_back(::fcf::Variant(expectedType, *(const void**)a_arguments.getArgument(a_cc.index), currentType, co, (ConvertFunction)a_cc.converter));
               a_state.argBuffer.push_back(::fcf::Variant( (int*)a_state.argBuffer.back().ptr() ));
               a_arguments.setArgument(a_cc.index, a_state.argBuffer.back().ptr());
               a_arguments.setTypeIndex(a_cc.index, a_cc.type);

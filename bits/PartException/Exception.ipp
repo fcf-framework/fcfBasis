@@ -352,6 +352,12 @@ namespace fcf{
   }
 #endif
 
+#ifdef FCF_BASIS_IMPLEMENTATION
+  const char* Exception::registeredName(){
+    return "FCF_EXCEPTION";
+  }
+#endif
+
   template <typename TType>
   void Exception::_fillArgs(size_t, const TType& a_value){
     _args.push_back(a_value);

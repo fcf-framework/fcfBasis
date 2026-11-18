@@ -9,7 +9,8 @@ namespace fcf {
   template <typename TResult, typename TSource>
   TResult convert(const TSource& a_source, Error& a_error) {
     TResult result;
-    ConvertSelector<TResult, TSource>()(result, a_source, 0, a_error);
+    ConvertOptions co;
+    ConvertSelector<TResult, TSource>()(result, a_source, co, a_error);
     return result;
   }
 
@@ -21,26 +22,26 @@ namespace fcf {
 
 
   template <typename TResult, typename TSource>
-  TResult convert(const TSource& a_source, ConvertOptions* a_options, Error& a_error) {
+  TResult convert(const TSource& a_source, ConvertOptions& a_options, Error& a_error) {
     TResult result;
     ConvertSelector<TResult, TSource>()(result, a_source, a_options, a_error);
     return result;
   }
 
   template <typename TResult, typename TSource>
-  inline TResult convert(const TSource& a_source, ConvertOptions* a_options, Error&& a_error = Error{true}) {
+  inline TResult convert(const TSource& a_source, ConvertOptions& a_options, Error&& a_error = Error{true}) {
     return convert<TResult>(a_source, a_options, a_error);
   }
 
 
 
   template <typename TDest, typename TSource>
-  void convert(TDest& a_dst, const TSource& a_source, ConvertOptions* a_options, Error& a_error) {
+  void convert(TDest& a_dst, const TSource& a_source, ConvertOptions& a_options, Error& a_error) {
     ConvertSelector<TDest, TSource>()(a_dst, a_source, a_options, a_error);
   }
 
   template <typename TDest, typename TSource>
-  inline void convert(TDest& a_dst, const TSource& a_source, ConvertOptions* a_options, Error&& a_error = Error{true}) {
+  inline void convert(TDest& a_dst, const TSource& a_source, ConvertOptions& a_options, Error&& a_error = Error{true}) {
     convert(a_dst, a_source, a_options, a_error);
   }
 
@@ -48,7 +49,8 @@ namespace fcf {
 
   template <typename TDest, typename TSource>
   void convert(TDest& a_dst, const TSource& a_source, Error& a_error) {
-    ConvertSelector<TDest, TSource>()(a_dst, a_source, nullptr, a_error);
+    ConvertOptions co;
+    ConvertSelector<TDest, TSource>()(a_dst, a_source, co, a_error);
   }
 
   template <typename TDest, typename TSource>

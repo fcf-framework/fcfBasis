@@ -16,7 +16,7 @@ namespace fcf {
    * @param a_source Pointer to the source memory containing the original value.
    * @param a_option Pointer to optional configuration settings for the conversion process.
    */
-  typedef void (*ConvertFunction)(void*, const void*, ConvertOptions* a_option, Error& a_error);
+  typedef void (*ConvertFunction)(void*, const void*, ConvertOptions& a_option, Error& a_error);
 
 } // fcf namespace
 

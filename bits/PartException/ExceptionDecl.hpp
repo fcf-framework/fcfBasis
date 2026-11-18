@@ -193,6 +193,9 @@ namespace fcf{
        */
       std::string message() const throw();
 
+
+      static const char* registeredName();
+
     protected:
 
       /**
