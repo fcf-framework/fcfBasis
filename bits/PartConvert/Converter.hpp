@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 #include "ConvertOptions.hpp"
-#include "ConverterLevel.hpp"
+#include "EConverterLevel.hpp"
 #include "../PartType/Type.hpp"
 #include "../PartConvert/DefaultConvertMode.hpp"
 #include "../../PartVariant.hpp"
@@ -16,7 +16,7 @@
 
 namespace fcf {
 
-  template <ConverterLevel Mode, typename TDestination, typename TSource, typename TSpecifier = DefaultConvertMode>
+  template <EConverterLevel Mode, typename TDestination, typename TSource, typename TSpecifier = DefaultConvertMode>
   class Converter;
 
   template <typename TDestination, typename TSource, typename TSpecifier>

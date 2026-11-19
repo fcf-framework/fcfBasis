@@ -29,7 +29,7 @@ namespace fcf {
     };
 
     template <int ConverterLevelValue, typename TDestination, typename TSource, typename TFormat>
-    struct ConverSelectorMode<ConverterLevelValue, TDestination, TSource, TFormat, decltype((void)Converter<(ConverterLevel)ConverterLevelValue, TDestination, TSource, TFormat>())>{
+    struct ConverSelectorMode<ConverterLevelValue, TDestination, TSource, TFormat, decltype((void)Converter<(EConverterLevel)ConverterLevelValue, TDestination, TSource, TFormat>())>{
       inline void operator()(TDestination& a_destination, const TSource& a_source, ConvertOptions& a_convertOptions, Error& a_error);
     };
 
@@ -65,11 +65,11 @@ namespace fcf {
 
 
     template <int ConverterLevelValue, typename TDestination, typename TSource, typename TFormat>
-    void ConverSelectorMode<ConverterLevelValue, TDestination, TSource, TFormat, decltype((void)Converter<(ConverterLevel)ConverterLevelValue, TDestination, TSource, TFormat>())>::operator()(TDestination& a_destination, 
+    void ConverSelectorMode<ConverterLevelValue, TDestination, TSource, TFormat, decltype((void)Converter<(EConverterLevel)ConverterLevelValue, TDestination, TSource, TFormat>())>::operator()(TDestination& a_destination, 
                                                                                                                                                    const TSource& a_source, 
                                                                                                                                                    ConvertOptions& a_convertOptions, 
                                                                                                                                                    Error& a_error){
-      return Converter<(ConverterLevel)ConverterLevelValue, TDestination, TSource, TFormat>()(a_destination, a_source, a_convertOptions, a_error);
+      return Converter<(EConverterLevel)ConverterLevelValue, TDestination, TSource, TFormat>()(a_destination, a_source, a_convertOptions, a_error);
     }
 
 

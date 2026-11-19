@@ -1,9 +1,9 @@
-#ifndef _FCF_BASIS__BITS__PART_CONVERT__CONVERTER_LEVEL_HPP___
-#define _FCF_BASIS__BITS__PART_CONVERT__CONVERTER_LEVEL_HPP___
+#ifndef _FCF_BASIS__BITS__PART_CONVERT__ECONVERTER_LEVEL_HPP___
+#define _FCF_BASIS__BITS__PART_CONVERT__ECONVERTER_LEVEL_HPP___
 
 namespace fcf{
 
-  enum ConverterLevel {
+  enum EConverterLevel {
     CL_ALL_LOW                = 0,
     CL_ALL                    = 1,
     CL_DIRECT_SOURCE_LOW      = 2,
@@ -16,4 +16,4 @@ namespace fcf{
 
 } // fcf namespace
 
-#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__CONVERTER_LEVEL_HPP___
+#endif // #ifndef _FCF_BASIS__BITS__PART_CONVERT__ECONVERTER_LEVEL_HPP___
